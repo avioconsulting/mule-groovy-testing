@@ -1,14 +1,42 @@
 group 'com.avioconsulting'
 version '1.0-SNAPSHOT'
 
+configurations {
+    provided
+}
+
 apply plugin: 'java'
+apply plugin: 'groovy'
+apply plugin: 'maven'
+
+sourceSets {
+    main {
+        compileClasspath += configurations.provided
+    }
+}
 
 sourceCompatibility = 1.5
 
 repositories {
+    mavenLocal()
     mavenCentral()
+    jcenter()
 }
 
 dependencies {
+    def muleVersion = '3.8.3'
+    def munitVersion = '1.2.1'
+    def munitSupportVersion = '3.8.2'
+    compile 'org.apache.maven:maven-plugin-api:3.3.9'
+    compile group: 'com.mulesoft.muleesb', name: 'mule-core-ee', version: muleVersion
+    compile group: 'org.mule.tests', name: 'mule-tests-functional', version: muleVersion
+    compile group: 'com.mulesoft.muleesb', name: 'mule-core-ee', version: muleVersion
+    compile group: 'org.mule.modules', name: 'mule-module-client', version: muleVersion
+    compile group: 'org.mule.modules', name: 'mule-module-json', version: muleVersion
+    compile group: 'com.mulesoft.munit', name: 'mule-munit-support', version: munitSupportVersion
+    // assumes testing being done with dataweave
+    compile group: 'com.mulesoft.weave', name: 'mule-plugin-weave', version: muleVersion
+    compile group: 'com.mulesoft.munit', name: 'munit-runner', version: munitVersion
+    compile 'org.codehaus.groovy:groovy-all:2.4.6'
     testCompile group: 'junit', name: 'junit', version: '4.11'
 }
