@@ -34,6 +34,7 @@ dependencies {
     compile group: 'org.mule.modules', name: 'mule-module-client', version: muleVersion
     compile group: 'org.mule.modules', name: 'mule-module-json', version: muleVersion
     compile group: 'com.mulesoft.munit', name: 'mule-munit-support', version: munitSupportVersion
+    compile 'org.apache.cxf:cxf-api:2.7.18'
     // assumes testing being done with dataweave
     compile group: 'com.mulesoft.weave', name: 'mule-plugin-weave', version: muleVersion
     compile group: 'com.mulesoft.munit', name: 'munit-runner', version: munitVersion
