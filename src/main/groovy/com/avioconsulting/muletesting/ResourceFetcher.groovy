@@ -11,7 +11,7 @@ class ResourceFetcher {
         def path = this.mockPathClosure(filename)
         def stream = getClass().getResourceAsStream path
         if (stream == null) {
-            throw new FileNotFoundException(resource)
+            throw new FileNotFoundException(path)
         }
         stream
     }
