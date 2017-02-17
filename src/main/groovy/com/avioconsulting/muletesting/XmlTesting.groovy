@@ -151,7 +151,5 @@ trait XmlTesting {
                                                       testClosure))
     }
 
-    JAXBContext getJaxbContext() {
-        throw new Exception('SOAP Mocks: You need to override the getJaxbContext method to return a JAXB context when using SOAP mocks')
-    }
+    abstract JAXBContext getJaxbContext()
 }
