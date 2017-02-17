@@ -60,6 +60,8 @@ abstract class BaseTest extends FunctionalMunitSuite {
         ['api-main', 'api-console']
     }
 
+    abstract List<String> getConfigResourcesList()
+
     String getConfigResources() {
         configResourcesList.join ","
     }
