@@ -20,7 +20,19 @@ sourceCompatibility = 1.5
 repositories {
     mavenLocal()
     mavenCentral()
-    jcenter()
+    maven {
+        url "http://repository.mulesoft.org/releases"
+    }
+    maven {
+        url "http://maven-repo.outcome.com/nexus/content/repositories/thirdparty"
+    }
+    maven {
+        url "http://repo.spring.io/plugins-release/"
+    }
+    maven {
+        // staxutils
+        url "https://repository-master.mulesoft.org/nexus/content/groups/public/"
+    }
 }
 
 dependencies {
