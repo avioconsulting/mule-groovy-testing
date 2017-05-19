@@ -17,6 +17,18 @@ sourceSets {
 
 sourceCompatibility = 1.5
 
+def getMavenCreds = { String id ->
+    def m2Dir = new File(System.getProperty('user.home'), '.m2')
+    def settingsXmlPath = new File(m2Dir, 'settings.xml')
+    assert settingsXmlPath.exists()
+    def xmlNode = new XmlParser().parse(settingsXmlPath.absolutePath)
+    def serverCreds = xmlNode.servers.server.find { node -> node.id.text() == id }
+    assert serverCreds != null
+    [user: serverCreds.username.text(), password: serverCreds.password.text()]
+}
+
+def eeCreds = getMavenCreds('mule-ee-releases')
+
 repositories {
     mavenLocal()
     mavenCentral()
@@ -32,6 +44,13 @@ repositories {
     maven {
         // staxutils
         url "https://repository-master.mulesoft.org/nexus/content/groups/public/"
+    }
+    maven {
+        credentials {
+            username eeCreds.user
+            password eeCreds.password
+        }
+        url "https://repository-master.mulesoft.org/nexus/content/repositories/releases-ee/"
     }
 }
 
