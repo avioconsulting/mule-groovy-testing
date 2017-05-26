@@ -1,5 +1,5 @@
 group 'com.avioconsulting'
-version '1.0.0'
+version '1.0-SNAPSHOT'
 
 configurations {
     provided
@@ -48,6 +48,17 @@ repositories {
             password eeCreds.password
         }
         url "https://devops.avioconsulting.com/nexus/repository/mulesoft-ee-releases/"
+    }
+}
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            repository(url: 'https://devops.avioconsulting.com/nexus/repository/avio-snapshots/') {
+                authentication userName: eeCreds.user,
+                               password: eeCreds.password
+            }
+        }
     }
 }
 
