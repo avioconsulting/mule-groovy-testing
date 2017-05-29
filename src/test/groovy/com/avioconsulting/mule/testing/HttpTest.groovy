@@ -33,9 +33,9 @@ class HttpTest extends BaseTest {
 
         // assert
         assertThat stuff,
-                   is(equalTo([foo: 123]))
+                   is(equalTo([key: 123]))
         assertThat result,
-                   is(equalTo([reply: 456]))
+                   is(equalTo([reply_key: 457]))
     }
 
     @Test

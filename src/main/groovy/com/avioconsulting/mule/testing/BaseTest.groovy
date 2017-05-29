@@ -1,5 +1,6 @@
 package com.avioconsulting.mule.testing
 
+import com.avioconsulting.mule.testing.messages.JsonMessage
 import com.avioconsulting.mule.testing.mocks.BaseMockUtils
 import com.avioconsulting.mule.testing.mocks.HTTPMock
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -14,7 +15,6 @@ import org.mule.api.MuleEvent
 import org.mule.api.MuleMessage
 import org.mule.module.client.MuleClient
 import org.mule.module.http.internal.request.SuccessStatusCodeValidator
-import org.mule.module.json.JsonData
 import org.mule.modules.interceptor.processors.MuleMessageTransformer
 import org.mule.munit.common.mocking.SpyProcess
 import org.mule.munit.common.util.MunitMuleTestUtils
@@ -23,7 +23,7 @@ import org.mule.munit.runner.functional.FunctionalMunitSuite
 import javax.xml.namespace.QName
 import java.util.concurrent.CopyOnWriteArrayList
 
-abstract class BaseTest extends FunctionalMunitSuite {
+abstract class BaseTest extends FunctionalMunitSuite implements JsonMessage {
     @BeforeClass
     static void extendMethods() {
         // splitter/aggregate returns a wrapped list
@@ -126,8 +126,13 @@ abstract class BaseTest extends FunctionalMunitSuite {
 
     Map runMuleFlowWithJsonMap(String flow, Map map) {
         def jsonString = JsonOutput.toJson(map)
-        def stream = new ByteArrayInputStream(jsonString.bytes)
-        def event = runFlow(flow, testEvent(stream))
+        def message = getJSONMessage(jsonString,
+                                     muleContext,
+                                     null)
+        def inputEvent = new DefaultMuleEvent(message,
+                                         MessageExchangePattern.REQUEST_RESPONSE,
+                                         MunitMuleTestUtils.getTestFlow(muleContext))
+        def event = runFlow(flow, inputEvent)
         new JsonSlurper().parseText(event.message.payloadAsString) as Map
     }
 

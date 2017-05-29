@@ -1,17 +1,19 @@
 package com.avioconsulting.mule.testing.transformers
 
+import com.avioconsulting.mule.testing.messages.JsonMessage
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
-import org.mule.DefaultMuleMessage
 import org.mule.api.MuleContext
 import org.mule.api.MuleMessage
 import org.mule.modules.interceptor.processors.MuleMessageTransformer
 
-class JSONRequestReplyTransformer implements MuleMessageTransformer {
+class JSONRequestReplyTransformer implements MuleMessageTransformer,
+        JsonMessage {
     private final Closure closure
     private final MuleContext muleContext
 
-    JSONRequestReplyTransformer(Closure closure, MuleContext muleContext) {
+    JSONRequestReplyTransformer(Closure closure,
+                                MuleContext muleContext) {
         this.muleContext = muleContext
         this.closure = closure
     }
@@ -22,15 +24,6 @@ class JSONRequestReplyTransformer implements MuleMessageTransformer {
         def response = this.closure(map)
         assert response instanceof Map
         def jsonString = JsonOutput.toJson(response)
-        def messageProps = [
-                'content-type': 'application/json; charset=utf-8',
-                'http.status' : 200
-        ]
-        def payload = new ByteArrayInputStream(jsonString.bytes)
-        new DefaultMuleMessage(payload,
-                               messageProps,
-                               null,
-                               null,
-                               muleContext)
+        getJSONMessage(jsonString, muleContext)
     }
 }
