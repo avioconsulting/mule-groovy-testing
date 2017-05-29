@@ -27,7 +27,7 @@ class JsonTesting extends BaseTest {
             json {
                 jackson(input, SampleJacksonOutput)
             }
-        }
+        } as SampleJacksonOutput
 
         // assert
         assertThat result.result,
@@ -50,8 +50,11 @@ class JsonTesting extends BaseTest {
         // act
         def input = new SampleJacksonInput()
         input.foobar = 123
-        def result = runMuleWithWithJacksonJson('restRequest',
-                                                input)
+        def result = runFlow('restRequest') {
+            json {
+                jackson(input)
+            }
+        }
 
         // assert
         assertThat result,

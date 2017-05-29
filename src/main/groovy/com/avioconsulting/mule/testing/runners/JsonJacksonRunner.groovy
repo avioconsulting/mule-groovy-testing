@@ -22,6 +22,9 @@ class JsonJacksonRunner extends JsonRunner {
     }
 
     protected Object getObjectFromOutput(String outputJson) {
+        if (outputClass == null) {
+            return
+        }
         mapper.readValue(outputJson, outputClass)
     }
 }

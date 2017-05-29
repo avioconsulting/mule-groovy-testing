@@ -14,8 +14,16 @@ class JsonInvokerImpl implements JsonInvoker, Invoker {
         this.muleContext = muleContext
     }
 
+    def jackson(Object inputObject) {
+        jsonRunner = new JsonJacksonRunner(inputObject,
+                                           null,
+                                           muleContext)
+    }
+
     def jackson(inputObject, Class outputClass) {
-        jsonRunner = new JsonJacksonRunner(inputObject, outputClass, muleContext)
+        jsonRunner = new JsonJacksonRunner(inputObject,
+                                           outputClass,
+                                           muleContext)
     }
 
     def inputMap(Map input) {
