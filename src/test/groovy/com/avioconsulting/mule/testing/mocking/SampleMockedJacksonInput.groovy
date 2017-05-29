@@ -1,4 +1,4 @@
-package com.avioconsulting.mule.testing
+package com.avioconsulting.mule.testing.mocking
 
 import com.fasterxml.jackson.annotation.JsonProperty
 

@@ -56,9 +56,9 @@ class JsonMockingTest extends BaseTest {
         input.foobar = 123
         def result = runFlow('restRequest') {
             json {
-                jackson(input, SampleJacksonOutput)
+                jackson(input, JacksonOutput)
             }
-        } as SampleJacksonOutput
+        } as JacksonOutput
 
         // assert
         assertThat result.result,
