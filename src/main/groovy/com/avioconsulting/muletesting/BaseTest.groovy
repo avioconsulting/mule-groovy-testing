@@ -108,7 +108,8 @@ abstract class BaseTest extends FunctionalMunitSuite {
                     def sourceFileLine = fetcher('sourceFileLine')
                     def name = fetcher('name')
                     madeIt = true
-                    throw new Exception("You have an unmocked ${namespace}:${processorName} transport! It's located NEAR the '${name}' processor on line ${sourceFileLine} in ${fileName}")
+                    throw new Exception(
+                            "You have an unmocked ${namespace}:${processorName} transport! It's located NEAR the '${name}' processor on line ${sourceFileLine} in ${fileName}")
                 }
                 // in case our detection method breaks, still show something
                 catch (e) {
@@ -116,7 +117,8 @@ abstract class BaseTest extends FunctionalMunitSuite {
                     if (madeIt) {
                         throw e
                     }
-                    throw new Exception("You have an unmocked ${namespace}:${processorName} transport! Its location in the code could not be located!")
+                    throw new Exception(
+                            "You have an unmocked ${namespace}:${processorName} transport! Its location in the code could not be located!")
                 }
             }
         })

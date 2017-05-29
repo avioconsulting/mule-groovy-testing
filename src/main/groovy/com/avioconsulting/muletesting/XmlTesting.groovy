@@ -28,7 +28,8 @@ trait XmlTesting {
         DatatypeFactory.newInstance().newXMLGregorianCalendar(gregorian)
     }
 
-    static XMLGregorianCalendar getXmlDateTime(int year, int oneBasedMonth, int dayOfMonth, int hourOfDay, int minute, int second = 0, String timeZoneId) {
+    static XMLGregorianCalendar getXmlDateTime(int year, int oneBasedMonth, int dayOfMonth, int hourOfDay, int minute,
+                                               int second = 0, String timeZoneId) {
         def zeroBasedMonth = oneBasedMonth - 1
         def gregorian = new GregorianCalendar(year, zeroBasedMonth, dayOfMonth, hourOfDay, minute, second)
         gregorian.setTimeZone(TimeZone.getTimeZone(timeZoneId))
@@ -36,13 +37,18 @@ trait XmlTesting {
     }
 
     abstract MuleEvent runFlow(String name, MuleEvent event)
+
     abstract MuleContext getMuleContext()
+
     abstract MessageProcessorMocker whenMessageProcessor(String name)
+
     abstract MunitSpy spyMessageProcessor(String name)
 
-    def runMuleFlowWithXml(String flow, JAXBElement jaxbElement, boolean unmarshalResult = true, Integer expectedHttpStatus = 200, Map<String, Object> flowVars = [:]) {
+    def runMuleFlowWithXml(String flow, JAXBElement jaxbElement, boolean unmarshalResult = true,
+                           Integer expectedHttpStatus = 200, Map<String, Object> flowVars = [:]) {
         def message = getXmlMessageFromJaxbElement jaxbElement
-        def inputEvent = new DefaultMuleEvent(message, MessageExchangePattern.REQUEST_RESPONSE, MunitMuleTestUtils.getTestFlow(muleContext))
+        def inputEvent = new DefaultMuleEvent(message, MessageExchangePattern.REQUEST_RESPONSE,
+                                              MunitMuleTestUtils.getTestFlow(muleContext))
         flowVars.each { entry ->
             inputEvent.setFlowVariable(entry.key, entry.value)
         }

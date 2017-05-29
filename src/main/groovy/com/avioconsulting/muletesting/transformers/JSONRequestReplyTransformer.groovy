@@ -24,7 +24,8 @@ class JSONRequestReplyTransformer implements MuleMessageTransformer {
         def yieldObject = this.yieldType == YieldType.Map ? map : deserialized
         def response = this.closure(yieldObject)
         if (!(response instanceof MuleMessage)) {
-            throw new Exception("This has only been implemented for closures that return complete messages, you returned ${response.class}")
+            throw new Exception(
+                    "This has only been implemented for closures that return complete messages, you returned ${response.class}")
         }
         response
     }
