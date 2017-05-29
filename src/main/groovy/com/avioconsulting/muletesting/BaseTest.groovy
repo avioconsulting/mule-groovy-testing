@@ -160,7 +160,7 @@ abstract class BaseTest extends FunctionalMunitSuite {
         new SuccessStatusCodeValidator('200').validate(errorEvent)
     }
 
-    def restHttpCall(String connectorName, Closure cl) {
+    def mockRestHttpCall(String connectorName, Closure cl) {
         def mock = new HTTPMock()
         def code = cl.rehydrate(mock, this, this)
         code.resolveStrategy = Closure.DELEGATE_ONLY
