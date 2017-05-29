@@ -33,10 +33,14 @@ trait XmlTesting {
     }
 
     abstract MuleEvent runFlow(String name, MuleEvent event)
+
     abstract MuleContext getMuleContext()
 
-    def runMuleFlowWithXml(String flow, JAXBElement jaxbElement, boolean unmarshalResult = true,
-                           Integer expectedHttpStatus = 200, Map<String, Object> flowVars = [:]) {
+    def runMuleFlowWithXml(String flow,
+                           JAXBElement jaxbElement,
+                           boolean unmarshalResult = true,
+                           Integer expectedHttpStatus = 200,
+                           Map<String, Object> flowVars = [:]) {
         def message = getXmlMessageFromJaxbElement jaxbElement
         def inputEvent = new DefaultMuleEvent(message, MessageExchangePattern.REQUEST_RESPONSE,
                                               MunitMuleTestUtils.getTestFlow(muleContext))
@@ -62,7 +66,8 @@ trait XmlTesting {
         }
     }
 
-    static MuleMessage getXmlErrorMessage(BufferedInputStream stream, Integer httpStatus) {
+    static MuleMessage getXmlErrorMessage(BufferedInputStream stream,
+                                          Integer httpStatus) {
         // if you throw an exception (simulating failure) from a mock callback, Mule returns it to the catch
         // exception strategy as a BufferInputStream
         byte[] xmlBytes = stream.bytes
@@ -73,12 +78,14 @@ trait XmlTesting {
     }
 
     // incoming messages will not have a status
-    static MuleMessage getXmlMessage(readerOrStream, Integer httpStatus = null) {
+    static MuleMessage getXmlMessage(readerOrStream,
+                                     Integer httpStatus = null) {
         def payload = getNormalXmlPayload(readerOrStream)
         constructXmlTypeMessage(httpStatus, payload)
     }
 
-    private static MuleMessage constructXmlTypeMessage(Integer httpStatus, payload) {
+    private static MuleMessage constructXmlTypeMessage(Integer httpStatus,
+                                                       payload) {
         // need some of these props for SOAP mock to work properly
         def messageProps = [
                 'content-type': 'text/xml; charset=utf-8'
@@ -120,5 +127,6 @@ trait XmlTesting {
     ResourceFetcher getMockResourceFetcher() {
         new ResourceFetcher(this.&getMockResourcePath)
     }
+
     abstract JAXBContext getJaxbContext()
 }

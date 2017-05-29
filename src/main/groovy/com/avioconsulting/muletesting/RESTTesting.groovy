@@ -17,10 +17,15 @@ trait RESTTesting {
 
     abstract MessageProcessorMocker whenMessageProcessor(String name)
 
-    MessageProcessorMocker mockRESTPostReply(String name, Class expectedRequestJsonClass,
-                                             YieldType yieldType = YieldType.Map, testClosure) {
+    MessageProcessorMocker mockRESTPostReply(String name,
+                                             Class expectedRequestJsonClass,
+                                             YieldType yieldType = YieldType.Map,
+                                             Closure testClosure) {
         def mock = getHttpRequestMock(name)
-        mock.thenApply(new JSONRequestReplyTransformer(expectedRequestJsonClass, yieldType, testClosure))
+        mock.thenApply(new JSONRequestReplyTransformer(
+                expectedRequestJsonClass,
+                yieldType,
+                testClosure))
         mock
     }
 
@@ -30,7 +35,7 @@ trait RESTTesting {
                 .withAttributes(Attribute.attribute('name').ofNamespace('doc').withValue(name))
     }
 
-    MessageProcessorMocker mockRESTGetReply(String name, testClosure) {
+    MessageProcessorMocker mockRESTGetReply(String name, Closure testClosure) {
         def mock = getHttpRequestMock(name)
         mock.thenApply(new SimpleClosureTransformer(testClosure))
         mock

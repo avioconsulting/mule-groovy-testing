@@ -10,7 +10,8 @@ import org.mule.munit.common.mocking.MessageProcessorMocker
 trait VMTesting {
     abstract MessageProcessorMocker whenMessageProcessor(String name)
 
-    MessageProcessorMocker mockQueueReceive(String name, Class expectedRequestJsonClass,
+    MessageProcessorMocker mockQueueReceive(String name,
+                                            Class expectedRequestJsonClass,
                                             YieldType yieldType = YieldType.Map, testClosure) {
         def mock = getVmqReceive(name)
         mock.thenApply(new JSONReceiveTransformer(expectedRequestJsonClass, yieldType, testClosure))

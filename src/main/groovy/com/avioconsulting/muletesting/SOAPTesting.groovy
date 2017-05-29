@@ -10,7 +10,9 @@ trait SOAPTesting implements XmlTesting {
     abstract MessageProcessorMocker whenMessageProcessor(String name)
     abstract MunitSpy spyMessageProcessor(String name)
 
-    private def applyXmlReplyCallback(MessageProcessorMocker mock, alternateFetcher, testClosure) {
+    private def applyXmlReplyCallback(MessageProcessorMocker mock,
+                                      alternateFetcher,
+                                      Closure testClosure) {
         mock.thenApply(new XmlRequestReplyTransformer(mock,
                                                       getJaxbContext(),
                                                       alternateFetcher,
