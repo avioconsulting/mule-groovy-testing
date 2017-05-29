@@ -10,7 +10,7 @@ class JSONReceiveTransformer implements MuleMessageTransformer {
     private final YieldType yieldType
     private final Object closure
 
-    def JSONReceiveTransformer(Class jsonClass, YieldType yieldType, closure) {
+    JSONReceiveTransformer(Class jsonClass, YieldType yieldType, closure) {
         this.closure = closure
         this.yieldType = yieldType
         this.jsonClass = jsonClass

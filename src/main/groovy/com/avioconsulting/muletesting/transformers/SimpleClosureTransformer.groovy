@@ -4,9 +4,9 @@ import org.mule.api.MuleMessage
 import org.mule.modules.interceptor.processors.MuleMessageTransformer
 
 class SimpleClosureTransformer implements MuleMessageTransformer {
-    private final Object closure
+    private final Closure closure
 
-    def SimpleClosureTransformer(closure) {
+    SimpleClosureTransformer(Closure closure) {
         this.closure = closure
     }
 

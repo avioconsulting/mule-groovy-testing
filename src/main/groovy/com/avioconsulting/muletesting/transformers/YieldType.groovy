@@ -1,6 +1,6 @@
 package com.avioconsulting.muletesting.transformers
 
-public enum YieldType {
+enum YieldType {
     DeserializedObject,
     Map
 }

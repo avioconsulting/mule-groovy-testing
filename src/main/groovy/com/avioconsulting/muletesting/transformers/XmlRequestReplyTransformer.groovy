@@ -16,7 +16,7 @@ class XmlRequestReplyTransformer implements MuleMessageTransformer {
     private final JAXBContext jaxbContext
     private final def messageFromPayload
 
-    def XmlRequestReplyTransformer(MessageProcessorMocker mock,
+    XmlRequestReplyTransformer(MessageProcessorMocker mock,
                                    JAXBContext jaxbContext,
                                    alternateFetcher,
                                    ResourceFetcher mockResourceFetcher,
@@ -64,7 +64,7 @@ class XmlRequestReplyTransformer implements MuleMessageTransformer {
         }
     }
 
-    private def MuleMessage getMockedXmlMessageReply(String resource) {
+    private MuleMessage getMockedXmlMessageReply(String resource) {
         println "Constructing mock XML message with resource ${resource}"
         def stream = this.mockResourceFetcher.getResource(resource)
         def httpStatus = 200
