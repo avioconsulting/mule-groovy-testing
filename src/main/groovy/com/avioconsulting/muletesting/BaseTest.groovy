@@ -1,17 +1,22 @@
 package com.avioconsulting.muletesting
 
+import com.avioconsulting.muletesting.mocks.HTTPMock
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.mulesoft.weave.reader.ByteArraySeekableStream
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 import org.junit.Before
 import org.junit.BeforeClass
+import org.mule.DefaultMuleEvent
+import org.mule.MessageExchangePattern
 import org.mule.api.MuleEvent
 import org.mule.api.MuleMessage
 import org.mule.module.client.MuleClient
+import org.mule.module.http.internal.request.SuccessStatusCodeValidator
 import org.mule.module.json.JsonData
 import org.mule.modules.interceptor.processors.MuleMessageTransformer
 import org.mule.munit.common.mocking.SpyProcess
+import org.mule.munit.common.util.MunitMuleTestUtils
 import org.mule.munit.runner.functional.FunctionalMunitSuite
 
 import javax.xml.namespace.QName
@@ -146,5 +151,19 @@ abstract class BaseTest extends FunctionalMunitSuite {
                     payload,
                     properties,
                     timeoutSeconds * 1000
+    }
+
+    def throwHttpStatusBasedException(MuleMessage errorResponse) {
+        def errorEvent = new DefaultMuleEvent(errorResponse,
+                                              MessageExchangePattern.REQUEST_RESPONSE,
+                                              MunitMuleTestUtils.getTestFlow(muleContext))
+        new SuccessStatusCodeValidator('200').validate(errorEvent)
+    }
+
+    def restHttpCall(String connectorName, Closure cl) {
+        def mock = new HTTPMock()
+        def code = cl.rehydrate(mock, this, this)
+        code.resolveStrategy = Closure.DELEGATE_ONLY
+        code()
     }
 }
