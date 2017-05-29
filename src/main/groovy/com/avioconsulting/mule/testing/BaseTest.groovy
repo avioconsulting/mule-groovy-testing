@@ -126,10 +126,13 @@ abstract class BaseTest extends FunctionalMunitSuite implements JsonMessage {
 
     def <T> T runMuleWithWithJacksonJson(String flow,
                                          inputObject,
-                                         Class<T> returnType) {
+                                         Class<T> returnType = null) {
         def mapper = new ObjectMapper()
         def jsonString = mapper.writer().writeValueAsString(inputObject)
         def event = runFlowWithJsonString(jsonString, flow)
+        if (returnType == null) {
+            return
+        }
         def outputJsonString = event.message.payloadAsString
         mapper.readValue(outputJsonString, returnType)
     }

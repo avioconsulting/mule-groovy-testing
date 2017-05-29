@@ -2,8 +2,7 @@ package com.avioconsulting.mule.testing
 
 import org.junit.Test
 
-import static org.hamcrest.Matchers.equalTo
-import static org.hamcrest.Matchers.is
+import static org.hamcrest.Matchers.*
 import static org.junit.Assert.assertThat
 
 class RestTest extends BaseTest {
@@ -57,6 +56,32 @@ class RestTest extends BaseTest {
         // assert
         assertThat result.result,
                    is(equalTo(457))
+    }
+
+    @Test
+    void callVoidViaJackson() {
+        // arrange
+        def mockCalled = false
+        mockRestHttpCall('SomeSystem Call') {
+            json {
+                whenCalledWithMap { Map incoming ->
+                    mockCalled = true
+                    [reply: 456]
+                }
+            }
+        }
+
+        // act
+        def input = new SampleJacksonInput()
+        input.foobar = 123
+        def result = runMuleWithWithJacksonJson('restRequest',
+                                                input)
+
+        // assert
+        assertThat result,
+                   is(nullValue())
+        assertThat mockCalled,
+                   is(equalTo(true))
     }
 
     @Test
