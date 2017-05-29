@@ -2,13 +2,18 @@ package com.avioconsulting.muletesting
 
 import com.avioconsulting.muletesting.transformers.JSONReceiveTransformer
 import com.avioconsulting.muletesting.transformers.YieldType
+import org.mule.api.MuleContext
+import org.mule.api.MuleEvent
 import org.mule.munit.common.mocking.Attribute
 import org.mule.munit.common.mocking.MessageProcessorMocker
+import org.mule.munit.common.mocking.MunitSpy
 
 // TODO: pull JSON out of this and allow choosing? OR pull VM out and make traits more about format
 // then separate traits to get the MessageProcessorMocker object
 trait VMTesting {
-    def MessageProcessorMocker mockQueueReceive(String name, Class expectedRequestJsonClass, YieldType yieldType = YieldType.Map, testClosure) {
+    abstract MessageProcessorMocker whenMessageProcessor(String name)
+
+    MessageProcessorMocker mockQueueReceive(String name, Class expectedRequestJsonClass, YieldType yieldType = YieldType.Map, testClosure) {
         def mock = getVmqReceive(name)
         mock.thenApply(new JSONReceiveTransformer(expectedRequestJsonClass, yieldType, testClosure))
         mock

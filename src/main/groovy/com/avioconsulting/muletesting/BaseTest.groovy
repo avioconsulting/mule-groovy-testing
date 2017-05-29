@@ -66,7 +66,7 @@ abstract class BaseTest extends FunctionalMunitSuite {
         configResourcesList.join ","
     }
 
-    def MuleEvent runMuleFlowWithJson(String flow, object) {
+    MuleEvent runMuleFlowWithJson(String flow, object) {
         def json = JsonOutput.toJson(object)
         // Mule wraps JSON with the JsonData class
         runFlow(flow, testEvent(new JsonData(json)))

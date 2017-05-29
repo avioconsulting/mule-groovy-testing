@@ -3,7 +3,7 @@ package com.avioconsulting.muletesting
 class ResourceFetcher {
     private final Object mockPathClosure
 
-    def ResourceFetcher(mockPathClosure) {
+    ResourceFetcher(mockPathClosure) {
         this.mockPathClosure = mockPathClosure
     }
 

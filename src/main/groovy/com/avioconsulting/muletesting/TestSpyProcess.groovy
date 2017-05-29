@@ -5,9 +5,9 @@ import org.mule.api.MuleException
 import org.mule.munit.common.mocking.SpyProcess
 
 class TestSpyProcess implements SpyProcess {
-    private final Object closure
+    private final Closure closure
 
-    def TestSpyProcess(closure) {
+    TestSpyProcess(Closure closure) {
         this.closure = closure
     }
 

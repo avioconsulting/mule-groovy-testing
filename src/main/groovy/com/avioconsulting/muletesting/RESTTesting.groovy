@@ -5,6 +5,7 @@ import com.avioconsulting.muletesting.transformers.SimpleClosureTransformer
 import com.avioconsulting.muletesting.transformers.YieldType
 import org.mule.DefaultMuleEvent
 import org.mule.MessageExchangePattern
+import org.mule.api.MuleContext
 import org.mule.api.MuleMessage
 import org.mule.module.http.internal.request.SuccessStatusCodeValidator
 import org.mule.munit.common.mocking.Attribute
@@ -12,7 +13,12 @@ import org.mule.munit.common.mocking.MessageProcessorMocker
 import org.mule.munit.common.util.MunitMuleTestUtils
 
 trait RESTTesting {
-    def MessageProcessorMocker mockRESTPostReply(String name, Class expectedRequestJsonClass, YieldType yieldType = YieldType.Map, testClosure) {
+    abstract MuleContext getMuleContext()
+
+    abstract MessageProcessorMocker whenMessageProcessor(String name)
+
+    MessageProcessorMocker mockRESTPostReply(String name, Class expectedRequestJsonClass,
+                                             YieldType yieldType = YieldType.Map, testClosure) {
         def mock = getHttpRequestMock(name)
         mock.thenApply(new JSONRequestReplyTransformer(expectedRequestJsonClass, yieldType, testClosure))
         mock
@@ -24,7 +30,7 @@ trait RESTTesting {
                 .withAttributes(Attribute.attribute('name').ofNamespace('doc').withValue(name))
     }
 
-    def MessageProcessorMocker mockRESTGetReply(String name, testClosure) {
+    MessageProcessorMocker mockRESTGetReply(String name, testClosure) {
         def mock = getHttpRequestMock(name)
         mock.thenApply(new SimpleClosureTransformer(testClosure))
         mock

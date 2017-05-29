@@ -1,16 +1,18 @@
 package com.avioconsulting.muletesting
 
+import com.avioconsulting.muletesting.transformers.XmlRequestReplyTransformer
 import org.apache.cxf.staxutils.DepthXMLStreamReader
 import org.glassfish.grizzly.memory.HeapMemoryManager
 import org.glassfish.grizzly.utils.BufferInputStream
-import com.avioconsulting.muletesting.transformers.XmlRequestReplyTransformer
 import org.mule.DefaultMuleEvent
 import org.mule.DefaultMuleMessage
 import org.mule.MessageExchangePattern
+import org.mule.api.MuleContext
 import org.mule.api.MuleEvent
 import org.mule.api.MuleMessage
 import org.mule.munit.common.mocking.Attribute
 import org.mule.munit.common.mocking.MessageProcessorMocker
+import org.mule.munit.common.mocking.MunitSpy
 import org.mule.munit.common.util.MunitMuleTestUtils
 
 import javax.xml.bind.JAXBContext
@@ -18,10 +20,6 @@ import javax.xml.bind.JAXBElement
 import javax.xml.datatype.DatatypeFactory
 import javax.xml.datatype.XMLGregorianCalendar
 import javax.xml.stream.XMLInputFactory
-
-import static org.hamcrest.Matchers.equalTo
-import static org.hamcrest.Matchers.is
-import static org.junit.Assert.assertThat
 
 trait XmlTesting {
     static XMLGregorianCalendar getXmlDate(int year, int oneBasedMonth, int dayOfMonth) {
@@ -37,6 +35,11 @@ trait XmlTesting {
         DatatypeFactory.newInstance().newXMLGregorianCalendar(gregorian)
     }
 
+    abstract MuleEvent runFlow(String name, MuleEvent event)
+    abstract MuleContext getMuleContext()
+    abstract MessageProcessorMocker whenMessageProcessor(String name)
+    abstract MunitSpy spyMessageProcessor(String name)
+
     def runMuleFlowWithXml(String flow, JAXBElement jaxbElement, boolean unmarshalResult = true, Integer expectedHttpStatus = 200, Map<String, Object> flowVars = [:]) {
         def message = getXmlMessageFromJaxbElement jaxbElement
         def inputEvent = new DefaultMuleEvent(message, MessageExchangePattern.REQUEST_RESPONSE, MunitMuleTestUtils.getTestFlow(muleContext))
@@ -45,8 +48,8 @@ trait XmlTesting {
         }
         MuleEvent responseEvent = this.runFlow(flow, inputEvent)
         MuleMessage responseMessage = responseEvent.message
-        assertThat responseMessage.getInboundProperty('http.status'),
-                   is(equalTo(expectedHttpStatus))
+        def httpStatus = responseMessage.getInboundProperty('http.status')
+        assert httpStatus == expectedHttpStatus
         unmarshalResult ? unmarshalXmlResponse(responseMessage) : responseMessage
     }
 
@@ -62,7 +65,7 @@ trait XmlTesting {
         }
     }
 
-    def static MuleMessage getXmlErrorMessage(BufferedInputStream stream, Integer httpStatus) {
+    static MuleMessage getXmlErrorMessage(BufferedInputStream stream, Integer httpStatus) {
         // if you throw an exception (simulating failure) from a mock callback, Mule returns it to the catch
         // exception strategy as a BufferInputStream
         byte[] xmlBytes = stream.bytes
@@ -73,7 +76,7 @@ trait XmlTesting {
     }
 
     // incoming messages will not have a status
-    def static MuleMessage getXmlMessage(readerOrStream, Integer httpStatus = null) {
+    static MuleMessage getXmlMessage(readerOrStream, Integer httpStatus = null) {
         def payload = getNormalXmlPayload(readerOrStream)
         constructXmlTypeMessage(httpStatus, payload)
     }
@@ -101,7 +104,7 @@ trait XmlTesting {
         new DepthXMLStreamReader(xmlReader)
     }
 
-    private def MuleMessage getXmlMessageFromJaxbElement(JAXBElement jaxbElement) {
+    private MuleMessage getXmlMessageFromJaxbElement(JAXBElement jaxbElement) {
         def context = getJaxbContext()
         def marshaller = context.createMarshaller()
         def stringWriter = new StringWriter()
@@ -111,7 +114,7 @@ trait XmlTesting {
         getXmlMessage reader
     }
 
-    def MessageProcessorMocker mockSoapReply(String name = null, boolean untilSuccessful = false, testClosure) {
+    MessageProcessorMocker mockSoapReply(String name = null, boolean untilSuccessful = false, testClosure) {
         def mock = whenMessageProcessor('consumer').ofNamespace('ws')
         if (name != null) {
             mock.withAttributes(Attribute.attribute('name').ofNamespace('doc').withValue(name))
