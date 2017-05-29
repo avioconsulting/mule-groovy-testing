@@ -4,5 +4,6 @@ import org.mule.api.MuleEvent
 
 interface Invoker {
     MuleEvent getEvent()
+
     def transformOutput(MuleEvent event)
 }

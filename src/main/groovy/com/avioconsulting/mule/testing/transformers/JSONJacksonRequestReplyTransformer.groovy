@@ -2,8 +2,6 @@ package com.avioconsulting.mule.testing.transformers
 
 import com.avioconsulting.mule.testing.messages.JsonMessage
 import com.fasterxml.jackson.databind.ObjectMapper
-import groovy.json.JsonOutput
-import groovy.json.JsonSlurper
 import org.mule.api.MuleContext
 import org.mule.api.MuleMessage
 import org.mule.modules.interceptor.processors.MuleMessageTransformer
