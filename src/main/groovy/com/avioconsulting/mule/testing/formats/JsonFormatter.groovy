@@ -20,8 +20,8 @@ class JsonFormatter {
         this.messageProcessorMocker.thenApply(transformer)
     }
 
-    def <T> void whenCalledWithJackson(Class inputClass,
-                                       Closure closure) {
+    def whenCalledWithJackson(Class inputClass,
+                              Closure closure) {
         def transformer = new JSONJacksonRequestReplyTransformer(closure,
                                                                  muleContext,
                                                                  inputClass)
