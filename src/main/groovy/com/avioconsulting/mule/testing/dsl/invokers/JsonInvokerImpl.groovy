@@ -35,7 +35,7 @@ class JsonInvokerImpl implements JsonInvoker, Invoker {
     }
 
     MuleEvent getEvent() {
-        assert jsonRunner
+        assert jsonRunner : 'Need to specify a type of JSON serialization (jackson, map)'
         jsonRunner.event
     }
 

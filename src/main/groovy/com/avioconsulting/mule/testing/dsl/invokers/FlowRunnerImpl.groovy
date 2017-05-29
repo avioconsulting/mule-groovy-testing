@@ -20,7 +20,7 @@ class FlowRunnerImpl implements FlowRunner, Invoker {
     }
 
     MuleEvent getEvent() {
-        assert invoker
+        assert invoker : 'Need to specify a proper format! (e.g. json)'
         invoker.event
     }
 

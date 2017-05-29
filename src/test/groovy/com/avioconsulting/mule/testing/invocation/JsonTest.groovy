@@ -5,6 +5,7 @@ import com.avioconsulting.mule.testing.SampleJacksonInput
 import com.avioconsulting.mule.testing.SampleJacksonOutput
 import org.junit.Test
 
+import static groovy.test.GroovyAssert.shouldFail
 import static org.hamcrest.Matchers.*
 import static org.junit.Assert.assertThat
 
@@ -61,13 +62,16 @@ class JsonTest extends BaseTest {
     }
 
     @Test
-    void noneSpecified() {
+    void no_serialization_specified() {
         // arrange
 
         // act
-
-        // assert
-        fail 'write this'
+        shouldFail {
+            runFlow('jsonTest') {
+                json {
+                }
+            }
+        }
     }
 
     @Test
