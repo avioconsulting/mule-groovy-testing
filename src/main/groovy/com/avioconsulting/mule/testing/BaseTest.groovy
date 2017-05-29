@@ -1,10 +1,10 @@
 package com.avioconsulting.mule.testing
 
-import com.avioconsulting.mule.testing.formats.RequestResponseChoice
-import com.avioconsulting.mule.testing.messages.JsonMessage
+import com.avioconsulting.mule.testing.dsl.invokers.FlowRunner
+import com.avioconsulting.mule.testing.dsl.invokers.FlowRunnerImpl
+import com.avioconsulting.mule.testing.dsl.mocking.formats.RequestResponseChoice
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.mulesoft.weave.reader.ByteArraySeekableStream
-import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 import org.junit.Before
 import org.junit.BeforeClass
@@ -23,7 +23,7 @@ import org.mule.munit.runner.functional.FunctionalMunitSuite
 import javax.xml.namespace.QName
 import java.util.concurrent.CopyOnWriteArrayList
 
-abstract class BaseTest extends FunctionalMunitSuite implements JsonMessage {
+abstract class BaseTest extends FunctionalMunitSuite {
     @BeforeClass
     static void extendMethods() {
         // splitter/aggregate returns a wrapped list
@@ -124,33 +124,14 @@ abstract class BaseTest extends FunctionalMunitSuite implements JsonMessage {
         })
     }
 
-    def <T> T runMuleWithWithJacksonJson(String flow,
-                                         inputObject,
-                                         Class<T> returnType = null) {
-        def mapper = new ObjectMapper()
-        def jsonString = mapper.writer().writeValueAsString(inputObject)
-        def event = runFlowWithJsonString(jsonString, flow)
-        if (returnType == null) {
-            return
-        }
-        def outputJsonString = event.message.payloadAsString
-        mapper.readValue(outputJsonString, returnType)
-    }
-
-    Map runMuleFlowWithJsonMap(String flow, Map map) {
-        def jsonString = JsonOutput.toJson(map)
-        MuleEvent event = runFlowWithJsonString(jsonString, flow)
-        new JsonSlurper().parseText(event.message.payloadAsString) as Map
-    }
-
-    private MuleEvent runFlowWithJsonString(String jsonString, String flow) {
-        def message = getJSONMessage(jsonString,
-                                     muleContext,
-                                     null)
-        def inputEvent = new DefaultMuleEvent(message,
-                                              MessageExchangePattern.REQUEST_RESPONSE,
-                                              MunitMuleTestUtils.getTestFlow(muleContext))
-        runFlow(flow, inputEvent)
+    def runFlow(String flowName,
+                @DelegatesTo(FlowRunner) Closure closure) {
+        def runner = new FlowRunnerImpl(muleContext)
+        def code = closure.rehydrate(runner, this, this)
+        code.resolveStrategy = Closure.DELEGATE_ONLY
+        code()
+        def outputEvent = runFlow(flowName, runner.event)
+        runner.transformOutput(outputEvent)
     }
 
     static MuleMessage httpPost(map) {

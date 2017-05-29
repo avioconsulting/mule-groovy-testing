@@ -1,4 +1,4 @@
-package com.avioconsulting.mule.testing.formats
+package com.avioconsulting.mule.testing.dsl.mocking.formats
 
 import com.avioconsulting.mule.testing.transformers.JSONJacksonRequestReplyTransformer
 import com.avioconsulting.mule.testing.transformers.JSONMapRequestReplyTransformer

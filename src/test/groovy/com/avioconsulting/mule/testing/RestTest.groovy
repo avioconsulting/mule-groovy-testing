@@ -24,9 +24,11 @@ class RestTest extends BaseTest {
         }
 
         // act
-        def result = runMuleFlowWithJsonMap('restRequest', [
-                foo: 123
-        ])
+        def result = runFlow('restRequest') {
+            json {
+                inputMap([foo: 123])
+            }
+        }
 
         // assert
         assertThat stuff,
@@ -112,5 +114,15 @@ class RestTest extends BaseTest {
                    is(equalTo(457))
         assertThat mockValue,
                    is(equalTo(123))
+    }
+
+    @Test
+    void noStreaming() {
+        // arrange
+
+        // act
+
+        // assert
+        fail 'write this'
     }
 }
