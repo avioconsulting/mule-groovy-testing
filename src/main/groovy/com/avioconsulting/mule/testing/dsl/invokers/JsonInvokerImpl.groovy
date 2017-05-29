@@ -26,7 +26,7 @@ class JsonInvokerImpl implements JsonInvoker, Invoker {
                                            muleContext)
     }
 
-    def inputMap(Map input) {
+    def map(Map input) {
         jsonRunner = new JsonMapRunner(input, muleContext)
     }
 

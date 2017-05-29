@@ -5,7 +5,7 @@ interface JsonInvoker {
 
     def jackson(inputObject, Class outputClass)
 
-    def inputMap(Map input)
+    def map(Map input)
 
     def noStreaming()
 }

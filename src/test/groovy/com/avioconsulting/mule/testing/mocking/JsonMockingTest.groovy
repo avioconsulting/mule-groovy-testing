@@ -24,7 +24,7 @@ class JsonMockingTest extends BaseTest {
         // act
         def result = runFlow('restRequest') {
             json {
-                inputMap([foo: 123])
+                map([foo: 123])
             }
         }
 

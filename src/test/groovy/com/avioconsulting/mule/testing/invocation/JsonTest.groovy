@@ -81,7 +81,7 @@ class JsonTest extends BaseTest {
         // act
         def result = runFlow('jsonTest') {
             json {
-                inputMap([foo: 123])
+                map([foo: 123])
             }
         }
 
