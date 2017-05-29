@@ -1,5 +1,6 @@
 package com.avioconsulting.mule.testing
 
+import com.avioconsulting.mule.testing.mocks.BaseMockUtils
 import com.avioconsulting.mule.testing.mocks.HTTPMock
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.mulesoft.weave.reader.ByteArraySeekableStream
@@ -71,12 +72,6 @@ abstract class BaseTest extends FunctionalMunitSuite {
         configResourcesList.join ","
     }
 
-    MuleEvent runMuleFlowWithJson(String flow, object) {
-        def json = JsonOutput.toJson(object)
-        // Mule wraps JSON with the JsonData class
-        runFlow(flow, testEvent(new JsonData(json)))
-    }
-
     @Before
     void handleUnmocked() {
         setupFallThroughMock('consumer', 'ws')
@@ -129,6 +124,12 @@ abstract class BaseTest extends FunctionalMunitSuite {
         })
     }
 
+    MuleEvent runMuleFlowWithJsonMap(String flow, Map map) {
+        def json = JsonOutput.toJson(map)
+        // Mule wraps JSON with the JsonData class
+        runFlow(flow, testEvent(new JsonData(json)))
+    }
+
     static MuleMessage httpPost(map) {
         def timeoutSeconds = map.timeoutSeconds ?: 35
         def client = new MuleClient(muleContext)
@@ -160,8 +161,12 @@ abstract class BaseTest extends FunctionalMunitSuite {
         new SuccessStatusCodeValidator('200').validate(errorEvent)
     }
 
-    def mockRestHttpCall(String connectorName, Closure cl) {
-        def mock = new HTTPMock()
+    def mockRestHttpCall(String connectorName,
+                         @DelegatesTo(HTTPMock) Closure cl) {
+        def whenProcessor = { String name ->
+            whenMessageProcessor(name)
+        }
+        def mock = new HTTPMock(connectorName, new BaseMockUtils(whenProcessor))
         def code = cl.rehydrate(mock, this, this)
         code.resolveStrategy = Closure.DELEGATE_ONLY
         code()

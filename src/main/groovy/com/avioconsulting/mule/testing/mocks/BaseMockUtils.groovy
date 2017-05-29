@@ -9,7 +9,7 @@ class BaseMockUtils {
         this.whenMessageProcessor = whenMessageProcessor
     }
 
-    MessageProcessorMocker whenMessageProcessor(String name) {
+    MessageProcessorMocker doWhenMessageProcessor(String name) {
         this.whenMessageProcessor(name)
     }
 }

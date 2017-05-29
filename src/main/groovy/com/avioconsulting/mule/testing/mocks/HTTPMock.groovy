@@ -14,7 +14,7 @@ class HTTPMock {
         this.baseMockUtils = baseMockUtils
     }
 
-    def post(Closure closure) {
+    def post(@DelegatesTo(MockFormatterChoice) Closure closure) {
         def mock = getHttpRequestMock(connectorName)
         def formatterChoice = new MockFormatterChoice(mock)
         def code = closure.rehydrate(formatterChoice, this, this)
@@ -23,7 +23,7 @@ class HTTPMock {
     }
 
     private MessageProcessorMocker getHttpRequestMock(String name) {
-        baseMockUtils.whenMessageProcessor('request')
+        baseMockUtils.doWhenMessageProcessor('request')
                 .ofNamespace('http')
                 .withAttributes(Attribute.attribute('name').ofNamespace('doc').withValue(name))
     }
