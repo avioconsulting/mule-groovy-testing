@@ -8,7 +8,7 @@ import org.junit.Test
 import static org.hamcrest.Matchers.*
 import static org.junit.Assert.assertThat
 
-class JsonTesting extends BaseTest {
+class JsonTest extends BaseTest {
     @Test
     void jackson() {
         // arrange
