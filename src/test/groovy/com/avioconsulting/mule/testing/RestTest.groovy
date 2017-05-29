@@ -7,13 +7,13 @@ import static org.hamcrest.Matchers.is
 import static org.junit.Assert.assertThat
 import static org.junit.Assert.fail
 
-class HttpTest extends BaseTest {
+class RestTest extends BaseTest {
     List<String> getConfigResourcesList() {
         ['http_test.xml']
     }
 
     @Test
-    void calledViaMap() {
+    void mock_maps() {
         // arrange
         def stuff = null
         mockRestHttpCall('SomeSystem Call') {
@@ -36,10 +36,32 @@ class HttpTest extends BaseTest {
         assertThat result,
                    is(equalTo([reply_key: 457]))
     }
-    
-    // TODO: baseTest stuff
+
     @Test
-    void runFlowWithJacksonObject() {
+    void call_via_jackson() {
+        // arrange
+        mockRestHttpCall('SomeSystem Call') {
+            json {
+                whenCalledViaMap { Map incoming ->
+                    [reply: 456]
+                }
+            }
+        }
+
+        // act
+        def input = new SampleJacksonInput()
+        input.foobar = 123
+        def result = runMuleWithWithJacksonJson('restRequest',
+                                                input,
+                                                SampleJacksonOutput)
+
+        // assert
+        assertThat result.result,
+                   is(equalTo(457))
+    }
+
+    @Test
+    void mock_via_jackson() {
         // arrange
 
         // act
