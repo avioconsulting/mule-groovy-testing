@@ -1,8 +1,7 @@
 package com.avioconsulting.mule.testing
 
+import com.avioconsulting.mule.testing.formats.RequestResponseChoice
 import com.avioconsulting.mule.testing.messages.JsonMessage
-import com.avioconsulting.mule.testing.mocks.BaseMockUtils
-import com.avioconsulting.mule.testing.mocks.HTTPMock
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.mulesoft.weave.reader.ByteArraySeekableStream
 import groovy.json.JsonOutput
@@ -16,6 +15,7 @@ import org.mule.api.MuleMessage
 import org.mule.module.client.MuleClient
 import org.mule.module.http.internal.request.SuccessStatusCodeValidator
 import org.mule.modules.interceptor.processors.MuleMessageTransformer
+import org.mule.munit.common.mocking.Attribute
 import org.mule.munit.common.mocking.SpyProcess
 import org.mule.munit.common.util.MunitMuleTestUtils
 import org.mule.munit.runner.functional.FunctionalMunitSuite
@@ -130,8 +130,8 @@ abstract class BaseTest extends FunctionalMunitSuite implements JsonMessage {
                                      muleContext,
                                      null)
         def inputEvent = new DefaultMuleEvent(message,
-                                         MessageExchangePattern.REQUEST_RESPONSE,
-                                         MunitMuleTestUtils.getTestFlow(muleContext))
+                                              MessageExchangePattern.REQUEST_RESPONSE,
+                                              MunitMuleTestUtils.getTestFlow(muleContext))
         def event = runFlow(flow, inputEvent)
         new JsonSlurper().parseText(event.message.payloadAsString) as Map
     }
@@ -168,14 +168,14 @@ abstract class BaseTest extends FunctionalMunitSuite implements JsonMessage {
     }
 
     def mockRestHttpCall(String connectorName,
-                         @DelegatesTo(HTTPMock) Closure cl) {
-        def whenProcessor = { String name ->
-            whenMessageProcessor(name)
-        }
-        def mock = new HTTPMock(connectorName,
-                                new BaseMockUtils(whenProcessor),
-                                muleContext)
-        def code = cl.rehydrate(mock, this, this)
+                         @DelegatesTo(RequestResponseChoice) Closure closure) {
+        def mocker = whenMessageProcessor('request')
+                .ofNamespace('http')
+                .withAttributes(Attribute.attribute('name')
+                                        .ofNamespace('doc')
+                                        .withValue(connectorName))
+        def formatterChoice = new RequestResponseChoice(mocker, muleContext)
+        def code = closure.rehydrate(formatterChoice, this, this)
         code.resolveStrategy = Closure.DELEGATE_ONLY
         code()
     }

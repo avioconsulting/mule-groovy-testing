@@ -1,10 +1,11 @@
 package com.avioconsulting.mule.testing
 
 import org.junit.Test
-import static org.hamcrest.Matchers.*
+
+import static org.hamcrest.Matchers.equalTo
+import static org.hamcrest.Matchers.is
 import static org.junit.Assert.assertThat
 import static org.junit.Assert.fail
-
 
 class HttpTest extends BaseTest {
     List<String> getConfigResourcesList() {
@@ -16,12 +17,10 @@ class HttpTest extends BaseTest {
         // arrange
         def stuff = null
         mockRestHttpCall('SomeSystem Call') {
-            post {
-                json {
-                    whenCalledViaMap { Map incoming ->
-                        stuff = incoming
-                        [reply: 456]
-                    }
+            json {
+                whenCalledViaMap { Map incoming ->
+                    stuff = incoming
+                    [reply: 456]
                 }
             }
         }
@@ -37,27 +36,7 @@ class HttpTest extends BaseTest {
         assertThat result,
                    is(equalTo([reply_key: 457]))
     }
-
-    @Test
-    void mock2DifferentRequestTypes() {
-        // arrange
-
-        // act
-
-        // assert
-        fail 'write this'
-    }
-
-    @Test
-    void mock2DifferentResponseTypes() {
-        // arrange
-
-        // act
-
-        // assert
-        fail 'write this'
-    }
-
+    
     // TODO: baseTest stuff
     @Test
     void runFlowWithJacksonObject() {
@@ -68,6 +47,4 @@ class HttpTest extends BaseTest {
         // assert
         fail 'write this'
     }
-
-    
 }
