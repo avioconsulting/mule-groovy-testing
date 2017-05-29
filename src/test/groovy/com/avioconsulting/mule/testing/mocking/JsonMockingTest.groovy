@@ -1,0 +1,74 @@
+package com.avioconsulting.mule.testing.mocking
+
+import com.avioconsulting.mule.testing.BaseTest
+import com.avioconsulting.mule.testing.SampleJacksonInput
+import com.avioconsulting.mule.testing.SampleMockedJacksonInput
+import com.avioconsulting.mule.testing.SampleMockedJacksonOutput
+import org.junit.Test
+
+import static org.hamcrest.Matchers.equalTo
+import static org.hamcrest.Matchers.is
+import static org.junit.Assert.assertThat
+
+class JsonMockingTest extends BaseTest {
+    @Test
+    void mockViaMap() {
+        // arrange
+        def stuff = null
+        mockRestHttpCall('SomeSystem Call') {
+            json {
+                whenCalledWithMap { Map incoming ->
+                    stuff = incoming
+                    [reply: 456]
+                }
+            }
+        }
+
+        // act
+        def result = runFlow('restRequest') {
+            json {
+                inputMap([foo: 123])
+            }
+        }
+
+        // assert
+        assertThat stuff,
+                   is(equalTo([key: 123]))
+        assertThat result,
+                   is(equalTo([reply_key: 457]))
+    }
+
+    @Test
+    void mock_via_jackson() {
+        // arrange
+        def mockValue = 0
+        mockRestHttpCall('SomeSystem Call') {
+            json {
+                whenCalledWithJackson(SampleMockedJacksonInput) {
+                    SampleMockedJacksonInput incoming ->
+                        mockValue = incoming.foobar
+                        def reply = new SampleMockedJacksonOutput()
+                        reply.foobar = 456
+                        reply
+                }
+            }
+        }
+
+        // act
+        def input = new SampleJacksonInput()
+        input.foobar = 123
+        def result = runMuleWithWithJacksonJson('restRequest',
+                                                input,
+                                                SampleJacksonOutput)
+
+        // assert
+        assertThat result.result,
+                   is(equalTo(457))
+        assertThat mockValue,
+                   is(equalTo(123))
+    }
+
+    List<String> getConfigResourcesList() {
+        ['http_test.xml']
+    }
+}
