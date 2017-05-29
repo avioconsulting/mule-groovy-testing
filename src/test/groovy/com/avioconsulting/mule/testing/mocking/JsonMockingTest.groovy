@@ -2,6 +2,7 @@ package com.avioconsulting.mule.testing.mocking
 
 import com.avioconsulting.mule.testing.BaseTest
 import com.avioconsulting.mule.testing.SampleJacksonInput
+import com.avioconsulting.mule.testing.SampleJacksonOutput
 import com.avioconsulting.mule.testing.SampleMockedJacksonInput
 import com.avioconsulting.mule.testing.SampleMockedJacksonOutput
 import org.junit.Test
@@ -57,9 +58,11 @@ class JsonMockingTest extends BaseTest {
         // act
         def input = new SampleJacksonInput()
         input.foobar = 123
-        def result = runMuleWithWithJacksonJson('restRequest',
-                                                input,
-                                                SampleJacksonOutput)
+        def result = runFlow('restRequest') {
+            json {
+                jackson(input, SampleJacksonOutput)
+            }
+        } as SampleJacksonOutput
 
         // assert
         assertThat result.result,
