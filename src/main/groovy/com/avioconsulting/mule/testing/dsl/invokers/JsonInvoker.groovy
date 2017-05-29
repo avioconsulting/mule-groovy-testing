@@ -1,8 +1,7 @@
 package com.avioconsulting.mule.testing.dsl.invokers
 
 interface JsonInvoker {
-    def inputJacksonObject(object)
-    def outputJacksonClass(Class klass)
+    def jackson(inputObject, Class outputClass)
     def inputMap(Map input)
     def noStreaming()
 }

@@ -1,5 +1,6 @@
 package com.avioconsulting.mule.testing.dsl.invokers
 
+import com.avioconsulting.mule.testing.runners.JsonJacksonRunner
 import com.avioconsulting.mule.testing.runners.JsonMapRunner
 import com.avioconsulting.mule.testing.runners.JsonRunner
 import org.mule.api.MuleContext
@@ -13,12 +14,8 @@ class JsonInvokerImpl implements JsonInvoker, Invoker {
         this.muleContext = muleContext
     }
 
-    def inputJacksonObject(object) {
-
-    }
-
-    def outputJacksonClass(Class klass) {
-
+    def jackson(inputObject, Class outputClass) {
+        jsonRunner = new JsonJacksonRunner(inputObject, outputClass, muleContext)
     }
 
     def inputMap(Map input) {

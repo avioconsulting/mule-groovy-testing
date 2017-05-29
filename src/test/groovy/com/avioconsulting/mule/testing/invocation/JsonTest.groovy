@@ -2,8 +2,7 @@ package com.avioconsulting.mule.testing.invocation
 
 import com.avioconsulting.mule.testing.BaseTest
 import com.avioconsulting.mule.testing.SampleJacksonInput
-import com.avioconsulting.mule.testing.SampleMockedJacksonInput
-import com.avioconsulting.mule.testing.SampleMockedJacksonOutput
+import com.avioconsulting.mule.testing.SampleJacksonOutput
 import org.junit.Test
 
 import static org.hamcrest.Matchers.*
@@ -11,7 +10,7 @@ import static org.junit.Assert.assertThat
 
 class JsonTesting extends BaseTest {
     @Test
-    void call_via_jackson() {
+    void jackson() {
         // arrange
         mockRestHttpCall('SomeSystem Call') {
             json {
@@ -24,9 +23,11 @@ class JsonTesting extends BaseTest {
         // act
         def input = new SampleJacksonInput()
         input.foobar = 123
-        def result = runMuleWithWithJacksonJson('restRequest',
-                                                input,
-                                                SampleJacksonOutput)
+        def result = runFlow('restRequest') {
+            json {
+                jackson(input, SampleJacksonOutput)
+            }
+        }
 
         // assert
         assertThat result.result,
@@ -34,7 +35,7 @@ class JsonTesting extends BaseTest {
     }
 
     @Test
-    void callVoidViaJackson() {
+    void jackson_no_return_type() {
         // arrange
         def mockCalled = false
         mockRestHttpCall('SomeSystem Call') {
@@ -85,7 +86,7 @@ class JsonTesting extends BaseTest {
     }
 
     @Test
-    void mock_maps() {
+    void maps() {
         // arrange
         def stuff = null
         mockRestHttpCall('SomeSystem Call') {
