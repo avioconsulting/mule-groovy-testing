@@ -9,6 +9,7 @@ import org.mule.munit.common.util.MunitMuleTestUtils
 
 abstract class JsonRunner implements JsonMessage {
     private final MuleContext muleContext
+    private boolean streaming = true
 
     JsonRunner(MuleContext muleContext) {
         this.muleContext = muleContext
@@ -16,10 +17,15 @@ abstract class JsonRunner implements JsonMessage {
 
     protected abstract String getJsonString()
 
+    def disableStreaming() {
+        streaming = false
+    }
+
     MuleEvent getEvent() {
         def message = getJSONMessage(jsonString,
                                      muleContext,
-                                     null)
+                                     null,
+                                     streaming)
         new DefaultMuleEvent(message,
                              MessageExchangePattern.REQUEST_RESPONSE,
                              MunitMuleTestUtils.getTestFlow(muleContext))

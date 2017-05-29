@@ -52,13 +52,22 @@ class JsonTest extends BaseTest {
 
 
     @Test
-    void noStreaming() {
+    void streaming_disabled() {
         // arrange
 
         // act
+        def input = new SampleJacksonInput()
+        input.foobar = 123
+        def result = runFlow('noStreamingTest') {
+            json {
+                jackson(input, NoStreamingResponse)
+                noStreaming()
+            }
+        } as NoStreamingResponse
 
         // assert
-        fail 'write this'
+        assertThat result.key,
+                   is(equalTo('java.lang.String'))
     }
 
     @Test

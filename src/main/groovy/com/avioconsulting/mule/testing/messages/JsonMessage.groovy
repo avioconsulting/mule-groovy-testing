@@ -7,14 +7,15 @@ import org.mule.api.MuleMessage
 trait JsonMessage {
     MuleMessage getJSONMessage(String jsonString,
                                MuleContext muleContext,
-                               Integer httpStatus = 200) {
+                               Integer httpStatus = 200,
+                               boolean useStream = true) {
         def messageProps = [
                 'content-type': 'application/json; charset=utf-8'
         ]
         if (httpStatus != null) {
             messageProps['http.status'] = httpStatus
         }
-        def payload = new ByteArrayInputStream(jsonString.bytes)
+        def payload = useStream ? new ByteArrayInputStream(jsonString.bytes) : jsonString
         new DefaultMuleMessage(payload,
                                messageProps,
                                null,
