@@ -1,4 +1,4 @@
-package com.avioconsulting.muletesting
+package com.avioconsulting.mule.testing
 
 import org.mule.api.transformer.TransformerException
 import org.mule.transformer.AbstractTransformer

@@ -1,4 +1,4 @@
-package com.avioconsulting.muletesting
+package com.avioconsulting.mule.testing
 
 class ResourceFetcher {
     private final Object mockPathClosure

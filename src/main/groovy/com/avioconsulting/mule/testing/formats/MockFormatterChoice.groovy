@@ -1,4 +1,4 @@
-package com.avioconsulting.muletesting.formats
+package com.avioconsulting.mule.testing.formats
 
 import org.mule.munit.common.mocking.MessageProcessorMocker
 

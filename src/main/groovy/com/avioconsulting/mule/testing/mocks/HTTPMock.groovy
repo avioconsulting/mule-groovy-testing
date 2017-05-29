@@ -1,6 +1,6 @@
-package com.avioconsulting.muletesting.mocks
+package com.avioconsulting.mule.testing.mocks
 
-import com.avioconsulting.muletesting.formats.MockFormatterChoice
+import com.avioconsulting.mule.testing.formats.MockFormatterChoice
 import org.mule.munit.common.mocking.Attribute
 import org.mule.munit.common.mocking.MessageProcessorMocker
 

@@ -1,4 +1,4 @@
-package com.avioconsulting.muletesting.transformers
+package com.avioconsulting.mule.testing.transformers
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import groovy.json.JsonSlurper

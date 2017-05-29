@@ -1,6 +1,6 @@
-package com.avioconsulting.muletesting.transformers
+package com.avioconsulting.mule.testing.transformers
 
-import com.avioconsulting.muletesting.ResourceFetcher
+import com.avioconsulting.mule.testing.ResourceFetcher
 import org.mule.api.MuleMessage
 import org.mule.modules.interceptor.processors.MuleMessageTransformer
 import org.mule.munit.common.mocking.MessageProcessorMocker

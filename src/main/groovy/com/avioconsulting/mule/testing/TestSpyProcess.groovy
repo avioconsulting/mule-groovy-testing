@@ -1,4 +1,4 @@
-package com.avioconsulting.muletesting
+package com.avioconsulting.mule.testing
 
 import org.mule.api.MuleEvent
 import org.mule.api.MuleException

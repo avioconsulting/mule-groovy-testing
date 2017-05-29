@@ -1,6 +1,6 @@
-package com.avioconsulting.muletesting
+package com.avioconsulting.mule.testing
 
-import com.avioconsulting.muletesting.mocks.HTTPMock
+import com.avioconsulting.mule.testing.mocks.HTTPMock
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.mulesoft.weave.reader.ByteArraySeekableStream
 import groovy.json.JsonOutput

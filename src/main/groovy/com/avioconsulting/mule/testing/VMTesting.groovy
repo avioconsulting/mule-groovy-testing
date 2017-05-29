@@ -1,7 +1,7 @@
-package com.avioconsulting.muletesting
+package com.avioconsulting.mule.testing
 
-import com.avioconsulting.muletesting.transformers.JSONReceiveTransformer
-import com.avioconsulting.muletesting.transformers.YieldType
+import com.avioconsulting.mule.testing.transformers.JSONReceiveTransformer
+import com.avioconsulting.mule.testing.transformers.YieldType
 import org.mule.munit.common.mocking.Attribute
 import org.mule.munit.common.mocking.MessageProcessorMocker
 
