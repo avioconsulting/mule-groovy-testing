@@ -1,6 +1,5 @@
 package com.avioconsulting.muletesting
 
-import com.avioconsulting.muletesting.transformers.XmlRequestReplyTransformer
 import org.apache.cxf.staxutils.DepthXMLStreamReader
 import org.glassfish.grizzly.memory.HeapMemoryManager
 import org.glassfish.grizzly.utils.BufferInputStream
@@ -10,9 +9,6 @@ import org.mule.MessageExchangePattern
 import org.mule.api.MuleContext
 import org.mule.api.MuleEvent
 import org.mule.api.MuleMessage
-import org.mule.munit.common.mocking.Attribute
-import org.mule.munit.common.mocking.MessageProcessorMocker
-import org.mule.munit.common.mocking.MunitSpy
 import org.mule.munit.common.util.MunitMuleTestUtils
 
 import javax.xml.bind.JAXBContext
@@ -37,12 +33,7 @@ trait XmlTesting {
     }
 
     abstract MuleEvent runFlow(String name, MuleEvent event)
-
     abstract MuleContext getMuleContext()
-
-    abstract MessageProcessorMocker whenMessageProcessor(String name)
-
-    abstract MunitSpy spyMessageProcessor(String name)
 
     def runMuleFlowWithXml(String flow, JAXBElement jaxbElement, boolean unmarshalResult = true,
                            Integer expectedHttpStatus = 200, Map<String, Object> flowVars = [:]) {
@@ -120,27 +111,6 @@ trait XmlTesting {
         getXmlMessage reader
     }
 
-    MessageProcessorMocker mockSoapReply(String name = null, boolean untilSuccessful = false, testClosure) {
-        def mock = whenMessageProcessor('consumer').ofNamespace('ws')
-        if (name != null) {
-            mock.withAttributes(Attribute.attribute('name').ofNamespace('doc').withValue(name))
-        }
-        MuleEvent alternateEvent = null
-        def alternateFetcher = null
-        // until successful messes up ability to get request in mock
-        if (untilSuccessful) {
-            alternateFetcher = { ['until-successful', alternateEvent.message] }
-            def spyClosure = { muleEvent ->
-                alternateEvent = muleEvent
-            }
-            spyMessageProcessor('until-successful')
-                    .before(new TestSpyProcess(spyClosure))
-        }
-
-        applyXmlReplyCallback(mock, alternateFetcher, testClosure)
-        mock
-    }
-
     abstract String getMockResourcePath(String resource)
 
     BufferedInputStream getResource(String filename) {
@@ -150,15 +120,5 @@ trait XmlTesting {
     ResourceFetcher getMockResourceFetcher() {
         new ResourceFetcher(this.&getMockResourcePath)
     }
-
-    private def applyXmlReplyCallback(MessageProcessorMocker mock, alternateFetcher, testClosure) {
-        mock.thenApply(new XmlRequestReplyTransformer(mock,
-                                                      getJaxbContext(),
-                                                      alternateFetcher,
-                                                      this.getMockResourceFetcher(),
-                                                      this.&getXmlMessage,
-                                                      testClosure))
-    }
-
     abstract JAXBContext getJaxbContext()
 }
