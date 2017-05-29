@@ -1,22 +1,26 @@
 package com.avioconsulting.mule.testing.mocks
 
-import com.avioconsulting.mule.testing.formats.MockFormatterChoice
+import com.avioconsulting.mule.testing.formats.RequestResponseChoice
+import org.mule.api.MuleContext
 import org.mule.munit.common.mocking.Attribute
 import org.mule.munit.common.mocking.MessageProcessorMocker
 
 class HTTPMock {
     private final BaseMockUtils baseMockUtils
     private final String connectorName
+    private final MuleContext muleContext
 
     HTTPMock(String connectorName,
-             BaseMockUtils baseMockUtils) {
+             BaseMockUtils baseMockUtils,
+             MuleContext muleContext) {
+        this.muleContext = muleContext
         this.connectorName = connectorName
         this.baseMockUtils = baseMockUtils
     }
 
-    def post(@DelegatesTo(MockFormatterChoice) Closure closure) {
+    def post(@DelegatesTo(RequestResponseChoice) Closure closure) {
         def mock = getHttpRequestMock(connectorName)
-        def formatterChoice = new MockFormatterChoice(mock)
+        def formatterChoice = new RequestResponseChoice(mock, muleContext)
         def code = closure.rehydrate(formatterChoice, this, this)
         code.resolveStrategy = Closure.DELEGATE_ONLY
         code()

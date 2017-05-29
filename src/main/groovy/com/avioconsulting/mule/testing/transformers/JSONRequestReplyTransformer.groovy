@@ -1,32 +1,36 @@
 package com.avioconsulting.mule.testing.transformers
 
-import com.fasterxml.jackson.databind.ObjectMapper
+import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
+import org.mule.DefaultMuleMessage
+import org.mule.api.MuleContext
 import org.mule.api.MuleMessage
 import org.mule.modules.interceptor.processors.MuleMessageTransformer
 
 class JSONRequestReplyTransformer implements MuleMessageTransformer {
-    private final Class jsonClass
-    private final YieldType yieldType
-    private final Object closure
+    private final Closure closure
+    private final MuleContext muleContext
 
-    JSONRequestReplyTransformer(Class jsonClass, YieldType yieldType, closure) {
+    JSONRequestReplyTransformer(Closure closure, MuleContext muleContext) {
+        this.muleContext = muleContext
         this.closure = closure
-        this.yieldType = yieldType
-        this.jsonClass = jsonClass
     }
 
     MuleMessage transform(MuleMessage muleMessage) {
         def jsonText = muleMessage.payloadAsString
-        def mapper = new ObjectMapper()
-        def deserialized = mapper.readValue jsonText, this.jsonClass
         def map = new JsonSlurper().parseText(jsonText)
-        def yieldObject = this.yieldType == YieldType.Map ? map : deserialized
-        def response = this.closure(yieldObject)
-        if (!(response instanceof MuleMessage)) {
-            throw new Exception(
-                    "This has only been implemented for closures that return complete messages, you returned ${response.class}")
-        }
-        response
+        def response = this.closure(map)
+        assert response instanceof Map
+        def jsonString = JsonOutput.toJson(response)
+        def messageProps = [
+                'content-type': 'application/json; charset=utf-8',
+                'http.status' : 200
+        ]
+        def payload = new ByteArrayInputStream(jsonString.bytes)
+        new DefaultMuleMessage(payload,
+                               messageProps,
+                               null,
+                               null,
+                               muleContext)
     }
 }

@@ -7,12 +7,10 @@ import org.mule.modules.interceptor.processors.MuleMessageTransformer
 
 class JSONReceiveTransformer implements MuleMessageTransformer {
     private final Class jsonClass
-    private final YieldType yieldType
     private final Object closure
 
-    JSONReceiveTransformer(Class jsonClass, YieldType yieldType, closure) {
+    JSONReceiveTransformer(Class jsonClass, closure) {
         this.closure = closure
-        this.yieldType = yieldType
         this.jsonClass = jsonClass
     }
 

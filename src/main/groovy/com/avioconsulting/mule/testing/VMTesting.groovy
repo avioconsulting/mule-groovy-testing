@@ -1,7 +1,6 @@
 package com.avioconsulting.mule.testing
 
 import com.avioconsulting.mule.testing.transformers.JSONReceiveTransformer
-import com.avioconsulting.mule.testing.transformers.YieldType
 import org.mule.munit.common.mocking.Attribute
 import org.mule.munit.common.mocking.MessageProcessorMocker
 
@@ -12,7 +11,7 @@ trait VMTesting {
 
     MessageProcessorMocker mockQueueReceive(String name,
                                             Class expectedRequestJsonClass,
-                                            YieldType yieldType = YieldType.Map, testClosure) {
+                                            testClosure) {
         def mock = getVmqReceive(name)
         mock.thenApply(new JSONReceiveTransformer(expectedRequestJsonClass, yieldType, testClosure))
         mock

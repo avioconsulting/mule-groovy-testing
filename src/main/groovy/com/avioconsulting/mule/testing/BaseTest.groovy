@@ -124,10 +124,11 @@ abstract class BaseTest extends FunctionalMunitSuite {
         })
     }
 
-    MuleEvent runMuleFlowWithJsonMap(String flow, Map map) {
-        def json = JsonOutput.toJson(map)
-        // Mule wraps JSON with the JsonData class
-        runFlow(flow, testEvent(new JsonData(json)))
+    Map runMuleFlowWithJsonMap(String flow, Map map) {
+        def jsonString = JsonOutput.toJson(map)
+        def stream = new ByteArrayInputStream(jsonString.bytes)
+        def event = runFlow(flow, testEvent(stream))
+        new JsonSlurper().parseText(event.message.payloadAsString) as Map
     }
 
     static MuleMessage httpPost(map) {
@@ -166,7 +167,9 @@ abstract class BaseTest extends FunctionalMunitSuite {
         def whenProcessor = { String name ->
             whenMessageProcessor(name)
         }
-        def mock = new HTTPMock(connectorName, new BaseMockUtils(whenProcessor))
+        def mock = new HTTPMock(connectorName,
+                                new BaseMockUtils(whenProcessor),
+                                muleContext)
         def code = cl.rehydrate(mock, this, this)
         code.resolveStrategy = Closure.DELEGATE_ONLY
         code()
