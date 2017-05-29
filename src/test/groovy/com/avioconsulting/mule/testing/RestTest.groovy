@@ -5,7 +5,6 @@ import org.junit.Test
 import static org.hamcrest.Matchers.equalTo
 import static org.hamcrest.Matchers.is
 import static org.junit.Assert.assertThat
-import static org.junit.Assert.fail
 
 class RestTest extends BaseTest {
     List<String> getConfigResourcesList() {
@@ -18,7 +17,7 @@ class RestTest extends BaseTest {
         def stuff = null
         mockRestHttpCall('SomeSystem Call') {
             json {
-                whenCalledViaMap { Map incoming ->
+                whenCalledWithMap { Map incoming ->
                     stuff = incoming
                     [reply: 456]
                 }
@@ -42,7 +41,7 @@ class RestTest extends BaseTest {
         // arrange
         mockRestHttpCall('SomeSystem Call') {
             json {
-                whenCalledViaMap { Map incoming ->
+                whenCalledWithMap { Map incoming ->
                     [reply: 456]
                 }
             }
@@ -63,10 +62,30 @@ class RestTest extends BaseTest {
     @Test
     void mock_via_jackson() {
         // arrange
+        def mockValue = 0
+        mockRestHttpCall('SomeSystem Call') {
+            json {
+                whenCalledWithJackson(SampleMockedJacksonInput) {
+                    SampleMockedJacksonInput incoming ->
+                        mockValue = incoming.foobar
+                        def reply = new SampleMockedJacksonOutput()
+                        reply.foobar = 456
+                        reply
+                }
+            }
+        }
 
         // act
+        def input = new SampleJacksonInput()
+        input.foobar = 123
+        def result = runMuleWithWithJacksonJson('restRequest',
+                                                input,
+                                                SampleJacksonOutput)
 
         // assert
-        fail 'write this'
+        assertThat result.result,
+                   is(equalTo(457))
+        assertThat mockValue,
+                   is(equalTo(123))
     }
 }

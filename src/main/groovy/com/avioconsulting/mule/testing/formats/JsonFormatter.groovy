@@ -1,6 +1,7 @@
 package com.avioconsulting.mule.testing.formats
 
-import com.avioconsulting.mule.testing.transformers.JSONRequestReplyTransformer
+import com.avioconsulting.mule.testing.transformers.JSONJacksonRequestReplyTransformer
+import com.avioconsulting.mule.testing.transformers.JSONMapRequestReplyTransformer
 import org.mule.api.MuleContext
 import org.mule.munit.common.mocking.MessageProcessorMocker
 
@@ -14,8 +15,16 @@ class JsonFormatter {
         this.messageProcessorMocker = messageProcessorMocker
     }
 
-    def whenCalledViaMap(Closure closure) {
-        def transformer = new JSONRequestReplyTransformer(closure, muleContext)
+    def whenCalledWithMap(Closure closure) {
+        def transformer = new JSONMapRequestReplyTransformer(closure, muleContext)
+        this.messageProcessorMocker.thenApply(transformer)
+    }
+
+    def <T> void whenCalledWithJackson(Class inputClass,
+                                       Closure closure) {
+        def transformer = new JSONJacksonRequestReplyTransformer(closure,
+                                                                 muleContext,
+                                                                 inputClass)
         this.messageProcessorMocker.thenApply(transformer)
     }
 }

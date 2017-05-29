@@ -7,13 +7,13 @@ import org.mule.api.MuleContext
 import org.mule.api.MuleMessage
 import org.mule.modules.interceptor.processors.MuleMessageTransformer
 
-class JSONRequestReplyTransformer implements MuleMessageTransformer,
+class JSONMapRequestReplyTransformer implements MuleMessageTransformer,
         JsonMessage {
     private final Closure closure
     private final MuleContext muleContext
 
-    JSONRequestReplyTransformer(Closure closure,
-                                MuleContext muleContext) {
+    JSONMapRequestReplyTransformer(Closure closure,
+                                   MuleContext muleContext) {
         this.muleContext = muleContext
         this.closure = closure
     }
