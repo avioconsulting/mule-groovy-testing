@@ -52,7 +52,7 @@ class SOAPTransformer implements MuleMessageTransformer {
 
     // incoming messages will not have a status
     private MuleMessage getXmlMessage(readerOrStream,
-                                             Integer httpStatus = null) {
+                                      Integer httpStatus = null) {
         def payload = getNormalXmlPayload(readerOrStream)
         constructXmlTypeMessage(httpStatus, payload)
     }

@@ -31,7 +31,7 @@ http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee
 %namespace ns0 http://www.avioconsulting.com/schemas/SOAPTest/v1
 ---
 {
-	result: payload.ns0#SOAPTestRequest.details
+	result: payload.ns0#SOAPTestResponse.details
 }]]></dw:set-payload>
         </dw:transform-message>
     </flow>
