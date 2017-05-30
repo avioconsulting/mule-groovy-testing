@@ -177,4 +177,9 @@ abstract class BaseTest extends FunctionalMunitSuite {
         code.resolveStrategy = Closure.DELEGATE_ONLY
         code()
     }
+
+    def mockVmReceive(String connectorName,
+                      @DelegatesTo(RequestResponseChoice) Closure closure) {
+
+    }
 }
