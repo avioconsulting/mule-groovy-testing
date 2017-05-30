@@ -1,6 +1,7 @@
 package com.avioconsulting.mule.testing.mocking
 
 import com.avioconsulting.mule.testing.BaseTest
+import com.avioconsulting.schemas.soaptest.v1.ObjectFactory
 import com.avioconsulting.schemas.soaptest.v1.SOAPTestRequestType
 import com.avioconsulting.schemas.soaptest.v1.SOAPTestResponseType
 import org.junit.Test
@@ -27,7 +28,8 @@ class SoapTest extends BaseTest {
                 mockedRequest = request
                 def response = new SOAPTestResponseType()
                 response.details = 'yes!'
-                response
+                // TODO: Avoid having to do the object factory stuff??
+                new ObjectFactory().createSOAPTestResponse(response)
             }
         }
 
@@ -39,10 +41,10 @@ class SoapTest extends BaseTest {
         } as Map
 
         // assert
-        assertThat result,
-                   is(equalTo([result: 'yes!']))
         assert mockedRequest
         assertThat mockedRequest.title,
                    is(equalTo("theTitle 123"))
+        assertThat result,
+                   is(equalTo([result: 'yes!']))
     }
 }

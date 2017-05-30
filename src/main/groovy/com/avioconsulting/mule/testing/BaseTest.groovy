@@ -214,7 +214,16 @@ abstract class BaseTest extends FunctionalMunitSuite {
 
     def mockSoapCall(String connectorName,
                      @DelegatesTo(SOAPFormatter) Closure closure) {
-
+        def mocker = whenMessageProcessor('consumer')
+                .ofNamespace('ws')
+                .withAttributes(Attribute.attribute('name')
+                                        .ofNamespace('doc')
+                                        .withValue(connectorName))
+        def soapFormatter = new SOAPFormatter(mocker,
+                                              muleContext)
+        def code = closure.rehydrate(soapFormatter, this, this)
+        code.resolveStrategy = Closure.DELEGATE_ONLY
+        code()
     }
 
     static XMLGregorianCalendar getXmlDate(int year, int oneBasedMonth, int dayOfMonth) {

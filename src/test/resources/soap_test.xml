@@ -21,7 +21,9 @@ http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee
 	}
 }]]></dw:set-payload>
         </dw:transform-message>
-        <ws:consumer config-ref="Web_Service_Consumer" operation="operation1" doc:name="Web Service Consumer"/>
+        <ws:consumer config-ref="Web_Service_Consumer"
+                     operation="operation1"
+                     doc:name="A SOAP Call"/>
         <dw:transform-message doc:name="Transform Message">
             <dw:set-payload><![CDATA[%dw 1.0
 %output application/json
