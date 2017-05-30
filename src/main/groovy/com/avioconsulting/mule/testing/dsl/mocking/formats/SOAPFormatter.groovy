@@ -1,6 +1,6 @@
 package com.avioconsulting.mule.testing.dsl.mocking.formats
 
-import com.avioconsulting.mule.testing.transformers.SOAPTransformer
+import com.avioconsulting.mule.testing.transformers.xml.SOAPTransformer
 import org.mule.api.MuleContext
 import org.mule.munit.common.mocking.MessageProcessorMocker
 
