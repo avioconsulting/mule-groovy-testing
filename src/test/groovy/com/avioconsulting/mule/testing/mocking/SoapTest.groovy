@@ -41,6 +41,8 @@ class SoapTest extends BaseTest {
         assert mockedRequest
         assertThat mockedRequest.title,
                    is(equalTo("theTitle 123"))
+        assertThat mockedRequest.approvalDate.toString(),
+                   is(equalTo('2017-04-01'))
         assertThat result,
                    is(equalTo([result: 'yes!']))
     }

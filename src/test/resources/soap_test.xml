@@ -17,7 +17,8 @@ http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee
 ---
 {
 	ns0#SOAPTestRequest: {
-		ns0#title: 'theTitle ' ++ payload.foo
+		ns0#title: 'theTitle ' ++ payload.foo,
+		ns0#approvalDate: '2017-04-01'
 	}
 }]]></dw:set-payload>
         </dw:transform-message>
