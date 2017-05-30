@@ -3,6 +3,7 @@ package com.avioconsulting.mule.testing
 import com.avioconsulting.mule.testing.dsl.invokers.FlowRunner
 import com.avioconsulting.mule.testing.dsl.invokers.FlowRunnerImpl
 import com.avioconsulting.mule.testing.dsl.mocking.formats.RequestResponseChoice
+import com.avioconsulting.mule.testing.dsl.mocking.formats.SOAPFormatter
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.mulesoft.weave.reader.ByteArraySeekableStream
 import groovy.json.JsonSlurper
@@ -20,6 +21,8 @@ import org.mule.munit.common.mocking.SpyProcess
 import org.mule.munit.common.util.MunitMuleTestUtils
 import org.mule.munit.runner.functional.FunctionalMunitSuite
 
+import javax.xml.datatype.DatatypeFactory
+import javax.xml.datatype.XMLGregorianCalendar
 import javax.xml.namespace.QName
 import java.util.concurrent.CopyOnWriteArrayList
 
@@ -207,5 +210,24 @@ abstract class BaseTest extends FunctionalMunitSuite {
         def code = closure.rehydrate(formatterChoice, this, this)
         code.resolveStrategy = Closure.DELEGATE_ONLY
         code()
+    }
+
+    def mockSoapCall(String connectorName,
+                     @DelegatesTo(SOAPFormatter) Closure closure) {
+
+    }
+
+    static XMLGregorianCalendar getXmlDate(int year, int oneBasedMonth, int dayOfMonth) {
+        def zeroBasedMonth = oneBasedMonth - 1
+        def gregorian = new GregorianCalendar(year, zeroBasedMonth, dayOfMonth)
+        DatatypeFactory.newInstance().newXMLGregorianCalendar(gregorian)
+    }
+
+    static XMLGregorianCalendar getXmlDateTime(int year, int oneBasedMonth, int dayOfMonth, int hourOfDay, int minute,
+                                               int second = 0, String timeZoneId) {
+        def zeroBasedMonth = oneBasedMonth - 1
+        def gregorian = new GregorianCalendar(year, zeroBasedMonth, dayOfMonth, hourOfDay, minute, second)
+        gregorian.setTimeZone(TimeZone.getTimeZone(timeZoneId))
+        DatatypeFactory.newInstance().newXMLGregorianCalendar(gregorian)
     }
 }
