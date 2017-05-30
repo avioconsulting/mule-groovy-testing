@@ -18,9 +18,6 @@ class SoapTest extends BaseTest {
     @Test
     void mocksProperly() {
         // arrange
-        def requestType = new SOAPTestRequestType()
-        requestType.title = 'the title'
-        requestType.approvalDate = getXmlDate(2017, 1, 21)
         SOAPTestRequestType mockedRequest = null
 
         mockSoapCall('A SOAP Call') {
