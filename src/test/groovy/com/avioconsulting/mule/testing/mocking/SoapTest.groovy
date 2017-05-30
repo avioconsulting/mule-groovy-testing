@@ -25,7 +25,6 @@ class SoapTest extends BaseTest {
                 mockedRequest = request
                 def response = new SOAPTestResponseType()
                 response.details = 'yes!'
-                // TODO: Avoid having to do the object factory stuff??
                 new ObjectFactory().createSOAPTestResponse(response)
             }
         }
