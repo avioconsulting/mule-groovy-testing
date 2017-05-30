@@ -6,14 +6,13 @@ import org.mule.api.MuleContext
 import org.mule.api.MuleMessage
 import org.mule.modules.interceptor.processors.MuleMessageTransformer
 
-import javax.xml.bind.JAXBContext
 import javax.xml.bind.JAXBElement
 import javax.xml.stream.XMLInputFactory
 
 class SOAPTransformer implements MuleMessageTransformer {
     private final Closure closure
     private final MuleContext muleContext
-    private final JAXBContext jaxbContext
+    private final JAXBMarshalHelper helper
 
     SOAPTransformer(Closure closure,
                     MuleContext muleContext,
@@ -21,7 +20,7 @@ class SOAPTransformer implements MuleMessageTransformer {
 
         this.muleContext = muleContext
         this.closure = closure
-        this.jaxbContext = JAXBContext.newInstance(inputJaxbClass.package.name)
+        this.helper = new JAXBMarshalHelper(inputJaxbClass)
     }
 
     MuleMessage transform(MuleMessage incomingMessage) {
@@ -32,7 +31,7 @@ class SOAPTransformer implements MuleMessageTransformer {
             println 'Groovy Test WARNING: SOAP mock was sent a message with empty payload! using MuleMessage payload.'
             strongTypedPayload = incomingMessage
         } else {
-            strongTypedPayload = unmarshal(incomingMessage)
+            strongTypedPayload = helper.unmarshal(incomingMessage)
         }
         def reply = this.closure(strongTypedPayload)
         assert reply instanceof JAXBElement
@@ -42,11 +41,7 @@ class SOAPTransformer implements MuleMessageTransformer {
 
     private MuleMessage getXmlMessageFromJaxbElement(JAXBElement jaxbElement,
                                                      Integer httpStatus) {
-        def marshaller = this.jaxbContext.createMarshaller()
-        def stringWriter = new StringWriter()
-        marshaller.marshal jaxbElement, stringWriter
-        stringWriter.close()
-        def reader = new StringReader(stringWriter.toString())
+        def reader = helper.getMarshalled(jaxbElement)
         getXmlMessage reader, httpStatus
     }
 
@@ -55,18 +50,6 @@ class SOAPTransformer implements MuleMessageTransformer {
                                       Integer httpStatus = null) {
         def payload = getNormalXmlPayload(readerOrStream)
         constructXmlTypeMessage(httpStatus, payload)
-    }
-
-    private def unmarshal(MuleMessage message) {
-        def unmarshaller = this.jaxbContext.createUnmarshaller()
-        // until successful/alternate path is a string
-        def stream = message.payload instanceof String ? new StringReader(message.payload) : message.payload
-        try {
-            unmarshaller.unmarshal(stream).value
-        }
-        catch (e) {
-            throw new Exception('SOAP Mocks: Unable to marshal message. Do you need a different JAXB context?', e)
-        }
     }
 
     private static getNormalXmlPayload(readerOrStream) {
