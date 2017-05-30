@@ -1,4 +1,4 @@
-package com.avioconsulting.mule.testing.transformers
+package com.avioconsulting.mule.testing.transformers.json
 
 import com.avioconsulting.mule.testing.messages.JsonMessage
 import com.fasterxml.jackson.databind.ObjectMapper

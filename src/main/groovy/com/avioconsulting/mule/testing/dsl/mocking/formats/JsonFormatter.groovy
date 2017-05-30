@@ -1,7 +1,7 @@
 package com.avioconsulting.mule.testing.dsl.mocking.formats
 
-import com.avioconsulting.mule.testing.transformers.JSONJacksonRequestReplyTransformer
-import com.avioconsulting.mule.testing.transformers.JSONMapRequestReplyTransformer
+import com.avioconsulting.mule.testing.transformers.json.JSONJacksonRequestReplyTransformer
+import com.avioconsulting.mule.testing.transformers.json.JSONMapRequestReplyTransformer
 import org.mule.api.MuleContext
 import org.mule.munit.common.mocking.MessageProcessorMocker
 

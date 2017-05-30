@@ -1,4 +1,4 @@
-package com.avioconsulting.mule.testing.transformers
+package com.avioconsulting.mule.testing.transformers.json
 
 import com.avioconsulting.mule.testing.messages.JsonMessage
 import groovy.json.JsonOutput
