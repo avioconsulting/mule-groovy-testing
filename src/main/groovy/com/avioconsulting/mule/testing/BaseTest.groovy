@@ -172,7 +172,10 @@ abstract class BaseTest extends FunctionalMunitSuite {
                 .withAttributes(Attribute.attribute('name')
                                         .ofNamespace('doc')
                                         .withValue(connectorName))
-        def formatterChoice = new RequestResponseChoice(mocker, muleContext)
+        def expectedPayloadType = InputStream
+        def formatterChoice = new RequestResponseChoice(mocker,
+                                                        muleContext,
+                                                        expectedPayloadType)
         def code = closure.rehydrate(formatterChoice, this, this)
         code.resolveStrategy = Closure.DELEGATE_ONLY
         code()
@@ -185,7 +188,10 @@ abstract class BaseTest extends FunctionalMunitSuite {
                 .withAttributes(Attribute.attribute('name')
                                         .ofNamespace('doc')
                                         .withValue(connectorName))
-        def formatterChoice = new RequestResponseChoice(mocker, muleContext)
+        def expectedPayloadType = String
+        def formatterChoice = new RequestResponseChoice(mocker,
+                                                        muleContext,
+                                                        expectedPayloadType)
         def code = closure.rehydrate(formatterChoice, this, this)
         code.resolveStrategy = Closure.DELEGATE_ONLY
         code()

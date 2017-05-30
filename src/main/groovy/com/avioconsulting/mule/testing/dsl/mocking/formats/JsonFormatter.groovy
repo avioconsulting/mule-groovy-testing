@@ -8,15 +8,20 @@ import org.mule.munit.common.mocking.MessageProcessorMocker
 class JsonFormatter {
     private final MessageProcessorMocker messageProcessorMocker
     private final MuleContext muleContext
+    private final Class expectedPayloadType
 
     JsonFormatter(MessageProcessorMocker messageProcessorMocker,
-                  MuleContext muleContext) {
+                  MuleContext muleContext,
+                  Class expectedPayloadType) {
+        this.expectedPayloadType = expectedPayloadType
         this.muleContext = muleContext
         this.messageProcessorMocker = messageProcessorMocker
     }
 
     def whenCalledWithMap(Closure closure) {
-        def transformer = new JSONMapRequestReplyTransformer(closure, muleContext)
+        def transformer = new JSONMapRequestReplyTransformer(closure,
+                                                             muleContext,
+                                                             expectedPayloadType)
         this.messageProcessorMocker.thenApply(transformer)
     }
 
@@ -24,7 +29,8 @@ class JsonFormatter {
                               Closure closure) {
         def transformer = new JSONJacksonRequestReplyTransformer(closure,
                                                                  muleContext,
-                                                                 inputClass)
+                                                                 inputClass,
+                                                                 expectedPayloadType)
         this.messageProcessorMocker.thenApply(transformer)
     }
 }

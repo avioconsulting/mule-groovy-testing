@@ -5,21 +5,21 @@ import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 import org.mule.api.MuleContext
 import org.mule.api.MuleMessage
-import org.mule.modules.interceptor.processors.MuleMessageTransformer
 
-class JSONMapRequestReplyTransformer implements MuleMessageTransformer,
+class JSONMapRequestReplyTransformer extends JSONTransformer implements
         JsonMessage {
     private final Closure closure
     private final MuleContext muleContext
 
     JSONMapRequestReplyTransformer(Closure closure,
-                                   MuleContext muleContext) {
+                                   MuleContext muleContext,
+                                   Class expectedPayloadType) {
+        super(expectedPayloadType)
         this.muleContext = muleContext
         this.closure = closure
     }
 
-    MuleMessage transform(MuleMessage muleMessage) {
-        def jsonText = muleMessage.payloadAsString
+    MuleMessage transform(String jsonText) {
         def map = new JsonSlurper().parseText(jsonText)
         def response = this.closure(map)
         assert response instanceof Map

@@ -17,4 +17,10 @@ http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/cu
                               connector-ref="vm-config"
                               doc:name="The Queue"/>
     </flow>
+    <flow name="vmRequest_NotString">
+        <vm:outbound-endpoint exchange-pattern="one-way"
+                              path="theQueue"
+                              connector-ref="vm-config"
+                              doc:name="The Queue"/>
+    </flow>
 </mule>

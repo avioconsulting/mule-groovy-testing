@@ -4,24 +4,24 @@ import com.avioconsulting.mule.testing.messages.JsonMessage
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.mule.api.MuleContext
 import org.mule.api.MuleMessage
-import org.mule.modules.interceptor.processors.MuleMessageTransformer
 
-class JSONJacksonRequestReplyTransformer implements MuleMessageTransformer,
-        JsonMessage {
+class JSONJacksonRequestReplyTransformer extends JSONTransformer
+        implements JsonMessage {
     private final Closure closure
     private final MuleContext muleContext
     private final Class inputClass
 
     JSONJacksonRequestReplyTransformer(Closure closure,
                                        MuleContext muleContext,
-                                       Class inputClass) {
+                                       Class inputClass,
+                                       Class expectedPayloadType) {
+        super(expectedPayloadType)
         this.inputClass = inputClass
         this.muleContext = muleContext
         this.closure = closure
     }
 
-    MuleMessage transform(MuleMessage muleMessage) {
-        def jsonText = muleMessage.payloadAsString
+    MuleMessage transform(String jsonText) {
         def mapper = new ObjectMapper()
         def input = mapper.readValue(jsonText, inputClass)
         def response = this.closure(input)
