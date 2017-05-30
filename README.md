@@ -1,5 +1,6 @@
 # Setting up your project
 
+
 1. Get this dependency in your .m2 repository
 2. Add Groovy plugins+dependencies to your pom to allow tests to be compiled:
 ```xml
