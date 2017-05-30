@@ -180,6 +180,14 @@ abstract class BaseTest extends FunctionalMunitSuite {
 
     def mockVmReceive(String connectorName,
                       @DelegatesTo(RequestResponseChoice) Closure closure) {
-
+        def mocker = whenMessageProcessor('outbound-endpoint')
+                .ofNamespace('vm')
+                .withAttributes(Attribute.attribute('name')
+                                        .ofNamespace('doc')
+                                        .withValue(connectorName))
+        def formatterChoice = new RequestResponseChoice(mocker, muleContext)
+        def code = closure.rehydrate(formatterChoice, this, this)
+        code.resolveStrategy = Closure.DELEGATE_ONLY
+        code()
     }
 }
