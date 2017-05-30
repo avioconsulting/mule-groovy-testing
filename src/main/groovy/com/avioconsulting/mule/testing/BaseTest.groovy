@@ -61,9 +61,21 @@ abstract class BaseTest extends FunctionalMunitSuite {
         [:]
     }
 
-    List<String> getFlowsExcludedOfInboundDisabling() {
-        // apikit complains unless these 2 are both open
-        ['api-main', 'api-console']
+    protected String getApiKitPrefix() { 'api' }
+
+    protected boolean enableApiKitFlows() { true }
+
+    @Override
+    protected List<String> getFlowsExcludedOfInboundDisabling() {
+        if (enableApiKitFlows()) {
+            // apikit complains unless these 2 are both open
+            ['main', 'console'].collect { suffix ->
+                // toString here to ensure we return Java string and not Groovy strings
+                "${apiKitPrefix}-${suffix}".toString()
+            }
+        } else {
+            []
+        }
     }
 
     abstract List<String> getConfigResourcesList()
