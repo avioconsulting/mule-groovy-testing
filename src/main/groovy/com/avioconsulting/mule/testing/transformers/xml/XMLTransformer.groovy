@@ -9,14 +9,14 @@ import org.mule.modules.interceptor.processors.MuleMessageTransformer
 import javax.xml.bind.JAXBElement
 import javax.xml.stream.XMLInputFactory
 
-class SOAPTransformer implements MuleMessageTransformer {
+class XMLTransformer implements MuleMessageTransformer {
     private final Closure closure
     private final MuleContext muleContext
     private final JAXBMarshalHelper helper
 
-    SOAPTransformer(Closure closure,
-                    MuleContext muleContext,
-                    Class inputJaxbClass) {
+    XMLTransformer(Closure closure,
+                   MuleContext muleContext,
+                   Class inputJaxbClass) {
 
         this.muleContext = muleContext
         this.closure = closure

@@ -3,7 +3,7 @@ package com.avioconsulting.mule.testing
 import com.avioconsulting.mule.testing.dsl.invokers.FlowRunner
 import com.avioconsulting.mule.testing.dsl.invokers.FlowRunnerImpl
 import com.avioconsulting.mule.testing.dsl.mocking.formats.RequestResponseChoice
-import com.avioconsulting.mule.testing.dsl.mocking.formats.SOAPFormatter
+import com.avioconsulting.mule.testing.dsl.mocking.formats.XMLFormatter
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.mulesoft.weave.reader.ByteArraySeekableStream
 import groovy.json.JsonSlurper
@@ -213,14 +213,14 @@ abstract class BaseTest extends FunctionalMunitSuite {
     }
 
     def mockSoapCall(String connectorName,
-                     @DelegatesTo(SOAPFormatter) Closure closure) {
+                     @DelegatesTo(XMLFormatter) Closure closure) {
         def mocker = whenMessageProcessor('consumer')
                 .ofNamespace('ws')
                 .withAttributes(Attribute.attribute('name')
                                         .ofNamespace('doc')
                                         .withValue(connectorName))
-        def soapFormatter = new SOAPFormatter(mocker,
-                                              muleContext)
+        def soapFormatter = new XMLFormatter(mocker,
+                                             muleContext)
         def code = closure.rehydrate(soapFormatter, this, this)
         code.resolveStrategy = Closure.DELEGATE_ONLY
         code()

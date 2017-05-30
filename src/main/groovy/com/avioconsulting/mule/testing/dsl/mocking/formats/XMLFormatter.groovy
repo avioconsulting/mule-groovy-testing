@@ -1,24 +1,24 @@
 package com.avioconsulting.mule.testing.dsl.mocking.formats
 
-import com.avioconsulting.mule.testing.transformers.xml.SOAPTransformer
+import com.avioconsulting.mule.testing.transformers.xml.XMLTransformer
 import org.mule.api.MuleContext
 import org.mule.munit.common.mocking.MessageProcessorMocker
 
-class SOAPFormatter {
+class XMLFormatter {
     private final MessageProcessorMocker messageProcessorMocker
     private final MuleContext muleContext
 
-    SOAPFormatter(MessageProcessorMocker messageProcessorMocker,
-                  MuleContext muleContext) {
+    XMLFormatter(MessageProcessorMocker messageProcessorMocker,
+                 MuleContext muleContext) {
         this.messageProcessorMocker = messageProcessorMocker
         this.muleContext = muleContext
     }
 
     def whenCalledWithJaxb(Class inputJaxbClass,
                            Closure closure) {
-        def soapTransformer = new SOAPTransformer(closure,
-                                                  muleContext,
-                                                  inputJaxbClass)
+        def soapTransformer = new XMLTransformer(closure,
+                                                 muleContext,
+                                                 inputJaxbClass)
         messageProcessorMocker.thenApply(soapTransformer)
     }
 }
