@@ -6,7 +6,8 @@ import org.junit.Test
 import org.mule.api.MuleEvent
 
 import static groovy.test.GroovyAssert.shouldFail
-import static org.hamcrest.Matchers.*
+import static org.hamcrest.Matchers.equalTo
+import static org.hamcrest.Matchers.is
 import static org.junit.Assert.assertThat
 
 class GenericFlowInvokeTest extends BaseTest {
@@ -46,5 +47,28 @@ class GenericFlowInvokeTest extends BaseTest {
         assert saveOutput
         assertThat saveOutput.message.getOutboundProperty('http.status'),
                    is(equalTo('201'))
+    }
+
+    @Test
+    void getAccessToHttpStatus() {
+        // arrange
+        Integer httpStatus = null
+
+        // act
+        def input = new SampleJacksonInput()
+        input.foobar = 123
+        runFlow('jsonTest') {
+            json {
+                jackson(input)
+            }
+            withOutputHttpStatus { Integer status ->
+                httpStatus = status
+            }
+        }
+
+        // assert
+        assert httpStatus
+        assertThat httpStatus,
+                   is(equalTo(201))
     }
 }

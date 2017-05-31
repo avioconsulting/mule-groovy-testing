@@ -24,8 +24,16 @@ class FlowRunnerImpl implements FlowRunner, Invoker {
         muleOutputEventHook = closure
     }
 
+    def withOutputHttpStatus(Closure closure) {
+        withOutputEvent { MuleEvent outputEvent ->
+            def statusString = outputEvent.message.getOutboundProperty('http.status') as String
+            def statusInteger = Integer.parseInt(statusString)
+            closure(statusInteger)
+        }
+    }
+
     MuleEvent getEvent() {
-        assert invoker : 'Need to specify a proper format! (e.g. json)'
+        assert invoker: 'Need to specify a proper format! (e.g. json)'
         invoker.event
     }
 
