@@ -6,6 +6,7 @@ import org.mule.api.MuleEvent
 class FlowRunnerImpl implements FlowRunner, Invoker {
     private final MuleContext muleContext
     private Invoker invoker
+    private Closure muleOutputEventHook = null
 
     FlowRunnerImpl(MuleContext muleContext) {
         this.muleContext = muleContext
@@ -19,12 +20,20 @@ class FlowRunnerImpl implements FlowRunner, Invoker {
         code()
     }
 
+    def withOutputEvent(Closure closure) {
+        muleOutputEventHook = closure
+    }
+
     MuleEvent getEvent() {
         assert invoker : 'Need to specify a proper format! (e.g. json)'
         invoker.event
     }
 
     def transformOutput(MuleEvent event) {
-        invoker.transformOutput(event)
+        def response = invoker.transformOutput(event)
+        if (muleOutputEventHook) {
+            muleOutputEventHook(event)
+        }
+        response
     }
 }
