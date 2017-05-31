@@ -15,9 +15,15 @@ class JAXBMarshalHelper {
     StringReader getMarshalled(objectOrJaxbElement) {
         def marshaller = this.jaxbContext.createMarshaller()
         def stringWriter = new StringWriter()
-        marshaller.marshal objectOrJaxbElement, stringWriter
-        stringWriter.close()
-        new StringReader(stringWriter.toString())
+
+        try {
+            marshaller.marshal objectOrJaxbElement, stringWriter
+            stringWriter.close()
+            new StringReader(stringWriter.toString())
+        }
+        catch (e) {
+            throw new Exception("Unmarshal problem. if ${objectOrJaxbElement.class.name} is not an XML Root element, you need to use ObjectFactory to wrap it in a JAXBElement object!", e)
+        }
     }
 
     def unmarshal(MuleMessage message) {

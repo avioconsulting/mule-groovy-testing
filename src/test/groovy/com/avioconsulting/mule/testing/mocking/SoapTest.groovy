@@ -8,8 +8,8 @@ import com.avioconsulting.schemas.soaptest.v1.SOAPTestRequestType
 import com.avioconsulting.schemas.soaptest.v1.SOAPTestResponseType
 import org.junit.Test
 
-import static org.hamcrest.Matchers.equalTo
-import static org.hamcrest.Matchers.is
+import static groovy.test.GroovyAssert.shouldFail
+import static org.hamcrest.Matchers.*
 import static org.junit.Assert.assertThat
 
 class SoapTest extends BaseTest {
@@ -46,6 +46,31 @@ class SoapTest extends BaseTest {
                    is(equalTo('2017-04-01'))
         assertThat result,
                    is(equalTo([result: 'yes!']))
+    }
+
+    @Test
+    void forgetToReturnAJaxbElement() {
+        // arrange
+        mockSoapCall('A SOAP Call') {
+            whenCalledWithJaxb(SOAPTestRequestType) { SOAPTestRequestType request ->
+                def response = new SOAPTestResponseType()
+                response.details = 'yes!'
+                response
+            }
+        }
+
+        // act
+        def result = shouldFail {
+            runFlow('soaptestFlow') {
+                json {
+                    map([foo: 123])
+                }
+            }
+        }
+
+        // assert
+        assertThat result.message,
+                   is(containsString('Unmarshal problem. if com.avioconsulting.schemas.soaptest.v1.SOAPTestResponseType is not an XML Root element, you need to use ObjectFactory to wrap it in a JAXBElement object!'))
     }
 
     @Test
