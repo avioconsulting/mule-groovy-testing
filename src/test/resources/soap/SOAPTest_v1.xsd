@@ -17,7 +17,7 @@
     <complexType name="SOAPTestRequestType">
         <sequence>
             <element name="title" type="string"/>
-            <element name="approvalDate" type="date"/>            
+            <element name="approvalDate" type="date"/>
         </sequence>
     </complexType>
 

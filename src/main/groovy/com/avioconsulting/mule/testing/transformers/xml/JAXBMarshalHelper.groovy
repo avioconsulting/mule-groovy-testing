@@ -22,7 +22,9 @@ class JAXBMarshalHelper {
             new StringReader(stringWriter.toString())
         }
         catch (e) {
-            throw new Exception("Unmarshal problem. if ${objectOrJaxbElement.class.name} is not an XML Root element, you need to use ObjectFactory to wrap it in a JAXBElement object!", e)
+            throw new Exception(
+                    "Unmarshal problem. if ${objectOrJaxbElement.class.name} is not an XML Root element, you need to use ObjectFactory to wrap it in a JAXBElement object!",
+                    e)
         }
     }
 
@@ -34,8 +36,7 @@ class JAXBMarshalHelper {
             def result = unmarshaller.unmarshal(stream)
             if (result instanceof JAXBElement) {
                 result.value
-            }
-            else {
+            } else {
                 result
             }
         }

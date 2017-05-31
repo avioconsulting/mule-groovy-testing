@@ -17,6 +17,7 @@ abstract class JSONTransformer implements MuleMessageTransformer {
         if (expectedPayloadType.isInstance(payload)) {
             return transform(muleMessage.payloadAsString)
         }
-        throw new Exception("Expected payload to be of type ${expectedPayloadType} here but it actually was ${payload.class}. Check the connectors you're mocking and make sure you transformed the payload properly! (e.g. payload into VMs must be Strings)")
+        throw new Exception(
+                "Expected payload to be of type ${expectedPayloadType} here but it actually was ${payload.class}. Check the connectors you're mocking and make sure you transformed the payload properly! (e.g. payload into VMs must be Strings)")
     }
 }

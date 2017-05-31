@@ -31,12 +31,12 @@ class JsonInvokerImpl implements JsonInvoker, Invoker {
     }
 
     def noStreaming() {
-        assert jsonRunner : 'Need to specify a type of JSON serialization (jackson, map) first!'
+        assert jsonRunner: 'Need to specify a type of JSON serialization (jackson, map) first!'
         jsonRunner.disableStreaming()
     }
 
     MuleEvent getEvent() {
-        assert jsonRunner : 'Need to specify a type of JSON serialization (jackson, map)'
+        assert jsonRunner: 'Need to specify a type of JSON serialization (jackson, map)'
         jsonRunner.event
     }
 

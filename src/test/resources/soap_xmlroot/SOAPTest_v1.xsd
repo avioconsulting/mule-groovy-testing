@@ -13,11 +13,11 @@
     </element>
 
     <element name="SOAPTestResponse">
-       <complexType>
-           <sequence>
-               <element name="details" type="string"/>
-           </sequence>
-       </complexType>
+        <complexType>
+            <sequence>
+                <element name="details" type="string"/>
+            </sequence>
+        </complexType>
     </element>
 
     <element name="SOAPTestFault" type="tns:FaultType"/>

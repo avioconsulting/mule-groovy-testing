@@ -43,7 +43,7 @@
             <wsdl:output>
                 <soap:body use="literal"/>
             </wsdl:output>
-            <soap:fault name="SOAPTestFault" use="literal" />
+            <soap:fault name="SOAPTestFault" use="literal"/>
         </wsdl:operation>
     </wsdl:binding>
 

@@ -65,6 +65,7 @@ class VmTest extends BaseTest {
 
         // assert
         assertThat exception.message,
-                   is(equalTo('Expected payload to be of type class java.lang.String here but it actually was class java.io.ByteArrayInputStream. Check the connectors you\'re mocking and make sure you transformed the payload properly! (e.g. payload into VMs must be Strings) (java.lang.Exception).'))
+                   is(equalTo(
+                           'Expected payload to be of type class java.lang.String here but it actually was class java.io.ByteArrayInputStream. Check the connectors you\'re mocking and make sure you transformed the payload properly! (e.g. payload into VMs must be Strings) (java.lang.Exception).'))
     }
 }

@@ -4,8 +4,6 @@ import org.mule.api.MuleContext
 import org.mule.api.MuleMessage
 import org.mule.modules.interceptor.processors.MuleMessageTransformer
 
-import javax.xml.bind.JAXBElement
-
 class XMLTransformer implements MuleMessageTransformer {
     private final Closure closure
     private final JAXBMarshalHelper helper

@@ -31,7 +31,7 @@ http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee
     </flow>
 
     <flow name="hasHttpStatus">
-        <set-property propertyName="http.status" value="201"  />
+        <set-property propertyName="http.status" value="201"/>
         <dw:transform-message doc:name="Transform Message">
             <dw:set-payload><![CDATA[%dw 1.0
 %output application/json

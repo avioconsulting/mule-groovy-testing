@@ -1,6 +1,7 @@
 package com.avioconsulting.mule.testing.mocking
 
-import com.avioconsulting.mule.testing.*
+import com.avioconsulting.mule.testing.BaseTest
+import com.avioconsulting.mule.testing.SampleJacksonInput
 import org.junit.Test
 
 import static org.hamcrest.Matchers.equalTo
