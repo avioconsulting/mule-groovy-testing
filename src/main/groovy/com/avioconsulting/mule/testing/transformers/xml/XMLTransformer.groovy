@@ -9,14 +9,14 @@ import javax.xml.bind.JAXBElement
 class XMLTransformer implements MuleMessageTransformer {
     private final Closure closure
     private final JAXBMarshalHelper helper
-    private final XMLMessageBuilder builder
+    private final XMLMessageBuilder xmlMessageBuilder
 
     XMLTransformer(Closure closure,
                    MuleContext muleContext,
                    Class inputJaxbClass) {
         this.closure = closure
         this.helper = new JAXBMarshalHelper(inputJaxbClass)
-        this.builder = new XMLMessageBuilder(muleContext)
+        this.xmlMessageBuilder = new XMLMessageBuilder(muleContext)
     }
 
     MuleMessage transform(MuleMessage incomingMessage) {
@@ -29,9 +29,18 @@ class XMLTransformer implements MuleMessageTransformer {
         } else {
             strongTypedPayload = helper.unmarshal(incomingMessage)
         }
+
         def reply = this.closure(strongTypedPayload)
-        assert reply instanceof JAXBElement
-        def reader = helper.getMarshalled(reply)
-        this.builder.build(reader, 200)
+
+        StringReader reader
+        if (reply instanceof File) {
+            def xml = reply.text
+            reader = new StringReader(xml)
+        } else {
+            assert reply instanceof JAXBElement
+            reader = helper.getMarshalled(reply)
+        }
+
+        this.xmlMessageBuilder.build(reader, 200)
     }
 }

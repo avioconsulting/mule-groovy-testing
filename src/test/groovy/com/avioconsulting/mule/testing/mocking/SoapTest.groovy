@@ -45,4 +45,33 @@ class SoapTest extends BaseTest {
         assertThat result,
                    is(equalTo([result: 'yes!']))
     }
+
+    @Test
+    void returnAFile() {
+        // assert
+        SOAPTestRequestType mockedRequest = null
+
+        mockSoapCall('A SOAP Call') {
+            whenCalledWithJaxb(SOAPTestRequestType) { SOAPTestRequestType request ->
+                mockedRequest = request
+                new File('src/test/resources/soap/as_file_response.xml')
+            }
+        }
+
+        // act
+        def result = runFlow('soaptestFlow') {
+            json {
+                map([foo: 123])
+            }
+        } as Map
+
+        // assert
+        assert mockedRequest
+        assertThat mockedRequest.title,
+                   is(equalTo("theTitle 123"))
+        assertThat mockedRequest.approvalDate.toString(),
+                   is(equalTo('2017-04-01'))
+        assertThat result,
+                   is(equalTo([result: 'yes!']))
+    }
 }
