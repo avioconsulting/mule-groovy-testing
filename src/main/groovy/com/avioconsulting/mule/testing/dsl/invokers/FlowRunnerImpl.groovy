@@ -27,6 +27,9 @@ class FlowRunnerImpl implements FlowRunner, Invoker {
     def withOutputHttpStatus(Closure closure) {
         withOutputEvent { MuleEvent outputEvent ->
             def statusString = outputEvent.message.getOutboundProperty('http.status') as String
+            if (!statusString) {
+                throw new Exception('No HTTP status was returned from your flow. Did you forget?')
+            }
             def statusInteger = Integer.parseInt(statusString)
             closure(statusInteger)
         }
