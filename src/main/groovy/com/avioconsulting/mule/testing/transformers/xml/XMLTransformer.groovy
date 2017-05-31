@@ -37,7 +37,6 @@ class XMLTransformer implements MuleMessageTransformer {
             def xml = reply.text
             reader = new StringReader(xml)
         } else {
-            assert reply instanceof JAXBElement
             reader = helper.getMarshalled(reply)
         }
 

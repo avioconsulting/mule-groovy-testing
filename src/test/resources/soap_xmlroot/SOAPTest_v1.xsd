@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.avioconsulting.com/schemas/SOAPTest/v1"
+        xmlns:tns="http://www.avioconsulting.com/schemas/SOAPTest/v1"
+        elementFormDefault="qualified">
+
+    <element name="SOAPTestRequest">
+        <complexType>
+            <sequence>
+                <element name="title" type="string"/>
+                <element name="approvalDate" type="date"/>
+            </sequence>
+        </complexType>
+    </element>
+
+    <element name="SOAPTestResponse">
+       <complexType>
+           <sequence>
+               <element name="details" type="string"/>
+           </sequence>
+       </complexType>
+    </element>
+
+    <element name="SOAPTestFault" type="tns:FaultType"/>
+
+    <complexType name="FaultType">
+        <sequence>
+            <element name="source" type="string"/>
+            <element name="description" type="string"/>
+        </sequence>
+    </complexType>
+</schema>

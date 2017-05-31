@@ -12,10 +12,10 @@ class JAXBMarshalHelper {
         this.jaxbContext = JAXBContext.newInstance(inputJaxbClass.package.name)
     }
 
-    StringReader getMarshalled(JAXBElement jaxbElement) {
+    StringReader getMarshalled(objectOrJaxbElement) {
         def marshaller = this.jaxbContext.createMarshaller()
         def stringWriter = new StringWriter()
-        marshaller.marshal jaxbElement, stringWriter
+        marshaller.marshal objectOrJaxbElement, stringWriter
         stringWriter.close()
         new StringReader(stringWriter.toString())
     }
@@ -25,7 +25,13 @@ class JAXBMarshalHelper {
         // until successful/alternate path is a string
         def stream = message.payload instanceof String ? new StringReader(message.payload) : message.payload
         try {
-            unmarshaller.unmarshal(stream).value
+            def result = unmarshaller.unmarshal(stream)
+            if (result instanceof JAXBElement) {
+                result.value
+            }
+            else {
+                result
+            }
         }
         catch (e) {
             throw new Exception('SOAP Mocks: Unable to marshal message. Do you need a different JAXB context?', e)

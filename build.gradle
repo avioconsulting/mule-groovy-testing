@@ -68,6 +68,11 @@ jaxb {
         soaptest {
             schema = file('src/test/resources/soap/SOAPTest_v1.xsd')
         }
+
+        xmlroot {
+            schema = file('src/test/resources/soap_xmlroot/SOAPTest_v1.xsd')
+            packageName = 'com.avioconsulting.mule.testing.soapxmlroot'
+        }
     }
 }
 
