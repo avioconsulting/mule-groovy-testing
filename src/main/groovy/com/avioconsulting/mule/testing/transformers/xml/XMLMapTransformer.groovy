@@ -41,8 +41,7 @@ class XMLMapTransformer implements MuleMessageTransformer {
             [
                     (node.name()): kidResults
             ]
-        }
-        else {
+        } else {
             kidResults
         }
     }
