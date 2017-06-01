@@ -19,8 +19,15 @@ class XMLGroovyParserTransformer implements MuleMessageTransformer {
         def xmlString = incomingMessage.payloadAsString
         def node = new XmlParser().parseText(xmlString) as Node
         def reply = closure(node)
-        assert reply instanceof Node
-        def outputXmlString = XmlUtil.serialize(reply)
+
+        String outputXmlString
+        if (reply instanceof File) {
+            outputXmlString = reply.text
+        } else {
+            assert reply instanceof Node
+            outputXmlString = XmlUtil.serialize(reply)
+        }
+
         def reader = new StringReader(outputXmlString)
         this.xmlMessageBuilder.build(reader, 200)
     }

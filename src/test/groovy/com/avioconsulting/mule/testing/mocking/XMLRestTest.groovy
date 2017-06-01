@@ -159,10 +159,34 @@ class XMLRestTest extends BaseTest {
     @Test
     void mockGroovyXmlParser_FileResponse() {
         // arrange
+        Node mockedData = null
+        mockRestHttpCall('SomeSystem Call') {
+            xml {
+                whenCalledWithGroovyXmlParser { Node input ->
+                    mockedData = input
+                    new File('src/test/resources/xml/simple_xml_response.xml')
+                }
+            }
+        }
 
         // act
+        def result = runFlow('xmlTest') {
+            json {
+                map([foo: 123])
+            }
+        }
 
         // assert
-        fail 'write this'
+        assert mockedData
+        assertThat mockedData.name() as String,
+                   is(equalTo('rootElement'))
+        def key = mockedData.key[0] as Node
+        assert key
+        assertThat key.text(),
+                   is(equalTo('123'))
+        assertThat JsonOutput.toJson(result),
+                   is(equalTo(JsonOutput.toJson(
+                           [reply_key: 23]
+                   )))
     }
 }
