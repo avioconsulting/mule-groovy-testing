@@ -39,17 +39,16 @@ class JsonTest extends BaseTest {
         // act
         def input = new SampleJacksonInput()
         input.foobar = 123
-        def result = runFlow('jsonTest') {
+        def result = runFlow('stringResponseTest') {
             json {
                 jackson(input)
             }
-        }
+        } as String
 
         // assert
         assertThat result,
-                   is(nullValue())
+                   is(equalTo('stringResponse'))
     }
-
 
     @Test
     void streaming_disabled() {

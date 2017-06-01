@@ -21,4 +21,8 @@ http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee
     <flow name="noStreamingTest">
         <set-payload value="{ &quot;key&quot;: &quot;#[payload.class.getName()]&quot; }"/>
     </flow>
+
+    <flow name="stringResponseTest">
+        <set-payload value="stringResponse"/>
+    </flow>
 </mule>
