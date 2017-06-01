@@ -24,4 +24,12 @@ class RequestResponseChoice {
         code.resolveStrategy = Closure.DELEGATE_ONLY
         code()
     }
+
+    def xml(@DelegatesTo(XMLFormatter) Closure closure) {
+        def formatter = new XMLFormatter(this.muleMocker,
+                                         this.muleContext)
+        def code = closure.rehydrate(formatter, this, this)
+        code.resolveStrategy = Closure.DELEGATE_ONLY
+        code()
+    }
 }

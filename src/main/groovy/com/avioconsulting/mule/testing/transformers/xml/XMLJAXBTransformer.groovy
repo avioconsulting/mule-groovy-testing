@@ -4,14 +4,14 @@ import org.mule.api.MuleContext
 import org.mule.api.MuleMessage
 import org.mule.modules.interceptor.processors.MuleMessageTransformer
 
-class XMLTransformer implements MuleMessageTransformer {
+class XMLJAXBTransformer implements MuleMessageTransformer {
     private final Closure closure
     private final JAXBMarshalHelper helper
     private final XMLMessageBuilder xmlMessageBuilder
 
-    XMLTransformer(Closure closure,
-                   MuleContext muleContext,
-                   Class inputJaxbClass) {
+    XMLJAXBTransformer(Closure closure,
+                       MuleContext muleContext,
+                       Class inputJaxbClass) {
         this.closure = closure
         this.helper = new JAXBMarshalHelper(inputJaxbClass)
         this.xmlMessageBuilder = new XMLMessageBuilder(muleContext)
