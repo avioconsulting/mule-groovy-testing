@@ -21,8 +21,13 @@ class XMLMapTransformer implements MuleMessageTransformer {
         def node = new XmlSlurper().parseText(xmlString) as GPathResult
         def asMap = convertToMap(node)
         def result = closure(asMap)
-        assert result instanceof Map
-        def xmlReply = generateXmlFromMap(result)
+        String xmlReply
+        if (result instanceof File) {
+            xmlReply = result.text
+        } else {
+            assert result instanceof Map
+            xmlReply = generateXmlFromMap(result)
+        }
         def reader = new StringReader(xmlReply)
         this.xmlMessageBuilder.build(reader, 200)
     }
