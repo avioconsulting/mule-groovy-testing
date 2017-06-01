@@ -32,13 +32,19 @@ class XMLMapTransformer implements MuleMessageTransformer {
         this.xmlMessageBuilder.build(reader, 200)
     }
 
-    private static Map convertToMap(GPathResult node) {
+    private static Map convertToMap(GPathResult node,
+                                    boolean root = true) {
         def kidResults = node.children().collectEntries { GPathResult child ->
-            [child.name(), child.childNodes() ? convertToMap(child) : child.text()]
+            [child.name(), child.childNodes() ? convertToMap(child, false) : child.text()]
         }
-        [
-                (node.name()): kidResults
-        ]
+        if (root) {
+            [
+                    (node.name()): kidResults
+            ]
+        }
+        else {
+            kidResults
+        }
     }
 
     static String generateXmlFromMap(Map map) {

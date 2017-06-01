@@ -50,6 +50,46 @@ class XMLRestTest extends BaseTest {
     }
 
     @Test
+    void nestedTest() {
+        // arrange
+        Map mockedData = null
+        mockRestHttpCall('SomeSystem Call') {
+            xml {
+                whenCalledWithMapAsXml { Map input ->
+                    mockedData = input
+                    [
+                            rootElementResponse: [
+                                    reply: 22
+                            ]
+                    ]
+                }
+            }
+        }
+
+        // act
+        def result = runFlow('nestedTest') {
+            json {
+                map([foo: 123])
+            }
+        }
+
+        // assert
+        assert mockedData
+        assertThat JsonOutput.toJson(mockedData),
+                   is(equalTo(JsonOutput.toJson([
+                           rootElement: [
+                                   anotherElement: [
+                                           key: '123'
+                                   ]
+                           ]
+                   ])))
+        assertThat JsonOutput.toJson(result),
+                   is(equalTo(JsonOutput.toJson(
+                           [reply_key: 23]
+                   )))
+    }
+
+    @Test
     void mockFileResponse() {
         // arrange
         Map mockedData = null
