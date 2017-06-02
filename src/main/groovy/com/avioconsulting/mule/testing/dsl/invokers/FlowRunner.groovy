@@ -6,4 +6,6 @@ interface FlowRunner {
     def withOutputEvent(Closure closure)
 
     def withOutputHttpStatus(Closure closure)
+
+    def withInputEvent(Closure closure)
 }
