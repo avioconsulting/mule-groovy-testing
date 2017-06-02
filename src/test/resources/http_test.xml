@@ -19,7 +19,7 @@ http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee
     key: payload.foo
 }]]></dw:set-payload>
         </dw:transform-message>
-        <set-property propertyName="Content-Type" value="application/json" />
+        <set-property propertyName="Content-Type" value="application/json"/>
         <http:request config-ref="SomeSystem" path="/some_path" method="POST" doc:name="SomeSystem Call"/>
         <dw:transform-message doc:name="Transform Message">
             <dw:set-payload><![CDATA[%dw 1.0
@@ -29,7 +29,7 @@ http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee
     reply_key: payload.reply + 1
 }]]></dw:set-payload>
         </dw:transform-message>
-        <set-property propertyName="Content-Type" value="application/json" />
+        <set-property propertyName="Content-Type" value="application/json"/>
     </flow>
 
     <flow name="restRequestContentTypeNotSet">

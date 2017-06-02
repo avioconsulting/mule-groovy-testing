@@ -17,6 +17,6 @@ http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee
     key: flowVars.foo
 }]]></dw:set-payload>
         </dw:transform-message>
-        <set-property propertyName="Content-Type" value="application/json" />
+        <set-property propertyName="Content-Type" value="application/json"/>
     </flow>
 </mule>

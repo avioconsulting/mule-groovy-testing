@@ -211,6 +211,7 @@ class XMLRestTest extends BaseTest {
 
         // assert
         assertThat result.message,
-                   is(containsString('Content-Type was not set to \'application/xml\' before calling your mock endpoint! Add a set-property'))
+                   is(containsString(
+                           'Content-Type was not set to \'application/xml\' before calling your mock endpoint! Add a set-property'))
     }
 }

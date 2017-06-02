@@ -17,7 +17,7 @@ http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee
     key: payload.foo
 }]]></dw:set-payload>
         </dw:transform-message>
-        <set-property propertyName="Content-Type" value="application/json" />
+        <set-property propertyName="Content-Type" value="application/json"/>
     </flow>
 
     <flow name="jsonTestNoContentType">
@@ -33,7 +33,7 @@ http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee
 
     <flow name="noStreamingTest">
         <set-payload value="{ &quot;key&quot;: &quot;#[payload.class.getName()]&quot; }"/>
-        <set-property propertyName="Content-Type" value="application/json" />
+        <set-property propertyName="Content-Type" value="application/json"/>
     </flow>
 
     <flow name="stringResponseTest">
