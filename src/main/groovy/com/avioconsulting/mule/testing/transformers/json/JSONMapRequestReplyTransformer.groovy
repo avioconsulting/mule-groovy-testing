@@ -1,5 +1,6 @@
 package com.avioconsulting.mule.testing.transformers.json
 
+import com.avioconsulting.mule.testing.dsl.mocking.MockedConnectorType
 import com.avioconsulting.mule.testing.messages.JsonMessage
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
@@ -13,8 +14,11 @@ class JSONMapRequestReplyTransformer extends JSONTransformer implements
 
     JSONMapRequestReplyTransformer(Closure closure,
                                    MuleContext muleContext,
-                                   Class expectedPayloadType) {
-        super(expectedPayloadType)
+                                   Class expectedPayloadType,
+                                   MockedConnectorType mockedConnectorType) {
+        super(expectedPayloadType,
+              muleContext,
+              mockedConnectorType)
         this.muleContext = muleContext
         this.closure = closure
     }

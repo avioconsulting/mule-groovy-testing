@@ -9,10 +9,13 @@ class FlowRunnerImpl implements FlowRunner, Invoker {
     private Invoker invoker
     private Closure muleOutputEventHook = null
     private Closure withInputEvent = null
-    private RunnerConfig runnerConfig = new RunnerConfig()
+    private final RunnerConfig runnerConfig
+    static final String AVIO_MULE_RUNNER_CONFIG_BEAN = 'avioMuleGroovyRunnerConfig'
 
     FlowRunnerImpl(MuleContext muleContext) {
         this.muleContext = muleContext
+        runnerConfig = new RunnerConfig()
+        muleContext.registry.registerObject(AVIO_MULE_RUNNER_CONFIG_BEAN, runnerConfig)
     }
 
     def json(@DelegatesTo(JsonInvoker) Closure closure) {

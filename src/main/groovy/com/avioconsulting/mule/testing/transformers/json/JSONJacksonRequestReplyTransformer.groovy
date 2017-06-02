@@ -1,5 +1,6 @@
 package com.avioconsulting.mule.testing.transformers.json
 
+import com.avioconsulting.mule.testing.dsl.mocking.MockedConnectorType
 import com.avioconsulting.mule.testing.messages.JsonMessage
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.mule.api.MuleContext
@@ -14,8 +15,11 @@ class JSONJacksonRequestReplyTransformer extends JSONTransformer
     JSONJacksonRequestReplyTransformer(Closure closure,
                                        MuleContext muleContext,
                                        Class inputClass,
-                                       Class expectedPayloadType) {
-        super(expectedPayloadType)
+                                       Class expectedPayloadType,
+                                       MockedConnectorType mockedConnectorType) {
+        super(expectedPayloadType,
+              muleContext,
+              mockedConnectorType)
         this.inputClass = inputClass
         this.muleContext = muleContext
         this.closure = closure

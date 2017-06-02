@@ -4,8 +4,8 @@ import com.avioconsulting.mule.testing.BaseTest
 import groovy.json.JsonOutput
 import org.junit.Test
 
-import static org.hamcrest.Matchers.equalTo
-import static org.hamcrest.Matchers.is
+import static groovy.test.GroovyAssert.shouldFail
+import static org.hamcrest.Matchers.*
 import static org.junit.Assert.assertThat
 
 class XMLRestTest extends BaseTest {
@@ -188,5 +188,29 @@ class XMLRestTest extends BaseTest {
                    is(equalTo(JsonOutput.toJson(
                            [reply_key: 23]
                    )))
+    }
+
+    @Test
+    void contentTypeNotSet() {
+        // arrange
+        mockRestHttpCall('SomeSystem Call') {
+            xml {
+                whenCalledWithMapAsXml { Map input ->
+                }
+            }
+        }
+
+        // act
+        def result = shouldFail {
+            runFlow('xmlTest') {
+                json {
+                    map([foo: 123])
+                }
+            }
+        }
+
+        // assert
+        assertThat result.message,
+                   is(containsString('Your Content-Type header was not set to application/xml!'))
     }
 }

@@ -1,8 +1,11 @@
 package com.avioconsulting.mule.testing.mocking
 
 import com.avioconsulting.mule.testing.BaseTest
+import com.avioconsulting.mule.testing.SampleJacksonInput
 import org.junit.Test
 
+import static groovy.test.GroovyAssert.shouldFail
+import static org.hamcrest.Matchers.containsString
 import static org.hamcrest.Matchers.equalTo
 import static org.hamcrest.Matchers.is
 import static org.junit.Assert.assertThat
@@ -37,5 +40,67 @@ class HttpTest extends BaseTest {
                    is(equalTo([key: 123]))
         assertThat result,
                    is(equalTo([reply_key: 457]))
+    }
+
+    @Test
+    void contentTypeNotSet_NoApiKit() {
+        // arrange
+        def input = new SampleJacksonInput()
+        input.foobar = 123
+        mockRestHttpCall('SomeSystem Call') {
+            json {
+                whenCalledWithJackson(SampleMockedJacksonInput) {
+                    SampleMockedJacksonInput incoming ->
+                }
+            }
+        }
+
+        // act
+        def result = shouldFail {
+            runFlow('restRequestContentTypeNotSet') {
+                json {
+                    jackson(input, JacksonOutput)
+                }
+            }
+        }
+
+        // assert
+        assertThat result.message,
+                   is(containsString(
+                           "Content-Type was not set to 'application/json' before calling your mock endpoint! Add a set-property"))
+    }
+
+    @Test
+    void contentTypeNotSet_ApiKit() {
+        // arrange
+        def input = new SampleJacksonInput()
+        input.foobar = 123
+        def mockValue = 0
+        mockRestHttpCall('SomeSystem Call') {
+            json {
+                whenCalledWithJackson(SampleMockedJacksonInput) {
+                    SampleMockedJacksonInput incoming ->
+                        mockValue = incoming.foobar
+                        def reply = new SampleMockedJacksonOutput()
+                        reply.foobar = 456
+                        reply
+                }
+            }
+        }
+
+        // act
+        def result = runFlow('restRequestContentTypeNotSet') {
+            json {
+                jackson(input, JacksonOutput)
+            }
+
+            apiKitReferencesThisFlow()
+        } as JacksonOutput
+
+        // assert
+        assertThat result.result,
+                   is(equalTo(457))
+        assertThat mockValue,
+                   is(equalTo(123))
     }
 }

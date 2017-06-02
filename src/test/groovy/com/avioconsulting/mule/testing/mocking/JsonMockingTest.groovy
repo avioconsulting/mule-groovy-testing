@@ -9,6 +9,10 @@ import static org.hamcrest.Matchers.is
 import static org.junit.Assert.assertThat
 
 class JsonMockingTest extends BaseTest {
+    List<String> getConfigResourcesList() {
+        ['http_test.xml']
+    }
+
     @Test
     void mockViaMap() {
         // arrange
@@ -39,6 +43,8 @@ class JsonMockingTest extends BaseTest {
     @Test
     void mock_via_jackson() {
         // arrange
+        def input = new SampleJacksonInput()
+        input.foobar = 123
         def mockValue = 0
         mockRestHttpCall('SomeSystem Call') {
             json {
@@ -53,8 +59,6 @@ class JsonMockingTest extends BaseTest {
         }
 
         // act
-        def input = new SampleJacksonInput()
-        input.foobar = 123
         def result = runFlow('restRequest') {
             json {
                 jackson(input, JacksonOutput)
@@ -66,9 +70,5 @@ class JsonMockingTest extends BaseTest {
                    is(equalTo(457))
         assertThat mockValue,
                    is(equalTo(123))
-    }
-
-    List<String> getConfigResourcesList() {
-        ['http_test.xml']
     }
 }

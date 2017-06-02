@@ -2,6 +2,7 @@ package com.avioconsulting.mule.testing
 
 import com.avioconsulting.mule.testing.dsl.invokers.FlowRunner
 import com.avioconsulting.mule.testing.dsl.invokers.FlowRunnerImpl
+import com.avioconsulting.mule.testing.dsl.mocking.MockedConnectorType
 import com.avioconsulting.mule.testing.dsl.mocking.formats.RequestResponseChoice
 import com.avioconsulting.mule.testing.dsl.mocking.formats.XMLFormatter
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -190,7 +191,8 @@ abstract class BaseTest extends FunctionalMunitSuite {
         def expectedPayloadType = InputStream
         def formatterChoice = new RequestResponseChoice(mocker,
                                                         muleContext,
-                                                        expectedPayloadType)
+                                                        expectedPayloadType,
+                                                        MockedConnectorType.HTTP)
         def code = closure.rehydrate(formatterChoice, this, this)
         code.resolveStrategy = Closure.DELEGATE_ONLY
         code()
@@ -206,7 +208,8 @@ abstract class BaseTest extends FunctionalMunitSuite {
         def expectedPayloadType = String
         def formatterChoice = new RequestResponseChoice(mocker,
                                                         muleContext,
-                                                        expectedPayloadType)
+                                                        expectedPayloadType,
+                                                        MockedConnectorType.VM)
         def code = closure.rehydrate(formatterChoice, this, this)
         code.resolveStrategy = Closure.DELEGATE_ONLY
         code()
