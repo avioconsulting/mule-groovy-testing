@@ -8,8 +8,9 @@ class JsonMapRunner extends JsonRunner {
     private final Map inputMap
 
     JsonMapRunner(Map inputMap,
-                  MuleContext muleContext) {
-        super(muleContext)
+                  MuleContext muleContext,
+                  RunnerConfig runnerConfig) {
+        super(muleContext, runnerConfig)
         this.inputMap = inputMap
     }
 

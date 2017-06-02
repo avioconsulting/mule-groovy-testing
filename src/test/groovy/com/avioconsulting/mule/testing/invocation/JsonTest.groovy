@@ -6,8 +6,7 @@ import com.avioconsulting.mule.testing.SampleJacksonOutput
 import org.junit.Test
 
 import static groovy.test.GroovyAssert.shouldFail
-import static org.hamcrest.Matchers.equalTo
-import static org.hamcrest.Matchers.is
+import static org.hamcrest.Matchers.*
 import static org.junit.Assert.assertThat
 
 class JsonTest extends BaseTest {
@@ -92,6 +91,42 @@ class JsonTest extends BaseTest {
             json {
                 map([foo: 123])
             }
+        }
+
+        // assert
+        assertThat result,
+                   is(equalTo([key: 123]))
+    }
+
+    @Test
+    void contentTypeNotSet_NoApiKit() {
+        // arrange
+
+        // act
+        def result = shouldFail {
+            runFlow('jsonTestNoContentType') {
+                json {
+                    map([foo: 123])
+                }
+            }
+        }
+
+        // assert
+        assertThat result.message,
+                   is(containsString(
+                           "Content-Type was not set to 'application/json' within your flow! Add a set-property"))
+    }
+
+    @Test
+    void contentTypeNotSet_ApiKit() {
+        // arrange
+
+        // act
+        def result = runFlow('jsonTest') {
+            json {
+                map([foo: 123])
+            }
+            apiKitReferencesThisFlow()
         }
 
         // assert

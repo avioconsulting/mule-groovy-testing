@@ -10,8 +10,9 @@ class JsonJacksonRunner extends JsonRunner {
 
     JsonJacksonRunner(inputObject,
                       Class outputClass,
-                      MuleContext muleContext) {
-        super(muleContext)
+                      MuleContext muleContext,
+                      RunnerConfig runnerConfig) {
+        super(muleContext, runnerConfig)
         this.outputClass = outputClass
         this.inputObject = inputObject
         mapper = new ObjectMapper()
@@ -19,6 +20,14 @@ class JsonJacksonRunner extends JsonRunner {
 
     protected String getJsonString() {
         mapper.writer().writeValueAsString(inputObject)
+    }
+
+    protected boolean isEnforceContentType() {
+        // we just return a string in this case, so don't enforce a type
+        if (outputClass == null) {
+            return false
+        }
+        super.isEnforceContentType()
     }
 
     protected Object getObjectFromOutput(String outputJson) {

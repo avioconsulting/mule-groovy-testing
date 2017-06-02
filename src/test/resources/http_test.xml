@@ -28,6 +28,7 @@ http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee
     reply_key: payload.reply + 1
 }]]></dw:set-payload>
         </dw:transform-message>
+        <set-property propertyName="Content-Type" value="application/json" />
     </flow>
 
     <flow name="hasHttpStatus">
