@@ -1,21 +1,23 @@
 package com.avioconsulting.mule.testing.transformers.xml
 
+import com.avioconsulting.mule.testing.dsl.mocking.MockedConnectorType
 import groovy.xml.XmlUtil
 import org.mule.api.MuleContext
 import org.mule.api.MuleMessage
 import org.mule.modules.interceptor.processors.MuleMessageTransformer
 
-class XMLGroovyParserTransformer implements MuleMessageTransformer {
+class XMLGroovyParserTransformer extends XMLTransformer implements MuleMessageTransformer {
     private final Closure closure
-    private final XMLMessageBuilder xmlMessageBuilder
 
     XMLGroovyParserTransformer(Closure closure,
-                               MuleContext muleContext) {
+                               MuleContext muleContext,
+                               MockedConnectorType mockedConnectorType) {
+        super(muleContext, mockedConnectorType)
         this.closure = closure
-        this.xmlMessageBuilder = new XMLMessageBuilder(muleContext)
     }
 
     MuleMessage transform(MuleMessage incomingMessage) {
+        validateContentType(incomingMessage)
         def xmlString = incomingMessage.payloadAsString
         def node = new XmlParser().parseText(xmlString) as Node
         def reply = closure(node)

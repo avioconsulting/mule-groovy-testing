@@ -1,22 +1,24 @@
 package com.avioconsulting.mule.testing.transformers.xml
 
+import com.avioconsulting.mule.testing.dsl.mocking.MockedConnectorType
 import groovy.util.slurpersupport.GPathResult
 import groovy.xml.MarkupBuilder
 import org.mule.api.MuleContext
 import org.mule.api.MuleMessage
 import org.mule.modules.interceptor.processors.MuleMessageTransformer
 
-class XMLMapTransformer implements MuleMessageTransformer {
+class XMLMapTransformer extends XMLTransformer implements MuleMessageTransformer {
     private final Closure closure
-    private final XMLMessageBuilder xmlMessageBuilder
 
     XMLMapTransformer(Closure closure,
-                      MuleContext muleContext) {
+                      MuleContext muleContext,
+                      MockedConnectorType mockedConnectorType) {
+        super(muleContext, mockedConnectorType)
         this.closure = closure
-        this.xmlMessageBuilder = new XMLMessageBuilder(muleContext)
     }
 
     MuleMessage transform(MuleMessage incomingMessage) {
+        validateContentType(incomingMessage)
         def xmlString = incomingMessage.payloadAsString
         def node = new XmlSlurper().parseText(xmlString) as GPathResult
         def asMap = convertToMap(node)

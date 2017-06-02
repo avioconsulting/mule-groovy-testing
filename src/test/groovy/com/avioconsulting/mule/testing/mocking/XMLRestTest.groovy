@@ -202,7 +202,7 @@ class XMLRestTest extends BaseTest {
 
         // act
         def result = shouldFail {
-            runFlow('xmlTest') {
+            runFlow('xmlTestWithoutContentType') {
                 json {
                     map([foo: 123])
                 }
@@ -211,6 +211,6 @@ class XMLRestTest extends BaseTest {
 
         // assert
         assertThat result.message,
-                   is(containsString('Your Content-Type header was not set to application/xml!'))
+                   is(containsString('Content-Type was not set to \'application/xml\' before calling your mock endpoint! Add a set-property'))
     }
 }

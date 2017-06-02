@@ -223,7 +223,8 @@ abstract class BaseTest extends FunctionalMunitSuite {
                                         .ofNamespace('doc')
                                         .withValue(connectorName))
         def soapFormatter = new XMLFormatter(mocker,
-                                             muleContext)
+                                             muleContext,
+                                             MockedConnectorType.SOAP)
         def code = closure.rehydrate(soapFormatter, this, this)
         code.resolveStrategy = Closure.DELEGATE_ONLY
         code()

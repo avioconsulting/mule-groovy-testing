@@ -1,23 +1,25 @@
 package com.avioconsulting.mule.testing.transformers.xml
 
+import com.avioconsulting.mule.testing.dsl.mocking.MockedConnectorType
 import org.mule.api.MuleContext
 import org.mule.api.MuleMessage
 import org.mule.modules.interceptor.processors.MuleMessageTransformer
 
-class XMLJAXBTransformer implements MuleMessageTransformer {
+class XMLJAXBTransformer extends XMLTransformer implements MuleMessageTransformer {
     private final Closure closure
     private final JAXBMarshalHelper helper
-    private final XMLMessageBuilder xmlMessageBuilder
 
     XMLJAXBTransformer(Closure closure,
                        MuleContext muleContext,
-                       Class inputJaxbClass) {
+                       Class inputJaxbClass,
+                       MockedConnectorType mockedConnectorType) {
+        super(muleContext, mockedConnectorType)
         this.closure = closure
         this.helper = new JAXBMarshalHelper(inputJaxbClass)
-        this.xmlMessageBuilder = new XMLMessageBuilder(muleContext)
     }
 
     MuleMessage transform(MuleMessage incomingMessage) {
+        validateContentType(incomingMessage)
         def payload = incomingMessage.payload
         def nullPayload = payload instanceof byte[] && payload.length == 0
         def strongTypedPayload

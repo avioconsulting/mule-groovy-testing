@@ -32,7 +32,8 @@ class RequestResponseChoice {
 
     def xml(@DelegatesTo(XMLFormatter) Closure closure) {
         def formatter = new XMLFormatter(this.muleMocker,
-                                         this.muleContext)
+                                         this.muleContext,
+                                         mockedConnectorType)
         def code = closure.rehydrate(formatter, this, this)
         code.resolveStrategy = Closure.DELEGATE_ONLY
         code()
