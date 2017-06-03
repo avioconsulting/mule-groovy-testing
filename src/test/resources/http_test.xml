@@ -5,9 +5,11 @@
       xmlns:dw="http://www.mulesoft.org/schema/mule/ee/dw"
       xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns:json="http://www.mulesoft.org/schema/mule/json"
       xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
-http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee/dw/current/dw.xsd">
+http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee/dw/current/dw.xsd
+http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/json/current/mule-json.xsd">
     <http:request-config name="SomeSystem" protocol="HTTP" host="localhost" port="443" basePath="/"
                          doc:name="HTTP Request Configuration"/>
     <flow name="restRequest">
@@ -65,6 +67,20 @@ http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee
     </flow>
 
     <flow name="noHttpStatus">
+        <dw:transform-message doc:name="Transform Message">
+            <dw:set-payload><![CDATA[%dw 1.0
+%output application/json
+---
+{
+    key: payload.foo
+}]]></dw:set-payload>
+        </dw:transform-message>
+    </flow>
+
+    <flow name="nullEvent">
+        <byte-array-to-string-transformer />
+        <json:json-to-object-transformer/>
+        <idempotent-message-filter idExpression="#[payload.get('foo').asText()]"/>
         <dw:transform-message doc:name="Transform Message">
             <dw:set-payload><![CDATA[%dw 1.0
 %output application/json

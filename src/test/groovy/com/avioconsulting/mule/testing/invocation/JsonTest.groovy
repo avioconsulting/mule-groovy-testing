@@ -17,10 +17,10 @@ class JsonTest extends BaseTest {
     @Test
     void jackson() {
         // arrange
-
-        // act
         def input = new SampleJacksonInput()
         input.foobar = 123
+
+        // act
         def result = runFlow('jsonTest') {
             json {
                 jackson(input, SampleJacksonOutput)
@@ -132,5 +132,27 @@ class JsonTest extends BaseTest {
         // assert
         assertThat result,
                    is(equalTo([key: 123]))
+    }
+
+    @Test
+    void nullPayload() {
+        // arrange
+        def input = new SampleJacksonInput()
+        input.foobar = 123
+
+        // act
+        def runIt = {
+            runFlow('filterJsonTest') {
+                json {
+                    jackson(input)
+                }
+            }
+        }
+        runIt()
+        def result = runIt()
+
+        // assert
+        assertThat result,
+                   is(nullValue())
     }
 }

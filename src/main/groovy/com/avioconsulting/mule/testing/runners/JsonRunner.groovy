@@ -41,6 +41,10 @@ abstract class JsonRunner implements JsonMessage {
     }
 
     def transformOutput(MuleEvent outputEvent) {
+        // filters can return null events
+        if (outputEvent == null) {
+            return null
+        }
         def message = outputEvent.message
         if (enforceContentType) {
             assert message.getOutboundProperty(

@@ -80,4 +80,31 @@ class OutputEventHttpStatusTest extends BaseTest {
         assertThat result.message,
                    is(containsString('No HTTP status was returned from your flow. Did you forget?'))
     }
+
+    @Test
+    void nullEvent() {
+        // arrange
+        def input = new SampleJacksonInput()
+        input.foobar = 123
+
+        // act
+        runFlow('nullEvent') {
+            json {
+                jackson(input)
+            }
+        }
+        def result = shouldFail {
+            runFlow('nullEvent') {
+                json {
+                    jackson(input)
+                }
+                withOutputHttpStatus {}
+            }
+        }
+
+        // assert
+        assertThat result.message,
+                   is(containsString(
+                           'A null event was returned (filter?) so No HTTP status was returned from your flow. With the real flow, an HTTP status of 200 will usually be set by default so this test is usually not required.'))
+    }
 }

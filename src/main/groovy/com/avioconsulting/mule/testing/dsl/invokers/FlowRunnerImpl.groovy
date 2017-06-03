@@ -33,6 +33,9 @@ class FlowRunnerImpl implements FlowRunner, Invoker {
 
     def withOutputHttpStatus(Closure closure) {
         withOutputEvent { MuleEvent outputEvent ->
+            if (outputEvent == null) {
+                throw new Exception('A null event was returned (filter?) so No HTTP status was returned from your flow. With the real flow, an HTTP status of 200 will usually be set by default so this test is usually not required.')
+            }
             def statusString = outputEvent.message.getOutboundProperty('http.status') as String
             if (!statusString) {
                 throw new Exception('No HTTP status was returned from your flow. Did you forget?')
