@@ -55,7 +55,11 @@ abstract class BaseTest extends FunctionalMunitSuite {
 
     Properties getStartUpProperties() {
         def properties = new Properties()
-        properties.putAll propertyMap
+        // in case a Groovy/GStringImpl is in here
+        def onlyJavaStrings = propertyMap.collectEntries { key, value ->
+            [(key.toString()): value.toString()]
+        }
+        properties.putAll onlyJavaStrings
         // verbose in testing is good
         properties.put('mule.verbose.exceptions', true)
         properties
