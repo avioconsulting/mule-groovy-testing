@@ -76,11 +76,37 @@ class JsonMockingTest extends BaseTest {
     @Test
     void queryParams_returns_jackson_object() {
         // arrange
+        Map actualParams = null
+        String actualUri = null
+
+        mockRestHttpCall('SomeSystem Call') {
+            json {
+                whenCalledWithQueryParams { Map queryParams, String uri ->
+                    actualParams = queryParams
+                    actualUri = uri
+                    def reply = new SampleMockedJacksonOutput()
+                    reply.foobar = 456
+                    reply
+                }
+            }
+        }
 
         // act
+        def result = runFlow('queryParameters') {
+            json {
+                map([foo: 123])
+            }
+        }
 
         // assert
-        fail 'write this'
+        assert actualParams
+        assertThat actualParams,
+                   is(equalTo([stuff: '123']))
+        assert actualUri
+        assertThat actualUri,
+                   is(equalTo('/some_path/there'))
+        assertThat result,
+                   is(equalTo([reply_key: 457]))
     }
 
     @Test

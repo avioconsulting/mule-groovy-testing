@@ -38,10 +38,13 @@ class JsonFormatter {
         def transformer = new OutputTransformer() {
             @Override
             MuleMessage transformOutput(Object input) {
-                // TODO: Detect whether a Map or Jackson object was passed in and call the appropriate transformer
-                assert input instanceof Map
-                def transformer = new MapOutputTransformer(muleContext)
-                transformer.transformOutput(input)
+                OutputTransformer outputTransformer
+                if (input instanceof Map) {
+                    outputTransformer = new MapOutputTransformer(muleContext)
+                } else {
+                    outputTransformer = new JacksonOutputTransformer(muleContext)
+                }
+                outputTransformer.transformOutput(input)
             }
         }
         def queryParamSpy = new QueryParamSpy(processorLocator,
