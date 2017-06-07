@@ -89,7 +89,23 @@ class ApikitFlowInvokeTest extends BaseApikitTest {
     }
 
     @Test
-    void runApiKitFlow_QueryParams() {
+    void runApiKitFlow_Get_single() {
+        // arrange
+
+        // act
+        def result = runApiKitFlow('GET', '/resources/2') {
+            json {
+                jackson(SampleJacksonOutput)
+            }
+        } as SampleJacksonOutput
+
+        // assert
+        assertThat result.result,
+                   is(equalTo(123))
+    }
+
+    @Test
+    void runApiKitFlow_Get_Query_Params() {
         // arrange
 
         // act

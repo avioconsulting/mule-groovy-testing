@@ -32,6 +32,13 @@ class JsonInvokerImpl implements JsonInvoker, Invoker {
                                            runnerConfig)
     }
 
+    def jackson(Class outputClass) {
+        jsonRunner = new JsonJacksonRunner(null,
+                                           outputClass,
+                                           muleContext,
+                                           runnerConfig)
+    }
+
     def map(Map input) {
         jsonRunner = new JsonMapRunner(input,
                                        muleContext,

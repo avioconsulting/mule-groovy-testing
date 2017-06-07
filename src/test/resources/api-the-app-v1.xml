@@ -29,4 +29,14 @@ http://www.mulesoft.org/schema/mule/apikit http://www.mulesoft.org/schema/mule/a
 }]]></dw:set-payload>
         </dw:transform-message>
     </flow>
+    <flow name="get:/resources/{id}:api-the-app-v1-config">
+        <dw:transform-message doc:name="Transform Message">
+            <dw:set-payload><![CDATA[%dw 1.0
+%output application/json
+---
+{
+    key: 123
+}]]></dw:set-payload>
+        </dw:transform-message>
+    </flow>
 </mule>
