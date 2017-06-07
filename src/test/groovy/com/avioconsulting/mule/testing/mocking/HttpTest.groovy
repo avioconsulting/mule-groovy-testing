@@ -107,11 +107,13 @@ class HttpTest extends BaseTest {
         // arrange
         Map actualParams = null
         String actualUri = null
+        String actualHttpVerb = null
         mockRestHttpCall('SomeSystem Call') {
             json {
-                whenCalledWithQueryParams { Map queryParams, String uri ->
+                whenCalledWithQueryParams { Map queryParams, String uri, String httpVerb ->
                     actualParams = queryParams
                     actualUri = uri
+                    actualHttpVerb = httpVerb
                     [reply: 456]
                 }
             }
@@ -133,6 +135,9 @@ class HttpTest extends BaseTest {
                    is(equalTo('/some_path/there'))
         assertThat result,
                    is(equalTo([reply_key: 457]))
+        assert actualHttpVerb
+        assertThat actualHttpVerb,
+                is(equalTo('GET'))
     }
 
     @Test
@@ -140,11 +145,14 @@ class HttpTest extends BaseTest {
         // arrange
         Map actualParams = null
         String actualUri = null
+        String actualHttpVerb = null
+
         mockRestHttpCall('SomeSystem Call') {
             json {
-                whenCalledWithQueryParams { Map queryParams, String uri ->
+                whenCalledWithQueryParams { Map queryParams, String uri, String httpVerb ->
                     actualParams = queryParams
                     actualUri = uri
+                    actualHttpVerb = httpVerb
                     [reply: 456]
                 }
             }
@@ -166,5 +174,8 @@ class HttpTest extends BaseTest {
                    is(equalTo('/some_path/there'))
         assertThat result,
                    is(equalTo([reply_key: 457]))
+        assert actualHttpVerb
+        assertThat actualHttpVerb,
+                   is(equalTo('GET'))
     }
 }
