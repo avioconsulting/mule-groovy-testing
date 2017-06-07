@@ -5,8 +5,8 @@ import com.avioconsulting.mule.testing.SampleJacksonInput
 import com.avioconsulting.mule.testing.SampleJacksonOutput
 import org.junit.Test
 
-import static org.hamcrest.Matchers.equalTo
-import static org.hamcrest.Matchers.is
+import static groovy.test.GroovyAssert.shouldFail
+import static org.hamcrest.Matchers.*
 import static org.junit.Assert.assertThat
 
 class ApikitFlowInvokeTest extends BaseApikitTest {
@@ -68,6 +68,24 @@ class ApikitFlowInvokeTest extends BaseApikitTest {
         // assert
         assertThat result.result,
                    is(equalTo(123))
+    }
+
+    @Test
+    void runApiKitFlow_validates() {
+        // arrange
+
+        // act
+        def result = shouldFail {
+            runApiKitFlow('POST', '/resources') {
+                json {
+                    map([howdy: 123])
+                }
+            }
+        }
+
+        // assert
+        assertThat result.message,
+                   is(containsString('Missing required field'))
     }
 
     @Test
