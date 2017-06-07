@@ -101,4 +101,15 @@ class HttpTest extends BaseTest {
         assertThat mockValue,
                    is(equalTo(123))
     }
+
+    @Test
+    void queryParameters() {
+        // arrange
+        // TODO: Can we somehow find the connector and evaluate the query parameter values on the fly?
+
+        // act
+
+        // assert
+        fail 'write this'
+    }
 }

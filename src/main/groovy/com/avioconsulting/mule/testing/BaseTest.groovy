@@ -86,6 +86,10 @@ abstract class BaseTest extends FunctionalMunitSuite {
         }
     }
 
+    protected int getHttpPort() {
+        8081
+    }
+
     abstract List<String> getConfigResourcesList()
 
     String getConfigResources() {
