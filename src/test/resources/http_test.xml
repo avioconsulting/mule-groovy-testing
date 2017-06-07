@@ -118,6 +118,35 @@ http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/jso
         <set-property propertyName="Content-Type" value="application/json"/>
     </flow>
 
+    <flow name="queryParametersHttpStatus">
+        <dw:transform-message doc:name="Transform Message">
+            <dw:set-payload><![CDATA[%dw 1.0
+%output application/json
+---
+{
+    key: payload.foo
+}]]></dw:set-payload>
+        </dw:transform-message>
+        <set-property propertyName="Content-Type" value="application/json"/>
+        <http:request config-ref="SomeSystem" path="/some_path/{howdy}" method="GET" doc:name="SomeSystem Call">
+            <http:request-builder>
+                <http:query-param paramName="stuff" value="#[123]"/>
+                <http:uri-param paramName="howdy" value="there"/>
+            </http:request-builder>
+            <http:success-status-code-validator values="200,201"/>
+        </http:request>
+        <set-variable variableName="theStatus" value="#[message.inboundProperties.'http.status']"/>
+        <dw:transform-message doc:name="Transform Message">
+            <dw:set-payload><![CDATA[%dw 1.0
+%output application/json
+---
+{
+    reply_key: flowVars.theStatus
+}]]></dw:set-payload>
+        </dw:transform-message>
+        <set-property propertyName="Content-Type" value="application/json"/>
+    </flow>
+
     <flow name="queryParametersEnricher">
         <dw:transform-message doc:name="Transform Message">
             <dw:set-payload><![CDATA[%dw 1.0

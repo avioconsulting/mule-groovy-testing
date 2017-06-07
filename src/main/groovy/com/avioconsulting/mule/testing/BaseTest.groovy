@@ -166,13 +166,6 @@ abstract class BaseTest extends FunctionalMunitSuite {
                     timeoutSeconds * 1000
     }
 
-    def throwHttpStatusBasedException(MuleMessage errorResponse) {
-        def errorEvent = new DefaultMuleEvent(errorResponse,
-                                              MessageExchangePattern.REQUEST_RESPONSE,
-                                              MunitMuleTestUtils.getTestFlow(muleContext))
-        new SuccessStatusCodeValidator('200').validate(errorEvent)
-    }
-
     def mockRestHttpCall(String connectorName,
                          @DelegatesTo(RequestResponseChoice) Closure closure) {
         def mocker = whenMessageProcessor('request')

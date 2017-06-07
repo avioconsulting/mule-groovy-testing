@@ -2,6 +2,7 @@ package com.avioconsulting.mule.testing.dsl.mocking.formats
 
 import com.avioconsulting.mule.testing.ProcessorLocator
 import com.avioconsulting.mule.testing.dsl.mocking.MockedConnectorType
+import com.avioconsulting.mule.testing.dsl.mocking.QueryParamOptions
 import com.avioconsulting.mule.testing.transformers.OutputTransformer
 import com.avioconsulting.mule.testing.transformers.QueryParamSpy
 import com.avioconsulting.mule.testing.transformers.StandardTransformer
@@ -34,7 +35,7 @@ class JsonFormatter {
         this.muleContext = muleContext
     }
 
-    def whenCalledWithQueryParams(Closure closure) {
+    def whenCalledWithQueryParams(@DelegatesTo(QueryParamOptions) Closure closure) {
         def transformer = new OutputTransformer() {
             @Override
             MuleMessage transformOutput(Object input) {
@@ -49,7 +50,8 @@ class JsonFormatter {
         }
         def queryParamSpy = new QueryParamSpy(processorLocator,
                                               closure,
-                                              transformer)
+                                              transformer,
+                                              muleContext)
         spy.before(queryParamSpy)
         queryParamSpy
     }

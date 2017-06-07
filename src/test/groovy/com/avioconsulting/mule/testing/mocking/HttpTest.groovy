@@ -137,7 +137,83 @@ class HttpTest extends BaseTest {
                    is(equalTo([reply_key: 457]))
         assert actualHttpVerb
         assertThat actualHttpVerb,
-                is(equalTo('GET'))
+                   is(equalTo('GET'))
+    }
+
+    @Test
+    void queryParameters_http_return_set_201_code() {
+        // arrange
+        mockRestHttpCall('SomeSystem Call') {
+            json {
+                whenCalledWithQueryParams { Map queryParams, String uri, String httpVerb ->
+                    setHttpReturnCode(201)
+                    [reply: 456]
+                }
+            }
+        }
+
+        // act
+        def result = runFlow('queryParametersHttpStatus') {
+            json {
+                map([foo: 123])
+            }
+        }
+
+        // assert
+        assertThat result,
+                   is(equalTo([reply_key: 201]))
+    }
+
+    @Test
+    void queryParameters_http_return_error_code_custom() {
+        // arrange
+        mockRestHttpCall('SomeSystem Call') {
+            json {
+                whenCalledWithQueryParams { Map queryParams, String uri, String httpVerb ->
+                    setHttpReturnCode(202)
+                    [reply: 456]
+                }
+            }
+        }
+
+        // act
+        def result = shouldFail {
+            runFlow('queryParametersHttpStatus') {
+                json {
+                    map([foo: 123])
+                }
+            }
+        }
+
+        // assert
+        assertThat result.message,
+                   is(containsString('Response code 202 mapped as failure'))
+    }
+
+    @Test
+    void queryParameters_http_return_error_code() {
+        // arrange
+        mockRestHttpCall('SomeSystem Call') {
+            json {
+                whenCalledWithQueryParams { Map queryParams, String uri, String httpVerb ->
+                    setHttpReturnCode(500)
+                    [reply: 456]
+                }
+            }
+        }
+
+        // act
+        def result = shouldFail {
+            runFlow('queryParametersHttpStatus') {
+                json {
+                    map([foo: 123])
+                }
+            }
+        }
+
+        // assert
+        assertThat result.message,
+                   is(containsString('Response code 500 mapped as failure'))
     }
 
     @Test
