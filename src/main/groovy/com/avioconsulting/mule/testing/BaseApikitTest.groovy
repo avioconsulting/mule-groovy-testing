@@ -25,6 +25,7 @@ abstract class BaseApikitTest extends BaseTest {
     @Override
     Properties getStartUpProperties() {
         def properties = super.getStartUpProperties()
+        // have to have the listener running to use apikit
         // http listener gets going before the properties object this method creates has had its values take effect
         System.setProperty('avio.test.http.port',
                            getHttpPort() as String)
