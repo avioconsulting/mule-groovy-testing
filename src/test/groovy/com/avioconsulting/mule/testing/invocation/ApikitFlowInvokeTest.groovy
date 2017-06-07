@@ -18,17 +18,25 @@ class ApikitFlowInvokeTest extends BaseTest {
 
         // assert
         assertThat port,
-                   is(equalTo(8081))
+                   is(equalTo(8088))
     }
 
     @Test
     void getHttpPort_secondPortOpen() {
         // arrange
+        def serverSocket = new ServerSocket(8088)
+        try {
 
-        // act
+            // act
+            def port = getHttpPort()
 
-        // assert
-        fail 'write this'
+            // assert
+            assertThat port,
+                       is(equalTo(8089))
+        }
+        finally {
+            serverSocket.close()
+        }
     }
 
     @Test

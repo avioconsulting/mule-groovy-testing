@@ -87,7 +87,16 @@ abstract class BaseTest extends FunctionalMunitSuite {
     }
 
     protected int getHttpPort() {
-        8081
+        (8088..8199).find { candidate ->
+            try {
+                def socket = new ServerSocket(candidate)
+                socket.close()
+                true
+            }
+            catch (IOException e) {
+                false
+            }
+        }
     }
 
     abstract List<String> getConfigResourcesList()
