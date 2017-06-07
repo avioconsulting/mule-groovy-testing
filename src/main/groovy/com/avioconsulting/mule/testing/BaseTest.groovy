@@ -186,8 +186,10 @@ abstract class BaseTest extends FunctionalMunitSuite {
                                         .ofNamespace('doc')
                                         .withValue(connectorName))
         def expectedPayloadType = InputStream
+        def locator = new ProcessorLocator(connectorName)
         def formatterChoice = new RequestResponseChoice(mocker,
                                                         spy,
+                                                        locator,
                                                         muleContext,
                                                         expectedPayloadType,
                                                         MockedConnectorType.HTTP)
@@ -209,8 +211,10 @@ abstract class BaseTest extends FunctionalMunitSuite {
                                         .ofNamespace('doc')
                                         .withValue(connectorName))
         def expectedPayloadType = String
+        def locator = new ProcessorLocator(connectorName)
         def formatterChoice = new RequestResponseChoice(mocker,
                                                         spy,
+                                                        locator,
                                                         muleContext,
                                                         expectedPayloadType,
                                                         MockedConnectorType.VM)

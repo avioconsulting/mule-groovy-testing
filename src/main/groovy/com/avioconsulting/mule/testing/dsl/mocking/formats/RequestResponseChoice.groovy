@@ -1,5 +1,6 @@
 package com.avioconsulting.mule.testing.dsl.mocking.formats
 
+import com.avioconsulting.mule.testing.ProcessorLocator
 import com.avioconsulting.mule.testing.dsl.mocking.MockedConnectorType
 import org.mule.api.MuleContext
 import org.mule.munit.common.mocking.MessageProcessorMocker
@@ -11,12 +12,15 @@ class RequestResponseChoice {
     private final Class expectedPayloadType
     private final MockedConnectorType mockedConnectorType
     private final MunitSpy spy
+    private final ProcessorLocator processorLocator
 
     RequestResponseChoice(MessageProcessorMocker muleMocker,
                           MunitSpy spy,
+                          ProcessorLocator processorLocator,
                           MuleContext muleContext,
                           Class expectedPayloadType,
                           MockedConnectorType mockedConnectorType) {
+        this.processorLocator = processorLocator
         this.spy = spy
         this.mockedConnectorType = mockedConnectorType
         this.expectedPayloadType = expectedPayloadType
@@ -27,6 +31,7 @@ class RequestResponseChoice {
     def json(@DelegatesTo(JsonFormatter) Closure closure) {
         def formatter = new JsonFormatter(this.muleMocker,
                                           spy,
+                                          processorLocator,
                                           this.muleContext,
                                           expectedPayloadType,
                                           mockedConnectorType)
