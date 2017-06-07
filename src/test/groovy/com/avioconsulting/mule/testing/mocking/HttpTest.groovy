@@ -134,4 +134,37 @@ class HttpTest extends BaseTest {
         assertThat result,
                    is(equalTo([reply_key: 457]))
     }
+
+    @Test
+    void queryParameters_Enricher() {
+        // arrange
+        Map actualParams = null
+        String actualUri = null
+        mockRestHttpCall('SomeSystem Call') {
+            json {
+                whenCalledWithQueryParams { Map queryParams, String uri ->
+                    actualParams = queryParams
+                    actualUri = uri
+                    [reply: 456]
+                }
+            }
+        }
+
+        // act
+        def result = runFlow('queryParametersEnricher') {
+            json {
+                map([foo: 123])
+            }
+        }
+
+        // assert
+        assert actualParams
+        assertThat actualParams,
+                   is(equalTo([stuff: '123']))
+        assert actualUri
+        assertThat actualUri,
+                   is(equalTo('/some_path/there'))
+        assertThat result,
+                   is(equalTo([reply_key: 457]))
+    }
 }
