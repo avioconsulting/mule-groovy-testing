@@ -1,6 +1,6 @@
 package com.avioconsulting.mule.testing.invocation
 
-import com.avioconsulting.mule.testing.BaseApikitTest
+import com.avioconsulting.mule.testing.BaseApiKitTest
 import com.avioconsulting.mule.testing.SampleJacksonInput
 import com.avioconsulting.mule.testing.SampleJacksonOutput
 import org.junit.Test
@@ -9,7 +9,7 @@ import static groovy.test.GroovyAssert.shouldFail
 import static org.hamcrest.Matchers.*
 import static org.junit.Assert.assertThat
 
-class ApikitFlowInvokeTest extends BaseApikitTest {
+class ApikitFlowInvokeTest extends BaseApiKitTest {
     @Test
     void getHttpPort_firstPortOpen() {
         // arrange
