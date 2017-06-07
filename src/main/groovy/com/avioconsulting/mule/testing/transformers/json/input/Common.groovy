@@ -1,26 +1,24 @@
-package com.avioconsulting.mule.testing.transformers.json
+package com.avioconsulting.mule.testing.transformers.json.input
 
 import com.avioconsulting.mule.testing.dsl.invokers.FlowRunnerImpl
 import com.avioconsulting.mule.testing.dsl.mocking.MockedConnectorType
 import com.avioconsulting.mule.testing.runners.RunnerConfig
+import com.avioconsulting.mule.testing.transformers.InputTransformer
 import org.mule.api.MuleContext
 import org.mule.api.MuleMessage
-import org.mule.modules.interceptor.processors.MuleMessageTransformer
 
-abstract class JSONTransformer implements MuleMessageTransformer {
-    private final Class expectedPayloadType
+abstract class Common implements InputTransformer {
     private final MuleContext muleContext
     private final MockedConnectorType mockedConnectorType
+    private final Class expectedPayloadType
 
-    JSONTransformer(Class expectedPayloadType,
-                    MuleContext muleContext,
-                    MockedConnectorType mockedConnectorType) {
+    Common(MuleContext muleContext,
+           MockedConnectorType mockedConnectorType,
+           Class expectedPayloadType) {
+        this.expectedPayloadType = expectedPayloadType
         this.mockedConnectorType = mockedConnectorType
         this.muleContext = muleContext
-        this.expectedPayloadType = expectedPayloadType
     }
-
-    abstract MuleMessage transform(String jsonString)
 
     def validateContentType(MuleMessage message) {
         def runnerConfig = muleContext.registry.get(FlowRunnerImpl.AVIO_MULE_RUNNER_CONFIG_BEAN) as RunnerConfig
@@ -32,7 +30,9 @@ abstract class JSONTransformer implements MuleMessageTransformer {
                 'Content-Type') as String == 'application/json': "Content-Type was not set to 'application/json' before calling your mock endpoint! Add a set-property"
     }
 
-    MuleMessage transform(MuleMessage muleMessage) {
+    abstract def transform(String jsonString)
+
+    def transformInput(MuleMessage muleMessage) {
         validateContentType(muleMessage)
         def payload = muleMessage.payload
         if (expectedPayloadType.isInstance(payload)) {
