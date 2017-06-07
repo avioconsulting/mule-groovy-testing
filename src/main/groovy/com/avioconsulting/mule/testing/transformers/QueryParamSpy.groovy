@@ -11,18 +11,15 @@ import org.mule.munit.common.mocking.SpyProcess
 
 class QueryParamSpy implements SpyProcess, MuleMessageTransformer {
     private final Closure closure
-    private final String dummyReply
     private results = null
-    private final OutputTransformer transformer
+    private final OutputTransformer outputTransformer
     private final ProcessorLocator processorLocator
 
     QueryParamSpy(ProcessorLocator processorLocator,
                   Closure closure,
-                  String dummyReply,
-                  OutputTransformer transformer) {
+                  OutputTransformer outputTransformer) {
         this.processorLocator = processorLocator
-        this.transformer = transformer
-        this.dummyReply = dummyReply
+        this.outputTransformer = outputTransformer
         this.closure = closure
     }
 
@@ -37,6 +34,6 @@ class QueryParamSpy implements SpyProcess, MuleMessageTransformer {
     }
 
     MuleMessage transform(MuleMessage muleMessage) {
-        this.transformer.transformOutput(results)
+        this.outputTransformer.transformOutput(results)
     }
 }

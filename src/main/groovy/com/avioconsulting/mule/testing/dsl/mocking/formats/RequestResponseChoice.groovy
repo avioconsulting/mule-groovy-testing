@@ -3,6 +3,7 @@ package com.avioconsulting.mule.testing.dsl.mocking.formats
 import com.avioconsulting.mule.testing.ProcessorLocator
 import com.avioconsulting.mule.testing.dsl.mocking.MockedConnectorType
 import org.mule.api.MuleContext
+import org.mule.modules.interceptor.processors.MuleMessageTransformer
 import org.mule.munit.common.mocking.MessageProcessorMocker
 import org.mule.munit.common.mocking.MunitSpy
 
@@ -29,15 +30,15 @@ class RequestResponseChoice {
     }
 
     def json(@DelegatesTo(JsonFormatter) Closure closure) {
-        def formatter = new JsonFormatter(this.muleMocker,
-                                          spy,
+        def formatter = new JsonFormatter(spy,
                                           processorLocator,
                                           this.muleContext,
                                           expectedPayloadType,
                                           mockedConnectorType)
         def code = closure.rehydrate(formatter, this, this)
         code.resolveStrategy = Closure.DELEGATE_ONLY
-        code()
+        def transformer = code() as MuleMessageTransformer
+        muleMocker.thenApply(transformer)
     }
 
     def xml(@DelegatesTo(XMLFormatter) Closure closure) {
