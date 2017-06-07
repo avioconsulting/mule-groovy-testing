@@ -23,7 +23,7 @@ http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/jso
     </flow>
 
     <flow name="filterJsonTest">
-        <byte-array-to-string-transformer />
+        <byte-array-to-string-transformer/>
         <json:json-to-object-transformer/>
         <idempotent-message-filter idExpression="#[payload.get('foo').asText()]"/>
         <dw:transform-message doc:name="Transform Message">
@@ -35,6 +35,10 @@ http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/jso
 }]]></dw:set-payload>
         </dw:transform-message>
         <set-property propertyName="Content-Type" value="application/json"/>
+    </flow>
+
+    <flow name="nullJsonTest">
+        <set-payload value="" />
     </flow>
 
     <flow name="jsonTestNoContentType">

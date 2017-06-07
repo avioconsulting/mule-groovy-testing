@@ -135,7 +135,7 @@ class JsonTest extends BaseTest {
     }
 
     @Test
-    void nullPayload() {
+    void filterPayload() {
         // arrange
         def input = new SampleJacksonInput()
         input.foobar = 123
@@ -150,6 +150,22 @@ class JsonTest extends BaseTest {
         }
         runIt()
         def result = runIt()
+
+        // assert
+        assertThat result,
+                   is(nullValue())
+    }
+
+    @Test
+    void nullPayload() {
+        // arrange
+
+        // act
+        def result = runFlow('nullJsonTest') {
+            json {
+                map([:])
+            }
+        }
 
         // assert
         assertThat result,
