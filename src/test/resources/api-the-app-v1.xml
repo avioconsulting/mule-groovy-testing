@@ -12,10 +12,12 @@ http://www.mulesoft.org/schema/mule/apikit http://www.mulesoft.org/schema/mule/a
     <apikit:config name="api-the-app-v1-config"
                    raml="api-the-app-v1.raml"
                    consoleEnabled="false"
+                   disableValidations="${skip.apikit.validation}"
                    doc:name="Router"/>
     <flow name="api-the-app-v1-main">
         <http:listener config-ref="${http.listener.config}" path="/the-app/api/v1/*" doc:name="HTTP"/>
-        <apikit:router config-ref="api-the-app-v1-config" doc:name="APIkit Router"/>
+        <apikit:router config-ref="api-the-app-v1-config"
+                       doc:name="APIkit Router"/>
     </flow>
     <flow name="post:/resources:application/json:api-the-app-v1-config">
         <dw:transform-message doc:name="Transform Message">

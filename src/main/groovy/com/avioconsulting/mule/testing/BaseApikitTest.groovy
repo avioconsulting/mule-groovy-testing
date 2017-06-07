@@ -29,6 +29,9 @@ abstract class BaseApikitTest extends BaseTest {
         System.setProperty('avio.test.http.port',
                            getHttpPort() as String)
         properties.put('http.listener.config', 'test-http-listener-config')
+        // by convention, assume this
+        properties.put('skip.apikit.validation', 'false')
+        properties.put('return.validation.failures', 'true')
         properties
     }
 
