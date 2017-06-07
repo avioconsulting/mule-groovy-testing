@@ -4,19 +4,14 @@ import org.mule.api.MuleMessage
 import org.mule.modules.interceptor.processors.MuleMessageTransformer
 
 class StandardTransformer implements MuleMessageTransformer {
-    private final OutputTransformer outputTransformer
-    private final InputTransformer inputTransformer
-    private final Closure closure
-
-    StandardTransformer(Closure closure,
-                        InputTransformer inputTransformer,
-                        OutputTransformer outputTransformer) {
-        this.closure = closure
-        this.inputTransformer = inputTransformer
-        this.outputTransformer = outputTransformer
-    }
+    OutputTransformer outputTransformer
+    InputTransformer inputTransformer
+    Closure closure
 
     MuleMessage transform(MuleMessage muleMessage) {
+        assert outputTransformer
+        assert inputTransformer
+        assert closure
         def input = inputTransformer.transformInput(muleMessage)
         def result = closure(input)
         outputTransformer.transformOutput(result)
