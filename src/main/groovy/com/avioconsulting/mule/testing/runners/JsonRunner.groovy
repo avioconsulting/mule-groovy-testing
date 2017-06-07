@@ -6,6 +6,7 @@ import org.mule.MessageExchangePattern
 import org.mule.api.MuleContext
 import org.mule.api.MuleEvent
 import org.mule.munit.common.util.MunitMuleTestUtils
+import org.mule.transport.NullPayload
 
 abstract class JsonRunner implements JsonMessage {
     private final MuleContext muleContext
@@ -47,6 +48,10 @@ abstract class JsonRunner implements JsonMessage {
         }
         
         def message = outputEvent.message
+        // comes back from some Mule connectors like JSON
+        if (message.payload instanceof NullPayload) {
+            return null
+        }
         def jsonString = message.payloadAsString
 
         // empty payload

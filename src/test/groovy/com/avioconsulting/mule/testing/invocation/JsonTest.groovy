@@ -157,11 +157,27 @@ class JsonTest extends BaseTest {
     }
 
     @Test
-    void nullPayload() {
+    void emptyPayloadTest() {
         // arrange
 
         // act
-        def result = runFlow('nullJsonTest') {
+        def result = runFlow('emptyPayloadTest') {
+            json {
+                map([:])
+            }
+        }
+
+        // assert
+        assertThat result,
+                   is(nullValue())
+    }
+
+    @Test
+    void nullPayloadTest() {
+        // arrange
+
+        // act
+        def result = runFlow('nullPayloadTest') {
             json {
                 map([:])
             }
