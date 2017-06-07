@@ -41,7 +41,7 @@ class ApikitFlowInvokeTest extends BaseApiKitTest {
     }
 
     @Test
-    void propertySetWithHttpPort() {
+    void propertySetWithListenerConfig() {
         // arrange
 
         // act

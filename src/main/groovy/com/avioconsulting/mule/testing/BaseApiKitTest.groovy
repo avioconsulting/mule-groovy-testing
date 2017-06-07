@@ -6,6 +6,8 @@ import org.mule.api.MuleMessage
 import org.mule.api.transport.PropertyScope
 
 abstract class BaseApiKitTest extends BaseTest {
+    private static final String TEST_PORT_PROPERTY = 'avio.test.http.port'
+
     protected abstract String getApiNameUnderTest()
 
     protected abstract String getApiVersionUnderTest()
@@ -28,9 +30,10 @@ abstract class BaseApiKitTest extends BaseTest {
     Properties getStartUpProperties() {
         def properties = super.getStartUpProperties()
         // have to have the listener running to use apikit
-        // http listener gets going before the properties object this method creates has had its values take effect
-        System.setProperty('avio.test.http.port',
-                           getHttpPort() as String)
+        // http listener gets go
+        // ing before the properties object this method creates has had its values take effect
+        System.setProperty(TEST_PORT_PROPERTY,
+                           httpPort as String)
         properties.put('http.listener.config', 'test-http-listener-config')
         // by convention, assume this
         properties.put('skip.apikit.validation', 'false')
@@ -99,19 +102,14 @@ abstract class BaseApiKitTest extends BaseTest {
         def httpProps = props.collectEntries { prop, value ->
             ["http.${prop}".toString(), value]
         }
-        httpProps['host'] = "localhost:${getHttpPort()}".toString()
+        httpProps['host'] = "localhost:${System.getProperty(TEST_PORT_PROPERTY)}".toString()
         httpProps.each { prop, value ->
             message.setProperty(prop, value, PropertyScope.INBOUND)
         }
     }
 
-    private Integer httpPort = null
-
-    protected int getHttpPort() {
-        if (httpPort) {
-            return httpPort
-        }
-        httpPort = (8088..8199).find { candidate ->
+    protected static int getHttpPort() {
+        (8088..8199).find { candidate ->
             try {
                 def socket = new ServerSocket(candidate)
                 socket.close()
@@ -122,5 +120,4 @@ abstract class BaseApiKitTest extends BaseTest {
             }
         }
     }
-
 }
