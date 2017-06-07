@@ -62,9 +62,6 @@ abstract class BaseTest extends FunctionalMunitSuite {
         properties.putAll onlyJavaStrings
         // verbose in testing is good
         properties.put('mule.verbose.exceptions', true)
-        if (enableApiKitFlows()) {
-            properties.put('http.port', getHttpPort())
-        }
         properties
     }
 
@@ -72,39 +69,9 @@ abstract class BaseTest extends FunctionalMunitSuite {
         [:]
     }
 
-    protected String getApiKitPrefix() { 'api' }
-
-    protected boolean enableApiKitFlows() { false }
-
     @Override
     protected List<String> getFlowsExcludedOfInboundDisabling() {
-        if (enableApiKitFlows()) {
-            // apikit complains unless these 2 are both open
-            ['main', 'console'].collect { suffix ->
-                // toString here to ensure we return Java string and not Groovy strings
-                "${apiKitPrefix}-${suffix}".toString()
-            }
-        } else {
-            []
-        }
-    }
-
-    private Integer httpPort = null
-
-    protected int getHttpPort() {
-        if (httpPort) {
-            return httpPort
-        }
-        httpPort = (8088..8199).find { candidate ->
-            try {
-                def socket = new ServerSocket(candidate)
-                socket.close()
-                true
-            }
-            catch (IOException ignored) {
-                false
-            }
-        }
+        []
     }
 
     abstract List<String> getConfigResourcesList()

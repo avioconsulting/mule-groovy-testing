@@ -1,14 +1,15 @@
 package com.avioconsulting.mule.testing.invocation
 
-import com.avioconsulting.mule.testing.BaseTest
+import com.avioconsulting.mule.testing.BaseApikitTest
+import com.avioconsulting.mule.testing.SampleJacksonInput
+import com.avioconsulting.mule.testing.SampleJacksonOutput
 import org.junit.Test
 
 import static org.hamcrest.Matchers.equalTo
 import static org.hamcrest.Matchers.is
 import static org.junit.Assert.assertThat
-import static org.junit.Assert.fail
 
-class ApikitFlowInvokeTest extends BaseTest {
+class ApikitFlowInvokeTest extends BaseApikitTest {
     @Test
     void getHttpPort_firstPortOpen() {
         // arrange
@@ -47,24 +48,33 @@ class ApikitFlowInvokeTest extends BaseTest {
         def props = getStartUpProperties()
 
         // assert
-        assertThat props.get('http.port') as String,
-                   is(equalTo('8088'))
+        assertThat props.get('http.listener.config') as String,
+                   is(equalTo('test-http-listener-config'))
     }
 
     @Test
     void runApiKitFlow() {
         // arrange
+        def input = new SampleJacksonInput()
+        input.foobar = 123
 
         // act
+        def result = runApiKitFlow {
+            json {
+                jackson(input, SampleJacksonOutput)
+            }
+        } as SampleJacksonOutput
 
         // assert
-        fail 'write this'
+        assertThat result.result,
+                   is(equalTo(123))
     }
 
-    @Override
-    protected boolean enableApiKitFlows() { true }
+    protected String getApiNameUnderTest() {
+        'the-app'
+    }
 
-    List<String> getConfigResourcesList() {
-        []
+    protected String getApiVersionUnderTest() {
+        'v1'
     }
 }

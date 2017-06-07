@@ -107,4 +107,5 @@ dependencies {
     testRuntime group: 'org.mule.transports', name: 'mule-transport-http', version: muleVersion
     testRuntime group: 'org.mule.transports', name: 'mule-transport-vm', version: muleVersion
     testRuntime group: 'org.mule.modules', name: 'mule-module-ws', version: muleVersion
+    testRuntime group: 'org.mule.modules', name: 'mule-module-apikit', version: muleVersion
 }

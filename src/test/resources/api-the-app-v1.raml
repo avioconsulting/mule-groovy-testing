@@ -1,0 +1,26 @@
+#%RAML 1.0
+title: Our Test API
+mediaType: application/json
+version: v1
+securitySchemes:
+types:
+  Request:
+    type: object
+    properties:
+      foo: integer
+  Response:
+    type: object
+    properties:
+      key: integer
+
+/resources:
+  post:
+    body:
+      application/json:
+        type: Request
+
+    responses:
+      201:
+        body:
+         application/json:
+           type: Response
