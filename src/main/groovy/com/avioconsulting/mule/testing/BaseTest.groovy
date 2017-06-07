@@ -203,8 +203,14 @@ abstract class BaseTest extends FunctionalMunitSuite {
                 .withAttributes(Attribute.attribute('name')
                                         .ofNamespace('doc')
                                         .withValue(connectorName))
+        def spy = spyMessageProcessor('outbound-endpoint')
+                .ofNamespace('vm')
+                .withAttributes(Attribute.attribute('name')
+                                        .ofNamespace('doc')
+                                        .withValue(connectorName))
         def expectedPayloadType = String
         def formatterChoice = new RequestResponseChoice(mocker,
+                                                        spy,
                                                         muleContext,
                                                         expectedPayloadType,
                                                         MockedConnectorType.VM)
