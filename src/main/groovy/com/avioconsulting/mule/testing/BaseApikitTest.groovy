@@ -88,8 +88,11 @@ abstract class BaseApikitTest extends BaseTest {
                 'request.path' : url,
                 'request.uri'  : url,
         ]
-        if (queryParams != null) {
-            props['query.params'] = queryParams
+        if (queryParams) {
+            props['query.params'] = queryParams.collectEntries { key, value ->
+                // everything needs to be a string to mimic real HTTP listener
+                [key.toString(), value.toString()]
+            }
         }
         def httpProps = props.collectEntries { prop, value ->
             ["http.${prop}".toString(), value]

@@ -25,6 +25,17 @@ types:
          application/json:
            type: Response
 
+  get:
+    queryParameters:
+      foo: integer
+      bar: integer
+
+    responses:
+      200:
+        body:
+          application/json:
+            type: Response
+
   /{id}:
     get:
       responses:

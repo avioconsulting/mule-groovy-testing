@@ -39,4 +39,16 @@ http://www.mulesoft.org/schema/mule/apikit http://www.mulesoft.org/schema/mule/a
 }]]></dw:set-payload>
         </dw:transform-message>
     </flow>
+    <flow name="get:/resources:api-the-app-v1-config">
+        <set-variable variableName="foo" value="#[message.inboundProperties.'http.query.params'.foo]"/>
+        <set-variable variableName="bar" value="#[message.inboundProperties.'http.query.params'.bar]"/>
+        <dw:transform-message doc:name="Transform Message">
+            <dw:set-payload><![CDATA[%dw 1.0
+%output application/json
+---
+{
+    key: flowVars.foo + flowVars.bar
+}]]></dw:set-payload>
+        </dw:transform-message>
+    </flow>
 </mule>
