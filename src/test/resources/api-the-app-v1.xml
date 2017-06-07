@@ -26,6 +26,5 @@ http://www.mulesoft.org/schema/mule/apikit http://www.mulesoft.org/schema/mule/a
     key: payload.foo
 }]]></dw:set-payload>
         </dw:transform-message>
-        <set-property propertyName="Content-Type" value="application/json"/>
     </flow>
 </mule>

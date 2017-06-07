@@ -1,6 +1,9 @@
 package com.avioconsulting.mule.testing
 
 import com.avioconsulting.mule.testing.dsl.invokers.FlowRunner
+import com.avioconsulting.mule.testing.dsl.invokers.FlowRunnerImpl
+import org.mule.api.MuleMessage
+import org.mule.api.transport.PropertyScope
 
 abstract class BaseApikitTest extends BaseTest {
     protected abstract String getApiNameUnderTest()
@@ -9,6 +12,14 @@ abstract class BaseApikitTest extends BaseTest {
 
     protected String getFullApiName() {
         "api-${apiNameUnderTest}-${apiVersionUnderTest}"
+    }
+
+    protected String getFlowName() {
+        "${fullApiName}-main"
+    }
+
+    protected String getHttpListenerPath() {
+        '/' + [apiNameUnderTest, 'api', apiVersionUnderTest, '*'].join('/')
     }
 
     @Override
@@ -38,8 +49,51 @@ abstract class BaseApikitTest extends BaseTest {
         ]
     }
 
-    def runApiKitFlow(@DelegatesTo(FlowRunner) Closure closure) {
+    def runApiKitFlow(String httpMethod,
+                      String path,
+                      Map queryParams = null,
+                      @DelegatesTo(FlowRunner) Closure closure) {
+        def runner = new FlowRunnerImpl(muleContext)
+        def code = closure.rehydrate(runner, this, this)
+        code.resolveStrategy = Closure.DELEGATE_ONLY
+        code()
+        def inputEvent = runner.event
+        setHttpProps(inputEvent.message,
+                     httpMethod,
+                     path,
+                     queryParams)
+        def outputEvent = runFlow(flowName, inputEvent)
+        runner.transformOutput(outputEvent)
+    }
 
+    private def setHttpProps(MuleMessage message,
+                             String method,
+                             String path,
+                             Map queryParams) {
+        def urlParts = httpListenerPath.split('/')
+        assert urlParts.last() == '*': 'Expected wildcard listener!'
+        urlParts = urlParts[0..-2]
+        urlParts.addAll(path.split('/'))
+        urlParts.removeAll { part -> part == '' }
+        def url = '/' + urlParts.join('/')
+        println "Setting http request path to ${url}..."
+        def props = [
+                'listener.path': httpListenerPath,
+                method         : method,
+                'relative.path': url,
+                'request.path' : url,
+                'request.uri'  : url,
+        ]
+        if (queryParams != null) {
+            props['query.params'] = queryParams
+        }
+        def httpProps = props.collectEntries { prop, value ->
+            ["http.${prop}".toString(), value]
+        }
+        httpProps['host'] = "localhost:${getHttpPort()}".toString()
+        httpProps.each { prop, value ->
+            message.setProperty(prop, value, PropertyScope.INBOUND)
+        }
     }
 
     private Integer httpPort = null

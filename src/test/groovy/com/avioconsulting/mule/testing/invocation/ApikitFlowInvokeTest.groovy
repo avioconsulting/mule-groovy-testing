@@ -59,7 +59,7 @@ class ApikitFlowInvokeTest extends BaseApikitTest {
         input.foobar = 123
 
         // act
-        def result = runApiKitFlow {
+        def result = runApiKitFlow('POST', '/resources') {
             json {
                 jackson(input, SampleJacksonOutput)
             }
@@ -68,6 +68,16 @@ class ApikitFlowInvokeTest extends BaseApikitTest {
         // assert
         assertThat result.result,
                    is(equalTo(123))
+    }
+
+    @Test
+    void runApiKitFlow_QueryParams() {
+        // arrange
+
+        // act
+
+        // assert
+        fail 'write this'
     }
 
     protected String getApiNameUnderTest() {
