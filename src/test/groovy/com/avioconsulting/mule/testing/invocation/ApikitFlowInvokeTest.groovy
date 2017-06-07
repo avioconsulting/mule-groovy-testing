@@ -44,9 +44,11 @@ class ApikitFlowInvokeTest extends BaseTest {
         // arrange
 
         // act
+        def props = getStartUpProperties()
 
         // assert
-        fail 'write this'
+        assertThat props.get('http.port') as String,
+                   is(equalTo('8088'))
     }
 
     @Test
@@ -58,6 +60,9 @@ class ApikitFlowInvokeTest extends BaseTest {
         // assert
         fail 'write this'
     }
+
+    @Override
+    protected boolean enableApiKitFlows() { true }
 
     List<String> getConfigResourcesList() {
         []

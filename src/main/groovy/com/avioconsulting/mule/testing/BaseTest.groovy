@@ -62,6 +62,9 @@ abstract class BaseTest extends FunctionalMunitSuite {
         properties.putAll onlyJavaStrings
         // verbose in testing is good
         properties.put('mule.verbose.exceptions', true)
+        if (enableApiKitFlows()) {
+            properties.put('http.port', getHttpPort())
+        }
         properties
     }
 
@@ -71,7 +74,7 @@ abstract class BaseTest extends FunctionalMunitSuite {
 
     protected String getApiKitPrefix() { 'api' }
 
-    protected boolean enableApiKitFlows() { true }
+    protected boolean enableApiKitFlows() { false }
 
     @Override
     protected List<String> getFlowsExcludedOfInboundDisabling() {
