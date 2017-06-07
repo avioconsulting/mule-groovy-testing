@@ -86,14 +86,19 @@ abstract class BaseTest extends FunctionalMunitSuite {
         }
     }
 
+    private Integer httpPort = null
+
     protected int getHttpPort() {
-        (8088..8199).find { candidate ->
+        if (httpPort) {
+            return httpPort
+        }
+        httpPort = (8088..8199).find { candidate ->
             try {
                 def socket = new ServerSocket(candidate)
                 socket.close()
                 true
             }
-            catch (IOException e) {
+            catch (IOException ignored) {
                 false
             }
         }
