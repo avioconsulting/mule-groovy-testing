@@ -30,8 +30,10 @@ class QueryParamSpy implements SpyProcess, MuleMessageTransformer {
         def ourRequester = processorLocator.getProcessor(incomingEvent) as DefaultHttpRequester
         def requestBuilder = ourRequester.requestBuilder
         ParameterMap parameters = requestBuilder.getQueryParams(incomingEvent)
+        // make it easier to compare
+        def stockMap = new HashMap(parameters)
         def fullPath = requestBuilder.replaceUriParams(ourRequester.path, incomingEvent)
-        results = closure(parameters, fullPath)
+        results = closure(stockMap, fullPath)
     }
 
     MuleMessage transform(MuleMessage muleMessage) {
