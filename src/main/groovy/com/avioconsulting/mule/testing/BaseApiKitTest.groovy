@@ -10,6 +10,7 @@ abstract class BaseApiKitTest extends BaseTest {
 
     protected abstract String getApiVersionUnderTest()
 
+    // version friendly convention
     protected String getFullApiName() {
         "api-${apiNameUnderTest}-${apiVersionUnderTest}"
     }
@@ -18,6 +19,7 @@ abstract class BaseApiKitTest extends BaseTest {
         "${fullApiName}-main"
     }
 
+    // using CloudHub combine friendly convention
     protected String getHttpListenerPath() {
         '/' + [apiNameUnderTest, 'api', apiVersionUnderTest, '*'].join('/')
     }
