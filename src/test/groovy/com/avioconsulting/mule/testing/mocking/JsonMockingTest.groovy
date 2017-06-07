@@ -41,6 +41,26 @@ class JsonMockingTest extends BaseTest {
     }
 
     @Test
+    void queryParams_returns_map() {
+        // arrange
+
+        // act
+
+        // assert
+        fail 'write this'
+    }
+
+    @Test
+    void queryParams_returns_jackson_object() {
+        // arrange
+
+        // act
+
+        // assert
+        fail 'write this'
+    }
+
+    @Test
     void mock_via_jackson() {
         // arrange
         def input = new SampleJacksonInput()
