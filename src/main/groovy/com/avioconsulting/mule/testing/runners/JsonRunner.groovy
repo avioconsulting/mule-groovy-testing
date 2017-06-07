@@ -45,13 +45,20 @@ abstract class JsonRunner implements JsonMessage {
         if (outputEvent == null) {
             return null
         }
+        
         def message = outputEvent.message
+        def jsonString = message.payloadAsString
+
+        // empty payload
+        if (!jsonString) {
+            return null
+        }
+
         if (enforceContentType) {
             def contentType = message.getOutboundProperty('Content-Type') as String
             assert contentType && contentType.contains(
                     'application/json'): "Content-Type was not set to 'application/json' within your flow! Add a set-property"
         }
-        def jsonString = outputEvent.message.payloadAsString
         getObjectFromOutput(jsonString)
     }
 }
