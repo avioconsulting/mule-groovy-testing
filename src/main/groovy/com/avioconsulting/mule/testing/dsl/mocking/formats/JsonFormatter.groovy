@@ -41,7 +41,9 @@ class JsonFormatter {
                 transformer.transformOutput(input)
             }
         }
-        // TODO: Pass this in from the top
+        // TODO: Pass connector name in from the constructor
+        // TODO: Detect whether a Map or Jackson object was passed in and call the appropriate transformer
+        // TODO: in the anon class above
         def queryParamSpy = new QueryParamSpy('SomeSystem Call',
                                               closure,
                                               '[]',
