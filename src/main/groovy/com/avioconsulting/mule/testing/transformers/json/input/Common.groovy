@@ -11,7 +11,7 @@ import org.mule.transport.NullPayload
 abstract class Common implements InputTransformer {
     private final MuleContext muleContext
     private final ConnectorType mockedConnectorType
-    private final List<Class> allowedPayloadTypes
+    private List<Class> allowedPayloadTypes
 
     Common(MuleContext muleContext,
            ConnectorType mockedConnectorType,
@@ -64,5 +64,9 @@ abstract class Common implements InputTransformer {
         allowedPayloadTypes.find { type ->
             type.isInstance(payload)
         }
+    }
+
+    def disableStreaming() {
+        this.allowedPayloadTypes = [String]
     }
 }

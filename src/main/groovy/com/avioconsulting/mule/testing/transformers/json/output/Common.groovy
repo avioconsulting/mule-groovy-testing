@@ -7,9 +7,10 @@ import org.mule.api.MuleMessage
 
 abstract class Common implements OutputTransformer, JsonMessage {
     private final MuleContext muleContext
+    private boolean useStreaming
 
     Common(MuleContext muleContext) {
-
+        this.useStreaming = true
         this.muleContext = muleContext
     }
 
@@ -17,6 +18,13 @@ abstract class Common implements OutputTransformer, JsonMessage {
 
     MuleMessage transformOutput(Object input) {
         def jsonString = getJsonOutput(input)
-        getJSONMessage(jsonString, muleContext)
+        getJSONMessage(jsonString,
+                       muleContext,
+                       200,
+                       useStreaming)
+    }
+
+    def disableStreaming() {
+        useStreaming = false
     }
 }

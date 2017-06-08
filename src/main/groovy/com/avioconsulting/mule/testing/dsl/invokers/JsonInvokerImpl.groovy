@@ -21,8 +21,7 @@ class JsonInvokerImpl implements JsonInvoker, Invoker {
     private OutputTransformer transformBeforeCallingFlow
     private InputTransformer transformAfterCallingFlow
     private inputObject
-    // can pass either of these back from a flow
-    private static final List<Class> allowedPayloadTypes = [InputStream, String]
+    private static final List<Class> allowedPayloadTypes = [InputStream]
 
     JsonInvokerImpl(MuleContext muleContext,
                     RunnerConfig runnerConfig) {
@@ -69,8 +68,10 @@ class JsonInvokerImpl implements JsonInvoker, Invoker {
     }
 
     def noStreaming() {
-        assert jsonRunner: 'Need to specify a type of JSON serialization (jackson, map) first!'
-        jsonRunner.disableStreaming()
+        assert transformAfterCallingFlow: 'Need to specify a type of JSON serialization (jackson, map) first!'
+        transformAfterCallingFlow.disableStreaming()
+        assert transformBeforeCallingFlow: 'Need to specify a type of JSON serialization (jackson, map) first!'
+        transformBeforeCallingFlow.disableStreaming()
     }
 
     MuleEvent getEvent() {

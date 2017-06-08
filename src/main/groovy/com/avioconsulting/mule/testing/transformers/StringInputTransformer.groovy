@@ -30,6 +30,10 @@ class StringInputTransformer implements InputTransformer {
         muleMessage.payload
     }
 
+    def disableStreaming() {
+        // we already expect a string
+    }
+
     private def validateContentType(MuleMessage muleMessage) {
         def runnerConfig = muleContext.registry.get(FlowRunnerImpl.AVIO_MULE_RUNNER_CONFIG_BEAN) as RunnerConfig
         // don't need content-type for VM right now

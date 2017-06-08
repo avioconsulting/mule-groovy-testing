@@ -12,6 +12,7 @@ import com.avioconsulting.mule.testing.transformers.json.output.JacksonOutputTra
 import com.avioconsulting.mule.testing.transformers.json.output.MapOutputTransformer
 import org.mule.api.MuleContext
 import org.mule.api.MuleMessage
+import org.mule.munit.common.mocking.MessageProcessorMocker
 import org.mule.munit.common.mocking.MunitSpy
 
 class JsonFormatter {
@@ -44,6 +45,9 @@ class JsonFormatter {
                     outputTransformer = new JacksonOutputTransformer(muleContext)
                 }
                 outputTransformer.transformOutput(input)
+            }
+
+            def disableStreaming() {
             }
         }
         def queryParamSpy = new QueryParamSpy(processorLocator,
