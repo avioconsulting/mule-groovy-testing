@@ -1,8 +1,8 @@
 package com.avioconsulting.mule.testing.transformers
 
+import com.avioconsulting.mule.testing.RunnerConfig
 import com.avioconsulting.mule.testing.dsl.invokers.FlowRunnerImpl
 import com.avioconsulting.mule.testing.dsl.mocking.ConnectorType
-import com.avioconsulting.mule.testing.RunnerConfig
 import org.mule.api.MuleContext
 import org.mule.api.MuleMessage
 import org.mule.transport.NullPayload

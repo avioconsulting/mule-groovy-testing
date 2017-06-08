@@ -38,17 +38,17 @@ http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/jso
     </flow>
 
     <flow name="emptyPayloadTest">
-        <set-payload value="" />
+        <set-payload value=""/>
     </flow>
 
     <flow name="wrongContentTypeTest">
-        <set-payload value="foo" />
+        <set-payload value="foo"/>
         <set-property propertyName="Content-Type" value="application/json"/>
     </flow>
 
     <!-- some Mule transports return this -->
     <flow name="nullPayloadTest">
-        <set-payload value="#[org.mule.transport.NullPayload.getInstance()]" />
+        <set-payload value="#[org.mule.transport.NullPayload.getInstance()]"/>
     </flow>
 
     <flow name="jsonTestNoContentType">

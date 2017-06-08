@@ -202,7 +202,8 @@ class JsonTest extends BaseTest {
 
         // assert
         assertThat result.message,
-                   is(equalTo("Content-Type was not set to 'text/plain' within your flow! Add a set-property or remove the incorrect type.. Actual type was application/json. Expression: (actualContentType == text/plain). Values: actualContentType = application/json"))
+                   is(equalTo(
+                           "Content-Type was not set to 'text/plain' within your flow! Add a set-property or remove the incorrect type.. Actual type was application/json. Expression: (actualContentType == text/plain). Values: actualContentType = application/json"))
     }
 
     @Test

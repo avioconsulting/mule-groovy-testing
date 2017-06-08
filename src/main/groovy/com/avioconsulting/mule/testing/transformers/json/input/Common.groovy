@@ -1,8 +1,8 @@
 package com.avioconsulting.mule.testing.transformers.json.input
 
+import com.avioconsulting.mule.testing.RunnerConfig
 import com.avioconsulting.mule.testing.dsl.invokers.FlowRunnerImpl
 import com.avioconsulting.mule.testing.dsl.mocking.ConnectorType
-import com.avioconsulting.mule.testing.RunnerConfig
 import com.avioconsulting.mule.testing.transformers.InputTransformer
 import org.mule.api.MuleContext
 import org.mule.api.MuleMessage
@@ -43,7 +43,8 @@ abstract class Common implements InputTransformer {
             return
         }
         def actualContentType = message.getOutboundProperty('Content-Type') as String
-        assert actualContentType && actualContentType.contains('application/json'): "${errorMessage}. Actual type was ${actualContentType}"
+        assert actualContentType && actualContentType.contains(
+                'application/json'): "${errorMessage}. Actual type was ${actualContentType}"
     }
 
     abstract def transform(String jsonString)
