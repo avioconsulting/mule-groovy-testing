@@ -1,4 +1,4 @@
-package com.avioconsulting.mule.testing.runners
+package com.avioconsulting.mule.testing
 
 class RunnerConfig {
     boolean doContentTypeCheck = true

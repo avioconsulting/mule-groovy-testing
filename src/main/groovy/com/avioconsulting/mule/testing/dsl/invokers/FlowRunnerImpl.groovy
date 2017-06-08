@@ -1,6 +1,6 @@
 package com.avioconsulting.mule.testing.dsl.invokers
 
-import com.avioconsulting.mule.testing.runners.RunnerConfig
+import com.avioconsulting.mule.testing.RunnerConfig
 import org.mule.api.MuleContext
 import org.mule.api.MuleEvent
 
