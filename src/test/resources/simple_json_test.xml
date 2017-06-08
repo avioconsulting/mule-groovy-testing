@@ -27,7 +27,7 @@ http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/jso
             <dw:set-payload><![CDATA[%dw 1.0
 %output application/json
 ---
-payload.map {
+payload map {
     key: $.foo
 }]]></dw:set-payload>
         </dw:transform-message>
