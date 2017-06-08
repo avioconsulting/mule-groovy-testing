@@ -88,6 +88,22 @@ class JsonTest extends BaseTest {
                    is(nullValue())
     }
 
+    @Test
+    void streaming_disabled_output_only() {
+        // arrange
+
+        // act
+        def result = runFlow('noInputTestNoStream') {
+            json {
+                outputOnly(Map)
+                noStreaming()
+            }
+        }
+
+        // assert
+        assertThat result,
+                   is(equalTo([key: 123]))
+    }
 
     @Test
     void no_serialization_specified() {

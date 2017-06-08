@@ -81,8 +81,10 @@ class JsonInvokerImpl implements JsonInvoker, Invoker {
             assert transformAfterCallingFlow: 'Need to specify a type of JSON serialization (jackson, map) first!'
             transformAfterCallingFlow.disableStreaming()
         }
-        assert transformBeforeCallingFlow: 'Need to specify a type of JSON serialization (jackson, map) first!'
-        transformBeforeCallingFlow.disableStreaming()
+        if (!outputOnly) {
+            assert transformBeforeCallingFlow: 'Need to specify a type of JSON serialization (jackson, map) first!'
+            transformBeforeCallingFlow.disableStreaming()
+        }
     }
 
     MuleEvent getEvent() {
