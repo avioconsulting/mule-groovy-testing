@@ -6,6 +6,7 @@ import com.avioconsulting.mule.testing.runners.RunnerConfig
 import com.avioconsulting.mule.testing.transformers.InputTransformer
 import org.mule.api.MuleContext
 import org.mule.api.MuleMessage
+import org.mule.transport.NullPayload
 
 abstract class Common implements InputTransformer {
     private final MuleContext muleContext
@@ -38,19 +39,29 @@ abstract class Common implements InputTransformer {
         if (!errorMessage) {
             return
         }
-        assert message.getOutboundProperty(
-                'Content-Type') as String == 'application/json': errorMessage
+        assert message.getOutboundProperty('Content-Type') as String == 'application/json': errorMessage
     }
 
     abstract def transform(String jsonString)
 
     def transformInput(MuleMessage muleMessage) {
-        validateContentType(muleMessage)
-        def payload = muleMessage.payload
-        if (expectedPayloadType.isInstance(payload)) {
-            return transform(muleMessage.payloadAsString)
+        // comes back from some Mule connectors like JSON
+        if (muleMessage.payload instanceof NullPayload) {
+            return null
         }
-        throw new Exception(
-                "Expected payload to be of type ${expectedPayloadType} here but it actually was ${payload.class}. Check the connectors you're mocking and make sure you transformed the payload properly! (e.g. payload into VMs must be Strings)")
+        def payloadType = muleMessage.payload.class
+        // it's OK to not match IF we return an empty string here
+        if (!expectedPayloadType.isInstance(muleMessage.payload) && muleMessage.payloadAsString) {
+            throw new Exception(
+                    "Expected payload to be of type ${expectedPayloadType} here but it actually was ${payloadType}. Check the connectors you're mocking and make sure you transformed the payload properly! (e.g. payload into VMs must be Strings)")
+        }
+        // want to wait to do this after if the payload type check above since it consumes the string
+        def jsonString = muleMessage.payloadAsString
+        // don't validate empty message content types
+        if (!jsonString) {
+            return
+        }
+        validateContentType(muleMessage)
+        return transform(jsonString)
     }
 }
