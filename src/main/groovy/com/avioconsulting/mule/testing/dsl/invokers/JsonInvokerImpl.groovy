@@ -82,8 +82,10 @@ class JsonInvokerImpl implements JsonInvoker, Invoker {
     }
 
     def noStreaming() {
-        assert transformAfterCallingFlow: 'Need to specify a type of JSON serialization (jackson, map) first!'
-        transformAfterCallingFlow.disableStreaming()
+        if (!inputOnly) {
+            assert transformAfterCallingFlow: 'Need to specify a type of JSON serialization (jackson, map) first!'
+            transformAfterCallingFlow.disableStreaming()
+        }
         assert transformBeforeCallingFlow: 'Need to specify a type of JSON serialization (jackson, map) first!'
         transformBeforeCallingFlow.disableStreaming()
     }

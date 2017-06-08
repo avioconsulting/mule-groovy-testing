@@ -70,6 +70,26 @@ class JsonTest extends BaseTest {
     }
 
     @Test
+    void streaming_disabled_input_only() {
+        // arrange
+
+        // act
+        def input = new SampleJacksonInput()
+        input.foobar = 123
+        def result = runFlow('noStreamingTest') {
+            json {
+                inputOnly(input)
+                noStreaming()
+            }
+        }
+
+        // assert
+        assertThat result,
+                   is(nullValue())
+    }
+
+
+    @Test
     void no_serialization_specified() {
         // arrange
 
