@@ -21,7 +21,7 @@ class VmTest extends BaseTest {
         SampleJacksonInput inputReceived = null
         mockVmReceive('The Queue') {
             json {
-                whenCalledWithJackson(SampleJacksonInput) { SampleJacksonInput input ->
+                whenCalledWith(SampleJacksonInput) { SampleJacksonInput input ->
                     inputReceived = input
                 }
             }
@@ -32,7 +32,7 @@ class VmTest extends BaseTest {
             json {
                 def input = new SampleJacksonInput()
                 input.foobar = 456
-                jackson(input)
+                inputPayload(input)
             }
         }
 
@@ -47,7 +47,7 @@ class VmTest extends BaseTest {
         // arrange
         mockVmReceive('The Queue') {
             json {
-                whenCalledWithJackson(SampleJacksonInput) { SampleJacksonInput input ->
+                whenCalledWith(SampleJacksonInput) { SampleJacksonInput input ->
                 }
             }
         }
@@ -58,7 +58,7 @@ class VmTest extends BaseTest {
                 json {
                     def input = new SampleJacksonInput()
                     input.foobar = 456
-                    jackson(input)
+                    inputPayload(input)
                 }
             }
         }
@@ -66,6 +66,6 @@ class VmTest extends BaseTest {
         // assert
         assertThat exception.message,
                    is(equalTo(
-                           'Expected payload to be of type class java.lang.String here but it actually was class java.io.ByteArrayInputStream. Check the connectors you\'re mocking and make sure you transformed the payload properly! (e.g. payload into VMs must be Strings) (java.lang.Exception).'))
+                           'Expected payload to be of type [class java.lang.String] here but it actually was class java.io.ByteArrayInputStream. Check the connectors you\'re mocking and make sure you transformed the payload properly! (e.g. payload into VMs must be Strings) (java.lang.Exception).'))
     }
 }

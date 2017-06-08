@@ -19,7 +19,7 @@ class JsonMockingTest extends BaseTest {
         def stuff = null
         mockRestHttpCall('SomeSystem Call') {
             json {
-                whenCalledWithMap { Map incoming ->
+                whenCalledWith { Map incoming ->
                     stuff = incoming
                     [reply: 456]
                 }
@@ -29,7 +29,7 @@ class JsonMockingTest extends BaseTest {
         // act
         def result = runFlow('restRequest') {
             json {
-                map([foo: 123])
+                inputPayload([foo: 123])
             }
         }
 
@@ -58,7 +58,7 @@ class JsonMockingTest extends BaseTest {
         // act
         def result = runFlow('queryParameters') {
             json {
-                map([foo: 123])
+                inputPayload([foo: 123])
             }
         }
 
@@ -94,7 +94,7 @@ class JsonMockingTest extends BaseTest {
         // act
         def result = runFlow('queryParameters') {
             json {
-                map([foo: 123])
+                inputPayload([foo: 123])
             }
         }
 
@@ -117,7 +117,7 @@ class JsonMockingTest extends BaseTest {
         def mockValue = 0
         mockRestHttpCall('SomeSystem Call') {
             json {
-                whenCalledWithJackson(SampleMockedJacksonInput) {
+                whenCalledWith(SampleMockedJacksonInput) {
                     SampleMockedJacksonInput incoming ->
                         mockValue = incoming.foobar
                         def reply = new SampleMockedJacksonOutput()
@@ -130,7 +130,7 @@ class JsonMockingTest extends BaseTest {
         // act
         def result = runFlow('restRequest') {
             json {
-                jackson(input, JacksonOutput)
+                inputPayload(input, JacksonOutput)
             }
         } as JacksonOutput
 

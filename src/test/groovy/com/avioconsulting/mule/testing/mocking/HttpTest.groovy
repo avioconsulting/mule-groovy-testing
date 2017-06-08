@@ -19,7 +19,7 @@ class HttpTest extends BaseTest {
         def stuff = null
         mockRestHttpCall('SomeSystem Call') {
             json {
-                whenCalledWithMap { Map incoming ->
+                whenCalledWith { Map incoming ->
                     stuff = incoming
                     [reply: 456]
                 }
@@ -29,7 +29,7 @@ class HttpTest extends BaseTest {
         // act
         def result = runFlow('restRequest') {
             json {
-                map([foo: 123])
+                inputPayload([foo: 123])
             }
         }
 
@@ -47,7 +47,7 @@ class HttpTest extends BaseTest {
         input.foobar = 123
         mockRestHttpCall('SomeSystem Call') {
             json {
-                whenCalledWithJackson(SampleMockedJacksonInput) {
+                whenCalledWith(SampleMockedJacksonInput) {
                     SampleMockedJacksonInput incoming ->
                 }
             }
@@ -57,7 +57,7 @@ class HttpTest extends BaseTest {
         def result = shouldFail {
             runFlow('restRequestContentTypeNotSet') {
                 json {
-                    jackson(input, JacksonOutput)
+                    inputPayload(input, JacksonOutput)
                 }
             }
         }
@@ -76,7 +76,7 @@ class HttpTest extends BaseTest {
         def mockValue = 0
         mockRestHttpCall('SomeSystem Call') {
             json {
-                whenCalledWithJackson(SampleMockedJacksonInput) {
+                whenCalledWith(SampleMockedJacksonInput) {
                     SampleMockedJacksonInput incoming ->
                         mockValue = incoming.foobar
                         def reply = new SampleMockedJacksonOutput()
@@ -89,10 +89,10 @@ class HttpTest extends BaseTest {
         // act
         def result = runFlow('restRequestContentTypeNotSet') {
             json {
-                jackson(input, JacksonOutput)
+                inputPayload(input, JacksonOutput)
             }
 
-            apiKitReferencesThisFlow()
+            disableContentTypeCheck()
         } as JacksonOutput
 
         // assert
@@ -122,7 +122,7 @@ class HttpTest extends BaseTest {
         // act
         def result = runFlow('queryParameters') {
             json {
-                map([foo: 123])
+                inputPayload([foo: 123])
             }
         }
 
@@ -155,7 +155,7 @@ class HttpTest extends BaseTest {
         // act
         def result = runFlow('queryParametersHttpStatus') {
             json {
-                map([foo: 123])
+                inputPayload([foo: 123])
             }
         }
 
@@ -180,7 +180,7 @@ class HttpTest extends BaseTest {
         def result = shouldFail {
             runFlow('queryParametersHttpStatus') {
                 json {
-                    map([foo: 123])
+                    inputPayload([foo: 123])
                 }
             }
         }
@@ -206,7 +206,7 @@ class HttpTest extends BaseTest {
         def result = shouldFail {
             runFlow('queryParametersHttpStatus') {
                 json {
-                    map([foo: 123])
+                    inputPayload([foo: 123])
                 }
             }
         }
@@ -237,7 +237,7 @@ class HttpTest extends BaseTest {
         // act
         def result = runFlow('queryParametersEnricher') {
             json {
-                map([foo: 123])
+                inputPayload([foo: 123])
             }
         }
 

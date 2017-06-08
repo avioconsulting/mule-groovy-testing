@@ -9,6 +9,5 @@ interface FlowRunner {
 
     def withInputEvent(Closure closure)
 
-    // if APIKit references this flow, then apikit sets the Content-Type, so we should not have to worry about this
-    def apiKitReferencesThisFlow()
+    def disableContentTypeCheck()
 }

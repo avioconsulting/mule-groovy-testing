@@ -1,6 +1,6 @@
 package com.avioconsulting.mule.testing.dsl.invokers
 
-import com.avioconsulting.mule.testing.runners.RunnerConfig
+import com.avioconsulting.mule.testing.RunnerConfig
 import org.mule.api.MuleContext
 import org.mule.api.MuleEvent
 
@@ -50,8 +50,8 @@ class FlowRunnerImpl implements FlowRunner, Invoker {
         withInputEvent = closure
     }
 
-    def apiKitReferencesThisFlow() {
-        runnerConfig.apiKitReferencesThisFlow = true
+    def disableContentTypeCheck() {
+        runnerConfig.doContentTypeCheck = false
     }
 
     MuleEvent getEvent() {

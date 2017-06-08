@@ -23,7 +23,7 @@ class JsonTest extends BaseTest {
         // act
         def result = runFlow('jsonTest') {
             json {
-                jackson(input, SampleJacksonOutput)
+                inputPayload(input, SampleJacksonOutput)
             }
         } as SampleJacksonOutput
 
@@ -41,7 +41,7 @@ class JsonTest extends BaseTest {
         input.foobar = 123
         def result = runFlow('stringResponseTest') {
             json {
-                jackson(input)
+                inputPayload(input, String)
             }
         } as String
 
@@ -59,7 +59,7 @@ class JsonTest extends BaseTest {
         input.foobar = 123
         def result = runFlow('noStreamingTest') {
             json {
-                jackson(input, NoStreamingResponse)
+                inputPayload(input, NoStreamingResponse)
                 noStreaming()
             }
         } as NoStreamingResponse
@@ -67,6 +67,42 @@ class JsonTest extends BaseTest {
         // assert
         assertThat result.key,
                    is(equalTo('java.lang.String'))
+    }
+
+    @Test
+    void streaming_disabled_input_only() {
+        // arrange
+
+        // act
+        def input = new SampleJacksonInput()
+        input.foobar = 123
+        def result = runFlow('noStreamingTest') {
+            json {
+                inputOnly(input)
+                noStreaming()
+            }
+        }
+
+        // assert
+        assertThat result,
+                   is(nullValue())
+    }
+
+    @Test
+    void streaming_disabled_output_only() {
+        // arrange
+
+        // act
+        def result = runFlow('noInputTestNoStream') {
+            json {
+                outputOnly(Map)
+                noStreaming()
+            }
+        }
+
+        // assert
+        assertThat result,
+                   is(equalTo([key: 123]))
     }
 
     @Test
@@ -89,7 +125,7 @@ class JsonTest extends BaseTest {
         // act
         def result = runFlow('jsonTest') {
             json {
-                map([foo: 123])
+                inputPayload([foo: 123])
             }
         }
 
@@ -99,14 +135,71 @@ class JsonTest extends BaseTest {
     }
 
     @Test
-    void contentTypeNotSet_NoApiKit() {
+    void listOfMaps() {
+        // arrange
+
+        // act
+        def result = runFlow('jsonListTest') {
+            json {
+                inputPayload([
+                        [foo: 123]
+                ])
+            }
+        } as Map[]
+
+        // assert
+        assertThat result.toList(),
+                   is(equalTo([
+                           [key: 123]
+                   ]))
+    }
+
+    @Test
+    void mapOutputOnly() {
+        // arrange
+
+        // act
+        def result = runFlow('noInputTest') {
+            json {
+                outputOnly(Map)
+            }
+        }
+
+        // assert
+        assertThat result,
+                   is(equalTo([key: 123]))
+    }
+
+    @Test
+    void listOfJacksonObjects() {
+        // arrange
+        def input = new SampleJacksonInput()
+        input.foobar = 123
+        def list = [input]
+
+        // act
+        def result = runFlow('jsonListTest') {
+            json {
+                inputPayload(list, SampleJacksonOutput[])
+            }
+        } as SampleJacksonOutput[]
+
+        // assert
+        assertThat result.length,
+                   is(equalTo(1))
+        assertThat result[0].result,
+                   is(equalTo(123))
+    }
+
+    @Test
+    void contentTypeNotSet() {
         // arrange
 
         // act
         def result = shouldFail {
             runFlow('jsonTestNoContentType') {
                 json {
-                    map([foo: 123])
+                    inputPayload([foo: 123])
                 }
             }
         }
@@ -118,15 +211,15 @@ class JsonTest extends BaseTest {
     }
 
     @Test
-    void contentTypeNotSet_ApiKit() {
+    void contentTypeNotSet_CheckDisabled() {
         // arrange
 
         // act
         def result = runFlow('jsonTest') {
             json {
-                map([foo: 123])
+                inputPayload([foo: 123])
             }
-            apiKitReferencesThisFlow()
+            disableContentTypeCheck()
         }
 
         // assert
@@ -144,7 +237,7 @@ class JsonTest extends BaseTest {
         def runIt = {
             runFlow('filterJsonTest') {
                 json {
-                    jackson(input)
+                    inputPayload(input)
                 }
             }
         }
@@ -157,13 +250,30 @@ class JsonTest extends BaseTest {
     }
 
     @Test
-    void emptyPayloadTest() {
+    void emptyPayload_StringTest() {
         // arrange
 
         // act
         def result = runFlow('emptyPayloadTest') {
             json {
-                map([:])
+                inputPayload([:], String)
+            }
+        }
+
+        // assert
+        assertThat result,
+                   is(isEmptyString())
+    }
+
+    @Test
+    void emptyPayload_MapTest() {
+        // arrange
+
+        // act
+        def result = runFlow('emptyPayloadTest') {
+            json {
+                outputOnly(Map)
+                noStreaming()
             }
         }
 
@@ -173,13 +283,48 @@ class JsonTest extends BaseTest {
     }
 
     @Test
+    void inputOnlyTst() {
+        // arrange
+
+        // act
+        def result = runFlow('emptyPayloadTest') {
+            json {
+                inputOnly([:])
+            }
+        }
+
+        // assert
+        assertThat result,
+                   is(nullValue())
+    }
+
+    @Test
+    void stringPayload_Set_Wrong() {
+        // arrange
+
+        // act
+        def result = shouldFail {
+            runFlow('wrongContentTypeTest') {
+                json {
+                    inputPayload([:], String)
+                }
+            }
+        }
+
+        // assert
+        assertThat result.message,
+                   is(equalTo(
+                           "Content-Type was not set to 'text/plain' within your flow! Add a set-property or remove the incorrect type.. Actual type was application/json. Expression: (actualContentType == text/plain). Values: actualContentType = application/json"))
+    }
+
+    @Test
     void nullPayloadTest() {
         // arrange
 
         // act
         def result = runFlow('nullPayloadTest') {
             json {
-                map([:])
+                inputPayload([:])
             }
         }
 

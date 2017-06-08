@@ -16,6 +16,7 @@ http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/cu
                               path="theQueue"
                               connector-ref="vm-config"
                               doc:name="The Queue"/>
+        <set-property propertyName="Content-Type" value="application/json"/>
     </flow>
     <flow name="vmRequest_NotString">
         <vm:outbound-endpoint exchange-pattern="one-way"
