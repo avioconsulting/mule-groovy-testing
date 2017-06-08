@@ -121,11 +121,22 @@ class JsonTest extends BaseTest {
     @Test
     void listOfJacksonObjects() {
         // arrange
+        def input = new SampleJacksonInput()
+        input.foobar = 123
+        def list = [input]
 
         // act
+        def result = runFlow('jsonListTest') {
+            json {
+                inputPayload(list, SampleJacksonOutput[])
+            }
+        } as SampleJacksonOutput[]
 
         // assert
-        fail 'write this'
+        assertThat result.length,
+                   is(equalTo(1))
+        assertThat result[0].result,
+                   is(equalTo(123))
     }
 
     @Test
