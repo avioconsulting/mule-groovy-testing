@@ -4,6 +4,7 @@ import com.avioconsulting.mule.testing.dsl.mocking.ConnectorType
 import com.avioconsulting.mule.testing.runners.RunnerConfig
 import com.avioconsulting.mule.testing.transformers.InputTransformer
 import com.avioconsulting.mule.testing.transformers.OutputTransformer
+import com.avioconsulting.mule.testing.transformers.StringInputTransformer
 import com.avioconsulting.mule.testing.transformers.json.input.JacksonInputTransformer
 import com.avioconsulting.mule.testing.transformers.json.input.MapInputTransformer
 import com.avioconsulting.mule.testing.transformers.json.output.JacksonOutputTransformer
@@ -20,6 +21,8 @@ class JsonInvokerImpl implements JsonInvoker, Invoker {
     private OutputTransformer transformBeforeCallingFlow
     private InputTransformer transformAfterCallingFlow
     private inputObject
+    // can pass either of these back from a flow
+    private static final List<Class> allowedPayloadTypes = [InputStream, String]
 
     JsonInvokerImpl(MuleContext muleContext,
                     RunnerConfig runnerConfig) {
@@ -31,19 +34,24 @@ class JsonInvokerImpl implements JsonInvoker, Invoker {
         setInputTransformer(inputObject)
         transformAfterCallingFlow = new MapInputTransformer(muleContext,
                                                             ConnectorType.HTTP_LISTENER,
-                                                            InputStream)
+                                                            allowedPayloadTypes)
     }
 
     def inputPayload(Object inputObject,
                      Class outputClass) {
         setInputTransformer(inputObject)
-        setJacksonOutputTransformer(outputClass)
+        if (outputClass == String) {
+            transformAfterCallingFlow = new StringInputTransformer(ConnectorType.HTTP_LISTENER,
+                                                                   muleContext)
+        } else {
+            setJacksonOutputTransformer(outputClass)
+        }
     }
 
     private void setJacksonOutputTransformer(Class outputClass) {
         transformAfterCallingFlow = new JacksonInputTransformer(muleContext,
                                                                 ConnectorType.HTTP_LISTENER,
-                                                                InputStream,
+                                                                allowedPayloadTypes,
                                                                 outputClass)
     }
 

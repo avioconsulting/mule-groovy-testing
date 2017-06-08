@@ -10,7 +10,7 @@ import org.mule.munit.common.mocking.MunitSpy
 class RequestResponseChoice {
     private final MessageProcessorMocker muleMocker
     private final MuleContext muleContext
-    private final Class expectedPayloadType
+    private final List<Class> allowedPayloadTypes
     private final ConnectorType mockedConnectorType
     private final MunitSpy spy
     private final ProcessorLocator processorLocator
@@ -19,12 +19,12 @@ class RequestResponseChoice {
                           MunitSpy spy,
                           ProcessorLocator processorLocator,
                           MuleContext muleContext,
-                          Class expectedPayloadType,
+                          List<Class> allowedPayloadTypes,
                           ConnectorType mockedConnectorType) {
         this.processorLocator = processorLocator
         this.spy = spy
         this.mockedConnectorType = mockedConnectorType
-        this.expectedPayloadType = expectedPayloadType
+        this.allowedPayloadTypes = allowedPayloadTypes
         this.muleContext = muleContext
         this.muleMocker = muleMocker
     }
@@ -33,7 +33,7 @@ class RequestResponseChoice {
         def formatter = new JsonFormatter(spy,
                                           processorLocator,
                                           this.muleContext,
-                                          expectedPayloadType,
+                                          allowedPayloadTypes,
                                           mockedConnectorType)
         def code = closure.rehydrate(formatter, this, this)
         code.resolveStrategy = Closure.DELEGATE_ONLY

@@ -11,12 +11,12 @@ import org.mule.transport.NullPayload
 abstract class Common implements InputTransformer {
     private final MuleContext muleContext
     private final ConnectorType mockedConnectorType
-    private final Class expectedPayloadType
+    private final List<Class> allowedPayloadTypes
 
     Common(MuleContext muleContext,
            ConnectorType mockedConnectorType,
-           Class expectedPayloadType) {
-        this.expectedPayloadType = expectedPayloadType
+           List<Class> allowedPayloadTypes) {
+        this.allowedPayloadTypes = allowedPayloadTypes
         this.mockedConnectorType = mockedConnectorType
         this.muleContext = muleContext
     }
@@ -39,7 +39,8 @@ abstract class Common implements InputTransformer {
         if (!errorMessage) {
             return
         }
-        assert message.getOutboundProperty('Content-Type') as String == 'application/json': errorMessage
+        def actualContentType = message.getOutboundProperty('Content-Type') as String
+        assert actualContentType == 'application/json': "${errorMessage}. Actual type was ${actualContentType}"
     }
 
     abstract def transform(String jsonString)
@@ -49,19 +50,19 @@ abstract class Common implements InputTransformer {
         if (muleMessage.payload instanceof NullPayload) {
             return null
         }
-        def payloadType = muleMessage.payload.class
-        // it's OK to not match IF we return an empty string here
-        if (!expectedPayloadType.isInstance(muleMessage.payload) && muleMessage.payloadAsString) {
+        if (!isInvalidPayloadType(muleMessage.payload)) {
             throw new Exception(
-                    "Expected payload to be of type ${expectedPayloadType} here but it actually was ${payloadType}. Check the connectors you're mocking and make sure you transformed the payload properly! (e.g. payload into VMs must be Strings)")
+                    "Expected payload to be of type ${allowedPayloadTypes} here but it actually was ${muleMessage.payload.class}. Check the connectors you're mocking and make sure you transformed the payload properly! (e.g. payload into VMs must be Strings)")
         }
         // want to wait to do this after if the payload type check above since it consumes the string
         def jsonString = muleMessage.payloadAsString
-        // don't validate empty message content types
-        if (!jsonString) {
-            return
-        }
         validateContentType(muleMessage)
         return transform(jsonString)
+    }
+
+    private boolean isInvalidPayloadType(payload) {
+        allowedPayloadTypes.find { type ->
+            type.isInstance(payload)
+        }
     }
 }

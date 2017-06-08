@@ -7,8 +7,8 @@ import org.mule.api.MuleContext
 class MapInputTransformer extends Common {
     MapInputTransformer(MuleContext muleContext,
                         ConnectorType mockedConnectorType,
-                        Class expectedPayloadType) {
-        super(muleContext, mockedConnectorType, expectedPayloadType)
+                        List<Class> allowedPayloadTypes) {
+        super(muleContext, mockedConnectorType, allowedPayloadTypes)
     }
 
     def transform(String jsonString) {

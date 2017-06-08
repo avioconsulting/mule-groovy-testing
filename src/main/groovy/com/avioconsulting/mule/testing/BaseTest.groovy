@@ -174,13 +174,13 @@ abstract class BaseTest extends FunctionalMunitSuite {
                 .withAttributes(Attribute.attribute('name')
                                         .ofNamespace('doc')
                                         .withValue(connectorName))
-        def expectedPayloadType = InputStream
+        def allowedPayloadTypes = [InputStream]
         def locator = new ProcessorLocator(connectorName)
         def formatterChoice = new RequestResponseChoice(mocker,
                                                         spy,
                                                         locator,
                                                         muleContext,
-                                                        expectedPayloadType,
+                                                        allowedPayloadTypes,
                                                         ConnectorType.HTTP_REQUEST)
         def code = closure.rehydrate(formatterChoice, this, this)
         code.resolveStrategy = Closure.DELEGATE_ONLY
@@ -199,13 +199,13 @@ abstract class BaseTest extends FunctionalMunitSuite {
                 .withAttributes(Attribute.attribute('name')
                                         .ofNamespace('doc')
                                         .withValue(connectorName))
-        def expectedPayloadType = String
+        def allowedPayloadTypes = [String]
         def locator = new ProcessorLocator(connectorName)
         def formatterChoice = new RequestResponseChoice(mocker,
                                                         spy,
                                                         locator,
                                                         muleContext,
-                                                        expectedPayloadType,
+                                                        allowedPayloadTypes,
                                                         ConnectorType.VM)
         def code = closure.rehydrate(formatterChoice, this, this)
         code.resolveStrategy = Closure.DELEGATE_ONLY

@@ -41,7 +41,7 @@ class JsonTest extends BaseTest {
         input.foobar = 123
         def result = runFlow('stringResponseTest') {
             json {
-                inputPayload(input)
+                inputPayload(input, String)
             }
         } as String
 
@@ -178,13 +178,13 @@ class JsonTest extends BaseTest {
         // act
         def result = runFlow('emptyPayloadTest') {
             json {
-                inputPayload([:])
+                inputPayload([:], String)
             }
         }
 
         // assert
         assertThat result,
-                   is(nullValue())
+                   is(isEmptyString())
     }
 
     @Test

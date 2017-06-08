@@ -10,9 +10,9 @@ class JacksonInputTransformer extends Common {
 
     JacksonInputTransformer(MuleContext muleContext,
                             ConnectorType mockedConnectorType,
-                            Class expectedPayloadType,
+                            List<Class> allowedPayloadTypes,
                             Class inputClass) {
-        super(muleContext, mockedConnectorType, expectedPayloadType)
+        super(muleContext, mockedConnectorType, allowedPayloadTypes)
         this.inputClass = inputClass
     }
 

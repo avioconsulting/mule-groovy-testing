@@ -39,6 +39,7 @@ http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/jso
 
     <flow name="emptyPayloadTest">
         <set-payload value="" />
+        <set-property propertyName="Content-Type" value="text/plain"/>
     </flow>
 
     <!-- some Mule transports return this -->
@@ -64,5 +65,6 @@ http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/jso
 
     <flow name="stringResponseTest">
         <set-payload value="stringResponse"/>
+        <set-property propertyName="Content-Type" value="text/plain"/>
     </flow>
 </mule>

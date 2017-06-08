@@ -12,13 +12,11 @@ import com.avioconsulting.mule.testing.transformers.json.output.JacksonOutputTra
 import com.avioconsulting.mule.testing.transformers.json.output.MapOutputTransformer
 import org.mule.api.MuleContext
 import org.mule.api.MuleMessage
-import org.mule.munit.common.mocking.MessageProcessorMocker
 import org.mule.munit.common.mocking.MunitSpy
 
 class JsonFormatter {
-    private final MessageProcessorMocker messageProcessorMocker
     private final MuleContext muleContext
-    private final Class expectedPayloadType
+    private final List<Class> allowedPayloadTypes
     private final ConnectorType mockedConnectorType
     private final MunitSpy spy
     private final ProcessorLocator processorLocator
@@ -26,12 +24,12 @@ class JsonFormatter {
     JsonFormatter(MunitSpy spy,
                   ProcessorLocator processorLocator,
                   MuleContext muleContext,
-                  Class expectedPayloadType,
+                  List<Class> allowedPayloadTypes,
                   ConnectorType mockedConnectorType) {
         this.processorLocator = processorLocator
         this.spy = spy
         this.mockedConnectorType = mockedConnectorType
-        this.expectedPayloadType = expectedPayloadType
+        this.allowedPayloadTypes = allowedPayloadTypes
         this.muleContext = muleContext
     }
 
@@ -59,7 +57,7 @@ class JsonFormatter {
     def whenCalledWithMap(Closure closure) {
         def input = new MapInputTransformer(muleContext,
                                             mockedConnectorType,
-                                            expectedPayloadType)
+                                            allowedPayloadTypes)
         def output = new MapOutputTransformer(muleContext)
         new StandardTransformer(closure, input, output)
     }
@@ -68,7 +66,7 @@ class JsonFormatter {
                               Closure closure) {
         def input = new JacksonInputTransformer(muleContext,
                                                 mockedConnectorType,
-                                                expectedPayloadType,
+                                                allowedPayloadTypes,
                                                 inputClass)
         def output = new JacksonOutputTransformer(muleContext)
         new StandardTransformer(closure, input, output)
