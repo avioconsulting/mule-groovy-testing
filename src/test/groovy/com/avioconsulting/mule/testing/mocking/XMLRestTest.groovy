@@ -33,7 +33,7 @@ class XMLRestTest extends BaseTest {
         // act
         def result = runFlow('xmlTest') {
             json {
-                map([foo: 123])
+                inputPayload([foo: 123])
             }
         }
 
@@ -69,7 +69,7 @@ class XMLRestTest extends BaseTest {
         // act
         def result = runFlow('nestedTest') {
             json {
-                map([foo: 123])
+                inputPayload([foo: 123])
             }
         }
 
@@ -105,7 +105,7 @@ class XMLRestTest extends BaseTest {
         // act
         def result = runFlow('xmlTest') {
             json {
-                map([foo: 123])
+                inputPayload([foo: 123])
             }
         }
 
@@ -138,7 +138,7 @@ class XMLRestTest extends BaseTest {
         // act
         def result = runFlow('xmlTest') {
             json {
-                map([foo: 123])
+                inputPayload([foo: 123])
             }
         }
 
@@ -172,7 +172,7 @@ class XMLRestTest extends BaseTest {
         // act
         def result = runFlow('xmlTest') {
             json {
-                map([foo: 123])
+                inputPayload([foo: 123])
             }
         }
 
@@ -204,7 +204,7 @@ class XMLRestTest extends BaseTest {
         def result = shouldFail {
             runFlow('xmlTestWithoutContentType') {
                 json {
-                    map([foo: 123])
+                    inputPayload([foo: 123])
                 }
             }
         }

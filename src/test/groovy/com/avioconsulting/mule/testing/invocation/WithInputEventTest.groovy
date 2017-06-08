@@ -24,7 +24,7 @@ class WithInputEventTest extends BaseTest {
         // act
         def result = runFlow('inputMessageTest') {
             json {
-                jackson(input, SampleJacksonOutput)
+                inputPayload(input, SampleJacksonOutput)
             }
 
             withInputEvent { MuleEvent inputEvent ->

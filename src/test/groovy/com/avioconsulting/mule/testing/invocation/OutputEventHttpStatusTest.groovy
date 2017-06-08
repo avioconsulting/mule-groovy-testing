@@ -24,8 +24,9 @@ class OutputEventHttpStatusTest extends BaseTest {
         // act
         runFlow('hasHttpStatus') {
             json {
-                jackson(input)
+                inputPayload(input)
             }
+            disableContentTypeCheck()
             withOutputEvent { MuleEvent output ->
                 saveOutput = output
             }
@@ -47,8 +48,9 @@ class OutputEventHttpStatusTest extends BaseTest {
         // act
         runFlow('hasHttpStatus') {
             json {
-                jackson(input)
+                inputPayload(input)
             }
+            disableContentTypeCheck()
             withOutputHttpStatus { Integer status ->
                 httpStatus = status
             }
@@ -70,8 +72,9 @@ class OutputEventHttpStatusTest extends BaseTest {
         def result = shouldFail {
             runFlow('noHttpStatus') {
                 json {
-                    jackson(input)
+                    inputPayload(input)
                 }
+                disableContentTypeCheck()
                 withOutputHttpStatus {}
             }
         }
@@ -90,14 +93,16 @@ class OutputEventHttpStatusTest extends BaseTest {
         // act
         runFlow('nullEvent') {
             json {
-                jackson(input)
+                inputPayload(input)
             }
+            disableContentTypeCheck()
         }
         def result = shouldFail {
             runFlow('nullEvent') {
                 json {
-                    jackson(input)
+                    inputPayload(input)
                 }
+                disableContentTypeCheck()
                 withOutputHttpStatus {}
             }
         }

@@ -34,7 +34,7 @@ class SoapTest extends BaseTest {
         // act
         def result = runFlow('soaptestFlow') {
             json {
-                map([foo: 123])
+                inputPayload([foo: 123])
             }
         } as Map
 
@@ -63,7 +63,7 @@ class SoapTest extends BaseTest {
         def result = shouldFail {
             runFlow('soaptestFlow') {
                 json {
-                    map([foo: 123])
+                    inputPayload([foo: 123])
                 }
             }
         }
@@ -91,7 +91,7 @@ class SoapTest extends BaseTest {
         // act
         def result = runFlow('soaptestFlow') {
             json {
-                map([foo: 123])
+                inputPayload([foo: 123])
             }
         } as Map
 
@@ -120,7 +120,7 @@ class SoapTest extends BaseTest {
         // act
         def result = runFlow('soaptestFlow') {
             json {
-                map([foo: 123])
+                inputPayload([foo: 123])
             }
         } as Map
 

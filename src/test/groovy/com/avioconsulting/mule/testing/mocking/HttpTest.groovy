@@ -29,7 +29,7 @@ class HttpTest extends BaseTest {
         // act
         def result = runFlow('restRequest') {
             json {
-                map([foo: 123])
+                inputPayload([foo: 123])
             }
         }
 
@@ -57,7 +57,7 @@ class HttpTest extends BaseTest {
         def result = shouldFail {
             runFlow('restRequestContentTypeNotSet') {
                 json {
-                    jackson(input, JacksonOutput)
+                    inputPayload(input, JacksonOutput)
                 }
             }
         }
@@ -89,10 +89,10 @@ class HttpTest extends BaseTest {
         // act
         def result = runFlow('restRequestContentTypeNotSet') {
             json {
-                jackson(input, JacksonOutput)
+                inputPayload(input, JacksonOutput)
             }
 
-            apiKitReferencesThisFlow()
+            disableContentTypeCheck()
         } as JacksonOutput
 
         // assert
@@ -122,7 +122,7 @@ class HttpTest extends BaseTest {
         // act
         def result = runFlow('queryParameters') {
             json {
-                map([foo: 123])
+                inputPayload([foo: 123])
             }
         }
 
@@ -155,7 +155,7 @@ class HttpTest extends BaseTest {
         // act
         def result = runFlow('queryParametersHttpStatus') {
             json {
-                map([foo: 123])
+                inputPayload([foo: 123])
             }
         }
 
@@ -180,7 +180,7 @@ class HttpTest extends BaseTest {
         def result = shouldFail {
             runFlow('queryParametersHttpStatus') {
                 json {
-                    map([foo: 123])
+                    inputPayload([foo: 123])
                 }
             }
         }
@@ -206,7 +206,7 @@ class HttpTest extends BaseTest {
         def result = shouldFail {
             runFlow('queryParametersHttpStatus') {
                 json {
-                    map([foo: 123])
+                    inputPayload([foo: 123])
                 }
             }
         }
@@ -237,7 +237,7 @@ class HttpTest extends BaseTest {
         // act
         def result = runFlow('queryParametersEnricher') {
             json {
-                map([foo: 123])
+                inputPayload([foo: 123])
             }
         }
 

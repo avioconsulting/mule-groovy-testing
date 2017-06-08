@@ -32,7 +32,7 @@ class VmTest extends BaseTest {
             json {
                 def input = new SampleJacksonInput()
                 input.foobar = 456
-                jackson(input)
+                inputPayload(input)
             }
         }
 
@@ -58,7 +58,7 @@ class VmTest extends BaseTest {
                 json {
                     def input = new SampleJacksonInput()
                     input.foobar = 456
-                    jackson(input)
+                    inputPayload(input)
                 }
             }
         }

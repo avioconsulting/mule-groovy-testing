@@ -61,7 +61,7 @@ class ApikitFlowInvokeTest extends BaseApiKitTest {
         // act
         def result = runApiKitFlow('POST', '/resources') {
             json {
-                jackson(input, SampleJacksonOutput)
+                inputPayload(input, SampleJacksonOutput)
             }
         } as SampleJacksonOutput
 
@@ -78,7 +78,7 @@ class ApikitFlowInvokeTest extends BaseApiKitTest {
         def result = shouldFail {
             runApiKitFlow('POST', '/resources') {
                 json {
-                    map([howdy: 123])
+                    inputPayload([howdy: 123])
                 }
             }
         }
@@ -95,7 +95,7 @@ class ApikitFlowInvokeTest extends BaseApiKitTest {
         // act
         def result = runApiKitFlow('GET', '/resources/2') {
             json {
-                jackson(SampleJacksonOutput)
+                inputPayload(SampleJacksonOutput)
             }
         } as SampleJacksonOutput
 
@@ -117,7 +117,7 @@ class ApikitFlowInvokeTest extends BaseApiKitTest {
                                    '/resources',
                                    queryParams) {
             json {
-                jackson(SampleJacksonOutput)
+                inputPayload(SampleJacksonOutput)
             }
         } as SampleJacksonOutput
 

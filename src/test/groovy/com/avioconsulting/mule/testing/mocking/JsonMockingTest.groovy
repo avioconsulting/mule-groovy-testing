@@ -29,7 +29,7 @@ class JsonMockingTest extends BaseTest {
         // act
         def result = runFlow('restRequest') {
             json {
-                map([foo: 123])
+                inputPayload([foo: 123])
             }
         }
 
@@ -58,7 +58,7 @@ class JsonMockingTest extends BaseTest {
         // act
         def result = runFlow('queryParameters') {
             json {
-                map([foo: 123])
+                inputPayload([foo: 123])
             }
         }
 
@@ -94,7 +94,7 @@ class JsonMockingTest extends BaseTest {
         // act
         def result = runFlow('queryParameters') {
             json {
-                map([foo: 123])
+                inputPayload([foo: 123])
             }
         }
 
@@ -130,7 +130,7 @@ class JsonMockingTest extends BaseTest {
         // act
         def result = runFlow('restRequest') {
             json {
-                jackson(input, JacksonOutput)
+                inputPayload(input, JacksonOutput)
             }
         } as JacksonOutput
 
