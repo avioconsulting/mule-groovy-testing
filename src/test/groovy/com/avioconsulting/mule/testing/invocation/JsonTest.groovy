@@ -103,11 +103,26 @@ class JsonTest extends BaseTest {
         // arrange
 
         // act
-        def result = runFlow('jsonTest') {
+        def result = runFlow('jsonListTest') {
             json {
-                inputPayload([foo: 123])
+                inputPayload([
+                        [foo: 123]
+                ])
             }
         }
+
+        // assert
+        assertThat result,
+                   is(equalTo([
+                           [key: 123]
+                   ]))
+    }
+
+    @Test
+    void listOfJacksonObjects() {
+        // arrange
+
+        // act
 
         // assert
         fail 'write this'
