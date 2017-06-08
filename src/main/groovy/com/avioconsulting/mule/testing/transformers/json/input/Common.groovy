@@ -23,8 +23,8 @@ abstract class Common implements InputTransformer {
 
     def validateContentType(MuleMessage message) {
         def runnerConfig = muleContext.registry.get(FlowRunnerImpl.AVIO_MULE_RUNNER_CONFIG_BEAN) as RunnerConfig
-        // don't need content-type for VM right now
-        if (!runnerConfig.doContentTypeCheck) {
+        // don't need content-type for VM or empty strings
+        if (!runnerConfig.doContentTypeCheck || message.payloadAsString == '') {
             return
         }
         def errorMessage

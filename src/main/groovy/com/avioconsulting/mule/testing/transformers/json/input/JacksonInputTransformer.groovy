@@ -25,6 +25,9 @@ class JacksonInputTransformer extends Common {
     }
 
     def transform(String jsonString) {
+        if (jsonString == '') {
+            return null
+        }
         def errors = []
         for (def klass : inputClasses) {
             try {

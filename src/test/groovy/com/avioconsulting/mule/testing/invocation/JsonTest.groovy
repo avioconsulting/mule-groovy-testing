@@ -250,7 +250,7 @@ class JsonTest extends BaseTest {
     }
 
     @Test
-    void emptyPayloadTest() {
+    void emptyPayload_StringTest() {
         // arrange
 
         // act
@@ -263,6 +263,23 @@ class JsonTest extends BaseTest {
         // assert
         assertThat result,
                    is(isEmptyString())
+    }
+
+    @Test
+    void emptyPayload_MapTest() {
+        // arrange
+
+        // act
+        def result = runFlow('emptyPayloadTest') {
+            json {
+                outputOnly(Map)
+                noStreaming()
+            }
+        }
+
+        // assert
+        assertThat result,
+                   is(nullValue())
     }
 
     @Test
