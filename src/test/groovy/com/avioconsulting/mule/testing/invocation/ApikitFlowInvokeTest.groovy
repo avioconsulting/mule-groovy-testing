@@ -95,7 +95,7 @@ class ApikitFlowInvokeTest extends BaseApiKitTest {
         // act
         def result = runApiKitFlow('GET', '/resources/2') {
             json {
-                inputPayload(SampleJacksonOutput)
+                outputOnly(SampleJacksonOutput)
             }
         } as SampleJacksonOutput
 
@@ -117,7 +117,7 @@ class ApikitFlowInvokeTest extends BaseApiKitTest {
                                    '/resources',
                                    queryParams) {
             json {
-                inputPayload(SampleJacksonOutput)
+                outputOnly(SampleJacksonOutput)
             }
         } as SampleJacksonOutput
 

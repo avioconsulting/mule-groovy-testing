@@ -27,7 +27,7 @@ abstract class Common implements InputTransformer {
         if (!runnerConfig.doContentTypeCheck) {
             return
         }
-        def errorMessage = null
+        def errorMessage
         switch (mockedConnectorType) {
             case ConnectorType.HTTP_REQUEST:
                 errorMessage = "Content-Type was not set to 'application/json' before calling your mock endpoint! Add a set-property"
@@ -35,12 +35,15 @@ abstract class Common implements InputTransformer {
             case ConnectorType.HTTP_LISTENER:
                 errorMessage = "Content-Type was not set to 'application/json' within your flow! Add a set-property"
                 break
+            default:
+                // VM, etc. should not need this
+                return
         }
         if (!errorMessage) {
             return
         }
         def actualContentType = message.getOutboundProperty('Content-Type') as String
-        assert actualContentType == 'application/json': "${errorMessage}. Actual type was ${actualContentType}"
+        assert actualContentType && actualContentType.contains('application/json'): "${errorMessage}. Actual type was ${actualContentType}"
     }
 
     abstract def transform(String jsonString)

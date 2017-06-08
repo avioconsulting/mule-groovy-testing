@@ -10,9 +10,11 @@ import com.avioconsulting.mule.testing.transformers.json.input.MapInputTransform
 import com.avioconsulting.mule.testing.transformers.json.output.JacksonOutputTransformer
 import com.avioconsulting.mule.testing.transformers.json.output.MapOutputTransformer
 import org.mule.DefaultMuleEvent
+import org.mule.DefaultMuleMessage
 import org.mule.MessageExchangePattern
 import org.mule.api.MuleContext
 import org.mule.api.MuleEvent
+import org.mule.api.MuleMessage
 import org.mule.munit.common.util.MunitMuleTestUtils
 
 class JsonInvokerImpl implements JsonInvoker, Invoker {
@@ -22,11 +24,13 @@ class JsonInvokerImpl implements JsonInvoker, Invoker {
     private InputTransformer transformAfterCallingFlow
     private inputObject
     private static final List<Class> allowedPayloadTypes = [InputStream]
+    private boolean outputOnly
 
     JsonInvokerImpl(MuleContext muleContext,
                     RunnerConfig runnerConfig) {
         this.runnerConfig = runnerConfig
         this.muleContext = muleContext
+        this.outputOnly = false
     }
 
     def inputPayload(Object inputObject) {
@@ -56,9 +60,11 @@ class JsonInvokerImpl implements JsonInvoker, Invoker {
 
     def outputOnly(Class outputClass) {
         setJacksonOutputTransformer(outputClass)
+        outputOnly = true
     }
 
     private setInputTransformer(inputObject) {
+        assert !(inputObject instanceof Class): 'Use outputOnly if a only an output class is being supplied!'
         this.inputObject = inputObject
         if (inputObject instanceof Map) {
             transformBeforeCallingFlow = new MapOutputTransformer(muleContext)
@@ -75,8 +81,13 @@ class JsonInvokerImpl implements JsonInvoker, Invoker {
     }
 
     MuleEvent getEvent() {
-        assert transformBeforeCallingFlow: 'Need to specify a type of JSON serialization (jackson, map)'
-        def inputMessage = transformBeforeCallingFlow.transformOutput(this.inputObject)
+        MuleMessage inputMessage
+        if (outputOnly) {
+            inputMessage = new DefaultMuleMessage(null, muleContext)
+        } else {
+            assert transformBeforeCallingFlow: 'Need to specify a type of JSON serialization (jackson, map)'
+            inputMessage = transformBeforeCallingFlow.transformOutput(this.inputObject)
+        }
         new DefaultMuleEvent(inputMessage,
                              MessageExchangePattern.REQUEST_RESPONSE,
                              MunitMuleTestUtils.getTestFlow(muleContext))
