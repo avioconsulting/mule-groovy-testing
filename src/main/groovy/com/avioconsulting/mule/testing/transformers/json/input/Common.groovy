@@ -1,8 +1,8 @@
 package com.avioconsulting.mule.testing.transformers.json.input
 
 import com.avioconsulting.mule.testing.RunnerConfig
+import com.avioconsulting.mule.testing.dsl.ConnectorType
 import com.avioconsulting.mule.testing.dsl.invokers.FlowRunnerImpl
-import com.avioconsulting.mule.testing.dsl.mocking.ConnectorType
 import com.avioconsulting.mule.testing.transformers.InputTransformer
 import org.mule.api.MuleContext
 import org.mule.api.MuleMessage
@@ -10,14 +10,14 @@ import org.mule.transport.NullPayload
 
 abstract class Common implements InputTransformer {
     private final MuleContext muleContext
-    private final ConnectorType mockedConnectorType
+    private final ConnectorType connectorType
     private List<Class> allowedPayloadTypes
 
     Common(MuleContext muleContext,
-           ConnectorType mockedConnectorType,
+           ConnectorType connectorType,
            List<Class> allowedPayloadTypes) {
         this.allowedPayloadTypes = allowedPayloadTypes
-        this.mockedConnectorType = mockedConnectorType
+        this.connectorType = connectorType
         this.muleContext = muleContext
     }
 
@@ -28,7 +28,7 @@ abstract class Common implements InputTransformer {
             return
         }
         def errorMessage
-        switch (mockedConnectorType) {
+        switch (connectorType) {
             case ConnectorType.HTTP_REQUEST:
                 errorMessage = "Content-Type was not set to 'application/json' before calling your mock endpoint! Add a set-property"
                 break

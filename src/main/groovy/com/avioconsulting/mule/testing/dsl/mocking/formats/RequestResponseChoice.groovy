@@ -1,7 +1,7 @@
 package com.avioconsulting.mule.testing.dsl.mocking.formats
 
 import com.avioconsulting.mule.testing.ProcessorLocator
-import com.avioconsulting.mule.testing.dsl.mocking.ConnectorType
+import com.avioconsulting.mule.testing.dsl.ConnectorType
 import org.mule.api.MuleContext
 import org.mule.modules.interceptor.processors.MuleMessageTransformer
 import org.mule.munit.common.mocking.MessageProcessorMocker
@@ -11,7 +11,7 @@ class RequestResponseChoice {
     private final MessageProcessorMocker muleMocker
     private final MuleContext muleContext
     private final List<Class> allowedPayloadTypes
-    private final ConnectorType mockedConnectorType
+    private final ConnectorType connectorType
     private final MunitSpy spy
     private final ProcessorLocator processorLocator
 
@@ -20,10 +20,10 @@ class RequestResponseChoice {
                           ProcessorLocator processorLocator,
                           MuleContext muleContext,
                           List<Class> allowedPayloadTypes,
-                          ConnectorType mockedConnectorType) {
+                          ConnectorType connectorType) {
         this.processorLocator = processorLocator
         this.spy = spy
-        this.mockedConnectorType = mockedConnectorType
+        this.connectorType = connectorType
         this.allowedPayloadTypes = allowedPayloadTypes
         this.muleContext = muleContext
         this.muleMocker = muleMocker
@@ -34,7 +34,7 @@ class RequestResponseChoice {
                                           processorLocator,
                                           this.muleContext,
                                           allowedPayloadTypes,
-                                          mockedConnectorType)
+                                          connectorType)
         def code = closure.rehydrate(formatter, this, this)
         code.resolveStrategy = Closure.DELEGATE_ONLY
         def transformer = code() as MuleMessageTransformer
@@ -44,7 +44,7 @@ class RequestResponseChoice {
     def xml(@DelegatesTo(XMLFormatter) Closure closure) {
         def formatter = new XMLFormatter(this.muleMocker,
                                          this.muleContext,
-                                         mockedConnectorType)
+                                         connectorType)
         def code = closure.rehydrate(formatter, this, this)
         code.resolveStrategy = Closure.DELEGATE_ONLY
         code()

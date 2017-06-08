@@ -1,14 +1,14 @@
 package com.avioconsulting.mule.testing.transformers.json.input
 
-import com.avioconsulting.mule.testing.dsl.mocking.ConnectorType
+import com.avioconsulting.mule.testing.dsl.ConnectorType
 import groovy.json.JsonSlurper
 import org.mule.api.MuleContext
 
 class MapInputTransformer extends Common {
     MapInputTransformer(MuleContext muleContext,
-                        ConnectorType mockedConnectorType,
+                        ConnectorType connectorType,
                         List<Class> allowedPayloadTypes) {
-        super(muleContext, mockedConnectorType, allowedPayloadTypes)
+        super(muleContext, connectorType, allowedPayloadTypes)
     }
 
     def transform(String jsonString) {

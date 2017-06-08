@@ -1,6 +1,6 @@
 package com.avioconsulting.mule.testing.transformers.json.input
 
-import com.avioconsulting.mule.testing.dsl.mocking.ConnectorType
+import com.avioconsulting.mule.testing.dsl.ConnectorType
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.mule.api.MuleContext
 
@@ -9,10 +9,10 @@ class JacksonInputTransformer extends Common {
     private final Class inputClass
 
     JacksonInputTransformer(MuleContext muleContext,
-                            ConnectorType mockedConnectorType,
+                            ConnectorType connectorType,
                             List<Class> allowedPayloadTypes,
                             Class inputClass) {
-        super(muleContext, mockedConnectorType, allowedPayloadTypes)
+        super(muleContext, connectorType, allowedPayloadTypes)
         this.inputClass = inputClass
     }
 

@@ -1,6 +1,6 @@
 package com.avioconsulting.mule.testing.transformers.xml
 
-import com.avioconsulting.mule.testing.dsl.mocking.ConnectorType
+import com.avioconsulting.mule.testing.dsl.ConnectorType
 import org.mule.api.MuleContext
 import org.mule.api.MuleMessage
 import org.mule.modules.interceptor.processors.MuleMessageTransformer
@@ -12,8 +12,8 @@ class XMLJAXBTransformer extends XMLTransformer implements MuleMessageTransforme
     XMLJAXBTransformer(Closure closure,
                        MuleContext muleContext,
                        Class inputJaxbClass,
-                       ConnectorType mockedConnectorType) {
-        super(muleContext, mockedConnectorType)
+                       ConnectorType connectorType) {
+        super(muleContext, connectorType)
         this.closure = closure
         this.helper = new JAXBMarshalHelper(inputJaxbClass)
     }

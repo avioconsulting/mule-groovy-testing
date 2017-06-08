@@ -1,4 +1,4 @@
-package com.avioconsulting.mule.testing.dsl.mocking
+package com.avioconsulting.mule.testing.dsl
 
 enum ConnectorType {
     HTTP_REQUEST,

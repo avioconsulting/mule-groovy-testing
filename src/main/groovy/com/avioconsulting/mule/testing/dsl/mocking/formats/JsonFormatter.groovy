@@ -1,7 +1,7 @@
 package com.avioconsulting.mule.testing.dsl.mocking.formats
 
 import com.avioconsulting.mule.testing.ProcessorLocator
-import com.avioconsulting.mule.testing.dsl.mocking.ConnectorType
+import com.avioconsulting.mule.testing.dsl.ConnectorType
 import com.avioconsulting.mule.testing.dsl.mocking.QueryParamOptions
 import com.avioconsulting.mule.testing.transformers.OutputTransformer
 import com.avioconsulting.mule.testing.transformers.QueryParamSpy
@@ -17,7 +17,7 @@ import org.mule.munit.common.mocking.MunitSpy
 class JsonFormatter {
     private final MuleContext muleContext
     private final List<Class> allowedPayloadTypes
-    private final ConnectorType mockedConnectorType
+    private final ConnectorType connectorType
     private final MunitSpy spy
     private final ProcessorLocator processorLocator
 
@@ -25,10 +25,10 @@ class JsonFormatter {
                   ProcessorLocator processorLocator,
                   MuleContext muleContext,
                   List<Class> allowedPayloadTypes,
-                  ConnectorType mockedConnectorType) {
+                  ConnectorType connectorType) {
         this.processorLocator = processorLocator
         this.spy = spy
-        this.mockedConnectorType = mockedConnectorType
+        this.connectorType = connectorType
         this.allowedPayloadTypes = allowedPayloadTypes
         this.muleContext = muleContext
     }
@@ -59,7 +59,7 @@ class JsonFormatter {
 
     def whenCalledWithMap(Closure closure) {
         def input = new MapInputTransformer(muleContext,
-                                            mockedConnectorType,
+                                            connectorType,
                                             allowedPayloadTypes)
         def output = new MapOutputTransformer(muleContext)
         new StandardTransformer(closure, input, output)
@@ -68,7 +68,7 @@ class JsonFormatter {
     def whenCalledWithJackson(Class inputClass,
                               Closure closure) {
         def input = new JacksonInputTransformer(muleContext,
-                                                mockedConnectorType,
+                                                connectorType,
                                                 allowedPayloadTypes,
                                                 inputClass)
         def output = new JacksonOutputTransformer(muleContext)

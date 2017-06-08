@@ -1,8 +1,8 @@
 package com.avioconsulting.mule.testing
 
+import com.avioconsulting.mule.testing.dsl.ConnectorType
 import com.avioconsulting.mule.testing.dsl.invokers.FlowRunner
 import com.avioconsulting.mule.testing.dsl.invokers.FlowRunnerImpl
-import com.avioconsulting.mule.testing.dsl.mocking.ConnectorType
 import com.avioconsulting.mule.testing.dsl.mocking.formats.RequestResponseChoice
 import com.avioconsulting.mule.testing.dsl.mocking.formats.XMLFormatter
 import com.fasterxml.jackson.databind.ObjectMapper
