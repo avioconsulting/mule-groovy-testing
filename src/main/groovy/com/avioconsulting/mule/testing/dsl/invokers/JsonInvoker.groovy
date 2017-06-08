@@ -5,6 +5,8 @@ interface JsonInvoker {
 
     def inputPayload(inputObject, Class outputClass)
 
+    def inputOnly(inputObject)
+
     def outputOnly(Class outputClass)
 
     def noStreaming()

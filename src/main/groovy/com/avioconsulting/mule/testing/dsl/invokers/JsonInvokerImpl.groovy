@@ -17,6 +17,7 @@ import org.mule.api.MuleEvent
 import org.mule.api.MuleMessage
 import org.mule.munit.common.util.MunitMuleTestUtils
 
+
 class JsonInvokerImpl implements JsonInvoker, Invoker {
     private final MuleContext muleContext
     private final RunnerConfig runnerConfig
@@ -25,12 +26,14 @@ class JsonInvokerImpl implements JsonInvoker, Invoker {
     private inputObject
     private static final List<Class> allowedPayloadTypes = [InputStream]
     private boolean outputOnly
+    private boolean inputOnly
 
     JsonInvokerImpl(MuleContext muleContext,
                     RunnerConfig runnerConfig) {
         this.runnerConfig = runnerConfig
         this.muleContext = muleContext
         this.outputOnly = false
+        this.inputOnly = false
     }
 
     def inputPayload(Object inputObject) {
@@ -49,6 +52,11 @@ class JsonInvokerImpl implements JsonInvoker, Invoker {
         } else {
             setJacksonOutputTransformer(outputClass)
         }
+    }
+
+    def inputOnly(Object inputObject) {
+        this.inputOnly = true
+        setInputTransformer(inputObject)
     }
 
     private void setJacksonOutputTransformer(Class outputClass) {
@@ -94,10 +102,13 @@ class JsonInvokerImpl implements JsonInvoker, Invoker {
     }
 
     def transformOutput(MuleEvent event) {
+        if (inputOnly) {
+            return
+        }
         assert transformAfterCallingFlow
         // filters return null events
         if (event == null) {
-            return null
+            return
         }
         transformAfterCallingFlow.transformInput(event.message)
     }

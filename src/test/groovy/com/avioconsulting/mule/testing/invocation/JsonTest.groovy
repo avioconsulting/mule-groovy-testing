@@ -214,6 +214,22 @@ class JsonTest extends BaseTest {
     }
 
     @Test
+    void inputOnlyTst() {
+        // arrange
+
+        // act
+        def result = runFlow('emptyPayloadTest') {
+            json {
+                inputOnly([:])
+            }
+        }
+
+        // assert
+        assertThat result,
+                   is(nullValue())
+    }
+
+    @Test
     void stringPayload_Set_Wrong() {
         // arrange
 
