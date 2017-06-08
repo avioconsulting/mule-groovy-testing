@@ -181,7 +181,7 @@ abstract class BaseTest extends FunctionalMunitSuite {
                                                         locator,
                                                         muleContext,
                                                         expectedPayloadType,
-                                                        ConnectorType.HTTP)
+                                                        ConnectorType.HTTP_REQUEST)
         def code = closure.rehydrate(formatterChoice, this, this)
         code.resolveStrategy = Closure.DELEGATE_ONLY
         code()

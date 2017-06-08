@@ -23,11 +23,23 @@ abstract class Common implements InputTransformer {
     def validateContentType(MuleMessage message) {
         def runnerConfig = muleContext.registry.get(FlowRunnerImpl.AVIO_MULE_RUNNER_CONFIG_BEAN) as RunnerConfig
         // don't need content-type for VM right now
-        if (!runnerConfig.doContentTypeCheck || mockedConnectorType != ConnectorType.HTTP) {
+        if (!runnerConfig.doContentTypeCheck) {
+            return
+        }
+        def errorMessage = null
+        switch (mockedConnectorType) {
+            case ConnectorType.HTTP_REQUEST:
+                errorMessage = "Content-Type was not set to 'application/json' before calling your mock endpoint! Add a set-property"
+                break
+            case ConnectorType.HTTP_LISTENER:
+                errorMessage = "Content-Type was not set to 'application/json' within your flow! Add a set-property"
+                break
+        }
+        if (!errorMessage) {
             return
         }
         assert message.getOutboundProperty(
-                'Content-Type') as String == 'application/json': "Content-Type was not set to 'application/json' before calling your mock endpoint! Add a set-property"
+                'Content-Type') as String == 'application/json': errorMessage
     }
 
     abstract def transform(String jsonString)

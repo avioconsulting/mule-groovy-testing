@@ -30,7 +30,7 @@ class JsonInvokerImpl implements JsonInvoker, Invoker {
     def inputPayload(Object inputObject) {
         setInputTransformer(inputObject)
         transformAfterCallingFlow = new MapInputTransformer(muleContext,
-                                                            ConnectorType.HTTP,
+                                                            ConnectorType.HTTP_LISTENER,
                                                             InputStream)
     }
 
@@ -42,7 +42,7 @@ class JsonInvokerImpl implements JsonInvoker, Invoker {
 
     private void setJacksonOutputTransformer(Class outputClass) {
         transformAfterCallingFlow = new JacksonInputTransformer(muleContext,
-                                                                ConnectorType.HTTP,
+                                                                ConnectorType.HTTP_LISTENER,
                                                                 InputStream,
                                                                 outputClass)
     }

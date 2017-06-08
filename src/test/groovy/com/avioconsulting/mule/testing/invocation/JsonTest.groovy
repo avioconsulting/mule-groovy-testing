@@ -114,7 +114,7 @@ class JsonTest extends BaseTest {
     }
 
     @Test
-    void contentTypeNotSet_NoApiKit() {
+    void contentTypeNotSet() {
         // arrange
 
         // act
