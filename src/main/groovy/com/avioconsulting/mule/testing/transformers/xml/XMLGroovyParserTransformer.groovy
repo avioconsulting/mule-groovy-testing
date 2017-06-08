@@ -1,6 +1,6 @@
 package com.avioconsulting.mule.testing.transformers.xml
 
-import com.avioconsulting.mule.testing.dsl.mocking.MockedConnectorType
+import com.avioconsulting.mule.testing.dsl.mocking.ConnectorType
 import groovy.xml.XmlUtil
 import org.mule.api.MuleContext
 import org.mule.api.MuleMessage
@@ -11,7 +11,7 @@ class XMLGroovyParserTransformer extends XMLTransformer implements MuleMessageTr
 
     XMLGroovyParserTransformer(Closure closure,
                                MuleContext muleContext,
-                               MockedConnectorType mockedConnectorType) {
+                               ConnectorType mockedConnectorType) {
         super(muleContext, mockedConnectorType)
         this.closure = closure
     }

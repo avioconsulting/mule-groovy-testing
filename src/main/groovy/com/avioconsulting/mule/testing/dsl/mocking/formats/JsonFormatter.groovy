@@ -1,7 +1,7 @@
 package com.avioconsulting.mule.testing.dsl.mocking.formats
 
 import com.avioconsulting.mule.testing.ProcessorLocator
-import com.avioconsulting.mule.testing.dsl.mocking.MockedConnectorType
+import com.avioconsulting.mule.testing.dsl.mocking.ConnectorType
 import com.avioconsulting.mule.testing.dsl.mocking.QueryParamOptions
 import com.avioconsulting.mule.testing.transformers.OutputTransformer
 import com.avioconsulting.mule.testing.transformers.QueryParamSpy
@@ -19,7 +19,7 @@ class JsonFormatter {
     private final MessageProcessorMocker messageProcessorMocker
     private final MuleContext muleContext
     private final Class expectedPayloadType
-    private final MockedConnectorType mockedConnectorType
+    private final ConnectorType mockedConnectorType
     private final MunitSpy spy
     private final ProcessorLocator processorLocator
 
@@ -27,7 +27,7 @@ class JsonFormatter {
                   ProcessorLocator processorLocator,
                   MuleContext muleContext,
                   Class expectedPayloadType,
-                  MockedConnectorType mockedConnectorType) {
+                  ConnectorType mockedConnectorType) {
         this.processorLocator = processorLocator
         this.spy = spy
         this.mockedConnectorType = mockedConnectorType

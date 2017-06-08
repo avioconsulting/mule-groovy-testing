@@ -1,7 +1,7 @@
 package com.avioconsulting.mule.testing.transformers.json.input
 
 import com.avioconsulting.mule.testing.dsl.invokers.FlowRunnerImpl
-import com.avioconsulting.mule.testing.dsl.mocking.MockedConnectorType
+import com.avioconsulting.mule.testing.dsl.mocking.ConnectorType
 import com.avioconsulting.mule.testing.runners.RunnerConfig
 import com.avioconsulting.mule.testing.transformers.InputTransformer
 import org.mule.api.MuleContext
@@ -9,11 +9,11 @@ import org.mule.api.MuleMessage
 
 abstract class Common implements InputTransformer {
     private final MuleContext muleContext
-    private final MockedConnectorType mockedConnectorType
+    private final ConnectorType mockedConnectorType
     private final Class expectedPayloadType
 
     Common(MuleContext muleContext,
-           MockedConnectorType mockedConnectorType,
+           ConnectorType mockedConnectorType,
            Class expectedPayloadType) {
         this.expectedPayloadType = expectedPayloadType
         this.mockedConnectorType = mockedConnectorType
@@ -23,7 +23,7 @@ abstract class Common implements InputTransformer {
     def validateContentType(MuleMessage message) {
         def runnerConfig = muleContext.registry.get(FlowRunnerImpl.AVIO_MULE_RUNNER_CONFIG_BEAN) as RunnerConfig
         // don't need content-type for VM right now
-        if (runnerConfig.apiKitReferencesThisFlow || mockedConnectorType != MockedConnectorType.HTTP) {
+        if (!runnerConfig.doContentTypeCheck || mockedConnectorType != ConnectorType.HTTP) {
             return
         }
         assert message.getOutboundProperty(

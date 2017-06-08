@@ -1,6 +1,6 @@
 package com.avioconsulting.mule.testing.dsl.mocking.formats
 
-import com.avioconsulting.mule.testing.dsl.mocking.MockedConnectorType
+import com.avioconsulting.mule.testing.dsl.mocking.ConnectorType
 import com.avioconsulting.mule.testing.transformers.xml.XMLGroovyParserTransformer
 import com.avioconsulting.mule.testing.transformers.xml.XMLJAXBTransformer
 import com.avioconsulting.mule.testing.transformers.xml.XMLMapTransformer
@@ -10,11 +10,11 @@ import org.mule.munit.common.mocking.MessageProcessorMocker
 class XMLFormatter {
     private final MessageProcessorMocker messageProcessorMocker
     private final MuleContext muleContext
-    private final MockedConnectorType mockedConnectorType
+    private final ConnectorType mockedConnectorType
 
     XMLFormatter(MessageProcessorMocker messageProcessorMocker,
                  MuleContext muleContext,
-                 MockedConnectorType mockedConnectorType) {
+                 ConnectorType mockedConnectorType) {
         this.mockedConnectorType = mockedConnectorType
         this.messageProcessorMocker = messageProcessorMocker
         this.muleContext = muleContext

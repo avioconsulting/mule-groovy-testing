@@ -23,7 +23,7 @@ class JsonTest extends BaseTest {
         // act
         def result = runFlow('jsonTest') {
             json {
-                jackson(input, SampleJacksonOutput)
+                inputPayload(input, SampleJacksonOutput)
             }
         } as SampleJacksonOutput
 
@@ -41,7 +41,7 @@ class JsonTest extends BaseTest {
         input.foobar = 123
         def result = runFlow('stringResponseTest') {
             json {
-                jackson(input)
+                inputPayload(input)
             }
         } as String
 
@@ -59,7 +59,7 @@ class JsonTest extends BaseTest {
         input.foobar = 123
         def result = runFlow('noStreamingTest') {
             json {
-                jackson(input, NoStreamingResponse)
+                inputPayload(input, NoStreamingResponse)
                 noStreaming()
             }
         } as NoStreamingResponse
@@ -89,13 +89,28 @@ class JsonTest extends BaseTest {
         // act
         def result = runFlow('jsonTest') {
             json {
-                map([foo: 123])
+                inputPayload([foo: 123])
             }
         }
 
         // assert
         assertThat result,
                    is(equalTo([key: 123]))
+    }
+
+    @Test
+    void listOfMaps() {
+        // arrange
+
+        // act
+        def result = runFlow('jsonTest') {
+            json {
+                inputPayload([foo: 123])
+            }
+        }
+
+        // assert
+        fail 'write this'
     }
 
     @Test
@@ -106,7 +121,7 @@ class JsonTest extends BaseTest {
         def result = shouldFail {
             runFlow('jsonTestNoContentType') {
                 json {
-                    map([foo: 123])
+                    inputPayload([foo: 123])
                 }
             }
         }
@@ -118,15 +133,15 @@ class JsonTest extends BaseTest {
     }
 
     @Test
-    void contentTypeNotSet_ApiKit() {
+    void contentTypeNotSet_CheckDisabled() {
         // arrange
 
         // act
         def result = runFlow('jsonTest') {
             json {
-                map([foo: 123])
+                inputPayload([foo: 123])
             }
-            apiKitReferencesThisFlow()
+            disableContentTypeCheck()
         }
 
         // assert
@@ -144,7 +159,7 @@ class JsonTest extends BaseTest {
         def runIt = {
             runFlow('filterJsonTest') {
                 json {
-                    jackson(input)
+                    inputPayload(input)
                 }
             }
         }
@@ -163,7 +178,7 @@ class JsonTest extends BaseTest {
         // act
         def result = runFlow('emptyPayloadTest') {
             json {
-                map([:])
+                inputPayload([:])
             }
         }
 
@@ -179,7 +194,7 @@ class JsonTest extends BaseTest {
         // act
         def result = runFlow('nullPayloadTest') {
             json {
-                map([:])
+                inputPayload([:])
             }
         }
 

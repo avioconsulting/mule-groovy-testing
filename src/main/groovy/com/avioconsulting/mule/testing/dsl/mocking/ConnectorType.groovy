@@ -1,6 +1,6 @@
 package com.avioconsulting.mule.testing.dsl.mocking
 
-enum MockedConnectorType {
+enum ConnectorType {
     HTTP,
     VM,
     SOAP

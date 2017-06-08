@@ -2,7 +2,7 @@ package com.avioconsulting.mule.testing
 
 import com.avioconsulting.mule.testing.dsl.invokers.FlowRunner
 import com.avioconsulting.mule.testing.dsl.invokers.FlowRunnerImpl
-import com.avioconsulting.mule.testing.dsl.mocking.MockedConnectorType
+import com.avioconsulting.mule.testing.dsl.mocking.ConnectorType
 import com.avioconsulting.mule.testing.dsl.mocking.formats.RequestResponseChoice
 import com.avioconsulting.mule.testing.dsl.mocking.formats.XMLFormatter
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -10,16 +10,12 @@ import com.mulesoft.weave.reader.ByteArraySeekableStream
 import groovy.json.JsonSlurper
 import org.junit.Before
 import org.junit.BeforeClass
-import org.mule.DefaultMuleEvent
-import org.mule.MessageExchangePattern
 import org.mule.api.MuleEvent
 import org.mule.api.MuleMessage
 import org.mule.module.client.MuleClient
-import org.mule.module.http.internal.request.SuccessStatusCodeValidator
 import org.mule.modules.interceptor.processors.MuleMessageTransformer
 import org.mule.munit.common.mocking.Attribute
 import org.mule.munit.common.mocking.SpyProcess
-import org.mule.munit.common.util.MunitMuleTestUtils
 import org.mule.munit.runner.functional.FunctionalMunitSuite
 
 import javax.xml.datatype.DatatypeFactory
@@ -185,7 +181,7 @@ abstract class BaseTest extends FunctionalMunitSuite {
                                                         locator,
                                                         muleContext,
                                                         expectedPayloadType,
-                                                        MockedConnectorType.HTTP)
+                                                        ConnectorType.HTTP)
         def code = closure.rehydrate(formatterChoice, this, this)
         code.resolveStrategy = Closure.DELEGATE_ONLY
         code()
@@ -210,7 +206,7 @@ abstract class BaseTest extends FunctionalMunitSuite {
                                                         locator,
                                                         muleContext,
                                                         expectedPayloadType,
-                                                        MockedConnectorType.VM)
+                                                        ConnectorType.VM)
         def code = closure.rehydrate(formatterChoice, this, this)
         code.resolveStrategy = Closure.DELEGATE_ONLY
         code()
@@ -225,7 +221,7 @@ abstract class BaseTest extends FunctionalMunitSuite {
                                         .withValue(connectorName))
         def soapFormatter = new XMLFormatter(mocker,
                                              muleContext,
-                                             MockedConnectorType.SOAP)
+                                             ConnectorType.SOAP)
         def code = closure.rehydrate(soapFormatter, this, this)
         code.resolveStrategy = Closure.DELEGATE_ONLY
         code()

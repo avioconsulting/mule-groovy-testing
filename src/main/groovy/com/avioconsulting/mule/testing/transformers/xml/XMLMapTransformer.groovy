@@ -1,6 +1,6 @@
 package com.avioconsulting.mule.testing.transformers.xml
 
-import com.avioconsulting.mule.testing.dsl.mocking.MockedConnectorType
+import com.avioconsulting.mule.testing.dsl.mocking.ConnectorType
 import groovy.util.slurpersupport.GPathResult
 import groovy.xml.MarkupBuilder
 import org.mule.api.MuleContext
@@ -12,7 +12,7 @@ class XMLMapTransformer extends XMLTransformer implements MuleMessageTransformer
 
     XMLMapTransformer(Closure closure,
                       MuleContext muleContext,
-                      MockedConnectorType mockedConnectorType) {
+                      ConnectorType mockedConnectorType) {
         super(muleContext, mockedConnectorType)
         this.closure = closure
     }

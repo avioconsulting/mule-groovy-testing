@@ -1,22 +1,22 @@
 package com.avioconsulting.mule.testing.transformers.xml
 
-import com.avioconsulting.mule.testing.dsl.mocking.MockedConnectorType
+import com.avioconsulting.mule.testing.dsl.mocking.ConnectorType
 import org.mule.api.MuleContext
 import org.mule.api.MuleMessage
 
 class XMLTransformer {
-    private final MockedConnectorType mockedConnectorType
+    private final ConnectorType mockedConnectorType
     protected final XMLMessageBuilder xmlMessageBuilder
 
     XMLTransformer(MuleContext muleContext,
-                   MockedConnectorType mockedConnectorType) {
+                   ConnectorType mockedConnectorType) {
         this.xmlMessageBuilder = new XMLMessageBuilder(muleContext)
         this.mockedConnectorType = mockedConnectorType
     }
 
     def validateContentType(MuleMessage muleMessage) {
         // ws-consumer sets this on its own
-        if (mockedConnectorType == MockedConnectorType.SOAP) {
+        if (mockedConnectorType == ConnectorType.SOAP) {
             return
         }
         assert muleMessage.getOutboundProperty(

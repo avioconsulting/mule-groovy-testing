@@ -50,8 +50,8 @@ class FlowRunnerImpl implements FlowRunner, Invoker {
         withInputEvent = closure
     }
 
-    def apiKitReferencesThisFlow() {
-        runnerConfig.apiKitReferencesThisFlow = true
+    def disableContentTypeCheck() {
+        runnerConfig.doContentTypeCheck = false
     }
 
     MuleEvent getEvent() {
