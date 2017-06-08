@@ -19,7 +19,7 @@ class HttpTest extends BaseTest {
         def stuff = null
         mockRestHttpCall('SomeSystem Call') {
             json {
-                whenCalledWithMap { Map incoming ->
+                whenCalledWith { Map incoming ->
                     stuff = incoming
                     [reply: 456]
                 }
@@ -47,7 +47,7 @@ class HttpTest extends BaseTest {
         input.foobar = 123
         mockRestHttpCall('SomeSystem Call') {
             json {
-                whenCalledWithJackson(SampleMockedJacksonInput) {
+                whenCalledWith(SampleMockedJacksonInput) {
                     SampleMockedJacksonInput incoming ->
                 }
             }
@@ -76,7 +76,7 @@ class HttpTest extends BaseTest {
         def mockValue = 0
         mockRestHttpCall('SomeSystem Call') {
             json {
-                whenCalledWithJackson(SampleMockedJacksonInput) {
+                whenCalledWith(SampleMockedJacksonInput) {
                     SampleMockedJacksonInput incoming ->
                         mockValue = incoming.foobar
                         def reply = new SampleMockedJacksonOutput()

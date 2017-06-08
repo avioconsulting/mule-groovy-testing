@@ -6,9 +6,7 @@ import com.avioconsulting.mule.testing.transformers.InputTransformer
 import com.avioconsulting.mule.testing.transformers.OutputTransformer
 import com.avioconsulting.mule.testing.transformers.StringInputTransformer
 import com.avioconsulting.mule.testing.transformers.json.input.JacksonInputTransformer
-import com.avioconsulting.mule.testing.transformers.json.input.MapInputTransformer
 import com.avioconsulting.mule.testing.transformers.json.output.JacksonOutputTransformer
-import com.avioconsulting.mule.testing.transformers.json.output.MapOutputTransformer
 import org.mule.DefaultMuleEvent
 import org.mule.DefaultMuleMessage
 import org.mule.MessageExchangePattern
@@ -16,7 +14,6 @@ import org.mule.api.MuleContext
 import org.mule.api.MuleEvent
 import org.mule.api.MuleMessage
 import org.mule.munit.common.util.MunitMuleTestUtils
-
 
 class JsonInvokerImpl implements JsonInvoker, Invoker {
     private final MuleContext muleContext
@@ -38,9 +35,10 @@ class JsonInvokerImpl implements JsonInvoker, Invoker {
 
     def inputPayload(Object inputObject) {
         setInputTransformer(inputObject)
-        transformAfterCallingFlow = new MapInputTransformer(muleContext,
-                                                            ConnectorType.HTTP_LISTENER,
-                                                            allowedPayloadTypes)
+        transformAfterCallingFlow = new JacksonInputTransformer(muleContext,
+                                                                ConnectorType.HTTP_LISTENER,
+                                                                allowedPayloadTypes,
+                                                                [Map, Map[]])
     }
 
     def inputPayload(Object inputObject,
@@ -67,6 +65,7 @@ class JsonInvokerImpl implements JsonInvoker, Invoker {
     }
 
     def outputOnly(Class outputClass) {
+        // Jackson handles maps too
         setJacksonOutputTransformer(outputClass)
         outputOnly = true
     }
@@ -74,11 +73,7 @@ class JsonInvokerImpl implements JsonInvoker, Invoker {
     private setInputTransformer(inputObject) {
         assert !(inputObject instanceof Class): 'Use outputOnly if a only an output class is being supplied!'
         this.inputObject = inputObject
-        if (inputObject instanceof Map) {
-            transformBeforeCallingFlow = new MapOutputTransformer(muleContext)
-        } else {
-            transformBeforeCallingFlow = new JacksonOutputTransformer(muleContext)
-        }
+        transformBeforeCallingFlow = new JacksonOutputTransformer(muleContext)
     }
 
     def noStreaming() {

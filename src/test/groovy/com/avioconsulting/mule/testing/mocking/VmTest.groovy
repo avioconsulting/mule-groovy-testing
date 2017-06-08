@@ -21,7 +21,7 @@ class VmTest extends BaseTest {
         SampleJacksonInput inputReceived = null
         mockVmReceive('The Queue') {
             json {
-                whenCalledWithJackson(SampleJacksonInput) { SampleJacksonInput input ->
+                whenCalledWith(SampleJacksonInput) { SampleJacksonInput input ->
                     inputReceived = input
                 }
             }
@@ -47,7 +47,7 @@ class VmTest extends BaseTest {
         // arrange
         mockVmReceive('The Queue') {
             json {
-                whenCalledWithJackson(SampleJacksonInput) { SampleJacksonInput input ->
+                whenCalledWith(SampleJacksonInput) { SampleJacksonInput input ->
                 }
             }
         }

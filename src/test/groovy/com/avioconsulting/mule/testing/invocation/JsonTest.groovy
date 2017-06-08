@@ -129,13 +129,29 @@ class JsonTest extends BaseTest {
                         [foo: 123]
                 ])
             }
+        } as Map[]
+
+        // assert
+        assertThat result.toList(),
+                   is(equalTo([
+                           [key: 123]
+                   ]))
+    }
+
+    @Test
+    void mapOutputOnly() {
+        // arrange
+
+        // act
+        def result = runFlow('noInputTest') {
+            json {
+                outputOnly(Map)
+            }
         }
 
         // assert
         assertThat result,
-                   is(equalTo([
-                           [key: 123]
-                   ]))
+                   is(equalTo([key: 123]))
     }
 
     @Test

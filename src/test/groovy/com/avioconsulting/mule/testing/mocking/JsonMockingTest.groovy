@@ -19,7 +19,7 @@ class JsonMockingTest extends BaseTest {
         def stuff = null
         mockRestHttpCall('SomeSystem Call') {
             json {
-                whenCalledWithMap { Map incoming ->
+                whenCalledWith { Map incoming ->
                     stuff = incoming
                     [reply: 456]
                 }
@@ -117,7 +117,7 @@ class JsonMockingTest extends BaseTest {
         def mockValue = 0
         mockRestHttpCall('SomeSystem Call') {
             json {
-                whenCalledWithJackson(SampleMockedJacksonInput) {
+                whenCalledWith(SampleMockedJacksonInput) {
                     SampleMockedJacksonInput incoming ->
                         mockValue = incoming.foobar
                         def reply = new SampleMockedJacksonOutput()
