@@ -44,16 +44,20 @@ class StringInputTransformer implements InputTransformer {
         def errorMessage = null
         switch (connectorType) {
             case ConnectorType.HTTP_REQUEST:
-                errorMessage = "Content-Type was not set to 'text/plain' before calling your mock endpoint! Add a set-property"
+                errorMessage = "Content-Type was not set to 'text/plain' before calling your mock endpoint! Add a set-property or remove the incorrect type."
                 break
             case ConnectorType.HTTP_LISTENER:
-                errorMessage = "Content-Type was not set to 'text/plain' within your flow! Add a set-property"
+                errorMessage = "Content-Type was not set to 'text/plain' within your flow! Add a set-property or remove the incorrect type."
                 break
         }
         if (!errorMessage) {
             return
         }
         def actualContentType = muleMessage.getOutboundProperty('Content-Type') as String
+        // HTTP default is plain
+        if (!actualContentType) {
+            return
+        }
         assert actualContentType == 'text/plain': "${errorMessage}. Actual type was ${actualContentType}"
     }
 }
