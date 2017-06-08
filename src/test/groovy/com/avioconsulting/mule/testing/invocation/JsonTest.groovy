@@ -188,6 +188,24 @@ class JsonTest extends BaseTest {
     }
 
     @Test
+    void stringPayload_Set_Wrong() {
+        // arrange
+
+        // act
+        def result = shouldFail {
+            runFlow('wrongContentTypeTest') {
+                json {
+                    inputPayload([:], String)
+                }
+            }
+        }
+
+        // assert
+        assertThat result.message,
+                   is(equalTo('wrong conernt type'))
+    }
+
+    @Test
     void nullPayloadTest() {
         // arrange
 
