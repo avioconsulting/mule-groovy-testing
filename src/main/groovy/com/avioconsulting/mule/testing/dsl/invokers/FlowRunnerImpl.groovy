@@ -27,6 +27,14 @@ class FlowRunnerImpl implements FlowRunner, Invoker {
         code()
     }
 
+    def java(@DelegatesTo(JavaInvoker) Closure closure) {
+        def javaInvoker = new JavaInvokerImpl(muleContext)
+        invoker = javaInvoker
+        def code = closure.rehydrate(javaInvoker, this, this)
+        code.resolveStrategy = Closure.DELEGATE_ONLY
+        code()
+    }
+
     def withOutputEvent(Closure closure) {
         muleOutputEventHook = closure
     }
