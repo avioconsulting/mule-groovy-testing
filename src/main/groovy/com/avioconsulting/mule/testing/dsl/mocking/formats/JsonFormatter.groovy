@@ -1,8 +1,8 @@
 package com.avioconsulting.mule.testing.dsl.mocking.formats
 
-import com.avioconsulting.mule.testing.ProcessorLocator
 import com.avioconsulting.mule.testing.dsl.ConnectorType
 import com.avioconsulting.mule.testing.dsl.mocking.QueryParamOptions
+import com.avioconsulting.mule.testing.transformers.HttpConnectorSpy
 import com.avioconsulting.mule.testing.transformers.OutputTransformer
 import com.avioconsulting.mule.testing.transformers.QueryParamSpy
 import com.avioconsulting.mule.testing.transformers.StandardTransformer
@@ -10,28 +10,28 @@ import com.avioconsulting.mule.testing.transformers.json.input.JacksonInputTrans
 import com.avioconsulting.mule.testing.transformers.json.output.JacksonOutputTransformer
 import org.mule.api.MuleContext
 import org.mule.api.MuleMessage
-import org.mule.munit.common.mocking.MunitSpy
 
 class JsonFormatter {
     private final MuleContext muleContext
     private final List<Class> allowedPayloadTypes
     private final ConnectorType connectorType
-    private final MunitSpy spy
-    private final ProcessorLocator processorLocator
+    private final HttpConnectorSpy spy
 
-    JsonFormatter(MunitSpy spy,
-                  ProcessorLocator processorLocator,
+    JsonFormatter(HttpConnectorSpy spy,
                   MuleContext muleContext,
                   List<Class> allowedPayloadTypes,
                   ConnectorType connectorType) {
-        this.processorLocator = processorLocator
         this.spy = spy
         this.connectorType = connectorType
         this.allowedPayloadTypes = allowedPayloadTypes
         this.muleContext = muleContext
     }
 
+    // TODO: Move this outside of JSON formatter, is an HTTP only thing
     def whenCalledWithQueryParams(@DelegatesTo(QueryParamOptions) Closure closure) {
+        if (connectorType == ConnectorType.VM) {
+            throw new Exception('only supported in HTTP!')
+        }
         def transformer = new OutputTransformer() {
             @Override
             MuleMessage transformOutput(Object input) {
@@ -42,11 +42,10 @@ class JsonFormatter {
             def disableStreaming() {
             }
         }
-        def queryParamSpy = new QueryParamSpy(processorLocator,
+        def queryParamSpy = new QueryParamSpy(spy,
                                               closure,
                                               transformer,
                                               muleContext)
-        spy.before(queryParamSpy)
         queryParamSpy
     }
 

@@ -3,7 +3,8 @@ package com.avioconsulting.mule.testing
 import com.avioconsulting.mule.testing.dsl.ConnectorType
 import com.avioconsulting.mule.testing.dsl.invokers.FlowRunner
 import com.avioconsulting.mule.testing.dsl.invokers.FlowRunnerImpl
-import com.avioconsulting.mule.testing.dsl.mocking.formats.RequestResponseChoice
+import com.avioconsulting.mule.testing.dsl.mocking.formats.HttpRequestResponseChoice
+import com.avioconsulting.mule.testing.dsl.mocking.formats.VmRequestResponse
 import com.avioconsulting.mule.testing.dsl.mocking.formats.XMLFormatter
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.mulesoft.weave.reader.ByteArraySeekableStream
@@ -163,7 +164,7 @@ abstract class BaseTest extends FunctionalMunitSuite {
     }
 
     def mockRestHttpCall(String connectorName,
-                         @DelegatesTo(RequestResponseChoice) Closure closure) {
+                         @DelegatesTo(HttpRequestResponseChoice) Closure closure) {
         def mocker = whenMessageProcessor('request')
                 .ofNamespace('http')
                 .withAttributes(Attribute.attribute('name')
@@ -176,37 +177,29 @@ abstract class BaseTest extends FunctionalMunitSuite {
                                         .withValue(connectorName))
         def allowedPayloadTypes = [InputStream]
         def locator = new ProcessorLocator(connectorName)
-        def formatterChoice = new RequestResponseChoice(mocker,
-                                                        spy,
-                                                        locator,
-                                                        muleContext,
-                                                        allowedPayloadTypes,
-                                                        ConnectorType.HTTP_REQUEST)
+        def formatterChoice = new HttpRequestResponseChoice(mocker,
+                                                            spy,
+                                                            locator,
+                                                            muleContext,
+                                                            allowedPayloadTypes,
+                                                            ConnectorType.HTTP_REQUEST)
         def code = closure.rehydrate(formatterChoice, this, this)
         code.resolveStrategy = Closure.DELEGATE_ONLY
         code()
     }
 
     def mockVmReceive(String connectorName,
-                      @DelegatesTo(RequestResponseChoice) Closure closure) {
+                      @DelegatesTo(HttpRequestResponseChoice) Closure closure) {
         def mocker = whenMessageProcessor('outbound-endpoint')
                 .ofNamespace('vm')
                 .withAttributes(Attribute.attribute('name')
                                         .ofNamespace('doc')
                                         .withValue(connectorName))
-        def spy = spyMessageProcessor('outbound-endpoint')
-                .ofNamespace('vm')
-                .withAttributes(Attribute.attribute('name')
-                                        .ofNamespace('doc')
-                                        .withValue(connectorName))
         def allowedPayloadTypes = [String]
-        def locator = new ProcessorLocator(connectorName)
-        def formatterChoice = new RequestResponseChoice(mocker,
-                                                        spy,
-                                                        locator,
-                                                        muleContext,
-                                                        allowedPayloadTypes,
-                                                        ConnectorType.VM)
+        def formatterChoice = new VmRequestResponse(mocker,
+                                                    muleContext,
+                                                    allowedPayloadTypes,
+                                                    ConnectorType.VM)
         def code = closure.rehydrate(formatterChoice, this, this)
         code.resolveStrategy = Closure.DELEGATE_ONLY
         code()

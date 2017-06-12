@@ -141,6 +141,35 @@ class HttpTest extends BaseTest {
     }
 
     @Test
+    void httpVerb() {
+        // arrange
+        String actualVerb = null
+        mockRestHttpCall('SomeSystem Call') {
+            json {
+                whenCalledWith { Map incoming ->
+                    [reply: 456]
+                }
+            }
+            withHttpVerb { String verb ->
+                actualVerb = verb
+
+            }
+        }
+
+        // act
+        runFlow('restRequest') {
+            json {
+                inputPayload([foo: 123], JacksonOutput)
+            }
+        }
+
+        // assert
+        assert actualVerb
+        assertThat actualVerb,
+                   is(equalTo('POST'))
+    }
+
+    @Test
     void queryParameters_http_return_set_201_code() {
         // arrange
         mockRestHttpCall('SomeSystem Call') {
