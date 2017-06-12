@@ -4,7 +4,6 @@ import com.avioconsulting.mule.testing.dsl.ConnectorType
 import com.avioconsulting.mule.testing.transformers.HttpConnectorSpy
 import com.avioconsulting.mule.testing.transformers.TransformerChain
 import org.mule.api.MuleContext
-import org.mule.modules.interceptor.processors.MuleMessageTransformer
 import org.mule.munit.common.mocking.MessageProcessorMocker
 
 abstract class BaseRequestResponse {
@@ -27,22 +26,22 @@ abstract class BaseRequestResponse {
     abstract HttpConnectorSpy getHttpConnectorSpy()
 
     def json(@DelegatesTo(JsonFormatter) Closure closure) {
-        def formatter = new JsonFormatter(httpConnectorSpy,
-                                          this.muleContext,
-                                          allowedPayloadTypes,
-                                          connectorType)
+        def formatter = new JsonFormatterImpl(httpConnectorSpy,
+                                              this.muleContext,
+                                              allowedPayloadTypes,
+                                              connectorType)
         def code = closure.rehydrate(formatter, this, this)
         code.resolveStrategy = Closure.DELEGATE_ONLY
-        def transformer = code() as MuleMessageTransformer
-        this.transformerChain.addTransformer(transformer)
+        code()
+        this.transformerChain.addTransformer(formatter.transformer)
     }
 
     def xml(@DelegatesTo(XMLFormatter) Closure closure) {
-        def formatter = new XMLFormatter(this.muleContext,
-                                         connectorType)
+        def formatter = new XMLFormatterImpl(this.muleContext,
+                                             connectorType)
         def code = closure.rehydrate(formatter, this, this)
         code.resolveStrategy = Closure.DELEGATE_ONLY
-        def transformer = code() as MuleMessageTransformer
-        this.transformerChain.addTransformer(transformer)
+        code()
+        this.transformerChain.addTransformer(formatter.transformer)
     }
 }
