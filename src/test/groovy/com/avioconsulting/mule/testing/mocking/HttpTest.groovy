@@ -148,8 +148,8 @@ class HttpTest extends BaseTest {
             json {
                 whenCalledWith { Map incoming ->
                     // sequencing should work
-//                    assertThat actualVerb,
-//                               is(equalTo('POST'))
+                    assertThat actualVerb,
+                               is(equalTo('POST'))
                     [reply: 456]
                 }
             }

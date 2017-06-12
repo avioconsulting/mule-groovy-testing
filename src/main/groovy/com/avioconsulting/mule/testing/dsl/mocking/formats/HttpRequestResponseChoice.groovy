@@ -30,7 +30,8 @@ class HttpRequestResponseChoice extends BaseRequestResponse {
         def verbTransformer = new HttpVerbTransformer(httpConnectorSpy,
                                                       closure,
                                                       muleContext)
-        transformerChain.addTransformer(verbTransformer)
+        // let verbs be processed first so they can be used in the payload transformers
+        transformerChain.prependTransformer(verbTransformer)
     }
 
     HttpConnectorSpy getHttpConnectorSpy() {
