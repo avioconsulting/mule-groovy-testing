@@ -147,19 +147,21 @@ class HttpTest extends BaseTest {
         mockRestHttpCall('SomeSystem Call') {
             json {
                 whenCalledWith { Map incoming ->
+                    // sequencing should work
+//                    assertThat actualVerb,
+//                               is(equalTo('POST'))
                     [reply: 456]
                 }
             }
             withHttpVerb { String verb ->
                 actualVerb = verb
-
             }
         }
 
         // act
         runFlow('restRequest') {
             json {
-                inputPayload([foo: 123], JacksonOutput)
+                inputPayload([foo: 123])
             }
         }
 

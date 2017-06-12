@@ -9,17 +9,17 @@ import org.mule.api.transport.PropertyScope
 import org.mule.modules.interceptor.processors.MuleMessageTransformer
 import org.mule.munit.common.util.MunitMuleTestUtils
 
-class QueryParamSpy implements MuleMessageTransformer {
+class QueryParamTransformer implements MuleMessageTransformer {
     private final Closure closure
     private final OutputTransformer outputTransformer
     private final QueryParamOptionsImpl queryParamOptions
     private final MuleContext muleContext
     private final HttpConnectorSpy spy
 
-    QueryParamSpy(HttpConnectorSpy spy,
-                  Closure closure,
-                  OutputTransformer outputTransformer,
-                  MuleContext muleContext) {
+    QueryParamTransformer(HttpConnectorSpy spy,
+                          Closure closure,
+                          OutputTransformer outputTransformer,
+                          MuleContext muleContext) {
         this.spy = spy
         this.muleContext = muleContext
         this.outputTransformer = outputTransformer

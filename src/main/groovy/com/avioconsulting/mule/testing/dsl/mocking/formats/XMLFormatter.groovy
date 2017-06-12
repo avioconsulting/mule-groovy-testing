@@ -5,41 +5,34 @@ import com.avioconsulting.mule.testing.transformers.xml.XMLGroovyParserTransform
 import com.avioconsulting.mule.testing.transformers.xml.XMLJAXBTransformer
 import com.avioconsulting.mule.testing.transformers.xml.XMLMapTransformer
 import org.mule.api.MuleContext
-import org.mule.munit.common.mocking.MessageProcessorMocker
 
 class XMLFormatter {
-    private final MessageProcessorMocker messageProcessorMocker
     private final MuleContext muleContext
     private final ConnectorType connectorType
 
-    XMLFormatter(MessageProcessorMocker messageProcessorMocker,
-                 MuleContext muleContext,
+    XMLFormatter(MuleContext muleContext,
                  ConnectorType connectorType) {
         this.connectorType = connectorType
-        this.messageProcessorMocker = messageProcessorMocker
         this.muleContext = muleContext
     }
 
     def whenCalledWithJaxb(Class inputJaxbClass,
                            Closure closure) {
-        def soapTransformer = new XMLJAXBTransformer(closure,
-                                                     muleContext,
-                                                     inputJaxbClass,
-                                                     connectorType)
-        messageProcessorMocker.thenApply(soapTransformer)
+        new XMLJAXBTransformer(closure,
+                               muleContext,
+                               inputJaxbClass,
+                               connectorType)
     }
 
     def whenCalledWithMapAsXml(Closure closure) {
-        def transformer = new XMLMapTransformer(closure,
-                                                muleContext,
-                                                connectorType)
-        messageProcessorMocker.thenApply(transformer)
+        new XMLMapTransformer(closure,
+                              muleContext,
+                              connectorType)
     }
 
     def whenCalledWithGroovyXmlParser(Closure closure) {
-        def transformer = new XMLGroovyParserTransformer(closure,
-                                                         muleContext,
-                                                         connectorType)
-        messageProcessorMocker.thenApply(transformer)
+        new XMLGroovyParserTransformer(closure,
+                                       muleContext,
+                                       connectorType)
     }
 }

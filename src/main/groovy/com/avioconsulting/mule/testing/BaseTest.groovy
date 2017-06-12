@@ -212,12 +212,12 @@ abstract class BaseTest extends FunctionalMunitSuite {
                 .withAttributes(Attribute.attribute('name')
                                         .ofNamespace('doc')
                                         .withValue(connectorName))
-        def soapFormatter = new XMLFormatter(mocker,
-                                             muleContext,
+        def soapFormatter = new XMLFormatter(muleContext,
                                              ConnectorType.SOAP)
         def code = closure.rehydrate(soapFormatter, this, this)
         code.resolveStrategy = Closure.DELEGATE_ONLY
-        code()
+        def transformer = code() as MuleMessageTransformer
+        mocker.thenApply(transformer)
     }
 
     static XMLGregorianCalendar getXmlDate(int year, int oneBasedMonth, int dayOfMonth) {

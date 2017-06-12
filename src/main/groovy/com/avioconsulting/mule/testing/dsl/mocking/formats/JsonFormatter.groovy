@@ -4,7 +4,7 @@ import com.avioconsulting.mule.testing.dsl.ConnectorType
 import com.avioconsulting.mule.testing.dsl.mocking.QueryParamOptions
 import com.avioconsulting.mule.testing.transformers.HttpConnectorSpy
 import com.avioconsulting.mule.testing.transformers.OutputTransformer
-import com.avioconsulting.mule.testing.transformers.QueryParamSpy
+import com.avioconsulting.mule.testing.transformers.QueryParamTransformer
 import com.avioconsulting.mule.testing.transformers.StandardTransformer
 import com.avioconsulting.mule.testing.transformers.json.input.JacksonInputTransformer
 import com.avioconsulting.mule.testing.transformers.json.output.JacksonOutputTransformer
@@ -42,10 +42,10 @@ class JsonFormatter {
             def disableStreaming() {
             }
         }
-        def queryParamSpy = new QueryParamSpy(spy,
-                                              closure,
-                                              transformer,
-                                              muleContext)
+        def queryParamSpy = new QueryParamTransformer(spy,
+                                                      closure,
+                                                      transformer,
+                                                      muleContext)
         queryParamSpy
     }
 

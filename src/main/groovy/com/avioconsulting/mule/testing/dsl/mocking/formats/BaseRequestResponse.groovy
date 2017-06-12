@@ -2,13 +2,14 @@ package com.avioconsulting.mule.testing.dsl.mocking.formats
 
 import com.avioconsulting.mule.testing.dsl.ConnectorType
 import com.avioconsulting.mule.testing.transformers.HttpConnectorSpy
+import com.avioconsulting.mule.testing.transformers.TransformerChain
 import org.mule.api.MuleContext
 import org.mule.modules.interceptor.processors.MuleMessageTransformer
 import org.mule.munit.common.mocking.MessageProcessorMocker
 
 abstract class BaseRequestResponse {
-    private final MessageProcessorMocker muleMocker
-    private final MuleContext muleContext
+    protected final TransformerChain transformerChain
+    protected final MuleContext muleContext
     private final List<Class> allowedPayloadTypes
     private final ConnectorType connectorType
 
@@ -19,7 +20,7 @@ abstract class BaseRequestResponse {
         this.connectorType = connectorType
         this.allowedPayloadTypes = allowedPayloadTypes
         this.muleContext = muleContext
-        this.muleMocker = muleMocker
+        this.transformerChain = new TransformerChain(muleMocker)
     }
 
     // TODO: Remove this once JSON Formatter/query params dependency is gone
@@ -33,15 +34,15 @@ abstract class BaseRequestResponse {
         def code = closure.rehydrate(formatter, this, this)
         code.resolveStrategy = Closure.DELEGATE_ONLY
         def transformer = code() as MuleMessageTransformer
-        muleMocker.thenApply(transformer)
+        this.transformerChain.addTransformer(transformer)
     }
 
     def xml(@DelegatesTo(XMLFormatter) Closure closure) {
-        def formatter = new XMLFormatter(this.muleMocker,
-                                         this.muleContext,
+        def formatter = new XMLFormatter(this.muleContext,
                                          connectorType)
         def code = closure.rehydrate(formatter, this, this)
         code.resolveStrategy = Closure.DELEGATE_ONLY
-        code()
+        def transformer = code() as MuleMessageTransformer
+        this.transformerChain.addTransformer(transformer)
     }
 }
