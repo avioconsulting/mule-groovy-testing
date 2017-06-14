@@ -3,9 +3,7 @@ package com.avioconsulting.mule.testing
 import com.avioconsulting.mule.testing.dsl.ConnectorType
 import com.avioconsulting.mule.testing.dsl.invokers.FlowRunner
 import com.avioconsulting.mule.testing.dsl.invokers.FlowRunnerImpl
-import com.avioconsulting.mule.testing.dsl.mocking.HttpRequestResponseChoice
-import com.avioconsulting.mule.testing.dsl.mocking.VmRequestResponse
-import com.avioconsulting.mule.testing.dsl.mocking.XMLFormatterImpl
+import com.avioconsulting.mule.testing.dsl.mocking.*
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.mulesoft.weave.reader.ByteArraySeekableStream
 import groovy.json.JsonSlurper
@@ -177,29 +175,29 @@ abstract class BaseTest extends FunctionalMunitSuite {
                                         .withValue(connectorName))
         def allowedPayloadTypes = [InputStream]
         def locator = new ProcessorLocator(connectorName)
-        def formatterChoice = new HttpRequestResponseChoice(mocker,
-                                                            spy,
-                                                            locator,
-                                                            muleContext,
-                                                            allowedPayloadTypes,
-                                                            ConnectorType.HTTP_REQUEST)
+        def formatterChoice = new HttpRequestResponseChoiceImpl(mocker,
+                                                                spy,
+                                                                locator,
+                                                                muleContext,
+                                                                allowedPayloadTypes,
+                                                                ConnectorType.HTTP_REQUEST)
         def code = closure.rehydrate(formatterChoice, this, this)
         code.resolveStrategy = Closure.DELEGATE_ONLY
         code()
     }
 
     def mockVmReceive(String connectorName,
-                      @DelegatesTo(HttpRequestResponseChoice) Closure closure) {
+                      @DelegatesTo(StandardRequestResponse) Closure closure) {
         def mocker = whenMessageProcessor('outbound-endpoint')
                 .ofNamespace('vm')
                 .withAttributes(Attribute.attribute('name')
                                         .ofNamespace('doc')
                                         .withValue(connectorName))
         def allowedPayloadTypes = [String]
-        def formatterChoice = new VmRequestResponse(mocker,
-                                                    muleContext,
-                                                    allowedPayloadTypes,
-                                                    ConnectorType.VM)
+        def formatterChoice = new StandardRequestResponseImpl(mocker,
+                                                              muleContext,
+                                                              allowedPayloadTypes,
+                                                              ConnectorType.VM)
         def code = closure.rehydrate(formatterChoice, this, this)
         code.resolveStrategy = Closure.DELEGATE_ONLY
         code()

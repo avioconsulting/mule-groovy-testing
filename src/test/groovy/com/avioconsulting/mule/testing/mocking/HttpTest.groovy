@@ -153,7 +153,7 @@ class HttpTest extends BaseTest {
                     [reply: 456]
                 }
             }
-            withHttpVerb { String verb ->
+            withHttpOptions { String verb ->
                 actualVerb = verb
             }
         }
