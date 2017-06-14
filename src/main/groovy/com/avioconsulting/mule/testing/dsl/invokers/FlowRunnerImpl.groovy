@@ -5,7 +5,7 @@ import com.avioconsulting.mule.testing.payloadvalidators.HttpListenerPayloadVali
 import org.mule.api.MuleContext
 import org.mule.api.MuleEvent
 
-class FlowRunnerImpl implements FlowRunner, Invoker {
+class FlowRunnerImpl implements FlowRunner {
     private final MuleContext muleContext
     private Invoker invoker
     private Closure closure
@@ -54,10 +54,7 @@ class FlowRunnerImpl implements FlowRunner, Invoker {
 
     def disableContentTypeCheck() {
         assert invoker: 'Need to specify a proper format first! (e.g. json)'
-        if (invoker instanceof JsonInvokerImpl) {
-            invoker = new JsonInvokerImpl(muleContext,
-                                          new ContentTypeCheckDisabledValidator(invoker.payloadValidator))
-        }
+        invoker = invoker.withNewPayloadValidator(new ContentTypeCheckDisabledValidator(invoker.payloadValidator))
     }
 
     MuleEvent getEvent() {

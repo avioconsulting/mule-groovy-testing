@@ -1,5 +1,6 @@
 package com.avioconsulting.mule.testing.dsl.invokers
 
+import com.avioconsulting.mule.testing.payloadvalidators.IPayloadValidator
 import org.mule.DefaultMuleEvent
 import org.mule.DefaultMuleMessage
 import org.mule.MessageExchangePattern
@@ -28,5 +29,14 @@ class JavaInvokerImpl implements JavaInvoker, Invoker {
 
     def transformOutput(MuleEvent event) {
         event.message.payload
+    }
+
+    Invoker withNewPayloadValidator(IPayloadValidator validator) {
+        // java side doesn't do payload validation
+        return this
+    }
+
+    IPayloadValidator getPayloadValidator() {
+        return null
     }
 }

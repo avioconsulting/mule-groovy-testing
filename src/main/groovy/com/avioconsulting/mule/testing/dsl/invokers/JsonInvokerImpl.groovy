@@ -107,4 +107,9 @@ class JsonInvokerImpl implements JsonInvoker, Invoker {
         assert transformAfterCallingFlow
         transformAfterCallingFlow.transformInput(event.message)
     }
+
+    Invoker withNewPayloadValidator(IPayloadValidator validator) {
+        new JsonInvokerImpl(muleContext,
+                            validator)
+    }
 }
