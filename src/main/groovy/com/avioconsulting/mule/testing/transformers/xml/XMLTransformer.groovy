@@ -17,7 +17,7 @@ class XMLTransformer {
     def validateContentType(MuleMessage muleMessage) {
         if (payloadValidator.contentTypeValidationRequired) {
             payloadValidator.validateContentType(muleMessage,
-                                                 'application/xml')
+                                                 ['application/xml'])
         }
     }
 }

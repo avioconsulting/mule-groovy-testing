@@ -16,12 +16,12 @@ trait PayloadHelper {
     }
 
     void validateContentType(MuleMessage message,
-                             String expectedContentType,
+                             List<String> validContentTypes,
                              String context) {
         def actualContentType = message.getOutboundProperty('Content-Type') as String
-        if (actualContentType != expectedContentType) {
+        if (!validContentTypes.contains(actualContentType)) {
             throw new Exception(
-                    "Expected Content-Type to be of type ${expectedContentType} but it actually was ${actualContentType}. ${context}")
+                    "Expected Content-Type to be of type ${validContentTypes} but it actually was ${actualContentType}. ${context}")
         }
     }
 }

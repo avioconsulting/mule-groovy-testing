@@ -19,9 +19,9 @@ class HttpListenerPayloadValidator implements IPayloadValidator,
     }
 
     void validateContentType(MuleMessage message,
-                             String expectedContentType) {
+                             List<String> validContentTypes) {
         validateContentType(message,
-                            expectedContentType,
+                            validContentTypes,
                             "This happened while calling your flow. Add a set-property before the end of the flow.")
     }
 

@@ -12,7 +12,7 @@ class SOAPPayloadValidator implements IPayloadValidator, PayloadHelper {
         return false
     }
 
-    void validateContentType(MuleMessage message, String expectedContentType) {
+    void validateContentType(MuleMessage message, List<String> validContentTypes) {
     }
 
     void validatePayloadType(Object payload) {

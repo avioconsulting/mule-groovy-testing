@@ -37,6 +37,6 @@ class StringInputTransformer implements InputTransformer {
             return
         }
         payloadValidator.validateContentType(muleMessage,
-                                             'text/plain')
+                                             ['text/plain'])
     }
 }

@@ -17,8 +17,8 @@ class StreamingDisabledPayloadValidator implements IPayloadValidator, PayloadHel
         parentValidator.contentTypeValidationRequired
     }
 
-    void validateContentType(MuleMessage message, String expectedContentType) {
-        parentValidator.validateContentType(message, expectedContentType)
+    void validateContentType(MuleMessage message, List<String> validContentTypes) {
+        parentValidator.validateContentType(message, validContentTypes)
     }
 
     void validatePayloadType(Object payload) {

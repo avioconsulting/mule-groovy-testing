@@ -8,7 +8,7 @@ interface IPayloadValidator {
     boolean isContentTypeValidationRequired()
 
     void validateContentType(MuleMessage message,
-                             String expectedContentType)
+                             List<String> validContentTypes)
 
     void validatePayloadType(Object payload)
 }

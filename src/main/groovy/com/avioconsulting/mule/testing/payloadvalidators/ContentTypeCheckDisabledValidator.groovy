@@ -17,8 +17,8 @@ class ContentTypeCheckDisabledValidator implements IPayloadValidator, PayloadHel
         false
     }
 
-    void validateContentType(MuleMessage message, String expectedContentType) {
-        parentValidator.validateContentType(message, expectedContentType)
+    void validateContentType(MuleMessage message, List<String> validContentTypes) {
+        parentValidator.validateContentType(message, validContentTypes)
     }
 
     void validatePayloadType(Object payload) {

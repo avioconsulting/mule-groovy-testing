@@ -18,9 +18,10 @@ class HttpRequestPayloadValidator implements IPayloadValidator,
         return true
     }
 
-    void validateContentType(MuleMessage message, String expectedContentType) {
+    void validateContentType(MuleMessage message,
+                             List<String> validContentTypes) {
         validateContentType(message,
-                            expectedContentType,
+                            validContentTypes,
                             'Check your mock endpoints.')
     }
 
