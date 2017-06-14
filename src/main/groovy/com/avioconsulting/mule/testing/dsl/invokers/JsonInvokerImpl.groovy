@@ -105,10 +105,6 @@ class JsonInvokerImpl implements JsonInvoker, Invoker {
             return
         }
         assert transformAfterCallingFlow
-        // filters return null events
-        if (event == null) {
-            return
-        }
         transformAfterCallingFlow.transformInput(event.message)
     }
 }

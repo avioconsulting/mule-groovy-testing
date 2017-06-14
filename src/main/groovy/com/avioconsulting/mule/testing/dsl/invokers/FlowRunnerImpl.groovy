@@ -72,10 +72,16 @@ class FlowRunnerImpl implements FlowRunner, Invoker {
     }
 
     def transformOutput(MuleEvent event) {
-        def response = invoker.transformOutput(event)
+        def response = null
+        // filters return null events
+        if (event != null) {
+            response = invoker.transformOutput(event)
+        }
+
         if (muleOutputEventHook) {
             muleOutputEventHook(event)
         }
+
         response
     }
 }
