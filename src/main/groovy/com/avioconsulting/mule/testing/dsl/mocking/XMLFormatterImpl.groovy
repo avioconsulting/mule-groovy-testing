@@ -1,6 +1,6 @@
 package com.avioconsulting.mule.testing.dsl.mocking
 
-import com.avioconsulting.mule.testing.dsl.ConnectorType
+import com.avioconsulting.mule.testing.payload_types.IPayloadValidator
 import com.avioconsulting.mule.testing.transformers.xml.XMLGroovyParserTransformer
 import com.avioconsulting.mule.testing.transformers.xml.XMLJAXBTransformer
 import com.avioconsulting.mule.testing.transformers.xml.XMLMapTransformer
@@ -9,12 +9,12 @@ import org.mule.modules.interceptor.processors.MuleMessageTransformer
 
 class XMLFormatterImpl implements XMLFormatter, ISelectPrimaryTransformer {
     private final MuleContext muleContext
-    private final ConnectorType connectorType
     private MuleMessageTransformer transformer
+    private final IPayloadValidator payloadValidator
 
     XMLFormatterImpl(MuleContext muleContext,
-                     ConnectorType connectorType) {
-        this.connectorType = connectorType
+                     IPayloadValidator payloadValidator) {
+        this.payloadValidator = payloadValidator
         this.muleContext = muleContext
     }
 
@@ -23,19 +23,19 @@ class XMLFormatterImpl implements XMLFormatter, ISelectPrimaryTransformer {
         transformer = new XMLJAXBTransformer(closure,
                                              muleContext,
                                              inputJaxbClass,
-                                             connectorType)
+                                             payloadValidator)
     }
 
     def whenCalledWithMapAsXml(Closure closure) {
         transformer = new XMLMapTransformer(closure,
                                             muleContext,
-                                            connectorType)
+                                            payloadValidator)
     }
 
     def whenCalledWithGroovyXmlParser(Closure closure) {
         transformer = new XMLGroovyParserTransformer(closure,
                                                      muleContext,
-                                                     connectorType)
+                                                     payloadValidator)
     }
 
     MuleMessageTransformer getTransformer() {

@@ -1,6 +1,6 @@
 package com.avioconsulting.mule.testing.transformers.xml
 
-import com.avioconsulting.mule.testing.dsl.ConnectorType
+import com.avioconsulting.mule.testing.payload_types.IPayloadValidator
 import groovy.util.slurpersupport.GPathResult
 import groovy.xml.MarkupBuilder
 import org.mule.api.MuleContext
@@ -12,8 +12,8 @@ class XMLMapTransformer extends XMLTransformer implements MuleMessageTransformer
 
     XMLMapTransformer(Closure closure,
                       MuleContext muleContext,
-                      ConnectorType connectorType) {
-        super(muleContext, connectorType)
+                      IPayloadValidator payloadValidator) {
+        super(muleContext, payloadValidator)
         this.closure = closure
     }
 

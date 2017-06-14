@@ -1,9 +1,7 @@
 package com.avioconsulting.mule.testing.dsl.invokers
 
-import com.avioconsulting.mule.testing.RunnerConfig
-import com.avioconsulting.mule.testing.dsl.ConnectorType
-import com.avioconsulting.mule.testing.payload_types.AllowedHttpPayloadTypes
-import com.avioconsulting.mule.testing.payload_types.IFetchAllowedPayloadTypes
+import com.avioconsulting.mule.testing.payload_types.HttpListenerPayloadValidator
+import com.avioconsulting.mule.testing.payload_types.IPayloadValidator
 import com.avioconsulting.mule.testing.transformers.InputTransformer
 import com.avioconsulting.mule.testing.transformers.OutputTransformer
 import com.avioconsulting.mule.testing.transformers.StringInputTransformer
@@ -19,17 +17,14 @@ import org.mule.munit.common.util.MunitMuleTestUtils
 
 class JsonInvokerImpl implements JsonInvoker, Invoker {
     private final MuleContext muleContext
-    private final RunnerConfig runnerConfig
     private OutputTransformer transformBeforeCallingFlow
     private InputTransformer transformAfterCallingFlow
     private inputObject
-    private static final IFetchAllowedPayloadTypes fetchAllowedPayloadTypes = new AllowedHttpPayloadTypes()
+    private static final IPayloadValidator payloadValidator = new HttpListenerPayloadValidator()
     private boolean outputOnly
     private boolean inputOnly
 
-    JsonInvokerImpl(MuleContext muleContext,
-                    RunnerConfig runnerConfig) {
-        this.runnerConfig = runnerConfig
+    JsonInvokerImpl(MuleContext muleContext) {
         this.muleContext = muleContext
         this.outputOnly = false
         this.inputOnly = false
@@ -38,8 +33,7 @@ class JsonInvokerImpl implements JsonInvoker, Invoker {
     def inputPayload(Object inputObject) {
         setInputTransformer(inputObject)
         transformAfterCallingFlow = new JacksonInputTransformer(muleContext,
-                                                                ConnectorType.HTTP_LISTENER,
-                                                                fetchAllowedPayloadTypes,
+                                                                payloadValidator,
                                                                 [Map, Map[]])
     }
 
@@ -47,7 +41,7 @@ class JsonInvokerImpl implements JsonInvoker, Invoker {
                      Class outputClass) {
         setInputTransformer(inputObject)
         if (outputClass == String) {
-            transformAfterCallingFlow = new StringInputTransformer(ConnectorType.HTTP_LISTENER,
+            transformAfterCallingFlow = new StringInputTransformer(payloadValidator,
                                                                    muleContext)
         } else {
             setJacksonOutputTransformer(outputClass)
@@ -61,8 +55,7 @@ class JsonInvokerImpl implements JsonInvoker, Invoker {
 
     private void setJacksonOutputTransformer(Class outputClass) {
         transformAfterCallingFlow = new JacksonInputTransformer(muleContext,
-                                                                ConnectorType.HTTP_LISTENER,
-                                                                fetchAllowedPayloadTypes,
+                                                                payloadValidator,
                                                                 outputClass)
     }
 

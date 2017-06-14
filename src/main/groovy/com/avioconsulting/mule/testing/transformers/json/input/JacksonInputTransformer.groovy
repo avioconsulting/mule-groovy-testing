@@ -1,7 +1,6 @@
 package com.avioconsulting.mule.testing.transformers.json.input
 
-import com.avioconsulting.mule.testing.dsl.ConnectorType
-import com.avioconsulting.mule.testing.payload_types.IFetchAllowedPayloadTypes
+import com.avioconsulting.mule.testing.payload_types.IPayloadValidator
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.mule.api.MuleContext
 
@@ -10,18 +9,16 @@ class JacksonInputTransformer extends Common {
     private final List<Class> inputClasses
 
     JacksonInputTransformer(MuleContext muleContext,
-                            ConnectorType connectorType,
-                            IFetchAllowedPayloadTypes fetchAllowedPayloadTypes,
+                            IPayloadValidator payloadValidator,
                             List<Class> inputClasses) {
-        super(muleContext, connectorType, fetchAllowedPayloadTypes)
+        super(muleContext, payloadValidator)
         this.inputClasses = inputClasses
     }
 
     JacksonInputTransformer(MuleContext muleContext,
-                            ConnectorType connectorType,
-                            IFetchAllowedPayloadTypes fetchAllowedPayloadTypes,
+                            IPayloadValidator payloadValidator,
                             Class inputClass) {
-        super(muleContext, connectorType, fetchAllowedPayloadTypes)
+        super(muleContext, payloadValidator)
         this.inputClasses = [inputClass]
     }
 

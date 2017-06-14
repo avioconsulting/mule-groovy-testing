@@ -1,9 +1,9 @@
 package com.avioconsulting.mule.testing
 
-import com.avioconsulting.mule.testing.dsl.ConnectorType
 import com.avioconsulting.mule.testing.dsl.invokers.FlowRunner
 import com.avioconsulting.mule.testing.dsl.invokers.FlowRunnerImpl
 import com.avioconsulting.mule.testing.dsl.mocking.*
+import com.avioconsulting.mule.testing.payload_types.SOAPPayloadValidator
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.mulesoft.weave.reader.ByteArraySeekableStream
 import groovy.json.JsonSlurper
@@ -204,8 +204,9 @@ abstract class BaseTest extends FunctionalMunitSuite {
                 .withAttributes(Attribute.attribute('name')
                                         .ofNamespace('doc')
                                         .withValue(connectorName))
+        def payloadValidator = new SOAPPayloadValidator()
         def soapFormatter = new XMLFormatterImpl(muleContext,
-                                                 ConnectorType.SOAP)
+                                                 payloadValidator)
         def code = closure.rehydrate(soapFormatter, this, this)
         code.resolveStrategy = Closure.DELEGATE_ONLY
         def transformer = code() as MuleMessageTransformer

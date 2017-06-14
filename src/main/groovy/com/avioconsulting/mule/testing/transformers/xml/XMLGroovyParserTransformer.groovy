@@ -1,6 +1,6 @@
 package com.avioconsulting.mule.testing.transformers.xml
 
-import com.avioconsulting.mule.testing.dsl.ConnectorType
+import com.avioconsulting.mule.testing.payload_types.IPayloadValidator
 import groovy.xml.XmlUtil
 import org.mule.api.MuleContext
 import org.mule.api.MuleMessage
@@ -11,8 +11,8 @@ class XMLGroovyParserTransformer extends XMLTransformer implements MuleMessageTr
 
     XMLGroovyParserTransformer(Closure closure,
                                MuleContext muleContext,
-                               ConnectorType connectorType) {
-        super(muleContext, connectorType)
+                               IPayloadValidator payloadValidator) {
+        super(muleContext, payloadValidator)
         this.closure = closure
     }
 

@@ -1,9 +1,7 @@
 package com.avioconsulting.mule.testing.dsl.mocking
 
 import com.avioconsulting.mule.testing.ProcessorLocator
-import com.avioconsulting.mule.testing.dsl.ConnectorType
-import com.avioconsulting.mule.testing.payload_types.AllowedHttpPayloadTypes
-import com.avioconsulting.mule.testing.payload_types.IFetchAllowedPayloadTypes
+import com.avioconsulting.mule.testing.payload_types.HttpRequestPayloadValidator
 import com.avioconsulting.mule.testing.spies.HttpConnectorSpy
 import com.avioconsulting.mule.testing.spies.IReceiveHttpOptions
 import com.avioconsulting.mule.testing.transformers.HttpValidationTransformer
@@ -26,12 +24,13 @@ class HttpRequestResponseChoiceImpl extends StandardRequestResponseImpl
                                   MuleContext muleContext) {
         super(muleMocker,
               muleContext,
-              new AllowedHttpPayloadTypes(),
-              ConnectorType.HTTP_REQUEST)
+              new HttpRequestPayloadValidator())
+        def payloadTypeFetcher = fetchAllowedPayloadTypes as HttpRequestPayloadValidator
         httpValidationTransformer = new HttpValidationTransformer(muleContext)
+        def optionReceivers = [this.httpValidationTransformer, this, payloadTypeFetcher]
         def httpConnectorSpy = new HttpConnectorSpy(processorLocator,
                                                     muleContext,
-                                                    [this.httpValidationTransformer, this])
+                                                    optionReceivers)
         spy.before(httpConnectorSpy)
     }
 
@@ -58,6 +57,10 @@ class HttpRequestResponseChoiceImpl extends StandardRequestResponseImpl
 
     def setHttpReturnCode(Integer code) {
         httpValidationTransformer.httpReturnCode = code
+    }
+
+    def disableContentTypeCheck() {
+        return null
     }
 
     def receive(Map queryParams,

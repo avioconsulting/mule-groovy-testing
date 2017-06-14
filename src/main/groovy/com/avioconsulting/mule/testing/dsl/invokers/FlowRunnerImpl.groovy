@@ -1,6 +1,5 @@
 package com.avioconsulting.mule.testing.dsl.invokers
 
-import com.avioconsulting.mule.testing.RunnerConfig
 import org.mule.api.MuleContext
 import org.mule.api.MuleEvent
 
@@ -9,18 +8,13 @@ class FlowRunnerImpl implements FlowRunner, Invoker {
     private Invoker invoker
     private Closure muleOutputEventHook = null
     private Closure withInputEvent = null
-    private final RunnerConfig runnerConfig
-    static final String AVIO_MULE_RUNNER_CONFIG_BEAN = 'avioMuleGroovyRunnerConfig'
 
     FlowRunnerImpl(MuleContext muleContext) {
         this.muleContext = muleContext
-        runnerConfig = new RunnerConfig()
-        muleContext.registry.registerObject(AVIO_MULE_RUNNER_CONFIG_BEAN, runnerConfig)
     }
 
     def json(@DelegatesTo(JsonInvoker) Closure closure) {
-        def jsonInvoker = new JsonInvokerImpl(muleContext,
-                                              runnerConfig)
+        def jsonInvoker = new JsonInvokerImpl(muleContext)
         invoker = jsonInvoker
         def code = closure.rehydrate(jsonInvoker, this, this)
         code.resolveStrategy = Closure.DELEGATE_ONLY
@@ -59,7 +53,6 @@ class FlowRunnerImpl implements FlowRunner, Invoker {
     }
 
     def disableContentTypeCheck() {
-        runnerConfig.doContentTypeCheck = false
     }
 
     MuleEvent getEvent() {

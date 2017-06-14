@@ -41,7 +41,7 @@ class HttpTest extends BaseTest {
     }
 
     @Test
-    void contentTypeNotSet_NoApiKit() {
+    void contentTypeNotSet() {
         // arrange
         def input = new SampleJacksonInput()
         input.foobar = 123
@@ -65,11 +65,11 @@ class HttpTest extends BaseTest {
         // assert
         assertThat result.message,
                    is(containsString(
-                           "Content-Type was not set to 'application/json' before calling your mock endpoint! Add a set-property"))
+                           "Expected Content-Type to be of type application/json but it actually was null. Check your mock endpoints"))
     }
 
     @Test
-    void contentTypeNotSet_ApiKit() {
+    void contentTypeNotSet_checkDisabled_for_flow() {
         // arrange
         def input = new SampleJacksonInput()
         input.foobar = 123
@@ -93,6 +93,72 @@ class HttpTest extends BaseTest {
             }
 
             disableContentTypeCheck()
+        } as JacksonOutput
+
+        // assert
+        assertThat result.result,
+                   is(equalTo(457))
+        assertThat mockValue,
+                   is(equalTo(123))
+    }
+
+    @Test
+    void contentTypeNotSet_for_mock() {
+        // arrange
+        def input = new SampleJacksonInput()
+        input.foobar = 123
+        def mockValue = 0
+        mockRestHttpCall('SomeSystem Call') {
+            json {
+                whenCalledWith(SampleMockedJacksonInput) {
+                    SampleMockedJacksonInput incoming ->
+                        mockValue = incoming.foobar
+                        def reply = new SampleMockedJacksonOutput()
+                        reply.foobar = 456
+                        reply
+                }
+            }
+        }
+
+        // act
+        def result = shouldFail {
+            runFlow('restRequestContentTypeNotSetForMock') {
+                json {
+                    inputPayload(input, JacksonOutput)
+                }
+            }
+        }
+
+        // assert
+        assertThat result.message,
+                   is(containsString(
+                           "Content-Type was not set to 'application/json' before calling your mock endpoint! Add a set-property"))
+    }
+
+    @Test
+    void contentTypeNotSet_for_mock_checkDisabled() {
+        // arrange
+        def input = new SampleJacksonInput()
+        input.foobar = 123
+        def mockValue = 0
+        mockRestHttpCall('SomeSystem Call') {
+            json {
+                whenCalledWith(SampleMockedJacksonInput) {
+                    SampleMockedJacksonInput incoming ->
+                        mockValue = incoming.foobar
+                        def reply = new SampleMockedJacksonOutput()
+                        reply.foobar = 456
+                        reply
+                }
+            }
+            disableContentTypeCheck()
+        }
+
+        // act
+        def result = runFlow('restRequestContentTypeNotSetForMock') {
+            json {
+                inputPayload(input, JacksonOutput)
+            }
         } as JacksonOutput
 
         // assert
@@ -168,6 +234,62 @@ class HttpTest extends BaseTest {
         assert actualVerb
         assertThat actualVerb,
                    is(equalTo('POST'))
+    }
+
+    class Dummy {
+
+    }
+
+    @Test
+    void http_get_ignores_payload() {
+        def input = new Dummy()
+        // arrange
+        mockRestHttpCall('SomeSystem Call') {
+            json {
+                whenCalledWith {
+                    withHttpOptions { String httpVerb, String uri, Map queryParams ->
+                        [reply: 456]
+                    }
+                }
+            }
+        }
+
+        // act
+        def result = runFlow('restRequestGet') {
+            java {
+                inputPayload(input)
+            }
+        }
+
+        // assert
+        assertThat result,
+                   is(equalTo([reply_key: 457]))
+    }
+
+    @Test
+    void content_Type_Not_Required_For_get() {
+        // arrange
+        mockRestHttpCall('SomeSystem Call') {
+            json {
+                whenCalledWith {
+                    withHttpOptions { String httpVerb, String uri, Map queryParams ->
+                        [reply: 456]
+                    }
+                }
+            }
+        }
+
+        // act
+        def result = runFlow('restRequestGet') {
+            java {
+                inputPayload([foo: 123])
+            }
+        }
+
+        // assert
+        assertThat result,
+                   is(equalTo([reply_key: 457]))
+        fail 'finish this'
     }
 
     @Test

@@ -1,10 +1,7 @@
 package com.avioconsulting.mule.testing.transformers.json.input
 
-import com.avioconsulting.mule.testing.RunnerConfig
-import com.avioconsulting.mule.testing.dsl.ConnectorType
-import com.avioconsulting.mule.testing.dsl.invokers.FlowRunnerImpl
-import com.avioconsulting.mule.testing.payload_types.IFetchAllowedPayloadTypes
-import com.avioconsulting.mule.testing.payload_types.StreamingDisabledPayloadTypes
+import com.avioconsulting.mule.testing.payload_types.IPayloadValidator
+import com.avioconsulting.mule.testing.payload_types.StreamingDisabledPayloadValidator
 import com.avioconsulting.mule.testing.transformers.InputTransformer
 import org.mule.api.MuleContext
 import org.mule.api.MuleMessage
@@ -12,41 +9,24 @@ import org.mule.transport.NullPayload
 
 abstract class Common implements InputTransformer {
     private final MuleContext muleContext
-    private final ConnectorType connectorType
-    private IFetchAllowedPayloadTypes fetchAllowedPayloadTypes
+    private IPayloadValidator payloadValidator
 
     Common(MuleContext muleContext,
-           ConnectorType connectorType,
-           IFetchAllowedPayloadTypes fetchAllowedPayloadTypes) {
-        this.fetchAllowedPayloadTypes = fetchAllowedPayloadTypes
-        this.connectorType = connectorType
+           IPayloadValidator payloadValidator) {
+        this.payloadValidator = payloadValidator
         this.muleContext = muleContext
     }
 
     def validateContentType(MuleMessage message) {
-        def runnerConfig = muleContext.registry.get(FlowRunnerImpl.AVIO_MULE_RUNNER_CONFIG_BEAN) as RunnerConfig
         // don't need content-type for VM or empty strings
-        if (!runnerConfig.doContentTypeCheck || message.payloadAsString == '') {
+        if (!payloadValidator.isPayloadTypeValidationRequired() || message.payloadAsString == '') {
             return
         }
-        def errorMessage
-        switch (connectorType) {
-            case ConnectorType.HTTP_REQUEST:
-                errorMessage = "Content-Type was not set to 'application/json' before calling your mock endpoint! Add a set-property"
-                break
-            case ConnectorType.HTTP_LISTENER:
-                errorMessage = "Content-Type was not set to 'application/json' within your flow! Add a set-property"
-                break
-            default:
-                // VM, etc. should not need this
-                return
-        }
-        if (!errorMessage) {
+        if (!payloadValidator.contentTypeValidationRequired) {
             return
         }
-        def actualContentType = message.getOutboundProperty('Content-Type') as String
-        assert actualContentType && actualContentType.contains(
-                'application/json'): "${errorMessage}. Actual type was ${actualContentType}"
+        payloadValidator.validateContentType(message,
+                                             'application/json')
     }
 
     abstract def transform(String jsonString)
@@ -56,13 +36,8 @@ abstract class Common implements InputTransformer {
         if (muleMessage.payload instanceof NullPayload) {
             return null
         }
-        def allowedPayloadTypes = fetchAllowedPayloadTypes.allowedPayloadTypes
-        def validType = allowedPayloadTypes.find { type ->
-            type.isInstance(muleMessage.payload)
-        }
-        if (!validType) {
-            throw new Exception(
-                    "Expected payload to be of type ${allowedPayloadTypes} here but it actually was ${muleMessage.payload.class}. Check the connectors you're mocking and make sure you transformed the payload properly! (e.g. payload into VMs must be Strings)")
+        if (payloadValidator.payloadTypeValidationRequired) {
+            validatePayloadType(muleMessage)
         }
         // want to wait to do this after if the payload type check above since it consumes the string
         def jsonString = muleMessage.payloadAsString
@@ -70,7 +45,15 @@ abstract class Common implements InputTransformer {
         return transform(jsonString)
     }
 
+    private void validatePayloadType(MuleMessage muleMessage) {
+        if (!payloadValidator.isPayloadTypeValidationRequired()) {
+            println 'Skipping payload type validation'
+            return
+        }
+        payloadValidator.validatePayloadType(muleMessage.payload)
+    }
+
     def disableStreaming() {
-        this.fetchAllowedPayloadTypes = new StreamingDisabledPayloadTypes()
+        this.payloadValidator = new StreamingDisabledPayloadValidator(payloadValidator)
     }
 }
