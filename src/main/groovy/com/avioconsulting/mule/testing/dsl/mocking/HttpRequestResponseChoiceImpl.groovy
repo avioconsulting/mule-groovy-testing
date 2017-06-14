@@ -1,6 +1,7 @@
 package com.avioconsulting.mule.testing.dsl.mocking
 
 import com.avioconsulting.mule.testing.ProcessorLocator
+import com.avioconsulting.mule.testing.payloadvalidators.ContentTypeCheckDisabledValidator
 import com.avioconsulting.mule.testing.payloadvalidators.HttpRequestPayloadValidator
 import com.avioconsulting.mule.testing.spies.HttpConnectorSpy
 import com.avioconsulting.mule.testing.spies.IReceiveHttpOptions
@@ -12,8 +13,7 @@ import org.mule.module.http.internal.request.ResponseValidator
 import org.mule.munit.common.mocking.MunitSpy
 
 class HttpRequestResponseChoiceImpl extends StandardRequestResponseImpl
-        implements HttpRequestResponseChoice,
-                IReceiveHttpOptions {
+        implements HttpRequestResponseChoice, IReceiveHttpOptions {
     private HttpValidationTransformer httpValidationTransformer
     private HttpGetTransformer httpGetTransformer
     private Map queryParams
@@ -25,7 +25,7 @@ class HttpRequestResponseChoiceImpl extends StandardRequestResponseImpl
                                   MuleContext muleContext) {
         super(muleContext,
               new HttpRequestPayloadValidator())
-        def payloadTypeFetcher = payloadValidator as HttpRequestPayloadValidator
+        def payloadTypeFetcher = initialPayloadValidator as HttpRequestPayloadValidator
         httpValidationTransformer = new HttpValidationTransformer(muleContext)
         httpGetTransformer = new HttpGetTransformer(muleContext)
         def httpPathEtcReceivers = [this.httpValidationTransformer,
@@ -59,7 +59,9 @@ class HttpRequestResponseChoiceImpl extends StandardRequestResponseImpl
     }
 
     def disableContentTypeCheck() {
-        throw new Exception('not implemented yet!')
+        def existingValidator = this.formatter.payloadValidator
+        this.formatter = this.formatter.withNewPayloadValidator(
+                new ContentTypeCheckDisabledValidator(existingValidator))
     }
 
     def receive(Map queryParams,

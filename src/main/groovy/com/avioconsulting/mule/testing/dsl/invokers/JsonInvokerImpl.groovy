@@ -21,24 +21,24 @@ class JsonInvokerImpl implements JsonInvoker, Invoker {
     private inputObject
     private boolean outputOnly
     private boolean inputOnly
-    private final IPayloadValidator payloadValidator
+    private final IPayloadValidator initialPayloadValidator
 
     JsonInvokerImpl(MuleContext muleContext,
-                    IPayloadValidator payloadValidator) {
-        this.payloadValidator = payloadValidator
+                    IPayloadValidator initialPayloadValidator) {
+        this.initialPayloadValidator = initialPayloadValidator
         this.muleContext = muleContext
         this.outputOnly = false
         this.inputOnly = false
     }
 
     IPayloadValidator getPayloadValidator() {
-        payloadValidator
+        initialPayloadValidator
     }
 
     def inputPayload(Object inputObject) {
         setInputTransformer(inputObject)
         transformAfterCallingFlow = new JacksonInputTransformer(muleContext,
-                                                                payloadValidator,
+                                                                initialPayloadValidator,
                                                                 [Map, Map[]])
     }
 
@@ -46,7 +46,7 @@ class JsonInvokerImpl implements JsonInvoker, Invoker {
                      Class outputClass) {
         setInputTransformer(inputObject)
         if (outputClass == String) {
-            transformAfterCallingFlow = new StringInputTransformer(payloadValidator,
+            transformAfterCallingFlow = new StringInputTransformer(initialPayloadValidator,
                                                                    muleContext)
         } else {
             setJacksonOutputTransformer(outputClass)
@@ -60,7 +60,7 @@ class JsonInvokerImpl implements JsonInvoker, Invoker {
 
     private void setJacksonOutputTransformer(Class outputClass) {
         transformAfterCallingFlow = new JacksonInputTransformer(muleContext,
-                                                                payloadValidator,
+                                                                initialPayloadValidator,
                                                                 outputClass)
     }
 

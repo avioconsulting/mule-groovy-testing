@@ -7,7 +7,7 @@ import com.avioconsulting.mule.testing.transformers.json.output.JacksonOutputTra
 import org.mule.api.MuleContext
 import org.mule.modules.interceptor.processors.MuleMessageTransformer
 
-class JsonFormatterImpl implements JsonFormatter, ISelectPrimaryTransformer {
+class JsonFormatterImpl implements JsonFormatter, IFormatter {
     private final MuleContext muleContext
     private MuleMessageTransformer transformer
     private final IPayloadValidator payloadValidator
@@ -37,5 +37,13 @@ class JsonFormatterImpl implements JsonFormatter, ISelectPrimaryTransformer {
 
     MuleMessageTransformer getTransformer() {
         transformer
+    }
+
+    IFormatter withNewPayloadValidator(IPayloadValidator validator) {
+        new JsonFormatterImpl(muleContext, validator)
+    }
+
+    IPayloadValidator getPayloadValidator() {
+        payloadValidator
     }
 }

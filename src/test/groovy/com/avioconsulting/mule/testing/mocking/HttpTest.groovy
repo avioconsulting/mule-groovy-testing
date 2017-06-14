@@ -3,7 +3,6 @@ package com.avioconsulting.mule.testing.mocking
 import com.avioconsulting.mule.testing.BaseTest
 import com.avioconsulting.mule.testing.SampleJacksonInput
 import com.mulesoft.weave.reader.ByteArraySeekableStream
-import org.junit.Ignore
 import org.junit.Test
 
 import static groovy.test.GroovyAssert.shouldFail
@@ -141,8 +140,6 @@ class HttpTest extends BaseTest {
     }
 
     @Test
-    @Ignore()
-    // have not added implementation for this yet
     void contentTypeNotSet_for_mock_checkDisabled() {
         // arrange
         def input = new SampleJacksonInput()

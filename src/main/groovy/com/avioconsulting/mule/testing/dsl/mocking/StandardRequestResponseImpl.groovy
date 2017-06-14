@@ -6,34 +6,34 @@ import org.mule.api.MuleContext
 
 abstract class StandardRequestResponseImpl implements StandardRequestResponse {
     protected final MuleContext muleContext
-    protected final IPayloadValidator payloadValidator
-    private ISelectPrimaryTransformer transformerSelector
+    protected final IPayloadValidator initialPayloadValidator
+    protected IFormatter formatter
     private Closure closure
 
     StandardRequestResponseImpl(MuleContext muleContext,
-                                IPayloadValidator payloadValidator) {
-        this.payloadValidator = payloadValidator
+                                IPayloadValidator initialPayloadValidator) {
+        this.initialPayloadValidator = initialPayloadValidator
         this.muleContext = muleContext
     }
 
     TransformerChain getTransformer() {
         def transformerChain = new TransformerChain()
-        def code = closure.rehydrate(transformerSelector, this, this)
+        def code = closure.rehydrate(formatter, this, this)
         code.resolveStrategy = Closure.DELEGATE_ONLY
         code()
-        transformerChain.addTransformer(transformerSelector.transformer)
+        transformerChain.addTransformer(formatter.transformer)
         transformerChain
     }
 
     def json(@DelegatesTo(JsonFormatter) Closure closure) {
-        transformerSelector = new JsonFormatterImpl(this.muleContext,
-                                                    payloadValidator)
+        formatter = new JsonFormatterImpl(this.muleContext,
+                                          initialPayloadValidator)
         this.closure = closure
     }
 
     def xml(@DelegatesTo(XMLFormatter) Closure closure) {
-        transformerSelector = new XMLFormatterImpl(this.muleContext,
-                                                   payloadValidator)
+        formatter = new XMLFormatterImpl(this.muleContext,
+                                         initialPayloadValidator)
         this.closure = closure
     }
 }

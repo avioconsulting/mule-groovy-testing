@@ -7,7 +7,7 @@ import com.avioconsulting.mule.testing.transformers.xml.XMLMapTransformer
 import org.mule.api.MuleContext
 import org.mule.modules.interceptor.processors.MuleMessageTransformer
 
-class XMLFormatterImpl implements XMLFormatter, ISelectPrimaryTransformer {
+class XMLFormatterImpl implements XMLFormatter, IFormatter {
     private final MuleContext muleContext
     private MuleMessageTransformer transformer
     private final IPayloadValidator payloadValidator
@@ -40,5 +40,13 @@ class XMLFormatterImpl implements XMLFormatter, ISelectPrimaryTransformer {
 
     MuleMessageTransformer getTransformer() {
         transformer
+    }
+
+    IFormatter withNewPayloadValidator(IPayloadValidator validator) {
+        new XMLFormatterImpl(muleContext, validator)
+    }
+
+    IPayloadValidator getPayloadValidator() {
+        payloadValidator
     }
 }
