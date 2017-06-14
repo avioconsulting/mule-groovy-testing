@@ -150,9 +150,7 @@ class HttpTest extends BaseTest {
             json {
                 whenCalledWith { Map incoming ->
                     withHttpOptions { String httpVerb, String uri, Map queryParams ->
-                        // sequencing should work
-                        assertThat actualVerb,
-                                   is(equalTo('POST'))
+                        actualVerb = httpVerb
                         [reply: 456]
                     }
                 }
