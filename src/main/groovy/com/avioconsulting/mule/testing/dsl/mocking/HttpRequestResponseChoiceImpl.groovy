@@ -41,7 +41,7 @@ class HttpRequestResponseChoiceImpl extends StandardRequestResponseImpl
     TransformerChain getTransformer() {
         // ensure this is done last to trigger 'validation' on the mock's reply
         def transformerChain = super.transformer
-        // HTTP get needs to 'erase' payload before any attempts to deserialize the payload, etc.
+        // HTTP GET operations need to 'erase' payload before any attempts to deserialize the payload, etc.
         transformerChain.prependTransformer(httpGetTransformer)
         transformerChain.addTransformer(httpValidationTransformer)
         transformerChain
