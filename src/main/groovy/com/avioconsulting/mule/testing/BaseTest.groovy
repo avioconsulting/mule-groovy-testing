@@ -174,13 +174,13 @@ abstract class BaseTest extends FunctionalMunitSuite {
                                         .ofNamespace('doc')
                                         .withValue(connectorName))
         def locator = new ProcessorLocator(connectorName)
-        def formatterChoice = new HttpRequestResponseChoiceImpl(mocker,
-                                                                spy,
+        def formatterChoice = new HttpRequestResponseChoiceImpl(spy,
                                                                 locator,
                                                                 muleContext)
         def code = closure.rehydrate(formatterChoice, this, this)
         code.resolveStrategy = Closure.DELEGATE_ONLY
         code()
+        mocker.thenApply(formatterChoice.transformer)
     }
 
     def mockVmReceive(String connectorName,
@@ -190,11 +190,11 @@ abstract class BaseTest extends FunctionalMunitSuite {
                 .withAttributes(Attribute.attribute('name')
                                         .ofNamespace('doc')
                                         .withValue(connectorName))
-        def formatterChoice = new VMRequestResponseChoiceImpl(mocker,
-                                                              muleContext)
+        def formatterChoice = new VMRequestResponseChoiceImpl(muleContext)
         def code = closure.rehydrate(formatterChoice, this, this)
         code.resolveStrategy = Closure.DELEGATE_ONLY
         code()
+        mocker.thenApply(formatterChoice.transformer)
     }
 
     def mockSoapCall(String connectorName,
@@ -209,8 +209,8 @@ abstract class BaseTest extends FunctionalMunitSuite {
                                                  payloadValidator)
         def code = closure.rehydrate(soapFormatter, this, this)
         code.resolveStrategy = Closure.DELEGATE_ONLY
-        def transformer = code() as MuleMessageTransformer
-        mocker.thenApply(transformer)
+        code()
+        mocker.thenApply(soapFormatter.transformer)
     }
 
     static XMLGregorianCalendar getXmlDate(int year, int oneBasedMonth, int dayOfMonth) {

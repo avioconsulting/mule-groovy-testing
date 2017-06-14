@@ -2,13 +2,10 @@ package com.avioconsulting.mule.testing.dsl.mocking
 
 import com.avioconsulting.mule.testing.payloadvalidators.VmPayloadValidator
 import org.mule.api.MuleContext
-import org.mule.munit.common.mocking.MessageProcessorMocker
 
 class VMRequestResponseChoiceImpl extends StandardRequestResponseImpl {
-    VMRequestResponseChoiceImpl(MessageProcessorMocker muleMocker,
-                                MuleContext muleContext) {
-        super(muleMocker,
-              muleContext,
+    VMRequestResponseChoiceImpl(MuleContext muleContext) {
+        super(muleContext,
               new VmPayloadValidator())
     }
 }

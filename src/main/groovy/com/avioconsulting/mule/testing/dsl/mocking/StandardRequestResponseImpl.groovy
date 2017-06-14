@@ -3,36 +3,37 @@ package com.avioconsulting.mule.testing.dsl.mocking
 import com.avioconsulting.mule.testing.payloadvalidators.IPayloadValidator
 import com.avioconsulting.mule.testing.transformers.TransformerChain
 import org.mule.api.MuleContext
-import org.mule.munit.common.mocking.MessageProcessorMocker
 
 abstract class StandardRequestResponseImpl implements StandardRequestResponse {
-    protected final TransformerChain transformerChain
     protected final MuleContext muleContext
     protected final IPayloadValidator payloadValidator
+    private ISelectPrimaryTransformer transformerSelector
+    private Closure closure
 
-    StandardRequestResponseImpl(MessageProcessorMocker muleMocker,
-                                MuleContext muleContext,
+    StandardRequestResponseImpl(MuleContext muleContext,
                                 IPayloadValidator payloadValidator) {
         this.payloadValidator = payloadValidator
         this.muleContext = muleContext
-        this.transformerChain = new TransformerChain(muleMocker)
+    }
+
+    TransformerChain getTransformer() {
+        def transformerChain = new TransformerChain()
+        def code = closure.rehydrate(transformerSelector, this, this)
+        code.resolveStrategy = Closure.DELEGATE_ONLY
+        code()
+        transformerChain.addTransformer(transformerSelector.transformer)
+        transformerChain
     }
 
     def json(@DelegatesTo(JsonFormatter) Closure closure) {
-        def formatter = new JsonFormatterImpl(this.muleContext,
-                                              payloadValidator)
-        def code = closure.rehydrate(formatter, this, this)
-        code.resolveStrategy = Closure.DELEGATE_ONLY
-        code()
-        this.transformerChain.addTransformer(formatter.transformer)
+        transformerSelector = new JsonFormatterImpl(this.muleContext,
+                                                    payloadValidator)
+        this.closure = closure
     }
 
     def xml(@DelegatesTo(XMLFormatter) Closure closure) {
-        def formatter = new XMLFormatterImpl(this.muleContext,
-                                             payloadValidator)
-        def code = closure.rehydrate(formatter, this, this)
-        code.resolveStrategy = Closure.DELEGATE_ONLY
-        code()
-        this.transformerChain.addTransformer(formatter.transformer)
+        transformerSelector = new XMLFormatterImpl(this.muleContext,
+                                                   payloadValidator)
+        this.closure = closure
     }
 }

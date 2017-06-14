@@ -16,7 +16,6 @@ class HttpValidationTransformer implements MuleMessageTransformer, IReceiveHttpO
     private final MuleContext muleContext
 
     HttpValidationTransformer(MuleContext muleContext) {
-
         this.muleContext = muleContext
     }
 

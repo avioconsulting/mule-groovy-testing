@@ -7,13 +7,8 @@ import org.mule.munit.common.mocking.MessageProcessorMocker
 class TransformerChain implements MuleMessageTransformer {
     private final List<MuleMessageTransformer> transformers
 
-    TransformerChain(MessageProcessorMocker muleMocker) {
-        muleMocker.thenApply(this)
+    TransformerChain() {
         this.transformers = []
-    }
-
-    def prependTransformer(MuleMessageTransformer transformer) {
-        transformers.add(0, transformer)
     }
 
     def addTransformer(MuleMessageTransformer transformer) {

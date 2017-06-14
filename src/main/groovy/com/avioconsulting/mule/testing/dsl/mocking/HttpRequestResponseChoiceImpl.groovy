@@ -5,9 +5,9 @@ import com.avioconsulting.mule.testing.payloadvalidators.HttpRequestPayloadValid
 import com.avioconsulting.mule.testing.spies.HttpConnectorSpy
 import com.avioconsulting.mule.testing.spies.IReceiveHttpOptions
 import com.avioconsulting.mule.testing.transformers.HttpValidationTransformer
+import com.avioconsulting.mule.testing.transformers.TransformerChain
 import org.mule.api.MuleContext
 import org.mule.module.http.internal.request.ResponseValidator
-import org.mule.munit.common.mocking.MessageProcessorMocker
 import org.mule.munit.common.mocking.MunitSpy
 
 class HttpRequestResponseChoiceImpl extends StandardRequestResponseImpl
@@ -18,12 +18,10 @@ class HttpRequestResponseChoiceImpl extends StandardRequestResponseImpl
     private String fullPath
     private String httpVerb
 
-    HttpRequestResponseChoiceImpl(MessageProcessorMocker muleMocker,
-                                  MunitSpy spy,
+    HttpRequestResponseChoiceImpl(MunitSpy spy,
                                   ProcessorLocator processorLocator,
                                   MuleContext muleContext) {
-        super(muleMocker,
-              muleContext,
+        super(muleContext,
               new HttpRequestPayloadValidator())
         def payloadTypeFetcher = payloadValidator as HttpRequestPayloadValidator
         httpValidationTransformer = new HttpValidationTransformer(muleContext)
@@ -34,18 +32,11 @@ class HttpRequestResponseChoiceImpl extends StandardRequestResponseImpl
         spy.before(httpConnectorSpy)
     }
 
-    private void appendHttpValidator() {
-        this.transformerChain.addTransformer(httpValidationTransformer)
-    }
-
-    def json(@DelegatesTo(JsonFormatter) Closure closure) {
-        super.json(closure)
-        appendHttpValidator()
-    }
-
-    def xml(@DelegatesTo(XMLFormatter) Closure closure) {
-        super.xml(closure)
-        appendHttpValidator()
+    TransformerChain getTransformer() {
+        // ensure this is done last to trigger 'validation' on the mock's reply
+        def transformerChain = super.transformer
+        transformerChain.addTransformer(httpValidationTransformer)
+        transformerChain
     }
 
     def withHttpOptions(Closure closure) {
