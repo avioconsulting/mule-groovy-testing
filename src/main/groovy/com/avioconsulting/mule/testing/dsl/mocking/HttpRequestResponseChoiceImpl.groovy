@@ -59,7 +59,7 @@ class HttpRequestResponseChoiceImpl extends StandardRequestResponseImpl
     }
 
     def disableContentTypeCheck() {
-        return null
+        throw new Exception('not implemented yet!')
     }
 
     def receive(Map queryParams,
