@@ -20,6 +20,10 @@ trait PayloadHelper {
                              String context) {
         def actualContentType = message.getOutboundProperty('Content-Type') as String
         if (!validContentTypes.contains(actualContentType)) {
+            validContentTypes = validContentTypes.collect { type ->
+                // Clarify 'not set' case in the error message
+                type == null ? '(not set)' : type
+            }
             throw new Exception(
                     "Expected Content-Type to be of type ${validContentTypes} but it actually was ${actualContentType}. ${context}")
         }

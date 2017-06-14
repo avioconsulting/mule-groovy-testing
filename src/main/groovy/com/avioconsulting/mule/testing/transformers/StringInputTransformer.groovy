@@ -36,7 +36,11 @@ class StringInputTransformer implements InputTransformer {
         if (!payloadValidator.contentTypeValidationRequired) {
             return
         }
+        def validContentTypes = [
+                'text/plain',
+                null // HTTP is text/plain by default
+        ]
         payloadValidator.validateContentType(muleMessage,
-                                             ['text/plain'])
+                                             validContentTypes)
     }
 }
