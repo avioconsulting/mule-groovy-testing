@@ -1,11 +1,11 @@
-package com.avioconsulting.mule.testing.payload_types
+package com.avioconsulting.mule.testing.payloadvalidators
 
 import org.mule.api.MuleMessage
 
-class StreamingDisabledPayloadValidator implements IPayloadValidator, PayloadHelper {
+class ContentTypeCheckDisabledValidator implements IPayloadValidator, PayloadHelper {
     private final IPayloadValidator parentValidator
 
-    StreamingDisabledPayloadValidator(IPayloadValidator parentValidator) {
+    ContentTypeCheckDisabledValidator(IPayloadValidator parentValidator) {
         this.parentValidator = parentValidator
     }
 
@@ -14,7 +14,7 @@ class StreamingDisabledPayloadValidator implements IPayloadValidator, PayloadHel
     }
 
     boolean isContentTypeValidationRequired() {
-        parentValidator.contentTypeValidationRequired
+        false
     }
 
     void validateContentType(MuleMessage message, String expectedContentType) {
@@ -22,8 +22,6 @@ class StreamingDisabledPayloadValidator implements IPayloadValidator, PayloadHel
     }
 
     void validatePayloadType(Object payload) {
-        validatePayloadType(payload,
-                            [String],
-                            'Check your mock endpoints!')
+        parentValidator.validatePayloadType(payload)
     }
 }

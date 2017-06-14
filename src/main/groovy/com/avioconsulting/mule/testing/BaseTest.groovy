@@ -3,7 +3,7 @@ package com.avioconsulting.mule.testing
 import com.avioconsulting.mule.testing.dsl.invokers.FlowRunner
 import com.avioconsulting.mule.testing.dsl.invokers.FlowRunnerImpl
 import com.avioconsulting.mule.testing.dsl.mocking.*
-import com.avioconsulting.mule.testing.payload_types.SOAPPayloadValidator
+import com.avioconsulting.mule.testing.payloadvalidators.SOAPPayloadValidator
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.mulesoft.weave.reader.ByteArraySeekableStream
 import groovy.json.JsonSlurper

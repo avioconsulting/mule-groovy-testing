@@ -1,6 +1,6 @@
 package com.avioconsulting.mule.testing.transformers.xml
 
-import com.avioconsulting.mule.testing.payload_types.IPayloadValidator
+import com.avioconsulting.mule.testing.payloadvalidators.IPayloadValidator
 import groovy.util.slurpersupport.GPathResult
 import groovy.xml.MarkupBuilder
 import org.mule.api.MuleContext

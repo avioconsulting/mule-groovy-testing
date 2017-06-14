@@ -1,6 +1,6 @@
 package com.avioconsulting.mule.testing.transformers.json.input
 
-import com.avioconsulting.mule.testing.payload_types.IPayloadValidator
+import com.avioconsulting.mule.testing.payloadvalidators.IPayloadValidator
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.mule.api.MuleContext
 

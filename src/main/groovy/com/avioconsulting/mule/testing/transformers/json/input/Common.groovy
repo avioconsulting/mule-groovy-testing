@@ -1,7 +1,7 @@
 package com.avioconsulting.mule.testing.transformers.json.input
 
-import com.avioconsulting.mule.testing.payload_types.IPayloadValidator
-import com.avioconsulting.mule.testing.payload_types.StreamingDisabledPayloadValidator
+import com.avioconsulting.mule.testing.payloadvalidators.IPayloadValidator
+import com.avioconsulting.mule.testing.payloadvalidators.StreamingDisabledPayloadValidator
 import com.avioconsulting.mule.testing.transformers.InputTransformer
 import org.mule.api.MuleContext
 import org.mule.api.MuleMessage

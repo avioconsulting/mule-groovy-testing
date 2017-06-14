@@ -1,7 +1,7 @@
 package com.avioconsulting.mule.testing.dsl.invokers
 
-import com.avioconsulting.mule.testing.payload_types.ContentTypeCheckDisabledValidator
-import com.avioconsulting.mule.testing.payload_types.HttpListenerPayloadValidator
+import com.avioconsulting.mule.testing.payloadvalidators.ContentTypeCheckDisabledValidator
+import com.avioconsulting.mule.testing.payloadvalidators.HttpListenerPayloadValidator
 import org.mule.api.MuleContext
 import org.mule.api.MuleEvent
 

@@ -1,4 +1,4 @@
-package com.avioconsulting.mule.testing.payload_types
+package com.avioconsulting.mule.testing.payloadvalidators
 
 import org.mule.api.MuleMessage
 

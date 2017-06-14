@@ -1,6 +1,6 @@
 package com.avioconsulting.mule.testing.dsl.mocking
 
-import com.avioconsulting.mule.testing.payload_types.IPayloadValidator
+import com.avioconsulting.mule.testing.payloadvalidators.IPayloadValidator
 import com.avioconsulting.mule.testing.transformers.TransformerChain
 import org.mule.api.MuleContext
 import org.mule.munit.common.mocking.MessageProcessorMocker

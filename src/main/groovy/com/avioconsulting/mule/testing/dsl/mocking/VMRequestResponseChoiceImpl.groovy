@@ -1,6 +1,6 @@
 package com.avioconsulting.mule.testing.dsl.mocking
 
-import com.avioconsulting.mule.testing.payload_types.VmPayloadValidator
+import com.avioconsulting.mule.testing.payloadvalidators.VmPayloadValidator
 import org.mule.api.MuleContext
 import org.mule.munit.common.mocking.MessageProcessorMocker
 

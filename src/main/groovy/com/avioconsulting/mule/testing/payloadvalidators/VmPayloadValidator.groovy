@@ -1,14 +1,14 @@
-package com.avioconsulting.mule.testing.payload_types
+package com.avioconsulting.mule.testing.payloadvalidators
 
 import org.mule.api.MuleMessage
 
-class SOAPPayloadValidator implements IPayloadValidator, PayloadHelper {
+class VmPayloadValidator implements IPayloadValidator,
+        PayloadHelper {
     boolean isPayloadTypeValidationRequired() {
         true
     }
 
     boolean isContentTypeValidationRequired() {
-        // ws-consumer sets this on its own
         return false
     }
 
@@ -17,7 +17,7 @@ class SOAPPayloadValidator implements IPayloadValidator, PayloadHelper {
 
     void validatePayloadType(Object payload) {
         validatePayloadType(payload,
-                            [InputStream],
-                            'Check your WS-Consumer mock!')
+                            [String],
+                            'VMs must have string payloads.')
     }
 }
