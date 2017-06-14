@@ -2,6 +2,8 @@ package com.avioconsulting.mule.testing.dsl.invokers
 
 import com.avioconsulting.mule.testing.RunnerConfig
 import com.avioconsulting.mule.testing.dsl.ConnectorType
+import com.avioconsulting.mule.testing.payload_types.AllowedHttpPayloadTypes
+import com.avioconsulting.mule.testing.payload_types.IFetchAllowedPayloadTypes
 import com.avioconsulting.mule.testing.transformers.InputTransformer
 import com.avioconsulting.mule.testing.transformers.OutputTransformer
 import com.avioconsulting.mule.testing.transformers.StringInputTransformer
@@ -21,7 +23,7 @@ class JsonInvokerImpl implements JsonInvoker, Invoker {
     private OutputTransformer transformBeforeCallingFlow
     private InputTransformer transformAfterCallingFlow
     private inputObject
-    private static final List<Class> allowedPayloadTypes = [InputStream]
+    private static final IFetchAllowedPayloadTypes fetchAllowedPayloadTypes = new AllowedHttpPayloadTypes()
     private boolean outputOnly
     private boolean inputOnly
 
@@ -37,7 +39,7 @@ class JsonInvokerImpl implements JsonInvoker, Invoker {
         setInputTransformer(inputObject)
         transformAfterCallingFlow = new JacksonInputTransformer(muleContext,
                                                                 ConnectorType.HTTP_LISTENER,
-                                                                allowedPayloadTypes,
+                                                                fetchAllowedPayloadTypes,
                                                                 [Map, Map[]])
     }
 
@@ -60,7 +62,7 @@ class JsonInvokerImpl implements JsonInvoker, Invoker {
     private void setJacksonOutputTransformer(Class outputClass) {
         transformAfterCallingFlow = new JacksonInputTransformer(muleContext,
                                                                 ConnectorType.HTTP_LISTENER,
-                                                                allowedPayloadTypes,
+                                                                fetchAllowedPayloadTypes,
                                                                 outputClass)
     }
 

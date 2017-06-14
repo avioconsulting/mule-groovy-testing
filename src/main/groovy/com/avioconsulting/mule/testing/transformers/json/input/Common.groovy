@@ -3,6 +3,8 @@ package com.avioconsulting.mule.testing.transformers.json.input
 import com.avioconsulting.mule.testing.RunnerConfig
 import com.avioconsulting.mule.testing.dsl.ConnectorType
 import com.avioconsulting.mule.testing.dsl.invokers.FlowRunnerImpl
+import com.avioconsulting.mule.testing.payload_types.IFetchAllowedPayloadTypes
+import com.avioconsulting.mule.testing.payload_types.StreamingDisabledPayloadTypes
 import com.avioconsulting.mule.testing.transformers.InputTransformer
 import org.mule.api.MuleContext
 import org.mule.api.MuleMessage
@@ -11,12 +13,12 @@ import org.mule.transport.NullPayload
 abstract class Common implements InputTransformer {
     private final MuleContext muleContext
     private final ConnectorType connectorType
-    private List<Class> allowedPayloadTypes
+    private IFetchAllowedPayloadTypes fetchAllowedPayloadTypes
 
     Common(MuleContext muleContext,
            ConnectorType connectorType,
-           List<Class> allowedPayloadTypes) {
-        this.allowedPayloadTypes = allowedPayloadTypes
+           IFetchAllowedPayloadTypes fetchAllowedPayloadTypes) {
+        this.fetchAllowedPayloadTypes = fetchAllowedPayloadTypes
         this.connectorType = connectorType
         this.muleContext = muleContext
     }
@@ -54,7 +56,11 @@ abstract class Common implements InputTransformer {
         if (muleMessage.payload instanceof NullPayload) {
             return null
         }
-        if (!isInvalidPayloadType(muleMessage.payload)) {
+        def allowedPayloadTypes = fetchAllowedPayloadTypes.allowedPayloadTypes
+        def validType = allowedPayloadTypes.find { type ->
+            type.isInstance(muleMessage.payload)
+        }
+        if (!validType) {
             throw new Exception(
                     "Expected payload to be of type ${allowedPayloadTypes} here but it actually was ${muleMessage.payload.class}. Check the connectors you're mocking and make sure you transformed the payload properly! (e.g. payload into VMs must be Strings)")
         }
@@ -64,13 +70,7 @@ abstract class Common implements InputTransformer {
         return transform(jsonString)
     }
 
-    private boolean isInvalidPayloadType(payload) {
-        allowedPayloadTypes.find { type ->
-            type.isInstance(payload)
-        }
-    }
-
     def disableStreaming() {
-        this.allowedPayloadTypes = [String]
+        this.fetchAllowedPayloadTypes = new StreamingDisabledPayloadTypes()
     }
 }

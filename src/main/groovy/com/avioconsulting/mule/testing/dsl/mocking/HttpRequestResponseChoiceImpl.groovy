@@ -2,6 +2,8 @@ package com.avioconsulting.mule.testing.dsl.mocking
 
 import com.avioconsulting.mule.testing.ProcessorLocator
 import com.avioconsulting.mule.testing.dsl.ConnectorType
+import com.avioconsulting.mule.testing.payload_types.AllowedHttpPayloadTypes
+import com.avioconsulting.mule.testing.payload_types.IFetchAllowedPayloadTypes
 import com.avioconsulting.mule.testing.spies.HttpConnectorSpy
 import com.avioconsulting.mule.testing.spies.IReceiveHttpOptions
 import com.avioconsulting.mule.testing.transformers.HttpValidationTransformer
@@ -21,13 +23,11 @@ class HttpRequestResponseChoiceImpl extends StandardRequestResponseImpl
     HttpRequestResponseChoiceImpl(MessageProcessorMocker muleMocker,
                                   MunitSpy spy,
                                   ProcessorLocator processorLocator,
-                                  MuleContext muleContext,
-                                  List<Class> allowedPayloadTypes,
-                                  ConnectorType connectorType) {
+                                  MuleContext muleContext) {
         super(muleMocker,
               muleContext,
-              allowedPayloadTypes,
-              connectorType)
+              new AllowedHttpPayloadTypes(),
+              ConnectorType.HTTP_REQUEST)
         httpValidationTransformer = new HttpValidationTransformer(muleContext)
         def httpConnectorSpy = new HttpConnectorSpy(processorLocator,
                                                     muleContext,
