@@ -1,11 +1,14 @@
 package com.avioconsulting.mule.testing.dsl.invokers
 
+import com.avioconsulting.mule.testing.payload_types.ContentTypeCheckDisabledValidator
+import com.avioconsulting.mule.testing.payload_types.HttpListenerPayloadValidator
 import org.mule.api.MuleContext
 import org.mule.api.MuleEvent
 
 class FlowRunnerImpl implements FlowRunner, Invoker {
     private final MuleContext muleContext
     private Invoker invoker
+    private Closure closure
     private Closure muleOutputEventHook = null
     private Closure withInputEvent = null
 
@@ -14,19 +17,16 @@ class FlowRunnerImpl implements FlowRunner, Invoker {
     }
 
     def json(@DelegatesTo(JsonInvoker) Closure closure) {
-        def jsonInvoker = new JsonInvokerImpl(muleContext)
+        def jsonInvoker = new JsonInvokerImpl(muleContext,
+                                              new HttpListenerPayloadValidator())
         invoker = jsonInvoker
-        def code = closure.rehydrate(jsonInvoker, this, this)
-        code.resolveStrategy = Closure.DELEGATE_ONLY
-        code()
+        this.closure = closure
     }
 
     def java(@DelegatesTo(JavaInvoker) Closure closure) {
         def javaInvoker = new JavaInvokerImpl(muleContext)
         invoker = javaInvoker
-        def code = closure.rehydrate(javaInvoker, this, this)
-        code.resolveStrategy = Closure.DELEGATE_ONLY
-        code()
+        this.closure = closure
     }
 
     def withOutputEvent(Closure closure) {
@@ -53,10 +53,18 @@ class FlowRunnerImpl implements FlowRunner, Invoker {
     }
 
     def disableContentTypeCheck() {
+        assert invoker: 'Need to specify a proper format first! (e.g. json)'
+        if (invoker instanceof JsonInvokerImpl) {
+            invoker = new JsonInvokerImpl(muleContext,
+                                          new ContentTypeCheckDisabledValidator(invoker.payloadValidator))
+        }
     }
 
     MuleEvent getEvent() {
         assert invoker: 'Need to specify a proper format! (e.g. json)'
+        def code = closure.rehydrate(invoker, this, this)
+        code.resolveStrategy = Closure.DELEGATE_ONLY
+        code()
         def event = invoker.event
         if (withInputEvent) {
             withInputEvent(event)

@@ -1,6 +1,5 @@
 package com.avioconsulting.mule.testing.dsl.invokers
 
-import com.avioconsulting.mule.testing.payload_types.HttpListenerPayloadValidator
 import com.avioconsulting.mule.testing.payload_types.IPayloadValidator
 import com.avioconsulting.mule.testing.transformers.InputTransformer
 import com.avioconsulting.mule.testing.transformers.OutputTransformer
@@ -20,14 +19,20 @@ class JsonInvokerImpl implements JsonInvoker, Invoker {
     private OutputTransformer transformBeforeCallingFlow
     private InputTransformer transformAfterCallingFlow
     private inputObject
-    private static final IPayloadValidator payloadValidator = new HttpListenerPayloadValidator()
     private boolean outputOnly
     private boolean inputOnly
+    private final IPayloadValidator payloadValidator
 
-    JsonInvokerImpl(MuleContext muleContext) {
+    JsonInvokerImpl(MuleContext muleContext,
+                    IPayloadValidator payloadValidator) {
+        this.payloadValidator = payloadValidator
         this.muleContext = muleContext
         this.outputOnly = false
         this.inputOnly = false
+    }
+
+    IPayloadValidator getPayloadValidator() {
+        payloadValidator
     }
 
     def inputPayload(Object inputObject) {
