@@ -8,19 +8,19 @@ import org.mule.munit.common.mocking.MessageProcessorMocker
 abstract class StandardRequestResponseImpl implements StandardRequestResponse {
     protected final TransformerChain transformerChain
     protected final MuleContext muleContext
-    protected final IPayloadValidator fetchAllowedPayloadTypes
+    protected final IPayloadValidator payloadValidator
 
     StandardRequestResponseImpl(MessageProcessorMocker muleMocker,
                                 MuleContext muleContext,
-                                IPayloadValidator fetchAllowedPayloadTypes) {
-        this.fetchAllowedPayloadTypes = fetchAllowedPayloadTypes
+                                IPayloadValidator payloadValidator) {
+        this.payloadValidator = payloadValidator
         this.muleContext = muleContext
         this.transformerChain = new TransformerChain(muleMocker)
     }
 
     def json(@DelegatesTo(JsonFormatter) Closure closure) {
         def formatter = new JsonFormatterImpl(this.muleContext,
-                                              fetchAllowedPayloadTypes)
+                                              payloadValidator)
         def code = closure.rehydrate(formatter, this, this)
         code.resolveStrategy = Closure.DELEGATE_ONLY
         code()
@@ -28,7 +28,8 @@ abstract class StandardRequestResponseImpl implements StandardRequestResponse {
     }
 
     def xml(@DelegatesTo(XMLFormatter) Closure closure) {
-        def formatter = new XMLFormatterImpl(this.muleContext)
+        def formatter = new XMLFormatterImpl(this.muleContext,
+                                             payloadValidator)
         def code = closure.rehydrate(formatter, this, this)
         code.resolveStrategy = Closure.DELEGATE_ONLY
         code()

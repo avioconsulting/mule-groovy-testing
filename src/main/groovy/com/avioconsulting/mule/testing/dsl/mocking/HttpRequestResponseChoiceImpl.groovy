@@ -25,7 +25,7 @@ class HttpRequestResponseChoiceImpl extends StandardRequestResponseImpl
         super(muleMocker,
               muleContext,
               new HttpRequestPayloadValidator())
-        def payloadTypeFetcher = fetchAllowedPayloadTypes as HttpRequestPayloadValidator
+        def payloadTypeFetcher = payloadValidator as HttpRequestPayloadValidator
         httpValidationTransformer = new HttpValidationTransformer(muleContext)
         def optionReceivers = [this.httpValidationTransformer, this, payloadTypeFetcher]
         def httpConnectorSpy = new HttpConnectorSpy(processorLocator,
