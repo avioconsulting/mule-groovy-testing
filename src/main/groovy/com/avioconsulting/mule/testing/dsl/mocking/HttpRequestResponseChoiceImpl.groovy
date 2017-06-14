@@ -4,6 +4,7 @@ import com.avioconsulting.mule.testing.ProcessorLocator
 import com.avioconsulting.mule.testing.payloadvalidators.HttpRequestPayloadValidator
 import com.avioconsulting.mule.testing.spies.HttpConnectorSpy
 import com.avioconsulting.mule.testing.spies.IReceiveHttpOptions
+import com.avioconsulting.mule.testing.transformers.HttpGetTransformer
 import com.avioconsulting.mule.testing.transformers.HttpValidationTransformer
 import com.avioconsulting.mule.testing.transformers.TransformerChain
 import org.mule.api.MuleContext
@@ -14,6 +15,7 @@ class HttpRequestResponseChoiceImpl extends StandardRequestResponseImpl
         implements HttpRequestResponseChoice,
                 IReceiveHttpOptions {
     private HttpValidationTransformer httpValidationTransformer
+    private HttpGetTransformer httpGetTransformer
     private Map queryParams
     private String fullPath
     private String httpVerb
@@ -25,16 +27,22 @@ class HttpRequestResponseChoiceImpl extends StandardRequestResponseImpl
               new HttpRequestPayloadValidator())
         def payloadTypeFetcher = payloadValidator as HttpRequestPayloadValidator
         httpValidationTransformer = new HttpValidationTransformer(muleContext)
-        def optionReceivers = [this.httpValidationTransformer, this, payloadTypeFetcher]
+        httpGetTransformer = new HttpGetTransformer(muleContext)
+        def httpPathEtcReceivers = [this.httpValidationTransformer,
+                                    this,
+                                    payloadTypeFetcher,
+                                    httpGetTransformer]
         def httpConnectorSpy = new HttpConnectorSpy(processorLocator,
                                                     muleContext,
-                                                    optionReceivers)
+                                                    httpPathEtcReceivers)
         spy.before(httpConnectorSpy)
     }
 
     TransformerChain getTransformer() {
         // ensure this is done last to trigger 'validation' on the mock's reply
         def transformerChain = super.transformer
+        // HTTP get needs to 'erase' payload before any attempts to deserialize the payload, etc.
+        transformerChain.prependTransformer(httpGetTransformer)
         transformerChain.addTransformer(httpValidationTransformer)
         transformerChain
     }
