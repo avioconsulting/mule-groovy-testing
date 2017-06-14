@@ -11,7 +11,7 @@ trait PayloadHelper {
         }
         if (!validType) {
             throw new Exception(
-                    "Expected payload to be of type ${allowedPayloadTypes} here but it actually was ${payload.class}. ${context})")
+                    "Expected payload to be of type ${allowedPayloadTypes} here but it actually was ${payload.class}. ${context}")
         }
     }
 
@@ -21,7 +21,7 @@ trait PayloadHelper {
         def actualContentType = message.getOutboundProperty('Content-Type') as String
         if (actualContentType != expectedContentType) {
             throw new Exception(
-                    "Expected Content-Type to be of type ${expectedContentType} but it actually was ${actualContentType}. ${context}!")
+                    "Expected Content-Type to be of type ${expectedContentType} but it actually was ${actualContentType}. ${context}")
         }
     }
 }

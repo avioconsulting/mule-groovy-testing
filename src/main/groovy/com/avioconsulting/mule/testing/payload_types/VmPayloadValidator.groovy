@@ -18,6 +18,6 @@ class VmPayloadValidator implements IPayloadValidator,
     void validatePayloadType(Object payload) {
         validatePayloadType(payload,
                             [String],
-                            'VMs must have string payloads!')
+                            'VMs must have string payloads.')
     }
 }

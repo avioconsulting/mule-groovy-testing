@@ -21,13 +21,13 @@ class HttpRequestPayloadValidator implements IPayloadValidator,
     void validateContentType(MuleMessage message, String expectedContentType) {
         validateContentType(message,
                             expectedContentType,
-                            'Check your mock endpoints!')
+                            'Check your mock endpoints.')
     }
 
     void validatePayloadType(Object payload) {
         validatePayloadType(payload,
                             [InputStream],
-                            'Check your mock endpoints!')
+                            'Check your mock endpoints.')
     }
 
     def receive(Map queryParams, String fullPath, String httpVerb, ResponseValidator responseValidator) {

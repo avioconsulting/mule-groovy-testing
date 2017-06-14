@@ -212,6 +212,6 @@ class XMLRestTest extends BaseTest {
         // assert
         assertThat result.message,
                    is(containsString(
-                           'Expected Content-Type to be of type application/xml but it actually was null. Check your mock endpoints!!'))
+                           'Expected Content-Type to be of type application/xml but it actually was null. Check your mock endpoints.'))
     }
 }

@@ -28,7 +28,7 @@ class HttpListenerPayloadValidator implements IPayloadValidator,
     void validatePayloadType(Object payload) {
         validatePayloadType(payload,
                             [InputStream],
-                            "This happened while calling your flow. Check your input payload")
+                            "This happened while calling your flow. Check your input payload.")
     }
 
     def receive(Map queryParams, String fullPath, String httpVerb, ResponseValidator responseValidator) {
