@@ -132,7 +132,7 @@ class HttpTest extends BaseTest {
         // assert
         assertThat result.message,
                    is(containsString(
-                           "Content-Type was not set to 'application/json' before calling your mock endpoint! Add a set-property"))
+                           "Expected Content-Type to be of type application/json but it actually was null. Check your mock endpoints!!"))
     }
 
     @Test
