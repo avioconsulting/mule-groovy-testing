@@ -1,4 +1,4 @@
-package com.avioconsulting.mule.testing.dsl.mocking.formats
+package com.avioconsulting.mule.testing.dsl.mocking
 
 interface XMLFormatter {
     def whenCalledWithJaxb(Class inputJaxbClass,

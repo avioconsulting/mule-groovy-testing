@@ -1,7 +1,6 @@
-package com.avioconsulting.mule.testing.dsl.mocking.formats
+package com.avioconsulting.mule.testing.dsl.mocking
 
 import com.avioconsulting.mule.testing.dsl.ConnectorType
-import com.avioconsulting.mule.testing.dsl.mocking.QueryParamOptions
 import com.avioconsulting.mule.testing.transformers.HttpConnectorSpy
 import com.avioconsulting.mule.testing.transformers.OutputTransformer
 import com.avioconsulting.mule.testing.transformers.QueryParamTransformer

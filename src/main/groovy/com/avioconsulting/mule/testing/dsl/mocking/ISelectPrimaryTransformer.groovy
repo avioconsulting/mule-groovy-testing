@@ -1,4 +1,4 @@
-package com.avioconsulting.mule.testing.dsl.mocking.formats
+package com.avioconsulting.mule.testing.dsl.mocking
 
 import org.mule.modules.interceptor.processors.MuleMessageTransformer
 

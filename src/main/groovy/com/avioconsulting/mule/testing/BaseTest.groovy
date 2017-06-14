@@ -3,9 +3,9 @@ package com.avioconsulting.mule.testing
 import com.avioconsulting.mule.testing.dsl.ConnectorType
 import com.avioconsulting.mule.testing.dsl.invokers.FlowRunner
 import com.avioconsulting.mule.testing.dsl.invokers.FlowRunnerImpl
-import com.avioconsulting.mule.testing.dsl.mocking.formats.HttpRequestResponseChoice
-import com.avioconsulting.mule.testing.dsl.mocking.formats.VmRequestResponse
-import com.avioconsulting.mule.testing.dsl.mocking.formats.XMLFormatterImpl
+import com.avioconsulting.mule.testing.dsl.mocking.HttpRequestResponseChoice
+import com.avioconsulting.mule.testing.dsl.mocking.VmRequestResponse
+import com.avioconsulting.mule.testing.dsl.mocking.XMLFormatterImpl
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.mulesoft.weave.reader.ByteArraySeekableStream
 import groovy.json.JsonSlurper

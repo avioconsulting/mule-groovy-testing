@@ -1,4 +1,4 @@
-package com.avioconsulting.mule.testing.dsl.mocking.formats
+package com.avioconsulting.mule.testing.dsl.mocking
 
 import com.avioconsulting.mule.testing.dsl.mocking.QueryParamOptions
 
