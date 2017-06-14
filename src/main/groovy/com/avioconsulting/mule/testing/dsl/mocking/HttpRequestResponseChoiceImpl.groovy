@@ -50,7 +50,7 @@ class HttpRequestResponseChoiceImpl extends StandardRequestResponseImpl
     }
 
     def withHttpOptions(Closure closure) {
-        if (!queryParams) {
+        if (queryParams == null) {
             throw new Exception('Only invoke this closure inside your whenCalledWith... code')
         }
         closure(httpVerb, fullPath, queryParams)
