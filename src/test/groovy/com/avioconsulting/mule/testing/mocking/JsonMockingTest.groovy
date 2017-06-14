@@ -47,10 +47,12 @@ class JsonMockingTest extends BaseTest {
         String actualUri = null
         mockRestHttpCall('SomeSystem Call') {
             json {
-                whenCalledWithQueryParams { Map queryParams, String uri, String httpVerb ->
-                    actualParams = queryParams
-                    actualUri = uri
-                    [reply: 456]
+                whenCalledWith {
+                    withHttpOptions { String httpVerb, String uri, Map queryParams ->
+                        actualParams = queryParams
+                        actualUri = uri
+                        [reply: 456]
+                    }
                 }
             }
         }
@@ -81,12 +83,14 @@ class JsonMockingTest extends BaseTest {
 
         mockRestHttpCall('SomeSystem Call') {
             json {
-                whenCalledWithQueryParams { Map queryParams, String uri, String httpVerb ->
-                    actualParams = queryParams
-                    actualUri = uri
-                    def reply = new SampleMockedJacksonOutput()
-                    reply.foobar = 456
-                    reply
+                whenCalledWith {
+                    withHttpOptions { String httpVerb, String uri, Map queryParams ->
+                        actualParams = queryParams
+                        actualUri = uri
+                        def reply = new SampleMockedJacksonOutput()
+                        reply.foobar = 456
+                        reply
+                    }
                 }
             }
         }

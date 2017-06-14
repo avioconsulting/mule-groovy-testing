@@ -110,11 +110,13 @@ class HttpTest extends BaseTest {
         String actualHttpVerb = null
         mockRestHttpCall('SomeSystem Call') {
             json {
-                whenCalledWithQueryParams { Map queryParams, String uri, String httpVerb ->
-                    actualParams = queryParams
-                    actualUri = uri
-                    actualHttpVerb = httpVerb
-                    [reply: 456]
+                whenCalledWith {
+                    withHttpOptions { String httpVerb, String uri, Map queryParams ->
+                        actualParams = queryParams
+                        actualUri = uri
+                        actualHttpVerb = httpVerb
+                        [reply: 456]
+                    }
                 }
             }
         }
@@ -147,14 +149,13 @@ class HttpTest extends BaseTest {
         mockRestHttpCall('SomeSystem Call') {
             json {
                 whenCalledWith { Map incoming ->
-                    // sequencing should work
-                    assertThat actualVerb,
-                               is(equalTo('POST'))
-                    [reply: 456]
+                    withHttpOptions { String httpVerb, String uri, Map queryParams ->
+                        // sequencing should work
+                        assertThat actualVerb,
+                                   is(equalTo('POST'))
+                        [reply: 456]
+                    }
                 }
-            }
-            withHttpOptions { String verb ->
-                actualVerb = verb
             }
         }
 
@@ -176,9 +177,11 @@ class HttpTest extends BaseTest {
         // arrange
         mockRestHttpCall('SomeSystem Call') {
             json {
-                whenCalledWithQueryParams { Map queryParams, String uri, String httpVerb ->
-                    setHttpReturnCode(201)
-                    [reply: 456]
+                whenCalledWith {
+                    withHttpOptions { String httpVerb, String uri, Map queryParams ->
+                        setHttpReturnCode(201)
+                        [reply: 456]
+                    }
                 }
             }
         }
@@ -200,9 +203,11 @@ class HttpTest extends BaseTest {
         // arrange
         mockRestHttpCall('SomeSystem Call') {
             json {
-                whenCalledWithQueryParams { Map queryParams, String uri, String httpVerb ->
-                    setHttpReturnCode(202)
-                    [reply: 456]
+                whenCalledWith {
+                    withHttpOptions { String httpVerb, String uri, Map queryParams ->
+                        setHttpReturnCode(202)
+                        [reply: 456]
+                    }
                 }
             }
         }
@@ -226,9 +231,11 @@ class HttpTest extends BaseTest {
         // arrange
         mockRestHttpCall('SomeSystem Call') {
             json {
-                whenCalledWithQueryParams { Map queryParams, String uri, String httpVerb ->
-                    setHttpReturnCode(500)
-                    [reply: 456]
+                whenCalledWith {
+                    withHttpOptions { String httpVerb, String uri, Map queryParams ->
+                        setHttpReturnCode(500)
+                        [reply: 456]
+                    }
                 }
             }
         }
@@ -256,11 +263,13 @@ class HttpTest extends BaseTest {
 
         mockRestHttpCall('SomeSystem Call') {
             json {
-                whenCalledWithQueryParams { Map queryParams, String uri, String httpVerb ->
-                    actualParams = queryParams
-                    actualUri = uri
-                    actualHttpVerb = httpVerb
-                    [reply: 456]
+                whenCalledWith {
+                    withHttpOptions { String httpVerb, String uri, Map queryParams ->
+                        actualParams = queryParams
+                        actualUri = uri
+                        actualHttpVerb = httpVerb
+                        [reply: 456]
+                    }
                 }
             }
         }
