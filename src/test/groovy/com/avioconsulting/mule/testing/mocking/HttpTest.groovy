@@ -41,7 +41,7 @@ class HttpTest extends BaseTest {
     }
 
     @Test
-    void contentTypeNotSet() {
+    void contentTypeNotSet_for_flow() {
         // arrange
         def input = new SampleJacksonInput()
         input.foobar = 123
@@ -49,6 +49,9 @@ class HttpTest extends BaseTest {
             json {
                 whenCalledWith(SampleMockedJacksonInput) {
                     SampleMockedJacksonInput incoming ->
+                        def reply = new SampleMockedJacksonOutput()
+                        reply.foobar = 456
+                        reply
                 }
             }
         }
@@ -65,7 +68,7 @@ class HttpTest extends BaseTest {
         // assert
         assertThat result.message,
                    is(containsString(
-                           "Expected Content-Type to be of type [application/json, application/json;charset=UTF-8] but it actually was null. Check your mock endpoints"))
+                           "Expected Content-Type to be of type [application/json, application/json;charset=UTF-8] but it actually was null. This happened while calling your flow. Add a set-property before the end of the flow."))
     }
 
     @Test
