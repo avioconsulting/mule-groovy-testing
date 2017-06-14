@@ -1,4 +1,4 @@
-package com.avioconsulting.mule.testing.transformers
+package com.avioconsulting.mule.testing.spies
 
 import com.avioconsulting.mule.testing.ProcessorLocator
 import org.mule.api.MuleContext
@@ -9,37 +9,37 @@ import org.mule.munit.common.mocking.SpyProcess
 
 class HttpConnectorSpy implements SpyProcess {
     private final ProcessorLocator processorLocator
-    private DefaultHttpRequester httpRequester
     private final MuleContext muleContext
     private MuleEvent muleEvent
+    private final List<IReceiveHttpOptions> optionReceivers
 
     HttpConnectorSpy(ProcessorLocator processorLocator,
-                     MuleContext muleContext) {
+                     MuleContext muleContext,
+                     List<IReceiveHttpOptions> optionReceivers) {
+        this.optionReceivers = optionReceivers
         this.muleContext = muleContext
         this.processorLocator = processorLocator
     }
 
     void spy(MuleEvent incomingEvent) throws MuleException {
         muleEvent = incomingEvent
-        httpRequester = processorLocator.getProcessor(incomingEvent) as DefaultHttpRequester
+        def httpRequester = processorLocator.getProcessor(incomingEvent) as DefaultHttpRequester
+        optionReceivers.each { receiver ->
+            receiver.receive(getQueryParams(httpRequester),
+                             getFullPath(httpRequester),
+                             httpRequester.method,
+                             httpRequester.responseValidator)
+        }
     }
 
-    Map getQueryParams() {
+    private Map getQueryParams(DefaultHttpRequester httpRequester) {
         def requestBuilder = httpRequester.requestBuilder
         // make it easier to compare
         new HashMap(requestBuilder.getQueryParams(muleEvent))
     }
 
-    String getFullPath() {
+    private String getFullPath(DefaultHttpRequester httpRequester) {
         def requestBuilder = httpRequester.requestBuilder
         requestBuilder.replaceUriParams(httpRequester.path, muleEvent)
-    }
-
-    String getHttpVerb() {
-        httpRequester.method
-    }
-
-    def validate(MuleEvent event) {
-        httpRequester.responseValidator.validate(event)
     }
 }
