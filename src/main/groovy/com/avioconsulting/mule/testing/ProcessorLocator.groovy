@@ -5,6 +5,7 @@ import org.mule.api.MuleEvent
 import org.mule.api.processor.MessageProcessor
 import org.mule.api.processor.MessageProcessorChain
 import org.mule.processor.AbstractMessageProcessorOwner
+import org.mule.routing.ChoiceRouter
 
 import javax.xml.namespace.QName
 
@@ -37,14 +38,20 @@ class ProcessorLocator {
 
     private List<MessageProcessor> recursiveProcessorList(List<MessageProcessor> input) {
         input.collect { MessageProcessor processor ->
-            if (processor instanceof MessageProcessorChain) {
-                def processorList = processor.messageProcessors
-                return recursiveProcessorList(processorList)
-            }
-            // if it's inside an enricher, we need to search
-            if (processor instanceof AbstractMessageProcessorOwner) {
-                def processorList = processor.ownedMessageProcessors
-                return recursiveProcessorList(processorList)
+            switch (processor) {
+                case MessageProcessorChain:
+                    def processorList = ((MessageProcessorChain) processor).messageProcessors
+                    return recursiveProcessorList(processorList)
+                case AbstractMessageProcessorOwner:
+                    // if it's inside an enricher, we need to search
+                    def processorList = ((AbstractMessageProcessorOwner) processor).ownedMessageProcessors
+                    return recursiveProcessorList(processorList)
+                case ChoiceRouter:
+                    def choice = processor as ChoiceRouter
+                    def processors = choice.conditionalMessageProcessors.collect { pair ->
+                        pair.messageProcessor
+                    }
+                    return recursiveProcessorList(processors)
             }
             processor
         }.flatten() as List<MessageProcessor>

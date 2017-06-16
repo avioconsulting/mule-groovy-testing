@@ -66,7 +66,6 @@ class HttpTest extends BaseTest {
                    is(equalTo([key: 123]))
         assertThat result,
                    is(equalTo([reply_key: 457]))
-        fail 'write this'
     }
 
     @Test
