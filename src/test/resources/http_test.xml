@@ -34,6 +34,35 @@ http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/jso
         <set-property propertyName="Content-Type" value="application/json"/>
     </flow>
 
+    <flow name="restRequestWithChoice">
+        <dw:transform-message doc:name="Transform Message">
+            <dw:set-payload><![CDATA[%dw 1.0
+%output application/json
+---
+{
+    key: payload.foo
+}]]></dw:set-payload>
+        </dw:transform-message>
+        <set-property propertyName="Content-Type" value="application/json"/>
+        <choice>
+            <when expression="#[true]">
+                <http:request config-ref="SomeSystem" path="/some_path" method="POST" doc:name="SomeSystem Call"/>
+                <dw:transform-message doc:name="Transform Message">
+                    <dw:set-payload><![CDATA[%dw 1.0
+%output application/json
+---
+{
+    reply_key: payload.reply + 1
+}]]></dw:set-payload>
+                </dw:transform-message>
+                <set-property propertyName="Content-Type" value="application/json"/>
+            </when>
+            <otherwise>
+                <logger message="should not hit this"/>
+            </otherwise>
+        </choice>
+    </flow>
+
     <flow name="restRequestGet">
         <http:request config-ref="SomeSystem" path="/some_path" method="GET" doc:name="SomeSystem Call"/>
         <dw:transform-message doc:name="Transform Message">

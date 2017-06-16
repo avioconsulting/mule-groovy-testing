@@ -42,6 +42,34 @@ class HttpTest extends BaseTest {
     }
 
     @Test
+    void mocksProperlyWithChoice() {
+        // arrange
+        def stuff = null
+        mockRestHttpCall('SomeSystem Call') {
+            json {
+                whenCalledWith { Map incoming ->
+                    stuff = incoming
+                    [reply: 456]
+                }
+            }
+        }
+
+        // act
+        def result = runFlow('restRequestWithChoice') {
+            json {
+                inputPayload([foo: 123])
+            }
+        }
+
+        // assert
+        assertThat stuff,
+                   is(equalTo([key: 123]))
+        assertThat result,
+                   is(equalTo([reply_key: 457]))
+        fail 'write this'
+    }
+
+    @Test
     void contentTypeNotSet_for_flow() {
         // arrange
         def input = new SampleJacksonInput()
