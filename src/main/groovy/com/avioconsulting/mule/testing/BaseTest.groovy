@@ -77,6 +77,10 @@ abstract class BaseTest extends FunctionalMunitSuite {
 
     @Before
     void handleUnmocked() {
+        // don't complain if they explicitly said they don't want to mock these
+        if (!haveToMockMuleConnectors()) {
+            return
+        }
         setupFallThroughMock('consumer', 'ws')
         setupFallThroughMock('request', 'http')
         setupFallThroughMock('outbound-endpoint', 'vm')
