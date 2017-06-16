@@ -72,6 +72,12 @@ abstract class BaseTest extends FunctionalMunitSuite {
     abstract List<String> getConfigResourcesList()
 
     String getConfigResources() {
+        def directory = new File('.mule')
+        println "Checking for .mule directory at ${directory.absolutePath}"
+        if (directory.exists()) {
+            println "Removing ${directory.absolutePath}"
+            directory.deleteDir()
+        }
         configResourcesList.join ","
     }
 
