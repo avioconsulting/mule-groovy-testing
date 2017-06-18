@@ -5,6 +5,7 @@ import com.avioconsulting.mule.testing.SampleJacksonInput
 import com.mulesoft.weave.reader.ByteArraySeekableStream
 import org.junit.Test
 import org.mule.api.MessagingException
+import org.mule.module.http.internal.request.DefaultHttpRequester
 
 import static groovy.test.GroovyAssert.shouldFail
 import static org.hamcrest.Matchers.*
@@ -464,12 +465,12 @@ class HttpTest extends BaseTest {
                     inputPayload([foo: 123])
                 }
             }
-        }
+        } as MessagingException
 
         // assert
-        assertThat result,
-                   is(instanceOf(MessagingException))
         assertThat result.cause,
                    is(instanceOf(ConnectException))
+        assertThat result.failingMessageProcessor,
+                   is(instanceOf(DefaultHttpRequester))
     }
 }

@@ -35,11 +35,9 @@ class HttpRequestResponseChoiceImpl extends StandardRequestResponseImpl
                                     this,
                                     payloadTypeFetcher,
                                     httpGetTransformer]
-        def muleEventReceivers = [this.httpConnectorErrorTransformer]
         def httpConnectorSpy = new HttpConnectorSpy(processorLocator,
                                                     muleContext,
-                                                    httpPathEtcReceivers,
-                                                    muleEventReceivers)
+                                                    httpPathEtcReceivers)
         spy.before(httpConnectorSpy)
     }
 
