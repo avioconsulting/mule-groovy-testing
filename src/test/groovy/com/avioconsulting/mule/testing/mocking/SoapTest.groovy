@@ -7,6 +7,7 @@ import com.avioconsulting.schemas.soaptest.v1.ObjectFactory
 import com.avioconsulting.schemas.soaptest.v1.SOAPTestRequestType
 import com.avioconsulting.schemas.soaptest.v1.SOAPTestResponseType
 import org.junit.Test
+import org.mule.api.MessagingException
 
 import static groovy.test.GroovyAssert.shouldFail
 import static org.hamcrest.Matchers.*
@@ -132,5 +133,30 @@ class SoapTest extends BaseTest {
                    is(equalTo('2017-04-01'))
         assertThat result,
                    is(equalTo([result: 'yes!']))
+    }
+
+    @Test
+    void httpConnectionError() {
+        // arrange
+        mockSoapCall('A SOAP Call') {
+            whenCalledWithJaxb(SOAPTestRequestType) { SOAPTestRequestType request ->
+                httpConnectError()
+            }
+        }
+
+        // act
+        def result = shouldFail {
+            runFlow('soaptestFlow') {
+                json {
+                    inputPayload([foo: 123])
+                }
+            }
+        }
+
+        // assert
+        assertThat result,
+                   is(instanceOf(MessagingException))
+        assertThat result.cause,
+                   is(instanceOf(ConnectException))
     }
 }

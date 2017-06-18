@@ -208,15 +208,15 @@ abstract class BaseTest extends FunctionalMunitSuite {
     }
 
     def mockSoapCall(String connectorName,
-                     @DelegatesTo(XMLFormatterImpl) Closure closure) {
+                     @DelegatesTo(SOAPFormatter) Closure closure) {
         def mocker = whenMessageProcessor('consumer')
                 .ofNamespace('ws')
                 .withAttributes(Attribute.attribute('name')
                                         .ofNamespace('doc')
                                         .withValue(connectorName))
         def payloadValidator = new SOAPPayloadValidator()
-        def soapFormatter = new XMLFormatterImpl(muleContext,
-                                                 payloadValidator)
+        def soapFormatter = new SOAPFormatterImpl(muleContext,
+                                                  payloadValidator)
         def code = closure.rehydrate(soapFormatter, this, this)
         code.resolveStrategy = Closure.DELEGATE_ONLY
         code()
