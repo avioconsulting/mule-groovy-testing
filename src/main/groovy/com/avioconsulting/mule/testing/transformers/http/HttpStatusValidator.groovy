@@ -1,4 +1,4 @@
-package com.avioconsulting.mule.testing.transformers
+package com.avioconsulting.mule.testing.transformers.http
 
 import com.avioconsulting.mule.testing.ProcessorLocator
 import org.mule.api.MessagingException

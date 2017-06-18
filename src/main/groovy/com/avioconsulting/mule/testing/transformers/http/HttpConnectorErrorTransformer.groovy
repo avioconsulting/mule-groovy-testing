@@ -1,4 +1,4 @@
-package com.avioconsulting.mule.testing.transformers
+package com.avioconsulting.mule.testing.transformers.http
 
 import org.mule.api.MuleContext
 import org.mule.api.MuleMessage

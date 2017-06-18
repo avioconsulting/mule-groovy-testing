@@ -1,7 +1,7 @@
 package com.avioconsulting.mule.testing.dsl.mocking
 
 import com.avioconsulting.mule.testing.payloadvalidators.IPayloadValidator
-import com.avioconsulting.mule.testing.transformers.HttpConnectorErrorTransformer
+import com.avioconsulting.mule.testing.transformers.http.HttpConnectorErrorTransformer
 import org.mule.api.MuleContext
 import org.mule.modules.interceptor.processors.MuleMessageTransformer
 import org.mule.munit.common.mocking.MunitSpy

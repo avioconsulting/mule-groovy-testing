@@ -5,9 +5,9 @@ import com.avioconsulting.mule.testing.payloadvalidators.ContentTypeCheckDisable
 import com.avioconsulting.mule.testing.payloadvalidators.HttpRequestPayloadValidator
 import com.avioconsulting.mule.testing.spies.HttpConnectorSpy
 import com.avioconsulting.mule.testing.spies.IReceiveHttpOptions
-import com.avioconsulting.mule.testing.transformers.HttpConnectorErrorTransformer
-import com.avioconsulting.mule.testing.transformers.HttpGetTransformer
-import com.avioconsulting.mule.testing.transformers.HttpValidationTransformer
+import com.avioconsulting.mule.testing.transformers.http.HttpConnectorErrorTransformer
+import com.avioconsulting.mule.testing.transformers.http.HttpGetTransformer
+import com.avioconsulting.mule.testing.transformers.http.HttpValidationTransformer
 import com.avioconsulting.mule.testing.transformers.TransformerChain
 import org.mule.api.MuleContext
 import org.mule.module.http.internal.request.ResponseValidator
