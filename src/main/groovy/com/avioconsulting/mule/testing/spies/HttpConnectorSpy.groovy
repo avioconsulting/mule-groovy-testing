@@ -13,10 +13,13 @@ class HttpConnectorSpy implements SpyProcess {
     private final MuleContext muleContext
     private MuleEvent muleEvent
     private final List<IReceiveHttpOptions> optionReceivers
+    private final List<IReceiveMuleEvents> muleEventReceivers
 
     HttpConnectorSpy(ProcessorLocator processorLocator,
                      MuleContext muleContext,
-                     List<IReceiveHttpOptions> optionReceivers) {
+                     List<IReceiveHttpOptions> optionReceivers,
+                     List<IReceiveMuleEvents> muleEventReceivers) {
+        this.muleEventReceivers = muleEventReceivers
         this.optionReceivers = optionReceivers
         this.muleContext = muleContext
         this.processorLocator = processorLocator
@@ -30,6 +33,9 @@ class HttpConnectorSpy implements SpyProcess {
                              getFullPath(httpRequester),
                              httpRequester.method,
                              httpRequester.responseValidator)
+        }
+        muleEventReceivers.each { r ->
+            r.receive(incomingEvent)
         }
     }
 

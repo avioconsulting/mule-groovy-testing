@@ -407,6 +407,32 @@ class HttpTest extends BaseTest {
     }
 
     @Test
+    void http_return_error_code() {
+        // arrange
+        mockRestHttpCall('SomeSystem Call') {
+            json {
+                whenCalledWith {
+                    setHttpReturnCode(500)
+                    [reply: 456]
+                }
+            }
+        }
+
+        // act
+        def result = shouldFail {
+            runFlow('queryParametersHttpStatus') {
+                json {
+                    inputPayload([foo: 123])
+                }
+            }
+        } as MessagingException
+
+        // assert
+        assertThat result.message,
+                   is(containsString('Response code 500 mapped as failure'))
+    }
+
+    @Test
     void queryParameters_Enricher() {
         // arrange
         Map actualParams = null

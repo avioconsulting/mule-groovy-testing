@@ -1,33 +1,37 @@
 package com.avioconsulting.mule.testing.transformers
 
 import com.avioconsulting.mule.testing.spies.IReceiveHttpOptions
-import org.mule.DefaultMuleEvent
-import org.mule.MessageExchangePattern
+import com.avioconsulting.mule.testing.spies.IReceiveMuleEvents
 import org.mule.api.MuleContext
+import org.mule.api.MuleEvent
 import org.mule.api.MuleMessage
 import org.mule.api.transport.PropertyScope
 import org.mule.module.http.internal.request.ResponseValidator
 import org.mule.modules.interceptor.processors.MuleMessageTransformer
-import org.mule.munit.common.util.MunitMuleTestUtils
 
-class HttpValidationTransformer implements MuleMessageTransformer, IReceiveHttpOptions {
+class HttpValidationTransformer implements MuleMessageTransformer,
+        IReceiveHttpOptions,
+        IReceiveMuleEvents {
     private ResponseValidator responseValidator
     private Integer httpReturnCode = 200
     private final MuleContext muleContext
+    private MuleEvent muleEvent
 
     HttpValidationTransformer(MuleContext muleContext) {
         this.muleContext = muleContext
     }
 
     MuleMessage transform(MuleMessage muleMessage) {
-        muleMessage.setProperty('http.status',
-                                httpReturnCode,
-                                PropertyScope.INBOUND)
-        def dummyEvent = new DefaultMuleEvent(muleMessage,
-                                              MessageExchangePattern.REQUEST_RESPONSE,
-                                              MunitMuleTestUtils.getTestFlow(muleContext))
-        this.responseValidator.validate(dummyEvent)
+        setStatusCode(muleMessage)
+        setStatusCode(muleEvent.message)
+        this.responseValidator.validate(muleEvent)
         return muleMessage
+    }
+
+    private def setStatusCode(MuleMessage message) {
+        message.setProperty('http.status',
+                            httpReturnCode,
+                            PropertyScope.INBOUND)
     }
 
     def setHttpReturnCode(Integer code) {
@@ -39,5 +43,9 @@ class HttpValidationTransformer implements MuleMessageTransformer, IReceiveHttpO
                 String httpVerb,
                 ResponseValidator responseValidator) {
         this.responseValidator = responseValidator
+    }
+
+    def receive(MuleEvent muleEvent) {
+        this.muleEvent = muleEvent
     }
 }
