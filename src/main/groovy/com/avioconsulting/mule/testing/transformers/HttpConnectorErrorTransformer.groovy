@@ -1,17 +1,16 @@
 package com.avioconsulting.mule.testing.transformers
 
-import org.mule.DefaultMuleEvent
-import org.mule.DefaultMuleMessage
-import org.mule.MessageExchangePattern
+import com.avioconsulting.mule.testing.spies.IReceiveMuleEvents
 import org.mule.api.MessagingException
 import org.mule.api.MuleContext
+import org.mule.api.MuleEvent
 import org.mule.api.MuleMessage
 import org.mule.modules.interceptor.processors.MuleMessageTransformer
-import org.mule.munit.common.util.MunitMuleTestUtils
 
-class HttpConnectorErrorTransformer implements MuleMessageTransformer {
+class HttpConnectorErrorTransformer implements MuleMessageTransformer, IReceiveMuleEvents {
     private final MuleContext muleContext
     private boolean triggerException
+    private MuleEvent muleEvent
 
     HttpConnectorErrorTransformer(MuleContext muleContext) {
         this.muleContext = muleContext
@@ -25,12 +24,11 @@ class HttpConnectorErrorTransformer implements MuleMessageTransformer {
         if (!triggerException) {
             return muleMessage
         }
-
-        def message = new DefaultMuleMessage('HTTP Connect Error!', muleContext)
-        def event = new DefaultMuleEvent(message,
-                                         MessageExchangePattern.REQUEST_RESPONSE,
-                                         MunitMuleTestUtils.getTestFlow(muleContext))
-        throw new MessagingException(event,
+        throw new MessagingException(this.muleEvent,
                                      new ConnectException('could not reach HTTP server'))
+    }
+
+    def receive(MuleEvent muleEvent) {
+        this.muleEvent = muleEvent
     }
 }

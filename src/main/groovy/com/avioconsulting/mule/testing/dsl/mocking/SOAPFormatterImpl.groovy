@@ -1,33 +1,50 @@
 package com.avioconsulting.mule.testing.dsl.mocking
 
 import com.avioconsulting.mule.testing.payloadvalidators.IPayloadValidator
-import org.mule.DefaultMuleEvent
-import org.mule.DefaultMuleMessage
-import org.mule.MessageExchangePattern
-import org.mule.api.MessagingException
+import com.avioconsulting.mule.testing.transformers.HttpConnectorErrorTransformer
 import org.mule.api.MuleContext
-import org.mule.munit.common.util.MunitMuleTestUtils
+import org.mule.api.MuleEvent
+import org.mule.api.MuleException
+import org.mule.modules.interceptor.processors.MuleMessageTransformer
+import org.mule.munit.common.mocking.MunitSpy
+import org.mule.munit.common.mocking.SpyProcess
 
 class SOAPFormatterImpl extends XMLFormatterImpl implements SOAPFormatter {
+    private HttpConnectorErrorTransformer httpConnectorErrorTransformer
+    private final MunitSpy spy
+
     SOAPFormatterImpl(MuleContext muleContext,
+                      MunitSpy spy,
                       IPayloadValidator payloadValidator) {
         super(muleContext, payloadValidator)
+        this.spy = spy
     }
 
     def httpConnectError() {
-        if (transformer == null) {
-            throw new Exception('Only invoke this closure inside your whenCalledWith... code')
+        httpConnectorErrorTransformer = new HttpConnectorErrorTransformer(muleContext)
+        // currently the WS-Consumer processor has no annotations, so can't
+        // re-use http connector spy
+        def soapSpy = new SpyProcess() {
+            @Override
+            void spy(MuleEvent muleEvent) throws MuleException {
+                httpConnectorErrorTransformer.receive(muleEvent)
+            }
         }
-        def message = new DefaultMuleMessage('HTTP Connect Error!', muleContext)
-        def event = new DefaultMuleEvent(message,
-                                         MessageExchangePattern.REQUEST_RESPONSE,
-                                         MunitMuleTestUtils.getTestFlow(muleContext))
-        throw new MessagingException(event,
-                                     new ConnectException('could not reach HTTP server'))
+        spy.before(soapSpy)
+        httpConnectorErrorTransformer.triggerException()
+        // avoid DSL weirdness
+        return null
+    }
+
+    @Override
+    MuleMessageTransformer getTransformer() {
+        httpConnectorErrorTransformer ?: super.transformer
     }
 
     @Override
     IFormatter withNewPayloadValidator(IPayloadValidator validator) {
-        new SOAPFormatterImpl(muleContext, validator)
+        new SOAPFormatterImpl(muleContext,
+                              spy,
+                              validator)
     }
 }

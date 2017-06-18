@@ -27,10 +27,10 @@ class ProcessorLocator {
 
     private def findProcessor(List<MessageProcessor> processors) {
         processors.find { processor ->
-            def annotated = processor as AnnotatedObject
-            if (!annotated) {
-                return
+            if (!processor instanceof AnnotatedObject) {
+                return false
             }
+            def annotated = processor as AnnotatedObject
             def name = annotated.annotations[new QName(doc, 'name')]
             name == processorName
         }

@@ -214,8 +214,14 @@ abstract class BaseTest extends FunctionalMunitSuite {
                 .withAttributes(Attribute.attribute('name')
                                         .ofNamespace('doc')
                                         .withValue(connectorName))
+        def spy = spyMessageProcessor('consumer')
+                .ofNamespace('ws')
+                .withAttributes(Attribute.attribute('name')
+                                        .ofNamespace('doc')
+                                        .withValue(connectorName))
         def payloadValidator = new SOAPPayloadValidator()
         def soapFormatter = new SOAPFormatterImpl(muleContext,
+                                                  spy,
                                                   payloadValidator)
         def code = closure.rehydrate(soapFormatter, this, this)
         code.resolveStrategy = Closure.DELEGATE_ONLY

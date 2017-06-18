@@ -139,9 +139,7 @@ class SoapTest extends BaseTest {
     void httpConnectionError() {
         // arrange
         mockSoapCall('A SOAP Call') {
-            whenCalledWithJaxb(SOAPTestRequestType) { SOAPTestRequestType request ->
-                httpConnectError()
-            }
+            httpConnectError()
         }
 
         // act
