@@ -8,8 +8,8 @@ import org.mule.api.MuleContext
 import org.mule.modules.interceptor.processors.MuleMessageTransformer
 
 class XMLFormatterImpl implements XMLFormatter, IFormatter {
-    private final MuleContext muleContext
-    private MuleMessageTransformer transformer
+    protected final MuleContext muleContext
+    protected MuleMessageTransformer transformer
     private final IPayloadValidator payloadValidator
 
     XMLFormatterImpl(MuleContext muleContext,
