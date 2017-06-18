@@ -28,7 +28,8 @@ class HttpRequestResponseChoiceImpl extends StandardRequestResponseImpl
         super(muleContext,
               new HttpRequestPayloadValidator())
         def payloadTypeFetcher = initialPayloadValidator as HttpRequestPayloadValidator
-        httpValidationTransformer = new HttpValidationTransformer(muleContext)
+        httpValidationTransformer = new HttpValidationTransformer(muleContext,
+                                                                  processorLocator)
         httpGetTransformer = new HttpGetTransformer(muleContext)
         httpConnectorErrorTransformer = new HttpConnectorErrorTransformer(muleContext)
         def httpPathEtcReceivers = [this.httpValidationTransformer,

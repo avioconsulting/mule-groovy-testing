@@ -429,7 +429,9 @@ class HttpTest extends BaseTest {
 
         // assert
         assertThat result.message,
-                   is(containsString('Response code 500 mapped as failure'))
+                   is(equalTo('Response code 500 mapped as failure.'))
+        assertThat result.failingMessageProcessor,
+                   is(instanceOf(DefaultHttpRequester))
     }
 
     @Test
