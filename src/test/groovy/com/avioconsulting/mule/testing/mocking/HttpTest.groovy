@@ -4,6 +4,7 @@ import com.avioconsulting.mule.testing.BaseTest
 import com.avioconsulting.mule.testing.SampleJacksonInput
 import com.mulesoft.weave.reader.ByteArraySeekableStream
 import org.junit.Test
+import org.mule.api.MessagingException
 
 import static groovy.test.GroovyAssert.shouldFail
 import static org.hamcrest.Matchers.*
@@ -443,5 +444,32 @@ class HttpTest extends BaseTest {
         assert actualHttpVerb
         assertThat actualHttpVerb,
                    is(equalTo('GET'))
+    }
+
+    @Test
+    void httpConnectIssue() {
+        // arrange
+        mockRestHttpCall('SomeSystem Call') {
+            json {
+                whenCalledWith { Map incoming ->
+                    httpConnectError()
+                }
+            }
+        }
+
+        // act
+        def result = shouldFail {
+            runFlow('restRequest') {
+                json {
+                    inputPayload([foo: 123])
+                }
+            }
+        }
+
+        // assert
+        assertThat result,
+                   is(instanceOf(MessagingException))
+        assertThat result.cause,
+                   is(instanceOf(ConnectException))
     }
 }

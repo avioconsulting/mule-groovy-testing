@@ -5,6 +5,7 @@ import com.avioconsulting.mule.testing.payloadvalidators.ContentTypeCheckDisable
 import com.avioconsulting.mule.testing.payloadvalidators.HttpRequestPayloadValidator
 import com.avioconsulting.mule.testing.spies.HttpConnectorSpy
 import com.avioconsulting.mule.testing.spies.IReceiveHttpOptions
+import com.avioconsulting.mule.testing.transformers.HttpConnectorErrorTransformer
 import com.avioconsulting.mule.testing.transformers.HttpGetTransformer
 import com.avioconsulting.mule.testing.transformers.HttpValidationTransformer
 import com.avioconsulting.mule.testing.transformers.TransformerChain
@@ -14,8 +15,9 @@ import org.mule.munit.common.mocking.MunitSpy
 
 class HttpRequestResponseChoiceImpl extends StandardRequestResponseImpl
         implements HttpRequestResponseChoice, IReceiveHttpOptions {
-    private HttpValidationTransformer httpValidationTransformer
-    private HttpGetTransformer httpGetTransformer
+    private final HttpValidationTransformer httpValidationTransformer
+    private final HttpGetTransformer httpGetTransformer
+    private final HttpConnectorErrorTransformer httpConnectorErrorTransformer
     private Map queryParams
     private String fullPath
     private String httpVerb
@@ -28,6 +30,7 @@ class HttpRequestResponseChoiceImpl extends StandardRequestResponseImpl
         def payloadTypeFetcher = initialPayloadValidator as HttpRequestPayloadValidator
         httpValidationTransformer = new HttpValidationTransformer(muleContext)
         httpGetTransformer = new HttpGetTransformer(muleContext)
+        httpConnectorErrorTransformer = new HttpConnectorErrorTransformer(muleContext)
         def httpPathEtcReceivers = [this.httpValidationTransformer,
                                     this,
                                     payloadTypeFetcher,
@@ -44,6 +47,7 @@ class HttpRequestResponseChoiceImpl extends StandardRequestResponseImpl
         // HTTP GET operations need to 'erase' payload before any attempts to deserialize the payload, etc.
         transformerChain.prependTransformer(httpGetTransformer)
         transformerChain.addTransformer(httpValidationTransformer)
+        transformerChain.addTransformer(httpConnectorErrorTransformer)
         transformerChain
     }
 
@@ -62,6 +66,10 @@ class HttpRequestResponseChoiceImpl extends StandardRequestResponseImpl
         def existingValidator = this.formatter.payloadValidator
         this.formatter = this.formatter.withNewPayloadValidator(
                 new ContentTypeCheckDisabledValidator(existingValidator))
+    }
+
+    def httpConnectError() {
+        this.httpConnectorErrorTransformer.triggerException()
     }
 
     def receive(Map queryParams,

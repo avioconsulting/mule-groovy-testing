@@ -6,4 +6,6 @@ interface HttpRequestResponseChoice extends StandardRequestResponse {
     def setHttpReturnCode(Integer code)
 
     def disableContentTypeCheck()
+
+    def httpConnectError()
 }
