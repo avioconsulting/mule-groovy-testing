@@ -3,11 +3,16 @@ package com.avioconsulting.mule.testing.transformers.http
 import com.avioconsulting.mule.testing.ProcessorLocator
 import org.mule.api.MessagingException
 import org.mule.api.MuleEvent
-import org.mule.config.i18n.CoreMessages
 import org.mule.module.http.internal.request.ResponseValidatorException
 import org.mule.module.http.internal.request.SuccessStatusCodeValidator
 
-// overriding this because we need to set the message processor
+// MUnit (Java or likely graphical too) substitutes an interceptor message processor for connectors you mock
+// The processor does not have any annotations on it. When we simulate exceptions being thrown, Mule tries
+// to obtain details of where the exception occurred and it crashes with an NPE (and the issue is exacerbated
+// when in a transaction) or inside a message enricher
+// ResponseValidatorException inherits from MessagingException which needs to be instantiated with the
+// actual processor that's being mocked as the "failing message processor" rather than the MUnit interceptor
+// the easiest way to do that is to wrap the method call and then set the private field
 class HttpStatusValidator extends SuccessStatusCodeValidator {
     private final ProcessorLocator processorLocator
 
