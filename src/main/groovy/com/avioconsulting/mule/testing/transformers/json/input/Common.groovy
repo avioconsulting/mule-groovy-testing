@@ -26,7 +26,11 @@ abstract class Common implements InputTransformer {
             return
         }
         payloadValidator.validateContentType(message,
-                                             ['application/json', 'application/json;charset=UTF-8'])
+                                             [
+                                                     'application/json',
+                                                     'application/json;charset=UTF-8',
+                                                     'application/json;charset=utf-8'
+                                             ])
     }
 
     abstract def transform(String jsonString)
