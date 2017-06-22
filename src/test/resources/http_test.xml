@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http"
+      xmlns="http://www.mulesoft.org/schema/mule/core"
+      xmlns:dw="http://www.mulesoft.org/schema/mule/ee/dw"
+      xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns:json="http://www.mulesoft.org/schema/mule/json"
+      xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee/dw/current/dw.xsd
+http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/json/current/mule-json.xsd">
+    <http:request-config name="SomeSystem" protocol="HTTP" host="localhost" port="443" basePath="/"
+                         doc:name="HTTP Request Configuration"/>
+    <flow name="restRequest">
+        <dw:transform-message doc:name="Transform Message">
+            <dw:set-payload><![CDATA[%dw 1.0
+%output application/json
+---
+{
+    key: payload.foo
+}]]></dw:set-payload>
+        </dw:transform-message>
+        <set-property propertyName="Content-Type" value="application/json"/>
+        <http:request config-ref="SomeSystem" path="/some_path" method="POST" doc:name="SomeSystem Call"/>
+        <dw:transform-message doc:name="Transform Message">
+            <dw:set-payload><![CDATA[%dw 1.0
+%output application/json
+---
+{
+    reply_key: payload.reply + 1
+}]]></dw:set-payload>
+        </dw:transform-message>
+        <set-property propertyName="Content-Type" value="application/json"/>
+    </flow>
+
+    <flow name="restRequestWithChoice">
+        <dw:transform-message doc:name="Transform Message">
+            <dw:set-payload><![CDATA[%dw 1.0
+%output application/json
+---
+{
+    key: payload.foo
+}]]></dw:set-payload>
+        </dw:transform-message>
+        <set-property propertyName="Content-Type" value="application/json"/>
+        <choice>
+            <when expression="#[true]">
+                <http:request config-ref="SomeSystem" path="/some_path" method="POST" doc:name="SomeSystem Call"/>
+                <dw:transform-message doc:name="Transform Message">
+                    <dw:set-payload><![CDATA[%dw 1.0
+%output application/json
+---
+{
+    reply_key: payload.reply + 1
+}]]></dw:set-payload>
+                </dw:transform-message>
+                <set-property propertyName="Content-Type" value="application/json"/>
+            </when>
+            <otherwise>
+                <logger message="should not hit this"/>
+            </otherwise>
+        </choice>
+    </flow>
+
+    <flow name="restRequestGet">
+        <http:request config-ref="SomeSystem" path="/some_path" method="GET" doc:name="SomeSystem Call"/>
+        <dw:transform-message doc:name="Transform Message">
+            <dw:set-payload><![CDATA[%dw 1.0
+%output application/json
+---
+{
+    reply_key: payload.reply + 1
+}]]></dw:set-payload>
+        </dw:transform-message>
+        <set-property propertyName="Content-Type" value="application/json"/>
+    </flow>
+
+
+    <flow name="restRequestContentTypeNotSet">
+        <dw:transform-message doc:name="Transform Message">
+            <dw:set-payload><![CDATA[%dw 1.0
+%output application/json
+---
+{
+    key: payload.foo
+}]]></dw:set-payload>
+        </dw:transform-message>
+        <set-property propertyName="Content-Type" value="application/json"/>
+        <http:request config-ref="SomeSystem" path="/some_path" method="POST" doc:name="SomeSystem Call"/>
+        <remove-property propertyName="Content-Type"/>
+        <dw:transform-message doc:name="Transform Message">
+            <dw:set-payload><![CDATA[%dw 1.0
+%output application/json
+---
+{
+    reply_key: payload.reply + 1
+}]]></dw:set-payload>
+        </dw:transform-message>
+    </flow>
+
+    <flow name="restRequestContentTypeNotSetForMock">
+        <dw:transform-message doc:name="Transform Message">
+            <dw:set-payload><![CDATA[%dw 1.0
+%output application/json
+---
+{
+    key: payload.foo
+}]]></dw:set-payload>
+        </dw:transform-message>
+        <http:request config-ref="SomeSystem" path="/some_path" method="POST" doc:name="SomeSystem Call"/>
+        <dw:transform-message doc:name="Transform Message">
+            <dw:set-payload><![CDATA[%dw 1.0
+%output application/json
+---
+{
+    reply_key: payload.reply + 1
+}]]></dw:set-payload>
+        </dw:transform-message>
+        <set-property propertyName="Content-Type" value="application/json"/>
+    </flow>
+
+    <flow name="hasHttpStatus">
+        <set-property propertyName="http.status" value="201"/>
+        <dw:transform-message doc:name="Transform Message">
+            <dw:set-payload><![CDATA[%dw 1.0
+%output application/json
+---
+{
+    key: payload.foo
+}]]></dw:set-payload>
+        </dw:transform-message>
+    </flow>
+
+    <flow name="noHttpStatus">
+        <dw:transform-message doc:name="Transform Message">
+            <dw:set-payload><![CDATA[%dw 1.0
+%output application/json
+---
+{
+    key: payload.foo
+}]]></dw:set-payload>
+        </dw:transform-message>
+    </flow>
+
+    <flow name="nullEvent">
+        <byte-array-to-string-transformer/>
+        <json:json-to-object-transformer/>
+        <idempotent-message-filter idExpression="#[payload.get('foo').asText()]"/>
+        <dw:transform-message doc:name="Transform Message">
+            <dw:set-payload><![CDATA[%dw 1.0
+%output application/json
+---
+{
+    key: payload.foo
+}]]></dw:set-payload>
+        </dw:transform-message>
+    </flow>
+
+    <flow name="queryParameters">
+        <dw:transform-message doc:name="Transform Message">
+            <dw:set-payload><![CDATA[%dw 1.0
+%output application/json
+---
+{
+    key: payload.foo
+}]]></dw:set-payload>
+        </dw:transform-message>
+        <set-property propertyName="Content-Type" value="application/json"/>
+        <http:request config-ref="SomeSystem" path="/some_path/{howdy}" method="GET" doc:name="SomeSystem Call">
+            <http:request-builder>
+                <http:query-param paramName="stuff" value="#[123]"/>
+                <http:uri-param paramName="howdy" value="there"/>
+            </http:request-builder>
+        </http:request>
+        <dw:transform-message doc:name="Transform Message">
+            <dw:set-payload><![CDATA[%dw 1.0
+%output application/json
+---
+{
+    reply_key: payload.reply + 1
+}]]></dw:set-payload>
+        </dw:transform-message>
+        <set-property propertyName="Content-Type" value="application/json"/>
+    </flow>
+
+    <flow name="queryParametersHttpStatus">
+        <dw:transform-message doc:name="Transform Message">
+            <dw:set-payload><![CDATA[%dw 1.0
+%output application/json
+---
+{
+    key: payload.foo
+}]]></dw:set-payload>
+        </dw:transform-message>
+        <set-property propertyName="Content-Type" value="application/json"/>
+        <http:request config-ref="SomeSystem" path="/some_path/{howdy}" method="GET" doc:name="SomeSystem Call">
+            <http:request-builder>
+                <http:query-param paramName="stuff" value="#[123]"/>
+                <http:uri-param paramName="howdy" value="there"/>
+            </http:request-builder>
+            <http:success-status-code-validator values="200,201"/>
+        </http:request>
+        <set-variable variableName="theStatus" value="#[message.inboundProperties.'http.status']"/>
+        <dw:transform-message doc:name="Transform Message">
+            <dw:set-payload><![CDATA[%dw 1.0
+%output application/json
+---
+{
+    reply_key: flowVars.theStatus
+}]]></dw:set-payload>
+        </dw:transform-message>
+        <set-property propertyName="Content-Type" value="application/json"/>
+    </flow>
+
+    <flow name="queryParametersEnricher">
+        <dw:transform-message doc:name="Transform Message">
+            <dw:set-payload><![CDATA[%dw 1.0
+%output application/json
+---
+{
+    key: payload.foo
+}]]></dw:set-payload>
+        </dw:transform-message>
+        <set-property propertyName="Content-Type" value="application/json"/>
+        <enricher target="#[flowVars.somePlace]">
+            <http:request config-ref="SomeSystem" path="/some_path/{howdy}" method="GET" doc:name="SomeSystem Call">
+                <http:request-builder>
+                    <http:query-param paramName="stuff" value="#[123]"/>
+                    <http:uri-param paramName="howdy" value="there"/>
+                </http:request-builder>
+            </http:request>
+        </enricher>
+        <set-payload value="#[flowVars.somePlace]"/>
+        <dw:transform-message doc:name="Transform Message">
+            <dw:set-payload><![CDATA[%dw 1.0
+%output application/json
+---
+{
+    reply_key: payload.reply + 1
+}]]></dw:set-payload>
+        </dw:transform-message>
+        <set-property propertyName="Content-Type" value="application/json"/>
+    </flow>
+</mule>

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+      xmlns="http://www.mulesoft.org/schema/mule/core"
+      xmlns:apikit="http://www.mulesoft.org/schema/mule/apikit"
+      xmlns:dw="http://www.mulesoft.org/schema/mule/ee/dw"
+      xmlns:http="http://www.mulesoft.org/schema/mule/http"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee/dw/current/dw.xsd
+http://www.mulesoft.org/schema/mule/apikit http://www.mulesoft.org/schema/mule/apikit/current/mule-apikit.xsd">
+    <apikit:config name="api-the-app-v1-config"
+                   raml="api-the-app-v1.raml"
+                   consoleEnabled="false"
+                   disableValidations="${skip.apikit.validation}"
+                   doc:name="Router"/>
+    <flow name="api-the-app-v1-main">
+        <http:listener config-ref="${http.listener.config}" path="/the-app/api/v1/*" doc:name="HTTP"/>
+        <apikit:router config-ref="api-the-app-v1-config"
+                       doc:name="APIkit Router"/>
+    </flow>
+    <flow name="post:/resources:application/json:api-the-app-v1-config">
+        <dw:transform-message doc:name="Transform Message">
+            <dw:set-payload><![CDATA[%dw 1.0
+%output application/json
+---
+{
+    key: payload.foo
+}]]></dw:set-payload>
+        </dw:transform-message>
+    </flow>
+    <flow name="get:/resources/{id}:api-the-app-v1-config">
+        <dw:transform-message doc:name="Transform Message">
+            <dw:set-payload><![CDATA[%dw 1.0
+%output application/json
+---
+{
+    key: 123
+}]]></dw:set-payload>
+        </dw:transform-message>
+    </flow>
+    <flow name="get:/resources:api-the-app-v1-config">
+        <set-variable variableName="foo" value="#[message.inboundProperties.'http.query.params'.foo]"/>
+        <set-variable variableName="bar" value="#[message.inboundProperties.'http.query.params'.bar]"/>
+        <dw:transform-message doc:name="Transform Message">
+            <dw:set-payload><![CDATA[%dw 1.0
+%output application/json
+---
+{
+    key: flowVars.foo + flowVars.bar
+}]]></dw:set-payload>
+        </dw:transform-message>
+    </flow>
+</mule>
