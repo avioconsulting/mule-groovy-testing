@@ -27,7 +27,7 @@ class HttpRequestPayloadValidator implements IPayloadValidator,
 
     void validatePayloadType(Object payload) {
         validatePayloadType(payload,
-                            [InputStream],
+                            [InputStream, String],
                             'Check your mock endpoints.')
     }
 
