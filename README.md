@@ -1,3 +1,20 @@
+# NOTE
+
+The documentation is out of date and needs to be updated. For now, examine the tests for the testing framework itself to see example usages. Here is what's currently supported:
+* Invoking flows via JSON/Java
+* Invoking APIKit flows via the apikit router
+* Mocking SOAP connectors (WS consumer) and handling JAXB marshal/unmarshal
+* Mocking RESTful HTTP request calls that either use XML or JSON and handling JAXB/Jackson respectively
+* Mocking VM Puts
+* Validate content type and HTTP status codes automatically
+* Handle streaming payloads (vs. not)
+* Limited HTTP connector usage validation (query params, path, verbs, URI params)
+
+What hasn't been done yet
+* Invoking SOAP flows
+* Mocking SalesForce/other connector types
+* Mocking DB (you probably shouldn't do this anyways, better to spin up a DB in a Docker container if possible)
+
 # Setting up your project
 
 
@@ -38,9 +55,9 @@
 3. Add dependencies on this test framework to your Mule project's pom.xml:
 ```xml
 <dependency>
-    <groupId>com.avioconsulting</groupId>
-    <artifactId>muletesting</artifactId>
-    <version>1.0.0</version>
+    <groupId>com.avioconsulting.mule</groupId>
+    <artifactId>testing</artifactId>
+    <version>1.0-SNAPSHOT</version>
     <scope>test</scope>
 </dependency>
 ```
