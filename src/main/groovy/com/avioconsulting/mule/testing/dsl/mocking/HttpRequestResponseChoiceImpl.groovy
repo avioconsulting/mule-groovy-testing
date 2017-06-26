@@ -75,7 +75,7 @@ class HttpRequestResponseChoiceImpl extends StandardRequestResponseImpl
         this.httpConnectorErrorTransformer.triggerConnectException()
     }
 
-    def httpTimeout() {
+    def httpTimeoutError() {
         this.httpConnectorErrorTransformer.triggerTimeoutException()
     }
 

@@ -537,7 +537,7 @@ class HttpTest extends BaseTest {
         mockRestHttpCall('SomeSystem Call') {
             json {
                 whenCalledWith { Map incoming ->
-                    httpTimeout()
+                    httpTimeoutError()
                 }
             }
         }

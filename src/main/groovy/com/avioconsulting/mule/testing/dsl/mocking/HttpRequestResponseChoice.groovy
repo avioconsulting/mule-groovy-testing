@@ -9,5 +9,5 @@ interface HttpRequestResponseChoice extends StandardRequestResponse {
 
     def httpConnectError()
 
-    def httpTimeout()
+    def httpTimeoutError()
 }
