@@ -9,6 +9,8 @@ import com.avioconsulting.schemas.soaptest.v1.SOAPTestResponseType
 import org.junit.Test
 import org.mule.api.MessagingException
 
+import java.util.concurrent.TimeoutException
+
 import static groovy.test.GroovyAssert.shouldFail
 import static org.hamcrest.Matchers.*
 import static org.junit.Assert.assertThat
@@ -156,5 +158,28 @@ class SoapTest extends BaseTest {
                    is(instanceOf(MessagingException))
         assertThat result.cause,
                    is(instanceOf(ConnectException))
+    }
+
+    @Test
+    void http_TimeoutError() {
+        // arrange
+        mockSoapCall('A SOAP Call') {
+            httpTimeoutError()
+        }
+
+        // act
+        def result = shouldFail {
+            runFlow('soaptestFlow') {
+                json {
+                    inputPayload([foo: 123])
+                }
+            }
+        }
+
+        // assert
+        assertThat result,
+                   is(instanceOf(MessagingException))
+        assertThat result.cause,
+                   is(instanceOf(TimeoutException))
     }
 }

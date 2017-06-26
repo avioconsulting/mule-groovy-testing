@@ -19,7 +19,14 @@ class SOAPFormatterImpl extends XMLFormatterImpl implements SOAPFormatter {
 
     def httpConnectError() {
         httpConnectorErrorTransformer = new HttpConnectorErrorTransformer(muleContext)
-        httpConnectorErrorTransformer.triggerException()
+        httpConnectorErrorTransformer.triggerConnectException()
+        // avoid DSL weirdness
+        return null
+    }
+
+    def httpTimeoutError() {
+        httpConnectorErrorTransformer = new HttpConnectorErrorTransformer(muleContext)
+        httpConnectorErrorTransformer.triggerTimeoutException()
         // avoid DSL weirdness
         return null
     }

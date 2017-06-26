@@ -5,10 +5,10 @@ import com.avioconsulting.mule.testing.payloadvalidators.ContentTypeCheckDisable
 import com.avioconsulting.mule.testing.payloadvalidators.HttpRequestPayloadValidator
 import com.avioconsulting.mule.testing.spies.HttpConnectorSpy
 import com.avioconsulting.mule.testing.spies.IReceiveHttpOptions
+import com.avioconsulting.mule.testing.transformers.TransformerChain
 import com.avioconsulting.mule.testing.transformers.http.HttpConnectorErrorTransformer
 import com.avioconsulting.mule.testing.transformers.http.HttpGetTransformer
 import com.avioconsulting.mule.testing.transformers.http.HttpValidationTransformer
-import com.avioconsulting.mule.testing.transformers.TransformerChain
 import org.mule.api.MuleContext
 import org.mule.module.http.internal.request.ResponseValidator
 import org.mule.munit.common.mocking.MunitSpy
@@ -72,7 +72,11 @@ class HttpRequestResponseChoiceImpl extends StandardRequestResponseImpl
     }
 
     def httpConnectError() {
-        this.httpConnectorErrorTransformer.triggerException()
+        this.httpConnectorErrorTransformer.triggerConnectException()
+    }
+
+    def httpTimeout() {
+        this.httpConnectorErrorTransformer.triggerTimeoutException()
     }
 
     def receive(Map queryParams,

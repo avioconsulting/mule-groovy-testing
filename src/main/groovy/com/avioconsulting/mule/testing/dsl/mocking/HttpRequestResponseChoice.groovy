@@ -8,4 +8,6 @@ interface HttpRequestResponseChoice extends StandardRequestResponse {
     def disableContentTypeCheck()
 
     def httpConnectError()
+
+    def httpTimeout()
 }

@@ -7,6 +7,8 @@ import org.junit.Test
 import org.mule.api.MessagingException
 import org.mule.module.http.internal.request.DefaultHttpRequester
 
+import java.util.concurrent.TimeoutException
+
 import static groovy.test.GroovyAssert.shouldFail
 import static org.hamcrest.Matchers.*
 import static org.junit.Assert.assertThat
@@ -525,6 +527,33 @@ class HttpTest extends BaseTest {
         // assert
         assertThat result.cause,
                    is(instanceOf(ConnectException))
+        assertThat result.failingMessageProcessor,
+                   is(instanceOf(DefaultHttpRequester))
+    }
+
+    @Test
+    void httpTimeoutError() {
+        // arrange
+        mockRestHttpCall('SomeSystem Call') {
+            json {
+                whenCalledWith { Map incoming ->
+                    httpTimeout()
+                }
+            }
+        }
+
+        // act
+        def result = shouldFail {
+            runFlow('restRequest') {
+                json {
+                    inputPayload([foo: 123])
+                }
+            }
+        } as MessagingException
+
+        // assert
+        assertThat result.cause,
+                   is(instanceOf(TimeoutException))
         assertThat result.failingMessageProcessor,
                    is(instanceOf(DefaultHttpRequester))
     }
