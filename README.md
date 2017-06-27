@@ -1,6 +1,7 @@
 # NOTE
 
 The documentation is out of date and needs to be updated. For now, examine the tests for the testing framework itself to see example usages. Here is what's currently supported:
+
 * Invoking flows via JSON/Java
 * Invoking APIKit flows via the apikit router
 * Mocking SOAP connectors (WS consumer) and handling JAXB marshal/unmarshal
@@ -11,6 +12,7 @@ The documentation is out of date and needs to be updated. For now, examine the t
 * Limited HTTP connector usage validation (query params, path, verbs, URI params)
 
 What hasn't been done yet/TODOs:
+
 * Currently, you explicitly tell the tests which Mule config files to load as part of your test. It might make more sense to automatically read in all the files in mule-deploy.properties and then allow the test to remove/substitute certain files instead. That way the list of files in mule-deploy.properties is tested but can be overridden
 * Boilerplate code from queue-error-strategies, how to test that
 * Also it might be useful to detect if a filter is used with a transactional listener and if so, fail a test if it's not a message filter and the filter does not use 'onUnAccepted' (current Mule bug)
