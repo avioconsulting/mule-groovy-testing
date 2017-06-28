@@ -4,8 +4,10 @@ import org.mule.api.AnnotatedObject
 import org.mule.api.MuleEvent
 import org.mule.api.processor.MessageProcessor
 import org.mule.api.processor.MessageProcessorChain
+import org.mule.construct.AbstractPipeline
 import org.mule.processor.AbstractMessageProcessorOwner
 import org.mule.routing.ChoiceRouter
+import org.mule.util.NotificationUtils
 
 import javax.xml.namespace.QName
 
@@ -18,14 +20,18 @@ class ProcessorLocator {
     }
 
     def getProcessor(MuleEvent muleEvent) {
-        def processors = muleEvent.flowConstruct.messageProcessors as List<MessageProcessor>
-        def allProcessors = recursiveProcessorList(processors)
+        // easiest way to get all processors in a flow
+        // TODO: Find a public API way of doing this
+        def flowMapField = AbstractPipeline.getDeclaredField('flowMap')
+        flowMapField.accessible = true
+        def flowMap = flowMapField.get(muleEvent.flowConstruct) as NotificationUtils.FlowMap
+        def allProcessors = flowMap.flowMap.keySet()
         def processor = findProcessor(allProcessors)
         assert processor: "Unable to find processor with name '${processorName}'. Is doc:name present on the connector?"
         processor
     }
 
-    private def findProcessor(List<MessageProcessor> processors) {
+    private def findProcessor(Set<MessageProcessor> processors) {
         processors.find { processor ->
             if (!processor instanceof AnnotatedObject) {
                 return false
@@ -34,26 +40,5 @@ class ProcessorLocator {
             def name = annotated.annotations[new QName(doc, 'name')]
             name == processorName
         }
-    }
-
-    private List<MessageProcessor> recursiveProcessorList(List<MessageProcessor> input) {
-        input.collect { MessageProcessor processor ->
-            switch (processor) {
-                case MessageProcessorChain:
-                    def processorList = ((MessageProcessorChain) processor).messageProcessors
-                    return recursiveProcessorList(processorList)
-                case AbstractMessageProcessorOwner:
-                    // if it's inside an enricher, we need to search
-                    def processorList = ((AbstractMessageProcessorOwner) processor).ownedMessageProcessors
-                    return recursiveProcessorList(processorList)
-                case ChoiceRouter:
-                    def choice = processor as ChoiceRouter
-                    def processors = choice.conditionalMessageProcessors.collect { pair ->
-                        pair.messageProcessor
-                    }
-                    return recursiveProcessorList(processors)
-            }
-            processor
-        }.flatten() as List<MessageProcessor>
     }
 }
