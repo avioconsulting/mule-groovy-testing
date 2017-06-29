@@ -267,7 +267,7 @@ http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/jso
         <set-property propertyName="Content-Type" value="application/json"/>
     </flow>
 
-    <flow name="queryParamsProcessorChain">
+    <flow name="queryParamsNoAnnotationsProcessorChain">
         <dw:transform-message doc:name="Transform Message">
             <dw:set-payload><![CDATA[%dw 1.0
 %output application/json

@@ -34,8 +34,14 @@ class ProcessorLocator {
                 return false
             }
             def annotated = processor as AnnotatedObject
-            def name = annotated.annotations[new QName(doc, 'name')]
-            name == processorName
+            try {
+                def name = annotated.annotations[new QName(doc, 'name')]
+                name == processorName
+            }
+            catch (NullPointerException ignored) {
+                // processor chain without annotations does this
+                false
+            }
         }
     }
 }

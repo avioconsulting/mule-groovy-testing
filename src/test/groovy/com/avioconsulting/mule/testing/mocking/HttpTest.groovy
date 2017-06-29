@@ -498,7 +498,7 @@ class HttpTest extends BaseTest {
         }
 
         // act
-        def result = runFlow('queryParamsProcessorChain') {
+        def result = runFlow('queryParamsNoAnnotationsProcessorChain') {
             json {
                 inputPayload([foo: 123])
             }
