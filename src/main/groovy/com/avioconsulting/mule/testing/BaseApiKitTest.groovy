@@ -26,6 +26,11 @@ abstract class BaseApiKitTest extends BaseTest {
         '/' + [apiNameUnderTest, 'api', apiVersionUnderTest, '*'].join('/')
     }
 
+    protected static int getChosenHttpPort() {
+        // avoid duplicate ports
+        Integer.parseInt(System.getProperty(TEST_PORT_PROPERTY))
+    }
+
     @Override
     Properties getStartUpProperties() {
         def properties = super.getStartUpProperties()
