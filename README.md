@@ -13,9 +13,10 @@ The documentation is out of date and needs to be updated. For now, examine the t
 
 What hasn't been done yet/TODOs:
 
-* Currently, you explicitly tell the tests which Mule config files to load as part of your test. It might make more sense to automatically read in all the files in mule-deploy.properties and then allow the test to remove/substitute certain files instead. That way the list of files in mule-deploy.properties is tested but can be overridden
+* Currently, you explicitly tell the tests which Mule config files to load as part of your test. It might make more sense to automatically read in all the files in mule-deploy.properties and then allow the test to remove/substitute certain files instead. That way the list of files in mule-deploy.properties is tested (in case you forgot to add one) but can be overridden
 * Boilerplate code from queue-error-strategies, how to test that
-* Also it might be useful to detect if a filter is used with a transactional listener and if so, fail a test if it's not a message filter and the filter does not use 'onUnAccepted' (current Mule bug)
+* Also it might be useful to detect if a filter is used with a transactional listener and if so, fail a test if it's not a message filter and the filter does not use 'onUnAccepted' (acknowledged Mule bug)
+* Compare maven dependencies with engine directory and spot loader overrides problems
 * Invoking SOAP flows
 * Mocking SalesForce/other connector types
 * Mocking DB (you probably shouldn't do this anyways, better to spin up a DB in a Docker container if possible)
