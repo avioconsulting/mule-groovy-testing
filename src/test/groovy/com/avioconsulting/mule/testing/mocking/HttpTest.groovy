@@ -478,6 +478,47 @@ class HttpTest extends BaseTest {
     }
 
     @Test
+    void queryParameters_ProcessorChain() {
+        // arrange
+        Map actualParams = null
+        String actualUri = null
+        String actualHttpVerb = null
+
+        mockRestHttpCall('SomeSystem Call') {
+            json {
+                whenCalledWith {
+                    withHttpOptions { String httpVerb, String uri, Map queryParams ->
+                        actualParams = queryParams
+                        actualUri = uri
+                        actualHttpVerb = httpVerb
+                        [reply: 456]
+                    }
+                }
+            }
+        }
+
+        // act
+        def result = runFlow('queryParamsProcessorChain') {
+            json {
+                inputPayload([foo: 123])
+            }
+        }
+
+        // assert
+        assert actualParams
+        assertThat actualParams,
+                   is(equalTo([stuff: '123']))
+        assert actualUri
+        assertThat actualUri,
+                   is(equalTo('/some_path/there'))
+        assertThat result,
+                   is(equalTo([reply_key: 457]))
+        assert actualHttpVerb
+        assertThat actualHttpVerb,
+                   is(equalTo('GET'))
+    }
+
+    @Test
     void httpPassString() {
         // arrange
         def stuff = null

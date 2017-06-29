@@ -3,10 +3,7 @@ package com.avioconsulting.mule.testing
 import org.mule.api.AnnotatedObject
 import org.mule.api.MuleEvent
 import org.mule.api.processor.MessageProcessor
-import org.mule.api.processor.MessageProcessorChain
 import org.mule.construct.AbstractPipeline
-import org.mule.processor.AbstractMessageProcessorOwner
-import org.mule.routing.ChoiceRouter
 import org.mule.util.NotificationUtils
 
 import javax.xml.namespace.QName
