@@ -30,7 +30,7 @@ class ProcessorLocator {
 
     private def findProcessor(Set<MessageProcessor> processors) {
         processors.find { processor ->
-            if (!processor instanceof AnnotatedObject) {
+            if (!(processor instanceof AnnotatedObject)) {
                 return false
             }
             def annotated = processor as AnnotatedObject
