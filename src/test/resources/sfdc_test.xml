@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns="http://www.mulesoft.org/schema/mule/core"
+      xmlns:sfdc="http://www.mulesoft.org/schema/mule/sfdc"
+      xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+      xmlns:dw="http://www.mulesoft.org/schema/mule/ee/dw"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+      http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee/dw/current/dw.xsd
+http://www.mulesoft.org/schema/mule/sfdc http://www.mulesoft.org/schema/mule/sfdc/current/mule-sfdc.xsd">
+    <sfdc:config name="Salesforce__Basic_authentication" username="foo" password="foobar" securityToken="bar"
+                 doc:name="Salesforce: Basic authentication"/>
+    <flow name="sfdcCreate">
+        <dw:transform-message>
+            <dw:input-payload mimeType="application/json"/>
+            <dw:set-payload><![CDATA[%dw 1.0
+%output application/java
+---
+{
+	Name: "Brady product",
+	Howdy2__c: payload.howdy
+//	ProductRel__r: {
+//		BradyExtId__c: "GC1040",
+//		type: "Product2"
+//	}
+}]]></dw:set-payload>
+        </dw:transform-message>
+        <sfdc:create-single config-ref="Salesforce__Basic_authentication" type="BradyProduct__c" doc:name="Salesforce create"/>
+    </flow>
+</mule>
