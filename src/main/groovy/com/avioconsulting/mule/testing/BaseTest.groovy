@@ -207,6 +207,20 @@ abstract class BaseTest extends FunctionalMunitSuite {
         mocker.thenApply(formatterChoice.transformer)
     }
 
+    def mockSalesForceCall(String connectorName,
+                           @DelegatesTo(SalesForceChoice) Closure closure) {
+        def choice = new SalesForceChoiceImpl()
+        def code = closure.rehydrate(choice, this, this)
+        code.resolveStrategy = Closure.DELEGATE_ONLY
+        code()
+        def mocker = whenMessageProcessor(choice.connectorType)
+                .ofNamespace('sfdc')
+                .withAttributes(Attribute.attribute('name')
+                                        .ofNamespace('doc')
+                                        .withValue(connectorName))
+        mocker.thenApply(choice.transformer)
+    }
+
     def mockSoapCall(String connectorName,
                      @DelegatesTo(SOAPFormatter) Closure closure) {
         def mocker = whenMessageProcessor('consumer')

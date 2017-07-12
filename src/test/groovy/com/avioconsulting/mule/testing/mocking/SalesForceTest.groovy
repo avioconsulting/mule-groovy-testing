@@ -1,10 +1,8 @@
 package com.avioconsulting.mule.testing.mocking
 
 import com.avioconsulting.mule.testing.BaseTest
+import com.avioconsulting.mule.testing.dsl.mocking.SalesForceCreateConnectorType
 import org.junit.Test
-import org.mule.api.MuleMessage
-import org.mule.modules.interceptor.processors.MuleMessageTransformer
-import org.mule.munit.common.mocking.Attribute
 
 class SalesForceTest extends BaseTest {
     List<String> getConfigResourcesList() {
@@ -14,20 +12,12 @@ class SalesForceTest extends BaseTest {
     @Test
     void createSingle() {
         // arrange
-        def input = null
-        def mock = whenMessageProcessor('create-single')
-                .ofNamespace('sfdc')
-                .withAttributes(Attribute.attribute('name')
-                                        .ofNamespace('doc')
-                                        .withValue('Salesforce create'))
-        mock.thenApply(new MuleMessageTransformer() {
-            @Override
-            MuleMessage transform(MuleMessage muleMessage) {
-                input = muleMessage.payload
-                // TODO: Build SDFC result classes
-                return muleMessage
+        Map input = null
+        mockSalesForceCall('Salesforce create') {
+            withInputPayload(SalesForceCreateConnectorType.CreateSingle) { Map data ->
+                input = data
             }
-        })
+        }
 
         // act
         runFlow('sfdcCreate') {
@@ -38,7 +28,7 @@ class SalesForceTest extends BaseTest {
 
         // assert
         assert input
-        fail 'write this'
+        fail 'write this, including salesforceresponse class'
     }
 
     @Test
