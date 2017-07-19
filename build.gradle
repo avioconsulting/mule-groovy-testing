@@ -88,7 +88,7 @@ uploadArchives {
 }
 
 dependencies {
-    def muleVersion = '3.8.3'
+    def muleVersion = '3.8.5'
     def munitVersion = '1.2.1'
     def munitSupportVersion = '3.8.2'
     compile 'org.apache.maven:maven-plugin-api:3.3.9'
