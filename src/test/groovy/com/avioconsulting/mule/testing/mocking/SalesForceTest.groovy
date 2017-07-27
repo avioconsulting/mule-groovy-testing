@@ -25,7 +25,7 @@ class SalesForceTest extends BaseTest {
         }
 
         // act
-        def results = runFlow('sfdcCreate') {
+        def results = runFlow('sfdcUpsert') {
             java {
                 inputPayload([howdy: 123])
             }
@@ -58,7 +58,7 @@ class SalesForceTest extends BaseTest {
 
         // act
         def result = shouldFail {
-            runFlow('sfdcCreate') {
+            runFlow('sfdcUpsert') {
                 java {
                     inputPayload([howdy: 123])
                 }
@@ -81,7 +81,7 @@ class SalesForceTest extends BaseTest {
         }
 
         // act
-        def results = runFlow('sfdcCreate') {
+        def results = runFlow('sfdcUpsert') {
             java {
                 inputPayload([howdy: 123])
             }
@@ -107,7 +107,7 @@ class SalesForceTest extends BaseTest {
         }
 
         // act
-        def results = runFlow('sfdcCreate') {
+        def results = runFlow('sfdcUpsert') {
             java {
                 inputPayload([howdy: 123])
             }
@@ -125,6 +125,35 @@ class SalesForceTest extends BaseTest {
 
     @Test
     void query() {
+        // arrange
+        String actualQuery = null
+        mockSalesForceCall('Salesforce query') {
+            query { String inputQuery ->
+                actualQuery = inputQuery
+                [
+                        [value: 123]
+                ]
+            }
+        }
+
+        // act
+        def results = runFlow('sfdcQuery') {
+            java {
+                inputPayload([howdy: 456])
+            }
+        } as List<Map>
+
+        // assert
+        assertThat results,
+                   is(equalTo([
+                           [value: 123]
+                   ]))
+        assertThat actualQuery,
+                   is(equalTo("SELECT Foo_c FROM Product WHERE Foo_c = '456'"))
+    }
+
+    @Test
+    void query_incorrectResponseType() {
         // arrange
 
         // act

@@ -10,7 +10,7 @@
 http://www.mulesoft.org/schema/mule/sfdc http://www.mulesoft.org/schema/mule/sfdc/current/mule-sfdc.xsd">
     <sfdc:config name="Salesforce__Basic_authentication" username="foo" password="foobar" securityToken="bar"
                  doc:name="Salesforce: Basic authentication"/>
-    <flow name="sfdcCreate">
+    <flow name="sfdcUpsert">
         <dw:transform-message>
             <dw:input-payload mimeType="application/java"/>
             <dw:set-payload><![CDATA[%dw 1.0
@@ -27,5 +27,9 @@ http://www.mulesoft.org/schema/mule/sfdc http://www.mulesoft.org/schema/mule/sfd
                      doc:name="Salesforce upsert">
             <sfdc:objects ref="#[payload]"/>
         </sfdc:upsert>
+    </flow>
+    <flow name="sfdcQuery">
+        <sfdc:query config-ref="Salesforce__Basic_authentication"
+                    query="dsql:SELECT Foo_c FROM Product WHERE Foo_c = '#[payload.howdy]'"/>
     </flow>
 </mule>

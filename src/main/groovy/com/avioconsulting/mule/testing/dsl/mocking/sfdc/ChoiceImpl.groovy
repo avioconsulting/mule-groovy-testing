@@ -19,6 +19,10 @@ class ChoiceImpl implements Choice {
                                                  this.muleContext)
     }
 
+    def query(@DelegatesTo(Query) Closure closure) {
+        return null
+    }
+
     MuleMessageTransformer getTransformer() {
         assert transformer: 'Need a transformer! Did you declare a closure wrapped in (upsert, etc.) ?'
         this.transformer
