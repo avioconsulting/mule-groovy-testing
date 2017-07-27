@@ -209,7 +209,7 @@ abstract class BaseTest extends FunctionalMunitSuite {
 
     def mockSalesForceCall(String connectorName,
                            @DelegatesTo(SalesForceChoice) Closure closure) {
-        def choice = new SalesForceChoiceImpl()
+        def choice = new SalesForceChoiceImpl(muleContext)
         def code = closure.rehydrate(choice, this, this)
         code.resolveStrategy = Closure.DELEGATE_ONLY
         code()

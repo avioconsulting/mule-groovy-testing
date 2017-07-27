@@ -12,7 +12,7 @@ http://www.mulesoft.org/schema/mule/sfdc http://www.mulesoft.org/schema/mule/sfd
                  doc:name="Salesforce: Basic authentication"/>
     <flow name="sfdcCreate">
         <dw:transform-message>
-            <dw:input-payload mimeType="application/json"/>
+            <dw:input-payload mimeType="application/java"/>
             <dw:set-payload><![CDATA[%dw 1.0
 %output application/java
 ---

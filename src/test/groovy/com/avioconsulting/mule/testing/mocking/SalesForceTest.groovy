@@ -3,6 +3,7 @@ package com.avioconsulting.mule.testing.mocking
 import com.avioconsulting.mule.testing.BaseTest
 import com.avioconsulting.mule.testing.dsl.mocking.SalesForceCreateConnectorType
 import org.junit.Test
+import org.mule.modules.salesforce.bulk.EnrichedUpsertResult
 
 import static org.hamcrest.Matchers.equalTo
 import static org.hamcrest.Matchers.is
@@ -14,31 +15,57 @@ class SalesForceTest extends BaseTest {
     }
 
     @Test
-    void upsert() {
+    void upsert_success() {
         // arrange
         Map input = null
         mockSalesForceCall('Salesforce upsert') {
             withInputPayload(SalesForceCreateConnectorType.Upsert) { Map data ->
                 input = data
+                successfulUpsertResult()
             }
         }
 
         // act
-        runFlow('sfdcCreate') {
-            json {
-                inputOnly([howdy: 123])
+        def results = runFlow('sfdcCreate') {
+            java {
+                inputPayload([howdy: 123])
             }
-        }
+        } as List<EnrichedUpsertResult>
 
         // assert
         assert input
         assertThat input,
                    is(equalTo([
                            Name     : 'Brady product',
-                           Howdy2__c: 'payload.howdy'
+                           Howdy2__c: 123
                    ]))
+        assertThat results.size(),
+                   is(equalTo(1))
+        def result = results[0]
+        assertThat result.success,
+                   is(equalTo(true))
+        assertThat result.created,
+                   is(equalTo(true))
+    }
 
-        fail 'write this, including salesforceresponse class'
+    @Test
+    void upsert_sfdc_result_not_returned() {
+        // arrange
+
+        // act
+
+        // assert
+        fail 'write this'
+    }
+
+    @Test
+    void upsert_failure() {
+        // arrange
+
+        // act
+
+        // assert
+        fail 'write this'
     }
 
     @Test
