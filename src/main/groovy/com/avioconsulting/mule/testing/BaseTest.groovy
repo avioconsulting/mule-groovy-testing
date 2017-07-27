@@ -3,6 +3,8 @@ package com.avioconsulting.mule.testing
 import com.avioconsulting.mule.testing.dsl.invokers.FlowRunner
 import com.avioconsulting.mule.testing.dsl.invokers.FlowRunnerImpl
 import com.avioconsulting.mule.testing.dsl.mocking.*
+import com.avioconsulting.mule.testing.dsl.mocking.sfdc.Choice
+import com.avioconsulting.mule.testing.dsl.mocking.sfdc.ChoiceImpl
 import com.avioconsulting.mule.testing.payloadvalidators.SOAPPayloadValidator
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.mulesoft.weave.reader.ByteArraySeekableStream
@@ -205,6 +207,27 @@ abstract class BaseTest extends FunctionalMunitSuite {
         code.resolveStrategy = Closure.DELEGATE_ONLY
         code()
         mocker.thenApply(formatterChoice.transformer)
+    }
+
+    def mockSalesForceCall(String connectorName,
+                           @DelegatesTo(Choice) Closure closure) {
+        def locator = new ProcessorLocator(connectorName)
+        def choice = new ChoiceImpl(muleContext, { String processorType ->
+            spyMessageProcessor(processorType)
+                    .ofNamespace('sfdc')
+                    .withAttributes(Attribute.attribute('name')
+                                            .ofNamespace('doc')
+                                            .withValue(connectorName))
+        }, locator)
+        def code = closure.rehydrate(choice, this, this)
+        code.resolveStrategy = Closure.DELEGATE_ONLY
+        code()
+        def mocker = whenMessageProcessor(choice.connectorType)
+                .ofNamespace('sfdc')
+                .withAttributes(Attribute.attribute('name')
+                                        .ofNamespace('doc')
+                                        .withValue(connectorName))
+        mocker.thenApply(choice.transformer)
     }
 
     def mockSoapCall(String connectorName,

@@ -88,7 +88,7 @@ uploadArchives {
 }
 
 dependencies {
-    def muleVersion = '3.8.3'
+    def muleVersion = '3.8.5'
     def munitVersion = '1.2.1'
     def munitSupportVersion = '3.8.2'
     compile 'org.apache.maven:maven-plugin-api:3.3.9'
@@ -97,6 +97,7 @@ dependencies {
     compile group: 'org.mule.modules', name: 'mule-module-client', version: muleVersion
     compile group: 'org.mule.modules', name: 'mule-module-json', version: muleVersion
     compile group: 'com.mulesoft.munit', name: 'mule-munit-support', version: munitSupportVersion
+    compile 'org.mule.modules:mule-module-sfdc:8.3.0'
     compile 'org.apache.cxf:cxf-api:2.7.18'
     compile 'xalan:xalan:2.7.2'
     // assumes testing being done with dataweave

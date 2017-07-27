@@ -4,6 +4,7 @@ import org.mule.api.AnnotatedObject
 import org.mule.api.MuleEvent
 import org.mule.api.processor.MessageProcessor
 import org.mule.construct.AbstractPipeline
+import org.mule.munit.common.processor.interceptor.MunitMessageProcessorInterceptor
 import org.mule.util.NotificationUtils
 
 import javax.xml.namespace.QName
@@ -31,6 +32,13 @@ class ProcessorLocator {
     private def findProcessor(Set<MessageProcessor> processors) {
         processors.find { processor ->
             if (!(processor instanceof AnnotatedObject)) {
+                if (processor.hasProperty('CGLIB$CALLBACK_0')) {
+                    // MUnit puts this here
+                    def interceptor = processor.CGLIB$CALLBACK_0
+                    assert interceptor instanceof MunitMessageProcessorInterceptor
+                    def attributes = interceptor.attributes
+                    return attributes['doc:name'] == processorName
+                }
                 return false
             }
             def annotated = processor as AnnotatedObject
