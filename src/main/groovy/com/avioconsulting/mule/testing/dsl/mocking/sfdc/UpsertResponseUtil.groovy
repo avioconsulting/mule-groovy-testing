@@ -1,9 +1,9 @@
-package com.avioconsulting.mule.testing.dsl.mocking
+package com.avioconsulting.mule.testing.dsl.mocking.sfdc
 
 import com.sforce.soap.partner.UpsertResult
 import org.mule.modules.salesforce.bulk.EnrichedUpsertResult
 
-class SalesForceResponseUtil {
+class UpsertResponseUtil {
     List<EnrichedUpsertResult> successfulUpsertResult() {
         successfulUpsertResults(1)
     }

@@ -1,12 +1,11 @@
 package com.avioconsulting.mule.testing.mocking
 
 import com.avioconsulting.mule.testing.BaseTest
-import com.avioconsulting.mule.testing.dsl.mocking.SalesForceCreateConnectorType
 import org.junit.Test
 import org.mule.modules.salesforce.bulk.EnrichedUpsertResult
 
-import static org.hamcrest.Matchers.equalTo
-import static org.hamcrest.Matchers.is
+import static groovy.test.GroovyAssert.shouldFail
+import static org.hamcrest.Matchers.*
 import static org.junit.Assert.assertThat
 
 class SalesForceTest extends BaseTest {
@@ -19,7 +18,7 @@ class SalesForceTest extends BaseTest {
         // arrange
         Map input = null
         mockSalesForceCall('Salesforce upsert') {
-            withInputPayload(SalesForceCreateConnectorType.Upsert) { Map data ->
+            upsert { Map data ->
                 input = data
                 successfulUpsertResult()
             }
@@ -51,11 +50,25 @@ class SalesForceTest extends BaseTest {
     @Test
     void upsert_sfdc_result_not_returned() {
         // arrange
+        mockSalesForceCall('Salesforce upsert') {
+            upsert { Map data ->
+                return null
+            }
+        }
 
         // act
+        def result = shouldFail {
+            runFlow('sfdcCreate') {
+                java {
+                    inputPayload([howdy: 123])
+                }
+            }
+        }
 
         // assert
-        fail 'write this'
+        assertThat result.message,
+                   is(containsString(
+                           'Must return a SalesForce result from your mock. Options include [successfulUpsertResult, successfulUpsertResults]. See class com.avioconsulting.mule.testing.dsl.mocking.sfdc.UpsertResponseUtil class for options'))
     }
 
     @Test
