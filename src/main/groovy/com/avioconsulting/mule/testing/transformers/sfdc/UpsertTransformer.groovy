@@ -24,7 +24,7 @@ class UpsertTransformer implements MuleMessageTransformer {
             return
         }
         def methodNames = { Class klass -> klass.declaredMethods.collect { m -> m.name } }
-        def options = methodNames(responseUtilClass) - methodNames(GroovyObject)
+        def options = (methodNames(responseUtilClass) - methodNames(GroovyObject)).unique()
         options.removeAll { name ->
             // hidden methods
             name.startsWith('$')

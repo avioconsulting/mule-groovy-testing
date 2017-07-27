@@ -20,7 +20,7 @@ class SalesForceTest extends BaseTest {
         mockSalesForceCall('Salesforce upsert') {
             upsert { Map data ->
                 input = data
-                successfulUpsertResult()
+                successful()
             }
         }
 
@@ -68,17 +68,33 @@ class SalesForceTest extends BaseTest {
         // assert
         assertThat result.message,
                    is(containsString(
-                           'Must return a SalesForce result from your mock. Options include [successfulUpsertResult, successfulUpsertResults]. See class com.avioconsulting.mule.testing.dsl.mocking.sfdc.UpsertResponseUtil class for options'))
+                           'Must return a SalesForce result from your mock. Options include [successful]. See class com.avioconsulting.mule.testing.dsl.mocking.sfdc.UpsertResponseUtil class for options'))
     }
 
     @Test
     void upsert_not_created() {
         // arrange
+        mockSalesForceCall('Salesforce upsert') {
+            upsert { Map data ->
+                successful(false)
+            }
+        }
 
         // act
+        def results = runFlow('sfdcCreate') {
+            java {
+                inputPayload([howdy: 123])
+            }
+        } as List<EnrichedUpsertResult>
 
         // assert
-        fail 'write this'
+        assertThat results.size(),
+                   is(equalTo(1))
+        def result = results[0]
+        assertThat result.success,
+                   is(equalTo(true))
+        assertThat result.created,
+                   is(equalTo(false))
     }
 
     @Test

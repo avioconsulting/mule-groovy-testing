@@ -4,14 +4,15 @@ import com.sforce.soap.partner.UpsertResult
 import org.mule.modules.salesforce.bulk.EnrichedUpsertResult
 
 class UpsertResponseUtil {
-    List<EnrichedUpsertResult> successfulUpsertResult() {
-        successfulUpsertResults(1)
+    List<EnrichedUpsertResult> successful(boolean created = true) {
+        successful(1, created)
     }
 
-    List<EnrichedUpsertResult> successfulUpsertResults(int number) {
+    List<EnrichedUpsertResult> successful(int number,
+                                          boolean created = true) {
         (1..number).collect { index ->
             def wrapped = new UpsertResult()
-            wrapped.created = true
+            wrapped.created = created
             wrapped.success = true
             new EnrichedUpsertResult(wrapped)
         }
