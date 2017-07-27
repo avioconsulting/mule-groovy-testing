@@ -27,6 +27,13 @@ class QueryTransformerSpy implements MuleMessageTransformer, SpyProcess {
 
     MuleMessage transform(MuleMessage muleMessage) {
         def result = closure(this.dsqlQuery)
+        if (!(result instanceof List)) {
+            throw new Exception("Must return a List<Map> result from your mock instead of ${result} which is of type ${result.class}!")
+        }
+        if (result.any() && !(result[0] instanceof Map)) {
+            def item = result[0]
+            throw new Exception("Must return a List<Map> result from your mock instead of List<${item.class}>!")
+        }
         new DefaultMuleMessage(result,
                                this.muleContext)
     }

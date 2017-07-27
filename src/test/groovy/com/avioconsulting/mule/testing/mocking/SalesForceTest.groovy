@@ -153,12 +153,50 @@ class SalesForceTest extends BaseTest {
     }
 
     @Test
-    void query_incorrectResponseType() {
+    void query_incorrectResponseType_String() {
         // arrange
+        mockSalesForceCall('Salesforce query') {
+            query { String inputQuery ->
+                'foobar'
+            }
+        }
 
         // act
+        def result = shouldFail {
+            runFlow('sfdcQuery') {
+                java {
+                    inputPayload([howdy: 456])
+                }
+            }
+        }
 
         // assert
-        fail 'write this'
+        assertThat result.message,
+                   is(containsString(
+                           'Must return a List<Map> result from your mock instead of foobar which is of type class java.lang.String!'))
+    }
+
+    @Test
+    void query_incorrectResponseType_wrongListType() {
+        // arrange
+        mockSalesForceCall('Salesforce query') {
+            query { String inputQuery ->
+                ['foobar']
+            }
+        }
+
+        // act
+        def result = shouldFail {
+            runFlow('sfdcQuery') {
+                java {
+                    inputPayload([howdy: 456])
+                }
+            }
+        }
+
+        // assert
+        assertThat result.message,
+                   is(containsString(
+                           'Must return a List<Map> result from your mock instead of List<class java.lang.String>!'))
     }
 }
