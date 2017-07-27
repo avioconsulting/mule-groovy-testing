@@ -17,4 +17,17 @@ class UpsertResponseUtil {
             new EnrichedUpsertResult(wrapped)
         }
     }
+
+    List<EnrichedUpsertResult> failed() {
+        failed(1)
+    }
+
+    List<EnrichedUpsertResult> failed(int number) {
+        (1..number).collect { index ->
+            def wrapped = new UpsertResult()
+            wrapped.created = false
+            wrapped.success = false
+            new EnrichedUpsertResult(wrapped)
+        }
+    }
 }
