@@ -173,7 +173,7 @@ class SalesForceTest extends BaseTest {
         // assert
         assertThat result.message,
                    is(containsString(
-                           'Must return a List<Map> result from your mock instead of foobar which is of type class java.lang.String!'))
+                           'Must return a List<java.util.Map> result from your mock instead of foobar which is of type class java.lang.String!'))
     }
 
     @Test
@@ -197,6 +197,6 @@ class SalesForceTest extends BaseTest {
         // assert
         assertThat result.message,
                    is(containsString(
-                           'Must return a List<Map> result from your mock instead of List<class java.lang.String>!'))
+                           'Must return a List<java.util.Map> result from your mock instead of List<java.lang.String>!'))
     }
 }

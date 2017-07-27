@@ -1,7 +1,8 @@
 package com.avioconsulting.mule.testing.dsl.mocking.sfdc
 
 import com.avioconsulting.mule.testing.ProcessorLocator
-import com.avioconsulting.mule.testing.transformers.sfdc.QueryTransformerSpy
+import com.avioconsulting.mule.testing.payloadvalidators.ListGenericPayloadValidator
+import com.avioconsulting.mule.testing.transformers.StandardDsqlTransformer
 import com.avioconsulting.mule.testing.transformers.sfdc.UpsertTransformer
 import org.mule.api.MuleContext
 import org.mule.modules.interceptor.processors.MuleMessageTransformer
@@ -33,9 +34,11 @@ class ChoiceImpl implements Choice {
     def query(Closure closure) {
         this.connectorType = 'query'
         def spy = spyFactory(this.connectorType) as MunitSpy
-        def queryTransformer = new QueryTransformerSpy(this.processorLocator,
-                                                       muleContext,
-                                                       closure)
+        def validator = new ListGenericPayloadValidator(Map)
+        def queryTransformer = new StandardDsqlTransformer(processorLocator,
+                                                           muleContext,
+                                                           closure,
+                                                           validator)
         this.transformer = queryTransformer
         spy.before(queryTransformer)
         return null
