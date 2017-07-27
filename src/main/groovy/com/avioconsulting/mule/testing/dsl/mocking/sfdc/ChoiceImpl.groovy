@@ -1,15 +1,26 @@
 package com.avioconsulting.mule.testing.dsl.mocking.sfdc
 
+import com.avioconsulting.mule.testing.ProcessorLocator
+import com.avioconsulting.mule.testing.transformers.sfdc.QueryTransformerSpy
 import com.avioconsulting.mule.testing.transformers.sfdc.UpsertTransformer
 import org.mule.api.MuleContext
 import org.mule.modules.interceptor.processors.MuleMessageTransformer
+import org.mule.munit.common.mocking.MunitSpy
 
 class ChoiceImpl implements Choice {
     String connectorType
     private MuleMessageTransformer transformer
     private final MuleContext muleContext
+    // using a factory because this class handles multiple SFDC operations and we don't know the connector type
+    // until these methods run
+    private final Closure spyFactory
+    private final ProcessorLocator processorLocator
 
-    ChoiceImpl(MuleContext muleContext) {
+    ChoiceImpl(MuleContext muleContext,
+               Closure spyFactory,
+               ProcessorLocator processorLocator) {
+        this.processorLocator = processorLocator
+        this.spyFactory = spyFactory
         this.muleContext = muleContext
     }
 
@@ -19,7 +30,14 @@ class ChoiceImpl implements Choice {
                                                  this.muleContext)
     }
 
-    def query(@DelegatesTo(Query) Closure closure) {
+    def query(Closure closure) {
+        this.connectorType = 'query'
+        def spy = spyFactory(this.connectorType) as MunitSpy
+        def queryTransformer = new QueryTransformerSpy(this.processorLocator,
+                                                       muleContext,
+                                                       closure)
+        this.transformer = queryTransformer
+        spy.before(queryTransformer)
         return null
     }
 

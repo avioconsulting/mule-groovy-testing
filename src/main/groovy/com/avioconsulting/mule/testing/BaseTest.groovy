@@ -211,7 +211,14 @@ abstract class BaseTest extends FunctionalMunitSuite {
 
     def mockSalesForceCall(String connectorName,
                            @DelegatesTo(Choice) Closure closure) {
-        def choice = new ChoiceImpl(muleContext)
+        def locator = new ProcessorLocator(connectorName)
+        def choice = new ChoiceImpl(muleContext, { String processorType ->
+            spyMessageProcessor(processorType)
+                    .ofNamespace('sfdc')
+                    .withAttributes(Attribute.attribute('name')
+                                            .ofNamespace('doc')
+                                            .withValue(connectorName))
+        }, locator)
         def code = closure.rehydrate(choice, this, this)
         code.resolveStrategy = Closure.DELEGATE_ONLY
         code()
