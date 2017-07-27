@@ -4,17 +4,21 @@ import com.avioconsulting.mule.testing.BaseTest
 import com.avioconsulting.mule.testing.dsl.mocking.SalesForceCreateConnectorType
 import org.junit.Test
 
+import static org.hamcrest.Matchers.equalTo
+import static org.hamcrest.Matchers.is
+import static org.junit.Assert.assertThat
+
 class SalesForceTest extends BaseTest {
     List<String> getConfigResourcesList() {
         ['sfdc_test.xml']
     }
 
     @Test
-    void createSingle() {
+    void upsert() {
         // arrange
         Map input = null
-        mockSalesForceCall('Salesforce create') {
-            withInputPayload(SalesForceCreateConnectorType.CreateSingle) { Map data ->
+        mockSalesForceCall('Salesforce upsert') {
+            withInputPayload(SalesForceCreateConnectorType.Upsert) { Map data ->
                 input = data
             }
         }
@@ -28,6 +32,12 @@ class SalesForceTest extends BaseTest {
 
         // assert
         assert input
+        assertThat input,
+                   is(equalTo([
+                           Name     : 'Brady product',
+                           Howdy2__c: 'payload.howdy'
+                   ]))
+
         fail 'write this, including salesforceresponse class'
     }
 

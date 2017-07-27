@@ -19,12 +19,13 @@ http://www.mulesoft.org/schema/mule/sfdc http://www.mulesoft.org/schema/mule/sfd
 {
 	Name: "Brady product",
 	Howdy2__c: payload.howdy
-//	ProductRel__r: {
-//		BradyExtId__c: "GC1040",
-//		type: "Product2"
-//	}
 }]]></dw:set-payload>
         </dw:transform-message>
-        <sfdc:create-single config-ref="Salesforce__Basic_authentication" type="BradyProduct__c" doc:name="Salesforce create"/>
+        <sfdc:upsert config-ref="Salesforce__Basic_authentication"
+                     externalIdFieldName="myExtField__c"
+                     type="BradyProduct__c"
+                     doc:name="Salesforce upsert">
+            <sfdc:objects ref="#[payload]"/>
+        </sfdc:upsert>
     </flow>
 </mule>

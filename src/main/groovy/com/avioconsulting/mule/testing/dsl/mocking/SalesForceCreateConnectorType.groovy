@@ -1,7 +1,7 @@
 package com.avioconsulting.mule.testing.dsl.mocking
 
 enum SalesForceCreateConnectorType {
-    CreateSingle('create-single')
+    Upsert('upsert')
 
     private String connectorElementName
 
