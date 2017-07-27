@@ -59,6 +59,16 @@ class SalesForceTest extends BaseTest {
     }
 
     @Test
+    void upsert_not_created() {
+        // arrange
+
+        // act
+
+        // assert
+        fail 'write this'
+    }
+
+    @Test
     void upsert_failure() {
         // arrange
 
