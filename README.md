@@ -10,6 +10,8 @@ The documentation is out of date and needs to be updated. For now, examine the t
 * Validate content type and HTTP status codes automatically
 * Handle streaming payloads (vs. not)
 * Limited HTTP connector usage validation (query params, path, verbs, URI params)
+* Invoking SalesForce upsert and query
+* Easily mock any DSQL/Devkit based connector
 
 What hasn't been done yet/TODOs:
 
@@ -18,7 +20,6 @@ What hasn't been done yet/TODOs:
 * Also it might be useful to detect if a filter is used with a transactional listener and if so, fail a test if it's not a message filter and the filter does not use 'onUnAccepted' (acknowledged Mule bug)
 * Compare maven dependencies with engine directory and spot loader overrides problems
 * Invoking SOAP flows
-* Mocking SalesForce/other connector types
 * Mocking DB (you probably shouldn't do this anyways, better to spin up a DB in a Docker container if possible)
 
 # Setting up your project

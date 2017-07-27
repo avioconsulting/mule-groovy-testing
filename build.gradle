@@ -3,7 +3,7 @@ plugins {
 }
 
 group 'com.avioconsulting.mule'
-version '1.0-SNAPSHOT'
+version '1.0.0'
 
 configurations {
     provided
@@ -79,7 +79,7 @@ jaxb {
 uploadArchives {
     repositories {
         mavenDeployer {
-            repository(url: 'https://devops.avioconsulting.com/nexus/repository/avio-snapshots/') {
+            repository(url: 'https://devops.avioconsulting.com/nexus/repository/avio-releases/') {
                 authentication userName: eeCreds.user,
                                password: eeCreds.password
             }
