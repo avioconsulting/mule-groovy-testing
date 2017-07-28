@@ -16,10 +16,13 @@ http://www.mulesoft.org/schema/mule/sfdc http://www.mulesoft.org/schema/mule/sfd
             <dw:set-payload><![CDATA[%dw 1.0
 %output application/java
 ---
-{
-	Name: "Brady product",
-	Howdy2__c: payload.howdy
-}]]></dw:set-payload>
+[
+    {
+        Name: "Brady product",
+        Howdy2__c: payload.howdy
+    }
+]
+]]></dw:set-payload>
         </dw:transform-message>
         <sfdc:upsert config-ref="Salesforce__Basic_authentication"
                      externalIdFieldName="myExtField__c"
