@@ -16,9 +16,9 @@ class SalesForceTest extends BaseTest {
     @Test
     void upsert_success() {
         // arrange
-        Map input = null
+        List<Map> input = null
         mockSalesForceCall('Salesforce upsert') {
-            upsert { Map data ->
+            upsert { List<Map> data ->
                 input = data
                 successful()
             }
@@ -35,8 +35,10 @@ class SalesForceTest extends BaseTest {
         assert input
         assertThat input,
                    is(equalTo([
-                           Name     : 'Brady product',
-                           Howdy2__c: 123
+                           [
+                                   Name     : 'Brady product',
+                                   Howdy2__c: 123
+                           ]
                    ]))
         assertThat results.size(),
                    is(equalTo(1))
@@ -51,7 +53,7 @@ class SalesForceTest extends BaseTest {
     void upsert_sfdc_result_not_returned() {
         // arrange
         mockSalesForceCall('Salesforce upsert') {
-            upsert { Map data ->
+            upsert { List<Map> data ->
                 return null
             }
         }
@@ -75,7 +77,7 @@ class SalesForceTest extends BaseTest {
     void upsert_not_created() {
         // arrange
         mockSalesForceCall('Salesforce upsert') {
-            upsert { Map data ->
+            upsert { List<Map> data ->
                 successful(false)
             }
         }
@@ -101,7 +103,7 @@ class SalesForceTest extends BaseTest {
     void upsert_failure() {
         // arrange
         mockSalesForceCall('Salesforce upsert') {
-            upsert { Map data ->
+            upsert { List<Map> data ->
                 failed()
             }
         }
