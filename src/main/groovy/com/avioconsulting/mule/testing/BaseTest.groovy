@@ -6,11 +6,7 @@ import com.avioconsulting.mule.testing.dsl.mocking.*
 import com.avioconsulting.mule.testing.dsl.mocking.sfdc.Choice
 import com.avioconsulting.mule.testing.dsl.mocking.sfdc.ChoiceImpl
 import com.avioconsulting.mule.testing.payloadvalidators.SOAPPayloadValidator
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.mulesoft.weave.reader.ByteArraySeekableStream
-import groovy.json.JsonSlurper
 import org.junit.Before
-import org.junit.BeforeClass
 import org.mule.api.MuleEvent
 import org.mule.api.MuleMessage
 import org.mule.module.client.MuleClient
@@ -22,34 +18,8 @@ import org.mule.munit.runner.functional.FunctionalMunitSuite
 import javax.xml.datatype.DatatypeFactory
 import javax.xml.datatype.XMLGregorianCalendar
 import javax.xml.namespace.QName
-import java.util.concurrent.CopyOnWriteArrayList
 
 abstract class BaseTest extends FunctionalMunitSuite {
-    @BeforeClass
-    static void extendMethods() {
-        // splitter/aggregate returns a wrapped list
-        MuleMessage.metaClass.fromAggregateJsonToString = {
-            CopyOnWriteArrayList[] array = delegate.payload
-            ByteArraySeekableStream[] streams = array.flatten()
-            streams.collect { str -> str.text }
-        }
-        MuleMessage.metaClass.fromAggregateJsonToMap = {
-            def jsonText = fromAggregateJsonToString()
-            jsonText.collect { json -> new JsonSlurper().parseText(json) }
-        }
-        MuleMessage.metaClass.fromAggregateJsonDeserialize = { klass ->
-            def jsonText = fromAggregateJsonToString()
-            def objectMapper = new ObjectMapper()
-            jsonText.collect { json ->
-                objectMapper.readValue(json, klass)
-            }
-        }
-        MuleMessage.metaClass.fromAggregateObjects = {
-            CopyOnWriteArrayList[] array = delegate.payload
-            array.flatten()
-        }
-    }
-
     Properties getStartUpProperties() {
         def properties = new Properties()
         // in case a Groovy/GStringImpl is in here
