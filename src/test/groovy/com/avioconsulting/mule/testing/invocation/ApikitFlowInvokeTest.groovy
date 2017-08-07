@@ -1,6 +1,7 @@
 package com.avioconsulting.mule.testing.invocation
 
 import com.avioconsulting.mule.testing.BaseApiKitTest
+import com.avioconsulting.mule.testing.OverrideConfigList
 import com.avioconsulting.mule.testing.SampleJacksonInput
 import com.avioconsulting.mule.testing.SampleJacksonOutput
 import org.junit.Test
@@ -9,7 +10,19 @@ import static groovy.test.GroovyAssert.shouldFail
 import static org.hamcrest.Matchers.*
 import static org.junit.Assert.assertThat
 
-class ApikitFlowInvokeTest extends BaseApiKitTest {
+class ApikitFlowInvokeTest extends BaseApiKitTest implements OverrideConfigList {
+    @Test
+    void getConfigResourceSubstitutes_hasCorrectGlobalXmls() {
+        // arrange
+
+        // act
+        def result = this.configResourceSubstitutes
+
+        // assert
+        assertThat result,
+                   is(equalTo(['global.xml': 'global-test.xml']))
+    }
+
     @Test
     void getHttpPort_firstPortOpen() {
         // arrange
@@ -132,5 +145,12 @@ class ApikitFlowInvokeTest extends BaseApiKitTest {
 
     protected String getApiVersionUnderTest() {
         'v1'
+    }
+
+    List<String> getConfigResourcesList() {
+        [
+                'global-test.xml',
+                "${fullApiName}.xml".toString()
+        ]
     }
 }

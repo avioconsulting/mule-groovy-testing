@@ -56,11 +56,8 @@ abstract class BaseApiKitTest extends BaseTest {
     }
 
     @Override
-    List<String> getConfigResourcesList() {
-        [
-                'global-test.xml',
-                "${fullApiName}.xml".toString()
-        ]
+    Map<String, String> getConfigResourceSubstitutes() {
+        ['global.xml': 'global-test.xml']
     }
 
     def runApiKitFlow(String httpMethod,

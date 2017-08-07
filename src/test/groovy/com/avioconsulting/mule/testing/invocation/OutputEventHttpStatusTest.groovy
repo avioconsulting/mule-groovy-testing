@@ -1,6 +1,7 @@
 package com.avioconsulting.mule.testing.invocation
 
 import com.avioconsulting.mule.testing.BaseTest
+import com.avioconsulting.mule.testing.OverrideConfigList
 import com.avioconsulting.mule.testing.SampleJacksonInput
 import org.junit.Test
 import org.mule.api.MuleEvent
@@ -9,7 +10,7 @@ import static groovy.test.GroovyAssert.shouldFail
 import static org.hamcrest.Matchers.*
 import static org.junit.Assert.assertThat
 
-class OutputEventHttpStatusTest extends BaseTest {
+class OutputEventHttpStatusTest extends BaseTest implements OverrideConfigList {
     List<String> getConfigResourcesList() {
         ['http_test.xml']
     }

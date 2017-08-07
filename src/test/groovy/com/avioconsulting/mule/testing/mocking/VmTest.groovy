@@ -1,6 +1,7 @@
 package com.avioconsulting.mule.testing.mocking
 
 import com.avioconsulting.mule.testing.BaseTest
+import com.avioconsulting.mule.testing.OverrideConfigList
 import com.avioconsulting.mule.testing.SampleJacksonInput
 import org.junit.Test
 
@@ -8,7 +9,7 @@ import static groovy.test.GroovyAssert.shouldFail
 import static org.hamcrest.Matchers.*
 import static org.junit.Assert.assertThat
 
-class VmTest extends BaseTest {
+class VmTest extends BaseTest implements OverrideConfigList {
     List<String> getConfigResourcesList() {
         ['vm_test.xml']
     }

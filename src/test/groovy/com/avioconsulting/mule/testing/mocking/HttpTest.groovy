@@ -1,6 +1,7 @@
 package com.avioconsulting.mule.testing.mocking
 
 import com.avioconsulting.mule.testing.BaseTest
+import com.avioconsulting.mule.testing.OverrideConfigList
 import com.avioconsulting.mule.testing.SampleJacksonInput
 import com.mulesoft.weave.reader.ByteArraySeekableStream
 import org.junit.Test
@@ -13,7 +14,7 @@ import static groovy.test.GroovyAssert.shouldFail
 import static org.hamcrest.Matchers.*
 import static org.junit.Assert.assertThat
 
-class HttpTest extends BaseTest {
+class HttpTest extends BaseTest implements OverrideConfigList {
     List<String> getConfigResourcesList() {
         ['http_test.xml']
     }

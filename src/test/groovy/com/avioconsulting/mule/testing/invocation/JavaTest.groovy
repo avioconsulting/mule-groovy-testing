@@ -1,13 +1,14 @@
 package com.avioconsulting.mule.testing.invocation
 
 import com.avioconsulting.mule.testing.BaseTest
+import com.avioconsulting.mule.testing.OverrideConfigList
 import org.junit.Test
 
 import static org.hamcrest.Matchers.equalTo
 import static org.hamcrest.Matchers.is
 import static org.junit.Assert.assertThat
 
-class JavaTest extends BaseTest {
+class JavaTest extends BaseTest implements OverrideConfigList {
     List<String> getConfigResourcesList() {
         ['java_test.xml']
     }

@@ -41,7 +41,9 @@ abstract class BaseTest extends FunctionalMunitSuite {
         []
     }
 
-    abstract List<String> getConfigResourcesList()
+    Map<String, String> getConfigResourceSubstitutes() {
+        [:]
+    }
 
     String getConfigResources() {
         def directory = new File('.mule')
@@ -50,7 +52,17 @@ abstract class BaseTest extends FunctionalMunitSuite {
             println "Removing ${directory.absolutePath}"
             directory.deleteDir()
         }
-        configResourcesList.join ","
+        def mapping = configResourceSubstitutes
+        def raw = super.configResources.split(',').collect { p ->
+            def xmlEntry = p.trim()
+            if (!mapping.containsKey(xmlEntry)) {
+                return xmlEntry
+            }
+            def value = mapping[xmlEntry]
+            value ?: null
+        }
+        raw.remove(null)
+        raw.join(',')
     }
 
     @Before

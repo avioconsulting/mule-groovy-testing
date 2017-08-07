@@ -3,7 +3,7 @@ plugins {
 }
 
 group 'com.avioconsulting.mule'
-version '1.0.1'
+version '1.0.2'
 
 configurations {
     provided
@@ -27,7 +27,7 @@ sourceSets {
     }
 }
 
-sourceCompatibility = 1.5
+sourceCompatibility = 1.8
 
 def getMavenCreds = { String id ->
     def m2Dir = new File(System.getProperty('user.home'), '.m2')
