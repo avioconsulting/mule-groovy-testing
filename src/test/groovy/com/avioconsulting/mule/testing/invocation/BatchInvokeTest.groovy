@@ -32,7 +32,9 @@ class BatchInvokeTest extends BaseTest implements OverrideConfigList {
 
         // act
         runBatch('theJob') {
-            inputPayload(items)
+            java {
+                inputPayload(items)
+            }
         }
 
         // assert
@@ -62,7 +64,9 @@ class BatchInvokeTest extends BaseTest implements OverrideConfigList {
         // act
         def result = shouldFail {
             runBatch('theJob') {
-                inputPayload(items)
+                java {
+                    inputPayload(items)
+                }
             }
         }
 

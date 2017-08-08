@@ -1,9 +1,9 @@
 package com.avioconsulting.mule.testing
 
+import com.avioconsulting.mule.testing.dsl.invokers.BatchRunner
+import com.avioconsulting.mule.testing.dsl.invokers.BatchRunnerImpl
 import com.avioconsulting.mule.testing.dsl.invokers.FlowRunner
 import com.avioconsulting.mule.testing.dsl.invokers.FlowRunnerImpl
-import com.avioconsulting.mule.testing.dsl.invokers.JavaInvoker
-import com.avioconsulting.mule.testing.dsl.invokers.JavaInvokerImpl
 import com.avioconsulting.mule.testing.dsl.mocking.*
 import com.avioconsulting.mule.testing.dsl.mocking.sfdc.Choice
 import com.avioconsulting.mule.testing.dsl.mocking.sfdc.ChoiceImpl
@@ -138,8 +138,8 @@ abstract class BaseTest extends FunctionalMunitSuite {
     }
 
     def runBatch(String batchName,
-                 @DelegatesTo(JavaInvoker) Closure closure) {
-        def runner = new JavaInvokerImpl(muleContext)
+                 @DelegatesTo(BatchRunner) Closure closure) {
+        def runner = new BatchRunnerImpl(muleContext)
         def code = closure.rehydrate(runner, this, this)
         code.resolveStrategy = Closure.DELEGATE_ONLY
         code()
@@ -168,7 +168,7 @@ abstract class BaseTest extends FunctionalMunitSuite {
         }
         // cleanup
         muleContext.unregisterListener(batchListener)
-        assert batchJobResult.failedRecords == 0 : "Expected 0 failed batch records but got ${batchJobResult.failedRecords}"
+        assert batchJobResult.failedRecords == 0: "Expected 0 failed batch records but got ${batchJobResult.failedRecords}"
     }
 
     static MuleMessage httpPost(map) {
