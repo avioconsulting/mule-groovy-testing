@@ -11,7 +11,8 @@ class MuleDeployPropertiesTest extends BaseTest {
     Map<String, String> getConfigResourceSubstitutes() {
         [
                 'simple_json_test.xml': 'java_test.xml',
-                'foobar.xml'          : null
+                'foo.xml'             : null,
+                'bar.xml'             : null
         ]
     }
 

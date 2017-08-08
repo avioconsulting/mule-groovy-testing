@@ -53,16 +53,15 @@ abstract class BaseTest extends FunctionalMunitSuite {
             directory.deleteDir()
         }
         def mapping = configResourceSubstitutes
-        def raw = super.configResources.split(',').collect { p ->
+        def list = super.configResources.split(',').collect { p ->
             def xmlEntry = p.trim()
             if (!mapping.containsKey(xmlEntry)) {
                 return xmlEntry
             }
             def value = mapping[xmlEntry]
             value ?: null
-        }
-        raw.remove(null)
-        raw.join(',')
+        } - null
+        list.join(',')
     }
 
     @Before
