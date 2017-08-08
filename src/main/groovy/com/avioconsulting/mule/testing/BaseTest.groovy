@@ -1,7 +1,6 @@
 package com.avioconsulting.mule.testing
 
 import com.avioconsulting.mule.testing.dsl.invokers.BatchRunner
-import com.avioconsulting.mule.testing.dsl.invokers.BatchRunnerImpl
 import com.avioconsulting.mule.testing.dsl.invokers.FlowRunner
 import com.avioconsulting.mule.testing.dsl.invokers.FlowRunnerImpl
 import com.avioconsulting.mule.testing.dsl.mocking.*
@@ -139,7 +138,7 @@ abstract class BaseTest extends FunctionalMunitSuite {
 
     def runBatch(String batchName,
                  @DelegatesTo(BatchRunner) Closure closure) {
-        def runner = new BatchRunnerImpl(muleContext)
+        def runner = new FlowRunnerImpl(muleContext)
         def code = closure.rehydrate(runner, this, this)
         code.resolveStrategy = Closure.DELEGATE_ONLY
         code()

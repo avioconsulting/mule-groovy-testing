@@ -5,7 +5,7 @@ import com.avioconsulting.mule.testing.payloadvalidators.HttpListenerPayloadVali
 import org.mule.api.MuleContext
 import org.mule.api.MuleEvent
 
-class FlowRunnerImpl implements FlowRunner {
+class FlowRunnerImpl implements FlowRunner, BatchRunner {
     private final MuleContext muleContext
     private Invoker invoker
     private Closure closure
