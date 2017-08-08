@@ -226,6 +226,6 @@ class SalesForceTest extends BaseTest implements OverrideConfigList {
 
         // assert
         assertThat results.message,
-                   is(containsString('More than 200 records going through SalesForce, which will not work!'))
+                   is(containsString('You can only upsert a maximum of 200 records but you just tried to upsert 201 records. Consider using a batch processor'))
     }
 }

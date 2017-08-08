@@ -38,8 +38,11 @@ class UpsertTransformer implements MuleMessageTransformer {
     }
 
     MuleMessage transform(MuleMessage muleMessage) {
-        def payload = muleMessage.payload
+        def payload = muleMessage.payload as List<Map>
         this.payloadValidator.validatePayloadType(payload)
+        if (payload.size() > 200) {
+            throw new Exception("You can only upsert a maximum of 200 records but you just tried to upsert ${payload.size()} records. Consider using a batch processor?")
+        }
         def code = closure.rehydrate(new UpsertResponseUtil(), this, this)
         code.resolveStrategy = Closure.DELEGATE_ONLY
         def result = code(payload)
