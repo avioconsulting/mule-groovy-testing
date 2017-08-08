@@ -9,7 +9,10 @@ import static org.junit.Assert.assertThat
 class MuleDeployPropertiesTest extends BaseTest {
     @Override
     Map<String, String> getConfigResourceSubstitutes() {
-        ['simple_json_test.xml': 'java_test.xml']
+        [
+                'simple_json_test.xml': 'java_test.xml',
+                'foobar.xml'          : null
+        ]
     }
 
     @Test
