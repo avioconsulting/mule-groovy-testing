@@ -8,10 +8,17 @@ import org.mule.munit.common.processor.interceptor.MunitMessageProcessorIntercep
 import org.mule.util.NotificationUtils
 
 import javax.xml.namespace.QName
+import java.lang.reflect.Field
 
 class ProcessorLocator {
     private static final String doc = 'http://www.mulesoft.org/schema/mule/documentation'
     private final String processorName
+    // TODO: Find a public API way of doing this
+    private static final Field flowMapField = AbstractPipeline.getDeclaredField('flowMap')
+
+    static {
+        flowMapField.accessible = true
+    }
 
     ProcessorLocator(String processorName) {
         this.processorName = processorName
@@ -19,9 +26,6 @@ class ProcessorLocator {
 
     def getProcessor(MuleEvent muleEvent) {
         // easiest way to get all processors in a flow
-        // TODO: Find a public API way of doing this
-        def flowMapField = AbstractPipeline.getDeclaredField('flowMap')
-        flowMapField.accessible = true
         def flowMap = flowMapField.get(muleEvent.flowConstruct) as NotificationUtils.FlowMap
         def allProcessors = flowMap.flowMap.keySet()
         def processor = findProcessor(allProcessors)
