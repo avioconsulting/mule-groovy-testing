@@ -28,7 +28,17 @@ http://www.mulesoft.org/schema/mule/batch http://www.mulesoft.org/schema/mule/ba
             </batch:step>
         </batch:process-records>
         <batch:on-complete>
-            <logger message="we are done" level="INFO" />
+            <logger message="we are done" level="INFO"/>
+            <dw:transform-message doc:name="Transform Message">
+                <dw:set-payload><![CDATA[%dw 1.0
+%output application/json
+---
+{
+    key: -1
+}]]></dw:set-payload>
+            </dw:transform-message>
+            <set-property propertyName="Content-Type" value="application/json"/>
+            <http:request config-ref="SomeSystem" path="/some_path" method="POST" doc:name="SomeSystem Call"/>
         </batch:on-complete>
     </batch:job>
 </mule>

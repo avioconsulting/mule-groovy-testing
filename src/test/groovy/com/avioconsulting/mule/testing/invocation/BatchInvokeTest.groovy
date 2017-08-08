@@ -39,8 +39,10 @@ class BatchInvokeTest extends BaseTest implements OverrideConfigList {
 
         // assert
         assertThat httpCalls.size(),
-                   is(equalTo(3))
+                   is(equalTo(4))
         assertThat httpCalls[0],
                    is(equalTo([key: 123]))
+        assertThat httpCalls[3],
+                   is(equalTo([key: -1]))
     }
 }
