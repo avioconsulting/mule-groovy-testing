@@ -96,6 +96,7 @@ dependencies {
     compile group: 'org.mule.tests', name: 'mule-tests-functional', version: muleVersion
     compile group: 'org.mule.modules', name: 'mule-module-client', version: muleVersion
     compile group: 'org.mule.modules', name: 'mule-module-json', version: muleVersion
+    compile group: 'com.mulesoft.muleesb.modules', name: 'mule-module-batch-ee', version: muleVersion
     compile group: 'com.mulesoft.munit', name: 'mule-munit-support', version: munitSupportVersion
     compile 'org.mule.modules:mule-module-sfdc:8.3.0'
     compile 'org.apache.cxf:cxf-api:2.7.18'
@@ -109,4 +110,5 @@ dependencies {
     testRuntime group: 'org.mule.transports', name: 'mule-transport-vm', version: muleVersion
     testRuntime group: 'org.mule.modules', name: 'mule-module-ws', version: muleVersion
     testRuntime group: 'org.mule.modules', name: 'mule-module-apikit', version: muleVersion
+    testRuntime 'com.avioconsulting:mule-ee-license:1.0'
 }

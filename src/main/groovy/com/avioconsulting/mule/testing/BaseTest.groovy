@@ -1,14 +1,20 @@
 package com.avioconsulting.mule.testing
 
+import com.avioconsulting.mule.testing.dsl.invokers.BatchRunner
 import com.avioconsulting.mule.testing.dsl.invokers.FlowRunner
 import com.avioconsulting.mule.testing.dsl.invokers.FlowRunnerImpl
 import com.avioconsulting.mule.testing.dsl.mocking.*
 import com.avioconsulting.mule.testing.dsl.mocking.sfdc.Choice
 import com.avioconsulting.mule.testing.dsl.mocking.sfdc.ChoiceImpl
 import com.avioconsulting.mule.testing.payloadvalidators.SOAPPayloadValidator
+import com.mulesoft.module.batch.api.BatchJobResult
+import com.mulesoft.module.batch.api.notification.BatchNotification
+import com.mulesoft.module.batch.api.notification.BatchNotificationListener
+import com.mulesoft.module.batch.engine.BatchJobAdapter
 import org.junit.Before
 import org.mule.api.MuleEvent
 import org.mule.api.MuleMessage
+import org.mule.api.context.notification.ServerNotification
 import org.mule.module.client.MuleClient
 import org.mule.modules.interceptor.processors.MuleMessageTransformer
 import org.mule.munit.common.mocking.Attribute
@@ -128,6 +134,45 @@ abstract class BaseTest extends FunctionalMunitSuite {
         code()
         def outputEvent = runFlow(flowName, runner.event)
         runner.transformOutput(outputEvent)
+    }
+
+    def runBatch(String batchName,
+                 @DelegatesTo(BatchRunner) Closure closure) {
+        def runner = new FlowRunnerImpl(muleContext)
+        def code = closure.rehydrate(runner, this, this)
+        code.resolveStrategy = Closure.DELEGATE_ONLY
+        code()
+        def batchJob = muleContext.registry.get(batchName) as BatchJobAdapter
+        batchJob.execute(runner.event)
+        def mutex = new Object()
+        BatchJobResult batchJobResult = null
+        def onCompleteFailed = false
+        // need to wait for batch thread to finish
+        def batchListener = new BatchNotificationListener() {
+            @Override
+            void onNotification(ServerNotification serverNotification) {
+                def n = serverNotification as BatchNotification
+                onCompleteFailed = n.action == BatchNotification.ON_COMPLETE_FAILED
+                if (n.action == BatchNotification.ON_COMPLETE_END || onCompleteFailed) {
+                    synchronized (mutex) {
+                        batchJobResult = n.jobInstance.result
+                        mutex.notify()
+                    }
+                }
+            }
+        }
+        muleContext.registerListener(batchListener)
+        while (!batchJobResult) {
+            synchronized (mutex) {
+                mutex.wait()
+            }
+        }
+        // cleanup
+        muleContext.unregisterListener(batchListener)
+        assert batchJobResult.failedRecords == 0: "Expected 0 failed batch records but got ${batchJobResult.failedRecords}"
+        if (onCompleteFailed) {
+            throw new Exception('onComplete failed! Check logs')
+        }
     }
 
     static MuleMessage httpPost(map) {

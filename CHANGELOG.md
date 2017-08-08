@@ -1,5 +1,7 @@
 # 1.0.2
 * Instead of requiring you to get the Mule config file list right, derive it from mule-deploy.properties but allow substituting files
+* Validate how many records are attempted to be upserted using SFDC connector
+* Add basic batch job support
 
 # 1.0.1
 * SalesForce testing fixes (upserts are done with lists, add error convenience code)

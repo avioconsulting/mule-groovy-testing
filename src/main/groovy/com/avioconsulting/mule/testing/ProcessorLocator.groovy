@@ -1,5 +1,6 @@
 package com.avioconsulting.mule.testing
 
+import com.mulesoft.module.batch.DefaultBatchJob
 import org.mule.api.AnnotatedObject
 import org.mule.api.MuleEvent
 import org.mule.api.processor.MessageProcessor
@@ -8,21 +9,36 @@ import org.mule.munit.common.processor.interceptor.MunitMessageProcessorIntercep
 import org.mule.util.NotificationUtils
 
 import javax.xml.namespace.QName
+import java.lang.reflect.Field
 
 class ProcessorLocator {
     private static final String doc = 'http://www.mulesoft.org/schema/mule/documentation'
     private final String processorName
+    // TODO: Find a public API way of doing this
+    private static final Field flowMapField = AbstractPipeline.getDeclaredField('flowMap')
+    private static Field batchProcessorMap = null
+
+    static {
+        flowMapField.accessible = true
+    }
 
     ProcessorLocator(String processorName) {
         this.processorName = processorName
     }
 
+    private static NotificationUtils.FlowMap getBatchProcessorMapLazy(DefaultBatchJob batchJob) {
+        if (!batchProcessorMap) {
+            batchProcessorMap = DefaultBatchJob.getDeclaredField('processorPathMap')
+            batchProcessorMap.accessible = true
+        }
+        batchProcessorMap.get(batchJob) as NotificationUtils.FlowMap
+    }
+
     def getProcessor(MuleEvent muleEvent) {
         // easiest way to get all processors in a flow
-        // TODO: Find a public API way of doing this
-        def flowMapField = AbstractPipeline.getDeclaredField('flowMap')
-        flowMapField.accessible = true
-        def flowMap = flowMapField.get(muleEvent.flowConstruct) as NotificationUtils.FlowMap
+        def flowConstruct = muleEvent.flowConstruct
+        def flowMap = (flowConstruct instanceof DefaultBatchJob ? getBatchProcessorMapLazy(flowConstruct)
+                : flowMapField.get(flowConstruct)) as NotificationUtils.FlowMap
         def allProcessors = flowMap.flowMap.keySet()
         def processor = findProcessor(allProcessors)
         assert processor: "Unable to find processor with name '${processorName}'. Is doc:name present on the connector?"
