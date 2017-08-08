@@ -147,12 +147,14 @@ abstract class BaseTest extends FunctionalMunitSuite {
         batchJob.execute(runner.event)
         def mutex = new Object()
         BatchJobResult batchJobResult = null
+        def onCompleteFailed = false
         // need to wait for batch thread to finish
         def batchListener = new BatchNotificationListener() {
             @Override
             void onNotification(ServerNotification serverNotification) {
                 def n = serverNotification as BatchNotification
-                if (n.action == BatchNotification.STEP_JOB_END) {
+                onCompleteFailed = n.action == BatchNotification.ON_COMPLETE_FAILED
+                if (n.action == BatchNotification.ON_COMPLETE_END || onCompleteFailed) {
                     synchronized (mutex) {
                         batchJobResult = n.jobInstance.result
                         mutex.notify()
@@ -169,6 +171,9 @@ abstract class BaseTest extends FunctionalMunitSuite {
         // cleanup
         muleContext.unregisterListener(batchListener)
         assert batchJobResult.failedRecords == 0: "Expected 0 failed batch records but got ${batchJobResult.failedRecords}"
+        if (onCompleteFailed) {
+            throw new Exception('onComplete failed! Check logs')
+        }
     }
 
     static MuleMessage httpPost(map) {
