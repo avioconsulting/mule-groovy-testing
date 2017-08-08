@@ -202,4 +202,30 @@ class SalesForceTest extends BaseTest implements OverrideConfigList {
                    is(containsString(
                            'Must return a List<java.util.Map> result from your mock instead of List<java.lang.String>!'))
     }
+
+    @Test
+    void upsert_more_than_200_records() {
+        // arrange
+        def tooMany = (1..201).collect {
+            [howdy: 123]
+        }
+        mockSalesForceCall('Salesforce upsert') {
+            upsert { List<Map> data ->
+                successful(false)
+            }
+        }
+
+        // act
+        def results = shouldFail {
+            runFlow('sfdcUpsertFromInput') {
+                java {
+                    inputPayload(tooMany)
+                }
+            }
+        }
+
+        // assert
+        assertThat results.message,
+                   is(containsString('More than 200 records going through SalesForce, which will not work!'))
+    }
 }

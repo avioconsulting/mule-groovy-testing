@@ -31,6 +31,14 @@ http://www.mulesoft.org/schema/mule/sfdc http://www.mulesoft.org/schema/mule/sfd
             <sfdc:objects ref="#[payload]"/>
         </sfdc:upsert>
     </flow>
+    <flow name="sfdcUpsertFromInput">
+        <sfdc:upsert config-ref="Salesforce__Basic_authentication"
+                     externalIdFieldName="myExtField__c"
+                     type="BradyProduct__c"
+                     doc:name="Salesforce upsert">
+            <sfdc:objects ref="#[payload]"/>
+        </sfdc:upsert>
+    </flow>
     <flow name="sfdcQuery">
         <sfdc:query config-ref="Salesforce__Basic_authentication"
                     query="dsql:SELECT Foo_c FROM Product WHERE Foo_c = '#[payload.howdy]'"
