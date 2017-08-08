@@ -2,10 +2,13 @@ package com.avioconsulting.mule.testing
 
 import com.avioconsulting.mule.testing.dsl.invokers.FlowRunner
 import com.avioconsulting.mule.testing.dsl.invokers.FlowRunnerImpl
+import com.avioconsulting.mule.testing.dsl.invokers.JavaInvoker
+import com.avioconsulting.mule.testing.dsl.invokers.JavaInvokerImpl
 import com.avioconsulting.mule.testing.dsl.mocking.*
 import com.avioconsulting.mule.testing.dsl.mocking.sfdc.Choice
 import com.avioconsulting.mule.testing.dsl.mocking.sfdc.ChoiceImpl
 import com.avioconsulting.mule.testing.payloadvalidators.SOAPPayloadValidator
+import com.mulesoft.module.batch.api.BatchJobResult
 import com.mulesoft.module.batch.api.notification.BatchNotification
 import com.mulesoft.module.batch.api.notification.BatchNotificationListener
 import com.mulesoft.module.batch.engine.BatchJobAdapter
@@ -135,15 +138,15 @@ abstract class BaseTest extends FunctionalMunitSuite {
     }
 
     def runBatch(String batchName,
-                 @DelegatesTo(FlowRunner) Closure closure) {
-        def runner = new FlowRunnerImpl(muleContext)
+                 @DelegatesTo(JavaInvoker) Closure closure) {
+        def runner = new JavaInvokerImpl(muleContext)
         def code = closure.rehydrate(runner, this, this)
         code.resolveStrategy = Closure.DELEGATE_ONLY
         code()
         def batchJob = muleContext.registry.get(batchName) as BatchJobAdapter
         batchJob.execute(runner.event)
         def mutex = new Object()
-        def done = false
+        BatchJobResult batchJobResult = null
         // need to wait for batch thread to finish
         def batchListener = new BatchNotificationListener() {
             @Override
@@ -151,20 +154,21 @@ abstract class BaseTest extends FunctionalMunitSuite {
                 def n = serverNotification as BatchNotification
                 if (n.action == BatchNotification.STEP_JOB_END) {
                     synchronized (mutex) {
-                        done = true
+                        batchJobResult = n.jobInstance.result
                         mutex.notify()
                     }
                 }
             }
         }
         muleContext.registerListener(batchListener)
-        while (!done) {
+        while (!batchJobResult) {
             synchronized (mutex) {
                 mutex.wait()
             }
         }
         // cleanup
         muleContext.unregisterListener(batchListener)
+        assert batchJobResult.failedRecords == 0 : "Expected 0 failed batch records but got ${batchJobResult.failedRecords}"
     }
 
     static MuleMessage httpPost(map) {

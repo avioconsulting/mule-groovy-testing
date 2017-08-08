@@ -4,8 +4,8 @@ import com.avioconsulting.mule.testing.BaseTest
 import com.avioconsulting.mule.testing.OverrideConfigList
 import org.junit.Test
 
-import static org.hamcrest.Matchers.equalTo
-import static org.hamcrest.Matchers.is
+import static groovy.test.GroovyAssert.shouldFail
+import static org.hamcrest.Matchers.*
 import static org.junit.Assert.assertThat
 
 class BatchInvokeTest extends BaseTest implements OverrideConfigList {
@@ -15,7 +15,7 @@ class BatchInvokeTest extends BaseTest implements OverrideConfigList {
     }
 
     @Test
-    void canInvoke() {
+    void runs_success() {
         // arrange
         def items = (1..3).collect {
             [foo: 123]
@@ -32,9 +32,7 @@ class BatchInvokeTest extends BaseTest implements OverrideConfigList {
 
         // act
         runBatch('theJob') {
-            java {
-                inputPayload(items)
-            }
+            inputPayload(items)
         }
 
         // assert
@@ -44,5 +42,32 @@ class BatchInvokeTest extends BaseTest implements OverrideConfigList {
                    is(equalTo([key: 123]))
         assertThat httpCalls[3],
                    is(equalTo([key: -1]))
+    }
+
+    @Test
+    void runs_failure() {
+        // arrange
+        def items = (1..3).collect {
+            [foo: 123]
+        }
+
+        mockRestHttpCall('SomeSystem Call') {
+            json {
+                whenCalledWith { Map incoming ->
+                    httpTimeoutError()
+                }
+            }
+        }
+
+        // act
+        def result = shouldFail {
+            runBatch('theJob') {
+                inputPayload(items)
+            }
+        }
+
+        // assert
+        assertThat result.message,
+                   is(containsString('Expected 0 failed batch records but got 3'))
     }
 }
