@@ -11,6 +11,8 @@ import com.mulesoft.module.batch.api.BatchJobResult
 import com.mulesoft.module.batch.api.notification.BatchNotification
 import com.mulesoft.module.batch.api.notification.BatchNotificationListener
 import com.mulesoft.module.batch.engine.BatchJobAdapter
+import org.apache.logging.log4j.LogManager
+import org.apache.logging.log4j.Logger
 import org.junit.Before
 import org.mule.api.MuleEvent
 import org.mule.api.MuleMessage
@@ -26,6 +28,8 @@ import javax.xml.datatype.XMLGregorianCalendar
 import javax.xml.namespace.QName
 
 abstract class BaseTest extends FunctionalMunitSuite {
+    protected final Logger logger = LogManager.getLogger(this.class)
+
     Properties getStartUpProperties() {
         def properties = new Properties()
         // in case a Groovy/GStringImpl is in here
@@ -53,9 +57,9 @@ abstract class BaseTest extends FunctionalMunitSuite {
 
     String getConfigResources() {
         def directory = new File('.mule')
-        println "Checking for .mule directory at ${directory.absolutePath}"
+        logger.info "Checking for .mule directory at ${directory.absolutePath}"
         if (directory.exists()) {
-            println "Removing ${directory.absolutePath}"
+            logger.info "Removing ${directory.absolutePath}"
             directory.deleteDir()
         }
         def mapping = configResourceSubstitutes
@@ -169,7 +173,7 @@ abstract class BaseTest extends FunctionalMunitSuite {
             allFlowsToWaitFor - batchJobResults.keySet()
         }
         while (getIncompletes().any()) {
-            println "Still waiting for batch jobs ${getIncompletes()} to finish"
+            logger.info "Still waiting for batch jobs ${getIncompletes()} to finish"
             synchronized (mutex) {
                 mutex.wait()
             }

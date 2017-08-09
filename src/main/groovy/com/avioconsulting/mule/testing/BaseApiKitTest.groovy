@@ -87,7 +87,7 @@ abstract class BaseApiKitTest extends BaseTest {
         urlParts.addAll(path.split('/'))
         urlParts.removeAll { part -> part == '' }
         def url = '/' + urlParts.join('/')
-        println "Setting http request path to ${url}..."
+        logger.info "Setting http request path to ${url}..."
         def props = [
                 'listener.path': httpListenerPath,
                 method         : method,
