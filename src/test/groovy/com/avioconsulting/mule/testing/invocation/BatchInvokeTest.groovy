@@ -89,7 +89,8 @@ class BatchInvokeTest extends BaseTest implements OverrideConfigList {
 
         // assert
         assertThat result.message,
-                   is(containsString('Expected no failed job instances but got [Job: theJob, failed records: 3 onComplete fail: false]'))
+                   is(containsString(
+                           'Expected no failed job instances but got [Job: theJob, failed records: 3 onComplete fail: false]'))
         assertThat httpCalls.size(),
                    is(equalTo(1)) // our complete handler
     }
@@ -129,7 +130,8 @@ class BatchInvokeTest extends BaseTest implements OverrideConfigList {
 
         // assert
         assertThat result.message,
-                   is(containsString('Expected no failed job instances but got [Job: theJob, failed records: 0 onComplete fail: true]'))
+                   is(containsString(
+                           'Expected no failed job instances but got [Job: theJob, failed records: 0 onComplete fail: true]'))
         assertThat httpCalls.size(),
                    is(equalTo(3))
     }
@@ -172,5 +174,42 @@ class BatchInvokeTest extends BaseTest implements OverrideConfigList {
                    is(equalTo([key: 123]))
         assertThat httpCalls[3],
                    is(equalTo([key: -1]))
+    }
+
+    @Test
+    void secondJobCallsFirst_second_fails() {
+        // arrange
+        def items = (1..3).collect {
+            [foo: 123]
+        }
+
+        mockRestHttpCall('SomeSystem Call') {
+            json {
+                whenCalledWith { Map incoming ->
+                    httpTimeoutError()
+                }
+            }
+        }
+
+        mockRestHttpCall('SomeSystem Call from Complete') {
+            json {
+                whenCalledWith { Map incoming ->
+                }
+            }
+        }
+
+        // act
+        def result = shouldFail {
+            runBatch('secondJobCallsFirst', ['theJob']) {
+                java {
+                    inputPayload(items)
+                }
+            }
+        }
+
+        // assert
+        assertThat result.message,
+                   is(containsString(
+                           'Expected no failed job instances but got [Job: theJob, failed records: 3 onComplete fail: false]'))
     }
 }
