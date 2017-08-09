@@ -41,4 +41,18 @@ http://www.mulesoft.org/schema/mule/batch http://www.mulesoft.org/schema/mule/ba
             <http:request config-ref="SomeSystem" path="/some_path" method="POST" doc:name="SomeSystem Call"/>
         </batch:on-complete>
     </batch:job>
+    <batch:job name="secondJobCallsFirst">
+        <batch:input>
+            <set-variable variableName="originalPayload" value="#[payload]"/>
+        </batch:input>
+        <batch:process-records>
+            <batch:step name="theStep2">
+                <logger message="howdy"/>
+            </batch:step>
+        </batch:process-records>
+        <batch:on-complete>
+            <set-payload value="#[flowVars.originalPayload]" />
+            <batch:execute name="theJob"/>
+        </batch:on-complete>
+    </batch:job>
 </mule>

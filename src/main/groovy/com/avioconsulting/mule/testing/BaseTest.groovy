@@ -137,6 +137,7 @@ abstract class BaseTest extends FunctionalMunitSuite {
     }
 
     def runBatch(String batchName,
+                 List<String> otherJobsToWaitFor = [],
                  @DelegatesTo(BatchRunner) Closure closure) {
         def runner = new FlowRunnerImpl(muleContext)
         def code = closure.rehydrate(runner, this, this)

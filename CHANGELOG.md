@@ -1,3 +1,6 @@
+# 1.0.3 (unreleased)
+* Improve batch testing support (wait for X jobs to complete) 
+
 # 1.0.2
 * Instead of requiring you to get the Mule config file list right, derive it from mule-deploy.properties but allow substituting files
 * Validate how many records are attempted to be upserted using SFDC connector
