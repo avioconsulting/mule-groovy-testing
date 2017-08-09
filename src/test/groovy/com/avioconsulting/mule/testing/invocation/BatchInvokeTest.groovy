@@ -137,14 +137,13 @@ class BatchInvokeTest extends BaseTest implements OverrideConfigList {
                 }
             }
         }
-        
+
         // act
         runBatch('secondJobCallsFirst', ['theJob']) {
             java {
                 inputPayload(items)
             }
         }
-        sleep 5000
 
         // assert
         assertThat httpCalls.size(),
