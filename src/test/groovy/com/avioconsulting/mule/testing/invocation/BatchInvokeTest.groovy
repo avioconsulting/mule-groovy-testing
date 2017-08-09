@@ -30,6 +30,14 @@ class BatchInvokeTest extends BaseTest implements OverrideConfigList {
             }
         }
 
+        mockRestHttpCall('SomeSystem Call from Complete') {
+            json {
+                whenCalledWith { Map incoming ->
+                    httpCalls << incoming
+                }
+            }
+        }
+
         // act
         runBatch('theJob') {
             java {
@@ -54,16 +62,18 @@ class BatchInvokeTest extends BaseTest implements OverrideConfigList {
         }
 
         def httpCalls = []
-        def index = 0
         mockRestHttpCall('SomeSystem Call') {
             json {
                 whenCalledWith { Map incoming ->
-                    index++
-                    if (index <= 3) {
-                        httpTimeoutError()
-                    } else {
-                        httpCalls << incoming
-                    }
+                    httpTimeoutError()
+                }
+            }
+        }
+
+        mockRestHttpCall('SomeSystem Call from Complete') {
+            json {
+                whenCalledWith { Map incoming ->
+                    httpCalls << incoming
                 }
             }
         }
@@ -79,7 +89,7 @@ class BatchInvokeTest extends BaseTest implements OverrideConfigList {
 
         // assert
         assertThat result.message,
-                   is(containsString('Expected 0 failed batch records but got 3'))
+                   is(containsString('Expected no failed job instances but got [Job: theJob, failed records: 3 onComplete fail: false]'))
         assertThat httpCalls.size(),
                    is(equalTo(1)) // our complete handler
     }
@@ -92,16 +102,18 @@ class BatchInvokeTest extends BaseTest implements OverrideConfigList {
         }
 
         def httpCalls = []
-        def index = 0
         mockRestHttpCall('SomeSystem Call') {
             json {
                 whenCalledWith { Map incoming ->
-                    index++
-                    if (index > 3) {
-                        httpTimeoutError()
-                    } else {
-                        httpCalls << incoming
-                    }
+                    httpCalls << incoming
+                }
+            }
+        }
+
+        mockRestHttpCall('SomeSystem Call from Complete') {
+            json {
+                whenCalledWith { Map incoming ->
+                    httpTimeoutError()
                 }
             }
         }
@@ -117,7 +129,7 @@ class BatchInvokeTest extends BaseTest implements OverrideConfigList {
 
         // assert
         assertThat result.message,
-                   is(containsString('onComplete failed!'))
+                   is(containsString('Expected no failed job instances but got [Job: theJob, failed records: 0 onComplete fail: true]'))
         assertThat httpCalls.size(),
                    is(equalTo(3))
     }
@@ -131,6 +143,14 @@ class BatchInvokeTest extends BaseTest implements OverrideConfigList {
 
         def httpCalls = []
         mockRestHttpCall('SomeSystem Call') {
+            json {
+                whenCalledWith { Map incoming ->
+                    httpCalls << incoming
+                }
+            }
+        }
+
+        mockRestHttpCall('SomeSystem Call from Complete') {
             json {
                 whenCalledWith { Map incoming ->
                     httpCalls << incoming

@@ -28,7 +28,7 @@ http://www.mulesoft.org/schema/mule/batch http://www.mulesoft.org/schema/mule/ba
             </batch:step>
         </batch:process-records>
         <batch:on-complete>
-            <logger message="we are done" level="INFO"/>
+            <logger message="entered on-complete" level="INFO"/>
             <dw:transform-message doc:name="Transform Message">
                 <dw:set-payload><![CDATA[%dw 1.0
 %output application/json
@@ -38,7 +38,9 @@ http://www.mulesoft.org/schema/mule/batch http://www.mulesoft.org/schema/mule/ba
 }]]></dw:set-payload>
             </dw:transform-message>
             <set-property propertyName="Content-Type" value="application/json"/>
-            <http:request config-ref="SomeSystem" path="/some_path" method="POST" doc:name="SomeSystem Call"/>
+            <logger message="Making HTTP call from onComplete" level="INFO"/>
+            <http:request config-ref="SomeSystem" path="/some_path" method="POST" doc:name="SomeSystem Call from Complete"/>
+            <logger message="we executed the onComplete HTTP request" level="INFO"/>
         </batch:on-complete>
     </batch:job>
     <batch:job name="secondJobCallsFirst">

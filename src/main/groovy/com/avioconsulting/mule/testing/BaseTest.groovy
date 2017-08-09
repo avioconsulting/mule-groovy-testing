@@ -146,34 +146,42 @@ abstract class BaseTest extends FunctionalMunitSuite {
         def batchJob = muleContext.registry.get(batchName) as BatchJobAdapter
         batchJob.execute(runner.event)
         def mutex = new Object()
-        BatchJobResult batchJobResult = null
-        def onCompleteFailed = false
+        def allFlowsToWaitFor = new ArrayList<String>(otherJobsToWaitFor)
+        allFlowsToWaitFor.add(0, batchName)
+        Map<String, BatchJobResult> batchJobResults = [:]
         // need to wait for batch thread to finish
         def batchListener = new BatchNotificationListener() {
             @Override
             void onNotification(ServerNotification serverNotification) {
                 def n = serverNotification as BatchNotification
-                onCompleteFailed = n.action == BatchNotification.ON_COMPLETE_FAILED
-                if (n.action == BatchNotification.ON_COMPLETE_END || onCompleteFailed) {
+                if (n.action == BatchNotification.ON_COMPLETE_END ||
+                        n.action == BatchNotification.ON_COMPLETE_FAILED) {
                     synchronized (mutex) {
-                        batchJobResult = n.jobInstance.result
+                        def jobInstance = n.jobInstance
+                        batchJobResults[jobInstance.ownerJobName] = jobInstance.result
                         mutex.notify()
                     }
                 }
             }
         }
         muleContext.registerListener(batchListener)
-        while (!batchJobResult) {
+        def getIncompletes = {
+            allFlowsToWaitFor - batchJobResults.keySet()
+        }
+        while (getIncompletes().any()) {
+            println "Still waiting for batch jobs ${getIncompletes()} to finish"
             synchronized (mutex) {
                 mutex.wait()
             }
         }
         // cleanup
         muleContext.unregisterListener(batchListener)
-        assert batchJobResult.failedRecords == 0: "Expected 0 failed batch records but got ${batchJobResult.failedRecords}"
-        if (onCompleteFailed) {
-            throw new Exception('onComplete failed! Check logs')
+        def failedJobs = batchJobResults.findAll { ignore, result ->
+            result.failedRecords > 0 || result.failedOnCompletePhase
+        }.collect { name, result ->
+            "Job: ${name}, failed records: ${result.failedRecords} onComplete fail: ${result.failedOnCompletePhase}"
         }
+        assert failedJobs.isEmpty(): "Expected no failed job instances but got ${failedJobs}"
     }
 
     static MuleMessage httpPost(map) {
