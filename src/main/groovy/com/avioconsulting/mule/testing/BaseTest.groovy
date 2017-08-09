@@ -140,18 +140,8 @@ abstract class BaseTest extends FunctionalMunitSuite {
         runner.transformOutput(outputEvent)
     }
 
-    def runBatch(String batchName,
-                 List<String> otherJobsToWaitFor = [],
-                 @DelegatesTo(BatchRunner) Closure closure) {
-        def runner = new FlowRunnerImpl(muleContext)
-        def code = closure.rehydrate(runner, this, this)
-        code.resolveStrategy = Closure.DELEGATE_ONLY
-        code()
-        def batchJob = muleContext.registry.get(batchName) as BatchJobAdapter
-        batchJob.execute(runner.event)
-        def mutex = new Object()
-        def allFlowsToWaitFor = new ArrayList<String>(otherJobsToWaitFor)
-        allFlowsToWaitFor.add(0, batchName)
+    def waitForBatchSuccess(List<String> jobsToWaitFor = [],
+                            Closure closure) {
         Map<String, BatchJobResult> batchJobResults = [:]
         // need to wait for batch thread to finish
         def batchListener = new BatchNotificationListener() {
@@ -160,32 +150,54 @@ abstract class BaseTest extends FunctionalMunitSuite {
                 def n = serverNotification as BatchNotification
                 if (n.action == BatchNotification.ON_COMPLETE_END ||
                         n.action == BatchNotification.ON_COMPLETE_FAILED) {
-                    synchronized (mutex) {
+                    synchronized (batchJobResults) {
                         def jobInstance = n.jobInstance
                         batchJobResults[jobInstance.ownerJobName] = jobInstance.result
-                        mutex.notify()
+                        batchJobResults.notify()
                     }
                 }
             }
         }
         muleContext.registerListener(batchListener)
-        def getIncompletes = {
-            allFlowsToWaitFor - batchJobResults.keySet()
-        }
-        while (getIncompletes().any()) {
-            logger.info "Still waiting for batch jobs ${getIncompletes()} to finish"
-            synchronized (mutex) {
-                mutex.wait()
+        try {
+            closure()
+            def getIncompletes = {
+                jobsToWaitFor - batchJobResults.keySet()
             }
+            while (getIncompletes().any()) {
+                logger.info "Still waiting for batch jobs ${getIncompletes()} to finish"
+                synchronized (batchJobResults) {
+                    // wait 60 seconds
+                    batchJobResults.wait() //(60 * 1000)
+                }
+            }
+            def failedJobs = batchJobResults.findAll { ignore, result ->
+                result.failedRecords > 0 || result.failedOnCompletePhase
+            }.collect { name, result ->
+                "Job: ${name}, failed records: ${result.failedRecords} onComplete fail: ${result.failedOnCompletePhase}"
+            }
+            // more cleanup
+            batchJobResults = [:]
+            assert failedJobs.isEmpty(): "Expected no failed job instances but got ${failedJobs}"
         }
-        // cleanup
-        muleContext.unregisterListener(batchListener)
-        def failedJobs = batchJobResults.findAll { ignore, result ->
-            result.failedRecords > 0 || result.failedOnCompletePhase
-        }.collect { name, result ->
-            "Job: ${name}, failed records: ${result.failedRecords} onComplete fail: ${result.failedOnCompletePhase}"
+        finally {
+            muleContext.unregisterListener(batchListener)
         }
-        assert failedJobs.isEmpty(): "Expected no failed job instances but got ${failedJobs}"
+    }
+
+    def runBatch(String batchName,
+                 List<String> otherJobsToWaitFor = [],
+                 @DelegatesTo(BatchRunner) Closure closure) {
+        def runner = new FlowRunnerImpl(muleContext)
+        def code = closure.rehydrate(runner, this, this)
+        code.resolveStrategy = Closure.DELEGATE_ONLY
+        code()
+        def batchJob = muleContext.registry.get(batchName) as BatchJobAdapter
+        def allJobsToWaitFor = new ArrayList<String>(otherJobsToWaitFor)
+        allJobsToWaitFor.add(0, batchName)
+        waitForBatchSuccess(allJobsToWaitFor) {
+            batchJob.execute(runner.event)
+        }
     }
 
     static MuleMessage httpPost(map) {
