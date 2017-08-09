@@ -1,4 +1,4 @@
-# 1.0.3 (unreleased)
+# 1.0.3
 * Improve batch testing support (wait for X jobs to complete) 
 
 # 1.0.2

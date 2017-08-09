@@ -28,7 +28,7 @@ import javax.xml.datatype.XMLGregorianCalendar
 import javax.xml.namespace.QName
 
 abstract class BaseTest extends FunctionalMunitSuite {
-    protected final Logger logger = LogManager.getLogger(this.class)
+    protected static final Logger logger = LogManager.getLogger(BaseTest)
 
     Properties getStartUpProperties() {
         def properties = new Properties()
