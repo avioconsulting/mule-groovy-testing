@@ -177,6 +177,46 @@ class BatchInvokeTest extends BaseTest implements OverrideConfigList {
     }
 
     @Test
+    void secondJobCallsFirst_use_default_wait_list() {
+        // arrange
+        def items = (1..3).collect {
+            [foo: 123]
+        }
+
+        def httpCalls = []
+        mockRestHttpCall('SomeSystem Call') {
+            json {
+                whenCalledWith { Map incoming ->
+                    httpCalls << incoming
+                }
+            }
+        }
+
+        mockRestHttpCall('SomeSystem Call from Complete') {
+            json {
+                whenCalledWith { Map incoming ->
+                    httpCalls << incoming
+                }
+            }
+        }
+
+        // act
+        runBatch('secondJobCallsFirst') {
+            java {
+                inputPayload(items)
+            }
+        }
+
+        // assert
+        assertThat httpCalls.size(),
+                   is(equalTo(4))
+        assertThat httpCalls[0],
+                   is(equalTo([key: 123]))
+        assertThat httpCalls[3],
+                   is(equalTo([key: -1]))
+    }
+
+    @Test
     void secondJobCallsFirst_second_fails() {
         // arrange
         def items = (1..3).collect {

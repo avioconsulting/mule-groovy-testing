@@ -140,18 +140,28 @@ abstract class BaseTest extends FunctionalMunitSuite {
         runner.transformOutput(outputEvent)
     }
 
-    def waitForBatchSuccess(List<String> jobsToWaitFor = [],
+    def waitForBatchSuccess(List<String> jobsToWaitFor = null,
                             Closure closure) {
+        def waitForAllJobs = jobsToWaitFor == null
+        if (waitForAllJobs) {
+            jobsToWaitFor = []
+        }
         Map<String, BatchJobResult> batchJobResults = [:]
         // need to wait for batch thread to finish
         def batchListener = new BatchNotificationListener() {
             @Override
             void onNotification(ServerNotification serverNotification) {
-                def n = serverNotification as BatchNotification
-                if (n.action == BatchNotification.ON_COMPLETE_END ||
-                        n.action == BatchNotification.ON_COMPLETE_FAILED) {
+                def batchNotification = serverNotification as BatchNotification
+                if (batchNotification.action ==  BatchNotification.INPUT_PHASE_BEGIN && waitForAllJobs) {
+                    def jobName = batchNotification.jobInstance.ownerJobName
+                    logger.info "Adding '${jobName}' to list of jobs we will wait for..."
+                    jobsToWaitFor << jobName
+                    return
+                }
+                if (batchNotification.action == BatchNotification.ON_COMPLETE_END ||
+                        batchNotification.action == BatchNotification.ON_COMPLETE_FAILED) {
                     synchronized (batchJobResults) {
-                        def jobInstance = n.jobInstance
+                        def jobInstance = batchNotification.jobInstance
                         batchJobResults[jobInstance.ownerJobName] = jobInstance.result
                         batchJobResults.notify()
                     }
@@ -186,16 +196,14 @@ abstract class BaseTest extends FunctionalMunitSuite {
     }
 
     def runBatch(String batchName,
-                 List<String> otherJobsToWaitFor = [],
+                 List<String> jobsToWaitFor = null,
                  @DelegatesTo(BatchRunner) Closure closure) {
         def runner = new FlowRunnerImpl(muleContext)
         def code = closure.rehydrate(runner, this, this)
         code.resolveStrategy = Closure.DELEGATE_ONLY
         code()
         def batchJob = muleContext.registry.get(batchName) as BatchJobAdapter
-        def allJobsToWaitFor = new ArrayList<String>(otherJobsToWaitFor)
-        allJobsToWaitFor.add(0, batchName)
-        waitForBatchSuccess(allJobsToWaitFor) {
+        waitForBatchSuccess(jobsToWaitFor) {
             batchJob.execute(runner.event)
         }
     }

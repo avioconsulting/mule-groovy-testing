@@ -1,3 +1,6 @@
+# 1.0.4 (unreleased)
+* Batch processor, by default the `runBatch` invoker and the `waitForBatchSuccess` helper methods that you can use to invoke batch processes will now wait for any batch process that has started to complete before returning control to test methods that call it. You can still override the list of processes. 
+
 # 1.0.3
 * Improve batch testing support (wait for X jobs to complete) 
 
