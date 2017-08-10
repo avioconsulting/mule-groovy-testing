@@ -96,7 +96,7 @@ class BatchInvokeTest extends BaseTest implements OverrideConfigList {
     }
 
     @Test
-    void suppress_batch_failure() {
+    void throwUnderlyingException() {
         // arrange
         def items = (1..3).collect {
             [foo: 123]
@@ -120,16 +120,59 @@ class BatchInvokeTest extends BaseTest implements OverrideConfigList {
         }
 
         // act
-        runBatch('theJob',
-                 null,
-                 false) {
-            java {
-                inputPayload(items)
+        def result = shouldFail {
+            runBatch('theJob',
+                     null,
+                     true) {
+                java {
+                    inputPayload(items)
+                }
             }
         }
 
         // assert
-        // no exceptions
+        assertThat result.message,
+                   is(containsString('HTTP timeout'))
+    }
+
+    @Test
+    void throwUnderlyingException_does_not_fail() {
+        // arrange
+        def items = (1..3).collect {
+            [foo: 123]
+        }
+        def httpCalls = []
+
+        mockRestHttpCall('SomeSystem Call') {
+            json {
+                whenCalledWith { Map incoming ->
+                    httpCalls << incoming
+                }
+            }
+        }
+
+        mockRestHttpCall('SomeSystem Call from Complete') {
+            json {
+                whenCalledWith { Map incoming ->
+                    httpCalls << incoming
+                }
+            }
+        }
+
+        // act
+        def result = shouldFail {
+            runBatch('theJob',
+                     null,
+                     true) {
+                java {
+                    inputPayload(items)
+                }
+            }
+        }
+
+        // assert
+        assertThat result.message,
+                   is(containsString('Expected job to fail since throwUnderlyingException=true but it did not'))
     }
 
     @Test

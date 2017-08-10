@@ -12,11 +12,15 @@ class BatchWaitUtil {
         this.muleContext = muleContext
     }
 
-    def waitFor(List<String> requestedJobsToWaitFor = null,
-                boolean throwExceptionOnFailedBatchJob,
+    // useUnderlyingExceptions will ignore the "outer failures" from the batch job and will
+    // instead produce the underlying exception that caused the job to fail
+
+    def waitFor(List<String> requestedJobsToWaitFor,
+                boolean throwUnderlyingException,
                 Closure closure) {
         // need to wait for batch thread to finish
-        def batchListener = new BatchCompletionListener(requestedJobsToWaitFor)
+        def batchListener = new BatchCompletionListener(requestedJobsToWaitFor,
+                                                        throwUnderlyingException)
         def jobsToWaitFor = batchListener.jobsToWaitFor
         muleContext.registerListener(batchListener)
         try {
@@ -36,9 +40,16 @@ class BatchWaitUtil {
             }.collect { name, result ->
                 "Job: ${name}, failed records: ${result.failedRecords} onComplete fail: ${result.failedOnCompletePhase}"
             }
-            if (!throwExceptionOnFailedBatchJob) {
-                logger.info "Ignoring failed jobs: ${failedJobs} per request"
-                return
+            if (throwUnderlyingException) {
+                assert failedJobs.any(): 'Expected job to fail since throwUnderlyingException=true but it did not!'
+                def exceptions = batchListener.exceptions
+                assert exceptions.any(): 'Expected to have encountered some exceptions but did not!'
+                def exception = exceptions[0]
+                if (exceptions.size() > 1) {
+                    def others = exceptions[1..-1].collect { e -> e.message }
+                    logger.warn "Throwing 1st exception (${exception.message}) but there was more than 1: ${others}"
+                }
+                throw exception
             }
             assert failedJobs.isEmpty(): "Expected no failed job instances but got ${failedJobs}"
         }

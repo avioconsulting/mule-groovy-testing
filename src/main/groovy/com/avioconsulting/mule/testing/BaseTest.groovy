@@ -138,15 +138,15 @@ abstract class BaseTest extends FunctionalMunitSuite {
     }
 
     static def waitForBatchSuccess(List<String> jobsToWaitFor = null,
-                                   boolean throwExceptionOnFailedBatchJob = true,
+                                   boolean throwUnderlyingException = false,
                                    Closure closure) {
         def batchWaitUtil = new BatchWaitUtil(muleContext)
-        batchWaitUtil.waitFor(jobsToWaitFor, throwExceptionOnFailedBatchJob, closure)
+        batchWaitUtil.waitFor(jobsToWaitFor, throwUnderlyingException, closure)
     }
 
     def runBatch(String batchName,
                  List<String> jobsToWaitFor = null,
-                 boolean throwExceptionOnFailedBatchJob = true,
+                 boolean throwUnderlyingException = false,
                  @DelegatesTo(BatchRunner) Closure closure) {
         def runner = new FlowRunnerImpl(muleContext)
         def code = closure.rehydrate(runner, this, this)
@@ -154,7 +154,7 @@ abstract class BaseTest extends FunctionalMunitSuite {
         code()
         def batchJob = muleContext.registry.get(batchName) as BatchJobAdapter
         waitForBatchSuccess(jobsToWaitFor,
-                            throwExceptionOnFailedBatchJob) {
+                            throwUnderlyingException) {
             batchJob.execute(runner.event)
         }
     }
