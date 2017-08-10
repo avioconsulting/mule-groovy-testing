@@ -96,6 +96,41 @@ class BatchInvokeTest extends BaseTest implements OverrideConfigList {
     }
 
     @Test
+    void suppress_batch_failure() {
+        // arrange
+        def items = (1..3).collect {
+            [foo: 123]
+        }
+
+        def httpCalls = []
+        mockRestHttpCall('SomeSystem Call') {
+            json {
+                whenCalledWith { Map incoming ->
+                    httpTimeoutError()
+                }
+            }
+        }
+
+        mockRestHttpCall('SomeSystem Call from Complete') {
+            json {
+                whenCalledWith { Map incoming ->
+                    httpCalls << incoming
+                }
+            }
+        }
+
+        // act
+        runBatch('theJob') {
+            java {
+                inputPayload(items)
+            }
+        }
+
+        // assert
+        fail 'write this'
+    }
+
+    @Test
     void runs_onCompleteFails() {
         // arrange
         def items = (1..3).collect {

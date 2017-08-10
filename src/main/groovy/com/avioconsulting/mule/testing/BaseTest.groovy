@@ -1,5 +1,6 @@
 package com.avioconsulting.mule.testing
 
+import com.avioconsulting.mule.testing.batch.BatchWaitUtil
 import com.avioconsulting.mule.testing.dsl.invokers.BatchRunner
 import com.avioconsulting.mule.testing.dsl.invokers.FlowRunner
 import com.avioconsulting.mule.testing.dsl.invokers.FlowRunnerImpl
@@ -7,16 +8,12 @@ import com.avioconsulting.mule.testing.dsl.mocking.*
 import com.avioconsulting.mule.testing.dsl.mocking.sfdc.Choice
 import com.avioconsulting.mule.testing.dsl.mocking.sfdc.ChoiceImpl
 import com.avioconsulting.mule.testing.payloadvalidators.SOAPPayloadValidator
-import com.mulesoft.module.batch.api.BatchJobResult
-import com.mulesoft.module.batch.api.notification.BatchNotification
-import com.mulesoft.module.batch.api.notification.BatchNotificationListener
 import com.mulesoft.module.batch.engine.BatchJobAdapter
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import org.junit.Before
 import org.mule.api.MuleEvent
 import org.mule.api.MuleMessage
-import org.mule.api.context.notification.ServerNotification
 import org.mule.module.client.MuleClient
 import org.mule.modules.interceptor.processors.MuleMessageTransformer
 import org.mule.munit.common.mocking.Attribute
@@ -140,59 +137,10 @@ abstract class BaseTest extends FunctionalMunitSuite {
         runner.transformOutput(outputEvent)
     }
 
-    def waitForBatchSuccess(List<String> jobsToWaitFor = null,
-                            Closure closure) {
-        def waitForAllJobs = jobsToWaitFor == null
-        if (waitForAllJobs) {
-            jobsToWaitFor = []
-        }
-        Map<String, BatchJobResult> batchJobResults = [:]
-        // need to wait for batch thread to finish
-        def batchListener = new BatchNotificationListener() {
-            @Override
-            void onNotification(ServerNotification serverNotification) {
-                def batchNotification = serverNotification as BatchNotification
-                if (batchNotification.action ==  BatchNotification.INPUT_PHASE_BEGIN && waitForAllJobs) {
-                    def jobName = batchNotification.jobInstance.ownerJobName
-                    logger.info "Adding '${jobName}' to list of jobs we will wait for..."
-                    jobsToWaitFor << jobName
-                    return
-                }
-                if (batchNotification.action == BatchNotification.ON_COMPLETE_END ||
-                        batchNotification.action == BatchNotification.ON_COMPLETE_FAILED) {
-                    synchronized (batchJobResults) {
-                        def jobInstance = batchNotification.jobInstance
-                        batchJobResults[jobInstance.ownerJobName] = jobInstance.result
-                        batchJobResults.notify()
-                    }
-                }
-            }
-        }
-        muleContext.registerListener(batchListener)
-        try {
-            closure()
-            def getIncompletes = {
-                jobsToWaitFor - batchJobResults.keySet()
-            }
-            while (getIncompletes().any()) {
-                logger.info "Still waiting for batch jobs ${getIncompletes()} to finish"
-                synchronized (batchJobResults) {
-                    // wait 60 seconds
-                    batchJobResults.wait() //(60 * 1000)
-                }
-            }
-            def failedJobs = batchJobResults.findAll { ignore, result ->
-                result.failedRecords > 0 || result.failedOnCompletePhase
-            }.collect { name, result ->
-                "Job: ${name}, failed records: ${result.failedRecords} onComplete fail: ${result.failedOnCompletePhase}"
-            }
-            // more cleanup
-            batchJobResults = [:]
-            assert failedJobs.isEmpty(): "Expected no failed job instances but got ${failedJobs}"
-        }
-        finally {
-            muleContext.unregisterListener(batchListener)
-        }
+    static def waitForBatchSuccess(List<String> jobsToWaitFor = null,
+                                   Closure closure) {
+        def batchWaitUtil = new BatchWaitUtil(muleContext)
+        batchWaitUtil.waitFor(jobsToWaitFor, closure)
     }
 
     def runBatch(String batchName,
