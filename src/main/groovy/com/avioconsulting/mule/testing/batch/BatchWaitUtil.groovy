@@ -13,6 +13,7 @@ class BatchWaitUtil {
     }
 
     def waitFor(List<String> requestedJobsToWaitFor = null,
+                boolean throwExceptionOnFailedBatchJob,
                 Closure closure) {
         // need to wait for batch thread to finish
         def batchListener = new BatchCompletionListener(requestedJobsToWaitFor)
@@ -34,6 +35,10 @@ class BatchWaitUtil {
                 result.failedRecords > 0 || result.failedOnCompletePhase
             }.collect { name, result ->
                 "Job: ${name}, failed records: ${result.failedRecords} onComplete fail: ${result.failedOnCompletePhase}"
+            }
+            if (!throwExceptionOnFailedBatchJob) {
+                logger.info "Ignoring failed jobs: ${failedJobs} per request"
+                return
             }
             assert failedJobs.isEmpty(): "Expected no failed job instances but got ${failedJobs}"
         }

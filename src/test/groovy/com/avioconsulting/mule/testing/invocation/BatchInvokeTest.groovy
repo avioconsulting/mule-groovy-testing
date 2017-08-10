@@ -120,14 +120,16 @@ class BatchInvokeTest extends BaseTest implements OverrideConfigList {
         }
 
         // act
-        runBatch('theJob') {
+        runBatch('theJob',
+                 null,
+                 false) {
             java {
                 inputPayload(items)
             }
         }
 
         // assert
-        fail 'write this'
+        // no exceptions
     }
 
     @Test
