@@ -14,6 +14,10 @@ class BatchCompletionListener implements BatchNotificationListener {
     private final Map<String, BatchJobResult> batchJobResults = [:]
     private final boolean throwUnderlyingException
     private final List<Throwable> exceptions = []
+    private static final List<Integer> recordFailedActions = [BatchNotification.STEP_RECORD_FAILED,
+                                                              BatchNotification.STEP_COMMIT_FAILED]
+    private static final List<Integer> jobCompletedActions = [BatchNotification.ON_COMPLETE_END,
+                                                              BatchNotification.ON_COMPLETE_FAILED]
 
     BatchCompletionListener(List<String> jobsToWaitFor,
                             boolean throwUnderlyingException) {
@@ -39,7 +43,7 @@ class BatchCompletionListener implements BatchNotificationListener {
     @Override
     void onNotification(ServerNotification serverNotification) {
         def batchNotification = serverNotification as BatchNotification
-        if (batchNotification.action == BatchNotification.STEP_RECORD_FAILED && throwUnderlyingException) {
+        if (throwUnderlyingException && recordFailedActions.contains(batchNotification.action)) {
             // batchNotification.exception is a BatchException containing the real cause
             this.exceptions << batchNotification.exception.cause
             return
@@ -50,8 +54,7 @@ class BatchCompletionListener implements BatchNotificationListener {
             jobsToWaitFor << jobName
             return
         }
-        if (batchNotification.action == BatchNotification.ON_COMPLETE_END ||
-                batchNotification.action == BatchNotification.ON_COMPLETE_FAILED) {
+        if (jobCompletedActions.contains(batchNotification.action)) {
             synchronized (batchJobResults) {
                 def jobInstance = batchNotification.jobInstance
                 batchJobResults[jobInstance.ownerJobName] = jobInstance.result
