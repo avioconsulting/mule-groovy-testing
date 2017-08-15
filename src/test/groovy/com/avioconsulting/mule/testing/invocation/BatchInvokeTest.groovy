@@ -90,7 +90,7 @@ class BatchInvokeTest extends BaseTest implements OverrideConfigList {
         // assert
         assertThat result.message,
                    is(containsString(
-                           'Expected no failed job instances but got [Job: theJob, failed records: 3 onComplete fail: false]'))
+                           'Expected no failed job instances but got [Job: theJob (invocation 0), failed records: 3 onComplete fail: false]'))
         assertThat httpCalls.size(),
                    is(equalTo(1)) // our complete handler
     }
@@ -211,7 +211,7 @@ class BatchInvokeTest extends BaseTest implements OverrideConfigList {
         // assert
         assertThat result.message,
                    is(containsString(
-                           'Expected no failed job instances but got [Job: theJob, failed records: 0 onComplete fail: true]'))
+                           'Expected no failed job instances but got [Job: theJob (invocation 0), failed records: 0 onComplete fail: true]'))
         assertThat httpCalls.size(),
                    is(equalTo(3))
     }

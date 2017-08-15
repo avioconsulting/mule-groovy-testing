@@ -1,5 +1,5 @@
 # 1.0.5
-* Batch issue/twice
+* Fixed issue where multiple invocations of batch job with the same name were not waited on properly
 
 # 1.0.4
 * Batch processor, by default the `runBatch` invoker and the `waitForBatchSuccess` helper methods that you can use to invoke batch processes will now wait for any batch process that has started to complete before returning control to test methods that call it. You can still override the list of processes. 

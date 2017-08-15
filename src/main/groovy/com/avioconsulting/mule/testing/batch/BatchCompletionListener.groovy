@@ -18,6 +18,7 @@ class BatchCompletionListener implements BatchNotificationListener {
                                                               BatchNotification.STEP_COMMIT_FAILED]
     private static final List<Integer> jobCompletedActions = [BatchNotification.ON_COMPLETE_END,
                                                               BatchNotification.ON_COMPLETE_FAILED]
+    private final Map<String, Map<String, String>> idMap = [:]
 
     BatchCompletionListener(List<String> jobsToWaitFor,
                             boolean throwUnderlyingException) {
@@ -48,16 +49,25 @@ class BatchCompletionListener implements BatchNotificationListener {
             this.exceptions << batchNotification.exception.cause
             return
         }
-        if (batchNotification.action == BatchNotification.INPUT_PHASE_BEGIN && waitForAllStartedJobs) {
-            def jobName = batchNotification.jobInstance.ownerJobName
-            logger.info "Adding '${jobName}' to list of batch jobs (${jobsToWaitFor}) we will wait for..."
-            jobsToWaitFor << jobName
-            return
+        def jobInstance = batchNotification.jobInstance
+        def jobDescription = jobInstance.ownerJobName
+        if (waitForAllStartedJobs) {
+            // if a batch job is called multiple times, we need to able to distinguish each invocation
+            def mapForThisJobName = idMap.containsKey(jobDescription) ? idMap[jobDescription] : (idMap[jobDescription] = [:])
+            if (!mapForThisJobName.containsKey(jobInstance.id)) {
+                mapForThisJobName[jobInstance.id] = "${jobDescription} (invocation ${mapForThisJobName.size()})"
+            }
+            jobDescription = mapForThisJobName[jobInstance.id]
+
+            if (batchNotification.action == BatchNotification.INPUT_PHASE_BEGIN) {
+                logger.info "Adding '${jobDescription}' to list of batch jobs (${jobsToWaitFor}) we will wait for..."
+                jobsToWaitFor << jobDescription
+                return
+            }
         }
         if (jobCompletedActions.contains(batchNotification.action)) {
             synchronized (batchJobResults) {
-                def jobInstance = batchNotification.jobInstance
-                batchJobResults[jobInstance.ownerJobName] = jobInstance.result
+                batchJobResults[jobDescription] = jobInstance.result
                 batchJobResults.notify()
             }
         }
