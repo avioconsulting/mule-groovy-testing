@@ -50,7 +50,7 @@ class BatchCompletionListener implements BatchNotificationListener {
         }
         if (batchNotification.action == BatchNotification.INPUT_PHASE_BEGIN && waitForAllStartedJobs) {
             def jobName = batchNotification.jobInstance.ownerJobName
-            logger.info "Adding '${jobName}' to list of batch jobs we will wait for..."
+            logger.info "Adding '${jobName}' to list of batch jobs (${jobsToWaitFor}) we will wait for..."
             jobsToWaitFor << jobName
             return
         }
