@@ -332,4 +332,39 @@ class BatchInvokeTest extends BaseTest implements OverrideConfigList {
                    is(containsString(
                            'Expected no failed job instances but got [Job: theJob, failed records: 3 onComplete fail: false]'))
     }
+
+    @Test
+    void secondJobCallsFirstTwice() {
+        def items = (1..3).collect {
+            [foo: 123]
+        }
+
+        def httpCalls = []
+        mockRestHttpCall('SomeSystem Call') {
+            json {
+                whenCalledWith { Map incoming ->
+                    httpCalls << incoming
+                }
+            }
+        }
+
+        mockRestHttpCall('SomeSystem Call from Complete') {
+            json {
+                whenCalledWith { Map incoming ->
+                    httpCalls << incoming
+                }
+            }
+        }
+
+        // act
+        runBatch('secondJobCallsFirstTwice') {
+            java {
+                inputPayload(items)
+            }
+        }
+
+        // assert
+        assertThat httpCalls.size(),
+                   is(equalTo(8))
+    }
 }

@@ -57,4 +57,21 @@ http://www.mulesoft.org/schema/mule/batch http://www.mulesoft.org/schema/mule/ba
             <batch:execute name="theJob"/>
         </batch:on-complete>
     </batch:job>
+    <batch:job name="secondJobCallsFirstTwice">
+        <batch:input>
+            <set-variable variableName="originalPayload" value="#[payload]"/>
+        </batch:input>
+        <batch:process-records>
+            <batch:step name="theStep2">
+                <logger message="howdy"/>
+            </batch:step>
+        </batch:process-records>
+        <batch:on-complete>
+            <set-payload value="#[flowVars.originalPayload]" />
+            <enricher target="#[flowVars.trash">
+                <batch:execute name="theJob"/>
+            </enricher>
+            <batch:execute name="theJob"/>
+        </batch:on-complete>
+    </batch:job>
 </mule>
