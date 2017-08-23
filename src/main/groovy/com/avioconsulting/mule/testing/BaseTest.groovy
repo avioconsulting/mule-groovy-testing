@@ -137,9 +137,9 @@ abstract class BaseTest extends FunctionalMunitSuite {
         runner.transformOutput(outputEvent)
     }
 
-    static def waitForBatchSuccess(List<String> jobsToWaitFor = null,
-                                   boolean throwUnderlyingException = false,
-                                   Closure closure) {
+    static def waitForBatchCompletion(List<String> jobsToWaitFor = null,
+                                      boolean throwUnderlyingException = false,
+                                      Closure closure) {
         def batchWaitUtil = new BatchWaitUtil(muleContext)
         batchWaitUtil.waitFor(jobsToWaitFor, throwUnderlyingException, closure)
     }
@@ -153,8 +153,8 @@ abstract class BaseTest extends FunctionalMunitSuite {
         code.resolveStrategy = Closure.DELEGATE_ONLY
         code()
         def batchJob = muleContext.registry.get(batchName) as BatchJobAdapter
-        waitForBatchSuccess(jobsToWaitFor,
-                            throwUnderlyingException) {
+        waitForBatchCompletion(jobsToWaitFor,
+                               throwUnderlyingException) {
             batchJob.execute(runner.event)
         }
     }

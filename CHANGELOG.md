@@ -1,3 +1,6 @@
+# 1.0.6 (unreleased)
+* Rename `waitForBatchSuccess` to `waitForBatchCompletion` to be more accurate
+
 # 1.0.5
 * Fixed issue where multiple invocations of batch job with the same name were not waited on properly
 
