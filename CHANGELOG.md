@@ -1,4 +1,4 @@
-# 1.0.6 (unreleased)
+# 1.0.6
 * Rename `waitForBatchSuccess` to `waitForBatchCompletion` to be more accurate
 
 # 1.0.5
