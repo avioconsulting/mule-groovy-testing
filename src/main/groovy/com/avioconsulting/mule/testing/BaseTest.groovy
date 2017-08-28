@@ -28,6 +28,9 @@ abstract class BaseTest extends FunctionalMunitSuite {
     protected static final Logger logger = LogManager.getLogger(BaseTest)
 
     Properties getStartUpProperties() {
+        // MUnit Maven plugin uses this technique to avoid a license just to run unit tests
+        System.setProperty('mule.testingMode',
+                           'true')
         def properties = new Properties()
         // in case a Groovy/GStringImpl is in here
         def onlyJavaStrings = propertyMap.collectEntries { key, value ->

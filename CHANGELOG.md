@@ -1,3 +1,6 @@
+# 1.0.7
+* Remove unnecessary EE license dependency
+
 # 1.0.6
 * Rename `waitForBatchSuccess` to `waitForBatchCompletion` to be more accurate
 
