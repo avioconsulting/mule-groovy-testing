@@ -29,7 +29,8 @@ abstract class Common implements InputTransformer {
                                              [
                                                      'application/json',
                                                      'application/json;charset=UTF-8',
-                                                     'application/json;charset=utf-8'
+                                                     'application/json;charset=utf-8',
+                                                     'application/json;charset=windows-1252'
                                              ])
     }
 

@@ -3,7 +3,7 @@ plugins {
 }
 
 group 'com.avioconsulting.mule'
-version '1.0.7'
+version '1.0.8'
 
 configurations {
     provided

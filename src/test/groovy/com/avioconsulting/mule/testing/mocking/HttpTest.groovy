@@ -101,7 +101,7 @@ class HttpTest extends BaseTest implements OverrideConfigList {
         // assert
         assertThat result.message,
                    is(containsString(
-                           "Expected Content-Type to be of type [application/json, application/json;charset=UTF-8, application/json;charset=utf-8] but it actually was null. This happened while calling your flow. Add a set-property before the end of the flow."))
+                           "Expected Content-Type to be of type [application/json, application/json;charset=UTF-8, application/json;charset=utf-8, application/json;charset=windows-1252] but it actually was null. This happened while calling your flow. Add a set-property before the end of the flow."))
     }
 
     @Test
@@ -168,7 +168,7 @@ class HttpTest extends BaseTest implements OverrideConfigList {
         // assert
         assertThat result.message,
                    is(containsString(
-                           "Expected Content-Type to be of type [application/json, application/json;charset=UTF-8, application/json;charset=utf-8] but it actually was null. Check your mock endpoints."))
+                           "Expected Content-Type to be of type [application/json, application/json;charset=UTF-8, application/json;charset=utf-8, application/json;charset=windows-1252] but it actually was null. Check your mock endpoints."))
     }
 
     @Test

@@ -1,3 +1,6 @@
+# 1.0.8
+* Support building testing framework on Windows
+
 # 1.0.7
 * Remove unnecessary EE license dependency
 
