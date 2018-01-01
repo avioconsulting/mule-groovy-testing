@@ -1,6 +1,8 @@
-# NOTE
+# Summary
 
-The documentation is out of date and needs to be updated. For now, examine the tests for the testing framework itself to see example usages. Here is what's currently supported:
+This testing framework is a more powerful approach than MUnit but sits on top of the base Mule MUnit/Java test classes.
+
+Here is what's currently supported:
 
 * Invoking flows via JSON/Java
 * Invoking APIKit flows via the apikit router
@@ -11,11 +13,16 @@ The documentation is out of date and needs to be updated. For now, examine the t
 * Handle streaming payloads (vs. not)
 * Limited HTTP connector usage validation (query params, path, verbs, URI params)
 * Invoking SalesForce upsert and query
-* Easily mock any DSQL/Devkit based connector
+* Easily mock any DQL/Devkit based connector
+* Automatically loads Mule config files from mule-deploy.properties but allows substituting
+
+Differences from MUnit:
+* Full power of Groovy language
+* Allow validation of HTTP query parameters, path names
+* Allow validation of DQL based queries
 
 What hasn't been done yet/TODOs:
 
-* Currently, you explicitly tell the tests which Mule config files to load as part of your test. It might make more sense to automatically read in all the files in mule-deploy.properties and then allow the test to remove/substitute certain files instead. That way the list of files in mule-deploy.properties is tested (in case you forgot to add one) but can be overridden
 * Boilerplate code from queue-error-strategies, how to test that
 * Also it might be useful to detect if a filter is used with a transactional listener and if so, fail a test if it's not a message filter and the filter does not use 'onUnAccepted' (acknowledged Mule bug)
 * Compare maven dependencies with engine directory and spot loader overrides problems
@@ -64,99 +71,71 @@ What hasn't been done yet/TODOs:
 <dependency>
     <groupId>com.avioconsulting.mule</groupId>
     <artifactId>testing</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0.8</version>
     <scope>test</scope>
 </dependency>
 ```
 4. As you go, add respective jaxb2-maven-plugin or jsonschema2pojo-maven-plugin usages to generate sources to use during tests
  
-5. Create your test classes (see below for options)
+5. Create your test classes
 
-# Test options
+# Test Classes
 
-All tests should:
-* Extend `com.avioconsulting.muletesting.BaseTest` and then implement the traits noted below.
-* Implement the `List<String> getConfigResourcesList()` method. This is how the test knows which Mule config files (and thus which flows) to load for your test.
-* You can choose to override `getPropertyMap` by returning a Groovy map which includes properties to set. `mule-app.properties` will be implicitly included so this overrides those values.
+## Loading
 
-## Testing a SOAP (APIKit) service
-
-1. Add jaxb2-maven-plugin plugins to your pom.xml to generate sources for requests/responses
-2. Implement the `XmlTesting` trait on your JUnit test case, which will require you to provide a JAXB context (for the packages the jaxb2-maven-plugin generates) and a getMockResourcePath implementation for where mock replies to called SOAP services can be found (see below)
-3. Run the `runMuleFlowWithXml` method to call the flow (e.g. `operation1:/SOAPTestService/SOAPTestService/api-config`) in your test, passing the JAXBElement object from the ObjectFactory of your request
-
-## Testing a RESTful service
-
-### Direct JSON
-
-For simple tests, this route might be OK. Simply call this from your test:
+You probably will want to create a base class for your project that extends the `BaseTest` class from this project. If you want to exclude any Mule config files from mule-deploy.properties, you should override the `getConfigResourceSubstitutes` method like shown below.
 
 ```groovy
-httpPost url: url,
-         payload: json,
-         contentType: 'application/json; charset=utf-8'
-```
-
-### Using objects
-
-TBD: Document how to do this
-
-## Mocking a SOAP service
-
-1. Ensure the jaxb2-maven-plugin in your pom generates Java classes for the SOAP services you are consuming
-2. Implement the `XmlTesting` trait on your JUnit test case, which will require you to provide a JAXB context (for the packages the jaxb2-maven-plugin generates) and a getMockResourcePath implementation for where mock replies to called SOAP services can be found
-3. Assuming ws-consumer is used and the connector's name is 'Submit to BBG', mock the SOAP call like this before calling the flow under test (if you're not using until-successful, you will need to call mockSoapReply('connector name', boolean untilSuccessful = false):
-```groovy
-mockSoapReply('Submit to BBG') { message ->
-    // message will already be unmarshalled into a Java object
-    def casted = (SubmitGetDataRequest) message
-    // this is a variable you can assert against later in your test
-    uploadedMessages << casted
-    // this will be the SOAP reply (from inside the body) relative to the path from the getMockResourcePath method
-    return 'filename.xml'
+@Override
+Map<String, String> getConfigResourceSubstitutes() {
+    // this example will prevent global.xml from loading and load global-test.xml instead
+    // it will also prevent foo.xml from loading and will load nothing in its place
+    ['global.xml': 'global-test.xml',
+     'foo.xml'   : null]
 }
 ```
 
-## Mocking a RESTful service
+The philosophy here is to 'test' `mule-deploy.properties` to ensure it has the right entries (that's what matters for the real engine) and have test code modify it rather than creating a new set of files to import.
 
-### That returns JSON
+## Actual tests
 
-Use `mockRESTPostReply` or `mockRESTGetReply` in a similar fashion to SOAP above.
+This needs to be more clearly documented but for now, it might be easiest to look at tests for this project to get an idea of what all you can do in terms of mocks and invocations. Everything supported by the testing framework is tested itself in this project.
 
+# Apikit
+
+## Overview
+
+The framework also is APIkit friendly. The reasons you might want to test this are:
+
+1. Ensures your RAML is valid (apikit router will attempt to use it)
+2. Ensures generated flows (e.g. post:/.....) exist like you think they do
+3. Provides an "end to end" test
+
+The value add of this framework to achieve that is:
+
+1. An active HTTP listener needs to "exist" in order for the APIKit router to work. This test framework will automatically find an open port and configure the listener.
+2. Sets properties that the HTTP listener normally would set (like HTTP host, path, etc.) such that the APIKit router can route a flow invocation properly
+3. Invoked the "main" flow containing the router
+
+## Assumptions
+
+1. Your HTTP listeners' config-ref is set to `${http.listener.config}`
+1. HTTP listener config is in `global.xml`. If not, this can be overriden (see `getConfigResourceSubstitutes` in `BaseApiKitTest`)
+1. HTTP listener path like this: `/app-name/api/v1/*` where `app-name` is the value from `getApiNameUnderTest` (you supply this when you extend `BaseApiKitTest`) and `v1` is the value of `getApiVersionUnderTest`.
+1. A main flow name (Studio derives this from the RAML filename) like this: `api-app-name-v1-main`. 
+
+## Usage
+
+Have your tests extend from `BaseApiKitTest` instead of `BaseTest`. This will require you implement some abstract methods for API name, version, etc.
+
+Invoke like this:
 ```groovy
-// mockRESTPostReply(String name, Class expectedRequestJsonClass, YieldType yieldType = YieldType.Map, testClosure)
-mockRESTPostReply('Create Node in Drupal', DrupalCreateNodeExample) { map ->
-    // in this mode, this will be a map representing the JSON
-    // if you set yieldType to DeserializedObject, then Jackson will be used to
-    // unmarshall the JSON into the object
-    uploadedMessages << map
-    // This could be improved but for now, this is how you'd do this
-    String json = groovy.json.JsonOutput.toJson(mapToReturn)
-    def outboundProps = null
-    def attachments = null
-    def messageProps = [
-                    'content-type': 'application/json; charset=utf-8',
-                    'http.status': 200
-    ]    
-    return new DefaultMuleMessage(new org.mule.module.json(json),
-                                          messageProps,
-                                          outboundProps,
-                                          attachments,
-                                          this.muleContext) 
+runApiKitFlow('PATCH', '/mappings') {
+    json {
+        inputOnly(mappings)
+    }
+    withOutputHttpStatus { Integer actualStatus ->
+        httpStatus = actualStatus
+    }
 }
 ```
-
-### That returns XML
-
-mockRESTPostReply or GetReply should return something like this:
-
-```groovy
-mockRESTPostReply('Create Node in Drupal', DrupalCreateNodeExample) { map ->
-    BufferedInputStream stream = getResource(replyFile)
-    getXmlMessage(stream, httpStatus)
-}
-```
-
-## Mocking a VM PUT
-
-TBD: Document this
