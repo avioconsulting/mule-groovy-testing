@@ -65,6 +65,6 @@ class VmTest extends BaseTest implements OverrideConfigList {
         // assert
         assertThat exception.message,
                    is(containsString(
-                           'Expected payload to be of type [class java.lang.String] here but it actually was class java.io.ByteArrayInputStream. VMs must have string payloads.'))
+                           'Expected payload to be of type [class java.lang.String] here but it actually was class org.mule.munit.common.util.ReusableByteArrayInputStream. VMs must have string payloads.'))
     }
 }

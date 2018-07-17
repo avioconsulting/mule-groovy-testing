@@ -1,3 +1,7 @@
+# 1.0.9
+* Runs with Mule 3.9.1 by default
+* Upgraded from 1.2.1 to 1.3.3 of base MUnit classes
+
 # 1.0.8
 * Support building testing framework on Windows
 
