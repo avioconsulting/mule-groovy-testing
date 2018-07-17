@@ -52,7 +52,7 @@ repositories {
     }
     maven {
         // staxutils
-        url "https://repository-master.mulesoft.org/nexus/content/groups/public/"
+        url "https://repository.mulesoft.org/nexus/content/repositories/public/"
     }
     maven {
         credentials {
