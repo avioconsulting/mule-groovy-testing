@@ -98,8 +98,8 @@ artifacts {
 
 dependencies {
     def muleVersion = '3.9.1'
-    def munitVersion = '1.3.7'
-    def munitSupportVersion = '3.9.1'
+    def munitVersion = '1.2.1'
+    def munitSupportVersion = '3.8.2'
     compile 'org.apache.maven:maven-plugin-api:3.3.9'
     compile group: 'com.mulesoft.muleesb', name: 'mule-core-ee', version: muleVersion
     compile group: 'org.mule.tests', name: 'mule-tests-functional', version: muleVersion
