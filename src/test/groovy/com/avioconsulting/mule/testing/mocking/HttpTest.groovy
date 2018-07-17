@@ -3,7 +3,6 @@ package com.avioconsulting.mule.testing.mocking
 import com.avioconsulting.mule.testing.BaseTest
 import com.avioconsulting.mule.testing.OverrideConfigList
 import com.avioconsulting.mule.testing.SampleJacksonInput
-import com.mulesoft.weave.reader.ByteArraySeekableStream
 import org.junit.Test
 import org.mule.api.MessagingException
 import org.mule.module.http.internal.request.DefaultHttpRequester
@@ -477,6 +476,37 @@ class HttpTest extends BaseTest implements OverrideConfigList {
         assert actualHttpVerb
         assertThat actualHttpVerb,
                    is(equalTo('GET'))
+    }
+
+    @Test
+    void headers() {
+        // arrange
+        def actualHeaders = null
+        mockRestHttpCall('SomeSystem Call') {
+            json {
+                whenCalledWith {
+                    withHttpOptionsIncludingHeaders { String httpVerb, String uri, Map queryParams, Map headers ->
+                        actualHeaders = headers
+                        [reply: 456]
+                    }
+                }
+            }
+        }
+
+        // act
+        runFlow('queryParametersEnricher') {
+            json {
+                inputPayload([foo: 123])
+            }
+        }
+
+        // assert
+        assertThat actualHeaders,
+                   is(equalTo(
+                           [
+                                   theHeaderName: 'theHeaderValue'
+                           ]
+                   ))
     }
 
     @Test

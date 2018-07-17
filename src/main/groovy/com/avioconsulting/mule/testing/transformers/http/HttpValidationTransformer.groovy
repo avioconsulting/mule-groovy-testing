@@ -44,6 +44,7 @@ class HttpValidationTransformer implements MuleMessageTransformer,
     }
 
     def receive(Map queryParams,
+                Map headers,
                 String fullPath,
                 String httpVerb,
                 ResponseValidator responseValidator) {

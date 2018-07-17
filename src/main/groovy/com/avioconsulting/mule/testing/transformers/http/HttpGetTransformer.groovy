@@ -12,11 +12,14 @@ class HttpGetTransformer implements MuleMessageTransformer, IReceiveHttpOptions 
     private final MuleContext muleContext
 
     HttpGetTransformer(MuleContext muleContext) {
-
         this.muleContext = muleContext
     }
 
-    def receive(Map queryParams, String fullPath, String httpVerb, ResponseValidator responseValidator) {
+    def receive(Map queryParams,
+                Map headers,
+                String fullPath,
+                String httpVerb,
+                ResponseValidator responseValidator) {
         this.httpVerb = httpVerb
     }
 

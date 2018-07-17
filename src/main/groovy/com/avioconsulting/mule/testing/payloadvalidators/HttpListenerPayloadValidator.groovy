@@ -31,7 +31,11 @@ class HttpListenerPayloadValidator implements IPayloadValidator,
                             "This happened while calling your flow. Check your input payload.")
     }
 
-    def receive(Map queryParams, String fullPath, String httpVerb, ResponseValidator responseValidator) {
+    def receive(Map queryParams,
+                Map headers,
+                String fullPath,
+                String httpVerb,
+                ResponseValidator responseValidator) {
         this.httpVerb = httpVerb
     }
 }

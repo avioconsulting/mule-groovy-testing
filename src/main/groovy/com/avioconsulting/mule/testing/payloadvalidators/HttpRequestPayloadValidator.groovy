@@ -31,7 +31,10 @@ class HttpRequestPayloadValidator implements IPayloadValidator,
                             'Check your mock endpoints.')
     }
 
-    def receive(Map queryParams, String fullPath, String httpVerb, ResponseValidator responseValidator) {
+    def receive(Map queryParams,
+                Map headers,
+                String fullPath,
+                String httpVerb,ResponseValidator responseValidator) {
         this.httpVerb = httpVerb
     }
 }

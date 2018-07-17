@@ -30,6 +30,7 @@ class HttpConnectorSpy implements SpyProcess {
         def httpRequester = processorLocator.getProcessor(incomingEvent) as DefaultHttpRequester
         optionReceivers.each { receiver ->
             receiver.receive(getQueryParams(httpRequester),
+                             getHeaders(httpRequester),
                              getFullPath(httpRequester),
                              httpRequester.method,
                              httpRequester.responseValidator)
@@ -43,6 +44,12 @@ class HttpConnectorSpy implements SpyProcess {
         def requestBuilder = httpRequester.requestBuilder
         // make it easier to compare
         new HashMap(requestBuilder.getQueryParams(muleEvent))
+    }
+
+    private Map getHeaders(DefaultHttpRequester httpRequester) {
+        def requestBuilder = httpRequester.requestBuilder
+        // make it easier to compare
+        new HashMap(requestBuilder.getHeaders(muleEvent))
     }
 
     private String getFullPath(DefaultHttpRequester httpRequester) {

@@ -19,6 +19,7 @@ class HttpRequestResponseChoiceImpl extends StandardRequestResponseImpl
     private final HttpGetTransformer httpGetTransformer
     private final HttpConnectorErrorTransformer httpConnectorErrorTransformer
     private Map queryParams
+    private Map headers
     private String fullPath
     private String httpVerb
 
@@ -61,6 +62,14 @@ class HttpRequestResponseChoiceImpl extends StandardRequestResponseImpl
         closure(httpVerb, fullPath, queryParams)
     }
 
+    @Override
+    def withHttpOptionsIncludingHeaders(Closure closure) {
+        if (queryParams == null) {
+            throw new Exception('Only invoke this closure inside your whenCalledWith... code')
+        }
+        closure(httpVerb, fullPath, queryParams, headers)
+    }
+
     def setHttpReturnCode(Integer code) {
         httpValidationTransformer.httpReturnCode = code
     }
@@ -80,10 +89,12 @@ class HttpRequestResponseChoiceImpl extends StandardRequestResponseImpl
     }
 
     def receive(Map queryParams,
+                Map headers,
                 String fullPath,
                 String httpVerb,
                 ResponseValidator responseValidator) {
         this.queryParams = queryParams
+        this.headers = headers
         this.fullPath = fullPath
         this.httpVerb = httpVerb
     }

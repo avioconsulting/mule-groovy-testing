@@ -252,6 +252,7 @@ http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/jso
                 <http:request-builder>
                     <http:query-param paramName="stuff" value="#[123]"/>
                     <http:uri-param paramName="howdy" value="there"/>
+                    <http:header headerName="theHeaderName" value="theHeaderValue" />
                 </http:request-builder>
             </http:request>
         </enricher>
