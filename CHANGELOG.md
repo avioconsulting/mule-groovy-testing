@@ -1,3 +1,6 @@
+# 1.0.10
+* Add access to HTTP headers in mocks
+
 # 1.0.9
 * Runs with Mule 3.9.1 by default
 * Upgraded from 1.2.1 to 1.3.3 of base MUnit classes
