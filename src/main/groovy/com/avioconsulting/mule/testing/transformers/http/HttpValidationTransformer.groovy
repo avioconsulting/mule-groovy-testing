@@ -3,6 +3,7 @@ package com.avioconsulting.mule.testing.transformers.http
 import com.avioconsulting.mule.testing.ProcessorLocator
 import com.avioconsulting.mule.testing.spies.IReceiveHttpOptions
 import com.avioconsulting.mule.testing.spies.IReceiveMuleEvents
+import com.avioconsulting.mule.testing.transformers.IHaveStateToReset
 import org.mule.api.MuleContext
 import org.mule.api.MuleEvent
 import org.mule.api.MuleMessage
@@ -11,11 +12,12 @@ import org.mule.module.http.internal.request.ResponseValidator
 import org.mule.module.http.internal.request.SuccessStatusCodeValidator
 import org.mule.modules.interceptor.processors.MuleMessageTransformer
 
-class HttpValidationTransformer implements MuleMessageTransformer,
+class HttpValidationTransformer implements IHaveStateToReset,
         IReceiveHttpOptions,
+        MuleMessageTransformer,
         IReceiveMuleEvents {
     private ResponseValidator responseValidator
-    private Integer httpReturnCode = 200
+    private Integer httpReturnCode
     private final MuleContext muleContext
     private MuleEvent muleEvent
     private final ProcessorLocator locator
@@ -24,6 +26,7 @@ class HttpValidationTransformer implements MuleMessageTransformer,
                               ProcessorLocator locator) {
         this.locator = locator
         this.muleContext = muleContext
+        reset()
     }
 
     MuleMessage transform(MuleMessage muleMessage) {
@@ -56,5 +59,10 @@ class HttpValidationTransformer implements MuleMessageTransformer,
 
     def receive(MuleEvent muleEvent) {
         this.muleEvent = muleEvent
+    }
+
+    @Override
+    def reset() {
+        this.httpReturnCode = 200
     }
 }

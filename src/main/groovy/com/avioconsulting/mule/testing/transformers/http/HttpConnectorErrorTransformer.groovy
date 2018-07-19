@@ -1,18 +1,20 @@
 package com.avioconsulting.mule.testing.transformers.http
 
+import com.avioconsulting.mule.testing.transformers.IHaveStateToReset
 import org.mule.api.MuleContext
 import org.mule.api.MuleMessage
 import org.mule.modules.interceptor.processors.MuleMessageTransformer
 
 import java.util.concurrent.TimeoutException
 
-class HttpConnectorErrorTransformer implements MuleMessageTransformer {
+class HttpConnectorErrorTransformer implements IHaveStateToReset, MuleMessageTransformer {
     private final MuleContext muleContext
     private boolean triggerConnectException
     private boolean triggerTimeoutException
 
     HttpConnectorErrorTransformer(MuleContext muleContext) {
         this.muleContext = muleContext
+        reset()
     }
 
     def triggerConnectException() {
@@ -33,5 +35,11 @@ class HttpConnectorErrorTransformer implements MuleMessageTransformer {
         if (triggerTimeoutException) {
             throw new TimeoutException('HTTP timeout!')
         }
+    }
+
+    @Override
+    def reset() {
+        this.triggerConnectException = false
+        this.triggerTimeoutException = false
     }
 }

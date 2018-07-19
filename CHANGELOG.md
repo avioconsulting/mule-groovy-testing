@@ -1,3 +1,6 @@
+# 1.0.11
+* Fix issue with subsequent HTTP mock invocations
+
 # 1.0.10
 * Add access to HTTP headers in mocks
 

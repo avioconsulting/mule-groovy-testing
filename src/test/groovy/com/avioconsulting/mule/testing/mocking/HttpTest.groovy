@@ -478,7 +478,10 @@ class HttpTest extends BaseTest implements OverrideConfigList {
         }
 
         // assert
-        assert result instanceof Exception
+        assertThat result,
+                   is(equalTo([
+                           reply_key: 200
+                   ]))
     }
 
     @Test

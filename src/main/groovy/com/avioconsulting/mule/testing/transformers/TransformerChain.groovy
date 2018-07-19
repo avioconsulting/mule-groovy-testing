@@ -19,6 +19,12 @@ class TransformerChain implements MuleMessageTransformer {
     }
 
     MuleMessage transform(MuleMessage muleMessage) {
+        // needs to happen before inject because at that point transformers are actually running
+        transformers.each { transformer ->
+            if (transformer instanceof IHaveStateToReset) {
+                transformer.reset()
+            }
+        }
         transformers.inject(muleMessage) { MuleMessage output, transformer ->
             transformer.transform(output)
         }
