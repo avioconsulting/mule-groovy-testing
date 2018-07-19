@@ -3,6 +3,7 @@ package com.avioconsulting.mule.testing.mocking
 import com.avioconsulting.mule.testing.BaseTest
 import com.avioconsulting.mule.testing.OverrideConfigList
 import com.avioconsulting.mule.testing.SampleJacksonInput
+import groovy.util.logging.Log4j2
 import org.junit.Test
 import org.mule.api.MessagingException
 import org.mule.module.http.internal.request.DefaultHttpRequester
@@ -14,6 +15,7 @@ import static groovy.test.GroovyAssert.shouldFail
 import static org.hamcrest.Matchers.*
 import static org.junit.Assert.assertThat
 
+@Log4j2
 class HttpTest extends BaseTest implements OverrideConfigList {
     List<String> getConfigResourcesList() {
         ['http_test.xml']
@@ -435,6 +437,48 @@ class HttpTest extends BaseTest implements OverrideConfigList {
                    is(equalTo('Response code 500 mapped as failure.'))
         assertThat result.failingMessageProcessor,
                    is(instanceOf(DefaultHttpRequester))
+    }
+
+    @Test
+    void http_return_error_code_only_on_first_call() {
+        // arrange
+        def returnError = true
+        // for closure
+        def logger = log
+        mockRestHttpCall('SomeSystem Call') {
+            json {
+                whenCalledWith {
+                    if (returnError) {
+                        logger.info 'Returning 500 error from mock'
+                        setHttpReturnCode(500)
+                        return
+                    }
+                    logger.info 'Returning success from mock'
+                    [reply: 456]
+                }
+            }
+        }
+
+        log.info 'Triggering first call, which should fail'
+        shouldFail {
+            runFlow('queryParametersHttpStatus') {
+                json {
+                    inputPayload([foo: 123])
+                }
+            }
+        }
+        returnError = false
+
+        // act
+        log.info 'Triggering 2nd call, which should NOT fail'
+        def result = runFlow('queryParametersHttpStatus') {
+            json {
+                inputPayload([foo: 123])
+            }
+        }
+
+        // assert
+        assert result instanceof Exception
     }
 
     @Test
