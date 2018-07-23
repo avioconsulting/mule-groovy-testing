@@ -1,3 +1,6 @@
+# 1.0.12
+* Add raw capability to mock in case you don't want the payload be transformed
+
 # 1.0.11
 * Fix issue with subsequent HTTP mock invocations
 

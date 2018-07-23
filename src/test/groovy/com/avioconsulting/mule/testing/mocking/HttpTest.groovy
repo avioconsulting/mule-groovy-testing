@@ -3,6 +3,8 @@ package com.avioconsulting.mule.testing.mocking
 import com.avioconsulting.mule.testing.BaseTest
 import com.avioconsulting.mule.testing.OverrideConfigList
 import com.avioconsulting.mule.testing.SampleJacksonInput
+import groovy.json.JsonOutput
+import groovy.json.JsonSlurper
 import groovy.util.logging.Log4j2
 import org.junit.Test
 import org.mule.api.MessagingException
@@ -43,6 +45,35 @@ class HttpTest extends BaseTest implements OverrideConfigList {
 
         // assert
         assertThat stuff,
+                   is(equalTo([key: 123]))
+        assertThat result,
+                   is(equalTo([reply_key: 457]))
+    }
+
+    @Test
+    void mocksProperly_raw() {
+        // arrange
+        def stuff = null
+        mockRestHttpCall('SomeSystem Call') {
+            raw {
+                whenCalledWith { Object incoming ->
+                    stuff = incoming
+                    new ByteArrayInputStream(JsonOutput.toJson([reply: 456]).bytes)
+                }
+            }
+        }
+
+        // act
+        def result = runFlow('restRequest') {
+            json {
+                inputPayload([foo: 123])
+            }
+        }
+
+        // assert
+        assertThat stuff,
+                   is(instanceOf(InputStream))
+        assertThat new JsonSlurper().parse(stuff),
                    is(equalTo([key: 123]))
         assertThat result,
                    is(equalTo([reply_key: 457]))

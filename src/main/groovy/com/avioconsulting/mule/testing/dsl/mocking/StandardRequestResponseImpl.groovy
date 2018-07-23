@@ -36,4 +36,11 @@ abstract class StandardRequestResponseImpl implements StandardRequestResponse {
                                          initialPayloadValidator)
         this.closure = closure
     }
+
+    @Override
+    def raw(@DelegatesTo(RawFormatter) Closure closure) {
+        formatter = new RawFormatterImpl(muleContext,
+                                         initialPayloadValidator)
+        this.closure = closure
+    }
 }
