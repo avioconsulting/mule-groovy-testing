@@ -16,14 +16,6 @@ apply plugin: 'maven'
 sourceSets {
     main {
         compileClasspath += configurations.provided
-        java {
-            exclude 'com/quintiles/schemas/soaptest/v1/**'
-        }
-    }
-    test {
-        java {
-            srcDirs "${project.buildDir}/generated/jaxb/java/soaptest"
-        }
     }
 }
 
@@ -65,11 +57,13 @@ repositories {
 
 jaxb {
     javaGen {
-        soaptest {
+        withoutXmlRoot {
+            sourceSetName = 'test'
             schema = file('src/test/resources/soap/SOAPTest_v1.xsd')
         }
 
-        xmlroot {
+        withXmlRoot {
+            sourceSetName = 'test'
             schema = file('src/test/resources/soap_xmlroot/SOAPTest_v1.xsd')
             packageName = 'com.avioconsulting.mule.testing.soapxmlroot'
         }
@@ -87,7 +81,7 @@ uploadArchives {
     }
 }
 
-task sourcesJar(type: Jar, dependsOn:classes) {
+task sourcesJar(type: Jar, dependsOn: classes) {
     classifier = 'sources'
     from sourceSets.main.allSource
 }
