@@ -40,10 +40,17 @@ http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee
         </dw:transform-message>
         <set-property propertyName="Content-Type" value="application/json"/>
     </flow>
-    <apikit-soap:config name="/SOAPTestService/SOAPTestService/api-config"
-                        wsdlUrl="soap/test.wsdl" serviceName="SOAPTestService"
-                        portName="SOAPTestService" doc:name="APIkit SOAP: Configuration"/>
-    <flow name="soap-api-main">
-        <apikit-soap:router config-ref="/SOAPTestService/SOAPTestService/api-config"/>
+    <flow name="/some/soap/flow">
+        <dw:transform-message doc:name="Transform Message">
+            <dw:set-payload><![CDATA[%dw 1.0
+%output application/xml
+%namespace ns0 http://www.avioconsulting.com/schemas/SOAPTest/v1
+---
+{
+	ns0#SOAPTestResponse: {
+		ns0#details: 'theTitle ' ++ payload.ns0#SOAPTestRequest.title
+	}
+}]]></dw:set-payload>
+        </dw:transform-message>
     </flow>
 </mule>
