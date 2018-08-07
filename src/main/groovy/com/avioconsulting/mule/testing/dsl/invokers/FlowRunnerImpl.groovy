@@ -29,6 +29,13 @@ class FlowRunnerImpl implements FlowRunner, BatchRunner {
         this.closure = closure
     }
 
+    @Override
+    def soap(@DelegatesTo(SoapInvoker) Closure closure) {
+        def soapInvoker = new SoapInvokerImpl(muleContext)
+        invoker = soapInvoker
+        this.closure = closure
+    }
+
     def withOutputEvent(Closure closure) {
         muleOutputEventHook = closure
     }
