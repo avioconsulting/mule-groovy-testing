@@ -26,7 +26,6 @@ What hasn't been done yet/TODOs:
 * Boilerplate code from queue-error-strategies, how to test that
 * Also it might be useful to detect if a filter is used with a transactional listener and if so, fail a test if it's not a message filter and the filter does not use 'onUnAccepted' (acknowledged Mule bug)
 * Compare maven dependencies with engine directory and spot loader overrides problems
-* Invoking SOAP flows
 * Mocking DB (you probably shouldn't do this anyways, better to spin up a DB in a Docker container if possible)
 
 # Setting up your project

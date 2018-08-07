@@ -1,3 +1,6 @@
+# 1.0.13
+* Added basic SOAP invoking support via JAXB
+
 # 1.0.12
 * Add raw capability to mock in case you don't want the payload be transformed
 
