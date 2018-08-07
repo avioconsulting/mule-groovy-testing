@@ -9,7 +9,7 @@ class JAXBMarshalHelper {
     private final JAXBContext jaxbContext
 
     JAXBMarshalHelper(Class inputJaxbClass) {
-        this.jaxbContext = JAXBContext.newInstance(inputJaxbClass.package.name)
+        this.jaxbContext = JAXBContext.newInstance(inputJaxbClass.getPackage().name)
     }
 
     StringReader getMarshalled(objectOrJaxbElement) {

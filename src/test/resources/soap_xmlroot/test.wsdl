@@ -36,7 +36,7 @@
                       transport="http://schemas.xmlsoap.org/soap/http"/>
         <wsdl:operation name="operation1">
             <soap:operation
-                    soapAction="http://www.quintiles.com/services/SOAPTest/v1/SOAPTest"/>
+                    soapAction="http://www.avioconsulting.com/services/SOAPTest/v1/SOAPTest"/>
             <wsdl:input>
                 <soap:body use="literal"/>
             </wsdl:input>
