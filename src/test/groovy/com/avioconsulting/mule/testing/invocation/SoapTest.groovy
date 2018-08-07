@@ -27,7 +27,7 @@ class SoapTest extends BaseTest implements OverrideConfigList {
         // act
         def result = runFlow('/some/soap/flow') {
             soap {
-                inputPayload(input)
+                inputJaxbPayload(input)
             }
         } as SOAPTestResponse
 

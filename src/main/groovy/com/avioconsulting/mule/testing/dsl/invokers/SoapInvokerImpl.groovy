@@ -21,7 +21,7 @@ class SoapInvokerImpl implements SoapInvoker, Invoker {
     }
 
     @Override
-    def inputPayload(Object inputObject) {
+    def inputJaxbPayload(Object inputObject) {
         this.inputObject = inputObject
         this.helper = new JAXBMarshalHelper(inputObject.class)
     }
@@ -43,8 +43,17 @@ class SoapInvokerImpl implements SoapInvoker, Invoker {
 
     @Override
     def transformOutput(MuleEvent event) {
-        // TODO: Deal with this
-        event.message.payload
+        def incomingMessage = event.message
+        def payload = incomingMessage.payload
+        def nullPayload = payload instanceof byte[] && payload.length == 0
+        def strongTypedPayload
+        if (nullPayload) {
+            println 'Groovy Test WARNING: SOAP mock was sent a message with empty payload! using MuleMessage payload.'
+            strongTypedPayload = incomingMessage
+        } else {
+            strongTypedPayload = helper.unmarshal(incomingMessage)
+        }
+        strongTypedPayload
     }
 
     @Override
