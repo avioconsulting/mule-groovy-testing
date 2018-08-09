@@ -78,7 +78,7 @@ What hasn't been done yet/TODOs:
  
 5. Create your test classes
 
-**NOTE:** If you do much SOAP work in your project, XMLBeans, which WS-Consumer/Mule uses, can have performance issues with some schema/WSDL combinations when JVM assertions are enabled. You might want to tell Surefire to not enable assertions (which it does by default) using the following plugin snippet:
+**NOTE:** If you do much SOAP work in your project, XMLBeans, which WS-Consumer/Mule uses, can have performance issues with some schema/WSDL combinations when JVM assertions are enabled. This problem does not show up with pure MUnit because MUnit does not rely on JUnit test runs via Surefire but this approach does. You might want to tell Surefire to not enable assertions (which it does by default) using the following plugin snippet:
 
 ```xml
 <plugin>
