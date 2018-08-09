@@ -1,6 +1,7 @@
 # 1.0.14
 * Remove SFDC dependency and use reflection to impose a lighter burden
   on test dependencies for consuming projects
+* Remove DataWeave compile dependency for the same reason, only used it for testing THIS framework
   
 # 1.0.13
 * Added basic SOAP invoking support via JAXB
