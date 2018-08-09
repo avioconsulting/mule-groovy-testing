@@ -1,3 +1,7 @@
+# 1.0.14
+* Remove SFDC dependency and use reflection to impose a lighter burden
+  on test dependencies for consuming projects
+  
 # 1.0.13
 * Added basic SOAP invoking support via JAXB
 
