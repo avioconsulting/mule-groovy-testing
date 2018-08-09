@@ -12,14 +12,19 @@ class JAXBMarshalHelper {
         this.jaxbContext = JAXBContext.newInstance(inputJaxbClass.getPackage().name)
     }
 
-    StringReader getMarshalled(objectOrJaxbElement) {
+    StringReader getMarshalled(objectOrJaxbElement,
+                               Closure stringPreview = null) {
         def marshaller = this.jaxbContext.createMarshaller()
         def stringWriter = new StringWriter()
 
         try {
             marshaller.marshal objectOrJaxbElement, stringWriter
             stringWriter.close()
-            new StringReader(stringWriter.toString())
+            def asString = stringWriter.toString()
+            if (stringPreview) {
+                stringPreview(asString)
+            }
+            new StringReader(asString)
         }
         catch (e) {
             throw new Exception(

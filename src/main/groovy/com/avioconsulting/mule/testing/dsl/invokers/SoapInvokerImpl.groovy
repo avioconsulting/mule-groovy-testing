@@ -3,12 +3,15 @@ package com.avioconsulting.mule.testing.dsl.invokers
 import com.avioconsulting.mule.testing.payloadvalidators.IPayloadValidator
 import com.avioconsulting.mule.testing.transformers.xml.JAXBMarshalHelper
 import com.avioconsulting.mule.testing.transformers.xml.XMLMessageBuilder
+import groovy.util.logging.Log4j2
+import groovy.xml.XmlUtil
 import org.mule.DefaultMuleEvent
 import org.mule.MessageExchangePattern
 import org.mule.api.MuleContext
 import org.mule.api.MuleEvent
 import org.mule.munit.common.util.MunitMuleTestUtils
 
+@Log4j2
 class SoapInvokerImpl implements SoapInvoker, Invoker {
     private inputObject
     private final MuleContext muleContext
@@ -33,9 +36,16 @@ class SoapInvokerImpl implements SoapInvoker, Invoker {
             def xml = inputObject.text
             reader = new StringReader(xml)
         } else {
-            reader = helper.getMarshalled(inputObject)
+            reader = helper.getMarshalled(inputObject) { String xml ->
+                def parsedNode = new XmlParser().parseText(xml)
+                def xmlOutput = new StringWriter()
+                def printer = new XmlNodePrinter(new PrintWriter(xmlOutput))
+                printer.print(parsedNode)
+                log.info 'Put together SOAP request payload of {}',
+                         XmlUtil.serialize(xmlOutput.toString())
+            }
         }
-        def message = this.xmlMessageBuilder.build(reader, 200)
+        def message = this.xmlMessageBuilder.build(reader)
         new DefaultMuleEvent(message,
                              MessageExchangePattern.REQUEST_RESPONSE,
                              MunitMuleTestUtils.getTestFlow(muleContext))

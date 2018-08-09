@@ -1,5 +1,6 @@
 # 1.0.16
 * Remove our CXF dependency and be dynamic about it such that projects can specify their own version
+* Log SOAP invocation payloads
 
 # 1.0.15
 * Removed unnecessary maven-plugin-api dependency
