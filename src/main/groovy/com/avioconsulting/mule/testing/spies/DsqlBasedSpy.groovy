@@ -4,10 +4,14 @@ import com.avioconsulting.mule.testing.ProcessorLocator
 import org.mule.api.MuleContext
 import org.mule.api.MuleEvent
 import org.mule.api.MuleException
-import org.mule.devkit.internal.dsql.DsqlMelParserUtils
 import org.mule.munit.common.mocking.SpyProcess
 
 abstract class DsqlBasedSpy implements SpyProcess {
+    @Lazy
+    private static Class dsqlMelParserUtilsKlass = {
+        DsqlBasedSpy.classLoader.loadClass('org.mule.devkit.internal.dsql.DsqlMelParserUtils')
+    }()
+
     private final ProcessorLocator locator
     protected final MuleContext muleContext
     private String dSqlQuery
@@ -29,7 +33,7 @@ abstract class DsqlBasedSpy implements SpyProcess {
         assert processor.hasProperty(
                 'query'): "Tried to get DSQL 'query' field from class ${processor.class} but it was not found. Most DevKit based DSQL processors have a private field with a setter only. Check the class and examine what might have changed."
         def query = processor.query
-        def dsqlParserQuery = new DsqlMelParserUtils()
+        def dsqlParserQuery = dsqlMelParserUtilsKlass.newInstance()
         def prefixedDsql = dsqlParserQuery.parseDsql(this.muleContext,
                                                      muleEvent,
                                                      query) as String

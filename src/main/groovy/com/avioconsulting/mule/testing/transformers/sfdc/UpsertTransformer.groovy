@@ -7,7 +7,6 @@ import org.mule.DefaultMuleMessage
 import org.mule.api.MuleContext
 import org.mule.api.MuleMessage
 import org.mule.modules.interceptor.processors.MuleMessageTransformer
-import org.mule.modules.salesforce.bulk.EnrichedUpsertResult
 
 class UpsertTransformer implements MuleMessageTransformer {
     private final Closure closure
@@ -31,7 +30,7 @@ class UpsertTransformer implements MuleMessageTransformer {
         def options = (methodNames(responseUtilClass) - methodNames(GroovyObject)).unique().sort()
         options.removeAll { name ->
             // hidden methods
-            name.startsWith('$')
+            name.startsWith('$') || name.endsWith('Klass') || name.startsWith('this$')
         }
         throw new Exception(
                 "Must return a SalesForce result from your mock. Options include ${options}. See ${responseUtilClass} class for options.")
@@ -48,7 +47,7 @@ class UpsertTransformer implements MuleMessageTransformer {
         def result = code(payload)
         validateReturnPayloadList(result,
                                   UpsertResponseUtil,
-                                  EnrichedUpsertResult)
+                                  UpsertResponseUtil.enrichedUpsertResultKlass)
         new DefaultMuleMessage(result,
                                this.muleContext)
     }
