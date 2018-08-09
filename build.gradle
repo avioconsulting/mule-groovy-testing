@@ -3,7 +3,7 @@ plugins {
 }
 
 group 'com.avioconsulting.mule'
-version '1.0.14'
+version '1.0.15'
 
 configurations {
     provided
@@ -95,7 +95,6 @@ dependencies {
     // something broke mocking between 1.3.3 and 1.3.4
     def munitVersion = '1.3.3'
     def munitSupportVersion = '3.9.1'
-    compile 'org.apache.maven:maven-plugin-api:3.3.9'
     compile group: 'com.mulesoft.muleesb', name: 'mule-core-ee', version: muleVersion
     compile group: 'org.mule.tests', name: 'mule-tests-functional', version: muleVersion
     compile group: 'org.mule.modules', name: 'mule-module-client', version: muleVersion

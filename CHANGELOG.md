@@ -1,3 +1,6 @@
+# 1.0.15
+* Removed unnecessary maven-plugin-api dependency
+
 # 1.0.14
 * Remove SFDC dependency and use reflection to impose a lighter burden
   on test dependencies for consuming projects
