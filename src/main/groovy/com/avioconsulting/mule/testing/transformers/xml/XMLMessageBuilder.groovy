@@ -1,6 +1,5 @@
 package com.avioconsulting.mule.testing.transformers.xml
 
-import org.apache.cxf.staxutils.DepthXMLStreamReader
 import org.mule.DefaultMuleMessage
 import org.mule.api.MuleContext
 import org.mule.api.MuleMessage
@@ -8,6 +7,18 @@ import org.mule.api.MuleMessage
 import javax.xml.stream.XMLInputFactory
 
 class XMLMessageBuilder {
+    // don't want to tie ourselves to a given version of CXF by expressing a compile dependency
+    @Lazy
+    private static Class depthXmlStreamReaderKlass = {
+        try {
+            XMLMessageBuilder.classLoader.loadClass('org.apache.cxf.staxutils.DepthXMLStreamReader')
+        }
+        catch (e) {
+            throw new Exception('Was not able to load DepthXMLStreamReader properly. You need to have CXF in your project to use the XML functions. Consider adding the org.mule.modules:mule-module-cxf:jar:3.9.1 dependency with at least test scope to your project',
+                                e)
+        }
+    }()
+
     private final MuleContext muleContext
 
     XMLMessageBuilder(MuleContext muleContext) {
@@ -23,17 +34,17 @@ class XMLMessageBuilder {
     private static getPayload(InputStream stream) {
         def factory = XMLInputFactory.newInstance()
         def xmlReader = factory.createXMLStreamReader stream
-        new DepthXMLStreamReader(xmlReader)
+        depthXmlStreamReaderKlass.newInstance(xmlReader)
     }
 
     private static getPayload(Reader reader) {
         def factory = XMLInputFactory.newInstance()
         def xmlReader = factory.createXMLStreamReader reader
-        new DepthXMLStreamReader(xmlReader)
+        depthXmlStreamReaderKlass.newInstance(xmlReader)
     }
 
     private MuleMessage constructXMLMessage(Integer httpStatus,
-                                            DepthXMLStreamReader payload) {
+                                            Object payload) {
         // need some of these props for SOAP mock to work properly
         def messageProps = [
                 'content-type': 'text/xml; charset=utf-8'

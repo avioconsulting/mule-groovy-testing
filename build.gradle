@@ -3,7 +3,7 @@ plugins {
 }
 
 group 'com.avioconsulting.mule'
-version '1.0.15'
+version '1.0.16'
 
 configurations {
     provided
@@ -101,7 +101,6 @@ dependencies {
     compile group: 'org.mule.modules', name: 'mule-module-json', version: muleVersion
     compile group: 'com.mulesoft.muleesb.modules', name: 'mule-module-batch-ee', version: muleVersion
     compile group: 'com.mulesoft.munit', name: 'mule-munit-support', version: munitSupportVersion
-    compile 'org.apache.cxf:cxf-api:2.7.18'
     compile 'xalan:xalan:2.7.2'
     compile group: 'com.mulesoft.munit', name: 'munit-runner', version: munitVersion
     // 3.9.1 is bundled with this Groovy version
