@@ -70,13 +70,27 @@ What hasn't been done yet/TODOs:
 <dependency>
     <groupId>com.avioconsulting.mule</groupId>
     <artifactId>testing</artifactId>
-    <version>1.0.8</version>
+    <version>1.0.13</version>
     <scope>test</scope>
 </dependency>
 ```
 4. As you go, add respective jaxb2-maven-plugin or jsonschema2pojo-maven-plugin usages to generate sources to use during tests
  
 5. Create your test classes
+
+**NOTE:** If you do much SOAP work in your project, XMLBeans, which WS-Consumer/Mule uses, can have performance issues with some schema/WSDL combinations when JVM assertions are enabled. You might want to tell Surefire to not enable assertions (which it does by default) using the following plugin snippet:
+
+```xml
+<plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-surefire-plugin</artifactId>
+    <version>2.22.0</version>
+    <configuration>
+        <!-- XMLBeans and some schemas have performance issues when running tests with assertions enabled -->
+        <enableAssertions>false</enableAssertions>
+    </configuration>
+</plugin>
+```
 
 # Test Classes
 
