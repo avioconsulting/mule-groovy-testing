@@ -1,11 +1,13 @@
 package com.avioconsulting.mule.testing.transformers.xml
 
 import com.avioconsulting.mule.testing.payloadvalidators.IPayloadValidator
+import com.avioconsulting.mule.testing.transformers.ClosureMuleMessageHandler
 import org.mule.api.MuleContext
 import org.mule.api.MuleMessage
 import org.mule.modules.interceptor.processors.MuleMessageTransformer
 
-class XMLJAXBTransformer extends XMLTransformer implements MuleMessageTransformer {
+class XMLJAXBTransformer extends XMLTransformer implements MuleMessageTransformer,
+        ClosureMuleMessageHandler {
     private final Closure closure
     private final JAXBMarshalHelper helper
 
@@ -30,7 +32,8 @@ class XMLJAXBTransformer extends XMLTransformer implements MuleMessageTransforme
             strongTypedPayload = helper.unmarshal(incomingMessage)
         }
 
-        def reply = this.closure(strongTypedPayload)
+        def forMuleMsg = withMuleMessage(this.closure, incomingMessage)
+        def reply = forMuleMsg(strongTypedPayload)
 
         StringReader reader
         if (reply instanceof File) {

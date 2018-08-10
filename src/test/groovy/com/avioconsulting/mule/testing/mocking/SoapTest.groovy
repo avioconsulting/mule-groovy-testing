@@ -9,6 +9,8 @@ import com.avioconsulting.schemas.soaptest.v1.SOAPTestRequestType
 import com.avioconsulting.schemas.soaptest.v1.SOAPTestResponseType
 import org.junit.Test
 import org.mule.api.MessagingException
+import org.mule.api.MuleMessage
+import org.mule.api.transport.PropertyScope
 
 import java.util.concurrent.TimeoutException
 
@@ -51,6 +53,33 @@ class SoapTest extends BaseTest implements OverrideConfigList {
         assertThat result,
                    is(equalTo([result: 'yes!']))
     }
+
+    @Test
+    void with_mule_message() {
+        // arrange
+        MuleMessage sentMessage = null
+        mockSoapCall('A SOAP Call') {
+            whenCalledWithJaxb(SOAPTestRequestType) { SOAPTestRequestType request,
+                                                      MuleMessage msg ->
+                sentMessage = msg
+                def response = new SOAPTestResponseType()
+                response.details = 'yes!'
+                new ObjectFactory().createSOAPTestResponse(response)
+            }
+        }
+
+        // act
+        runFlow('soaptestFlow') {
+            json {
+                inputPayload([foo: 123])
+            }
+        }
+
+        // assert
+        assertThat sentMessage.getProperty('content-type', PropertyScope.INBOUND),
+                   is(equalTo('application/json; charset=utf-8'))
+    }
+
 
     @Test
     void forgetToReturnAJaxbElement() {

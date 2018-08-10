@@ -1,3 +1,6 @@
+# 1.0.17
+* Add ability to gain access to the Mule message within the same closure for XML/SOAP mocks (e.g. whenCalledWithMapAsXml, whenCalledWithGroovyXmlParser, etc.)
+
 # 1.0.16
 * Remove our CXF dependency and be dynamic about it such that projects can specify their own version
 * Log SOAP invocation payloads

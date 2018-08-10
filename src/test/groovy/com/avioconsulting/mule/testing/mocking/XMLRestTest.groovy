@@ -4,6 +4,8 @@ import com.avioconsulting.mule.testing.BaseTest
 import com.avioconsulting.mule.testing.OverrideConfigList
 import groovy.json.JsonOutput
 import org.junit.Test
+import org.mule.api.MuleMessage
+import org.mule.api.transport.PropertyScope
 
 import static groovy.test.GroovyAssert.shouldFail
 import static org.hamcrest.Matchers.*
@@ -48,6 +50,36 @@ class XMLRestTest extends BaseTest implements OverrideConfigList {
                    is(equalTo(JsonOutput.toJson(
                            [reply_key: 23]
                    )))
+    }
+
+    @Test
+    void mockViaMap_withMuleMsg() {
+        // arrange
+        MuleMessage sentMessage = null
+        mockRestHttpCall('SomeSystem Call') {
+            xml {
+                whenCalledWithMapAsXml { Map input,
+                                         MuleMessage message ->
+                    sentMessage = message
+                    [
+                            rootElementResponse: [
+                                    reply: 22
+                            ]
+                    ]
+                }
+            }
+        }
+
+        // act
+        runFlow('xmlTest') {
+            json {
+                inputPayload([foo: 123])
+            }
+        }
+
+        // assert
+        assertThat sentMessage.getProperty('content-type', PropertyScope.INBOUND),
+                   is(equalTo('application/json; charset=utf-8'))
     }
 
     @Test
@@ -155,6 +187,34 @@ class XMLRestTest extends BaseTest implements OverrideConfigList {
                    is(equalTo(JsonOutput.toJson(
                            [reply_key: 23]
                    )))
+    }
+
+    @Test
+    void mockGroovyXmlParser_withMuleMsg() {
+        // arrange
+        MuleMessage sentMessage = null
+        mockRestHttpCall('SomeSystem Call') {
+            xml {
+                whenCalledWithGroovyXmlParser { Node input,
+                                                MuleMessage message ->
+                    sentMessage = message
+                    def node = new Node(null, 'rootElementResponse')
+                    node.appendNode('reply', 22)
+                    node
+                }
+            }
+        }
+
+        // act
+        runFlow('xmlTest') {
+            json {
+                inputPayload([foo: 123])
+            }
+        }
+
+        // assert
+        assertThat sentMessage.getProperty('content-type', PropertyScope.INBOUND),
+                   is(equalTo('application/json; charset=utf-8'))
     }
 
     @Test

@@ -1,13 +1,15 @@
 package com.avioconsulting.mule.testing.transformers.xml
 
 import com.avioconsulting.mule.testing.payloadvalidators.IPayloadValidator
+import com.avioconsulting.mule.testing.transformers.ClosureMuleMessageHandler
 import groovy.util.slurpersupport.GPathResult
 import groovy.xml.MarkupBuilder
 import org.mule.api.MuleContext
 import org.mule.api.MuleMessage
 import org.mule.modules.interceptor.processors.MuleMessageTransformer
 
-class XMLMapTransformer extends XMLTransformer implements MuleMessageTransformer {
+class XMLMapTransformer extends XMLTransformer implements MuleMessageTransformer,
+        ClosureMuleMessageHandler{
     private final Closure closure
 
     XMLMapTransformer(Closure closure,
@@ -22,7 +24,8 @@ class XMLMapTransformer extends XMLTransformer implements MuleMessageTransformer
         def xmlString = incomingMessage.payloadAsString
         def node = new XmlSlurper().parseText(xmlString) as GPathResult
         def asMap = convertToMap(node)
-        def result = closure(asMap)
+        def forMuleMsg = withMuleMessage(closure, incomingMessage)
+        def result = forMuleMsg(asMap)
         String xmlReply
         if (result instanceof File) {
             xmlReply = result.text
