@@ -11,7 +11,8 @@ class XMLTransformer {
     XMLTransformer(MuleContext muleContext,
                    IPayloadValidator payloadValidator) {
         this.payloadValidator = payloadValidator
-        this.xmlMessageBuilder = new XMLMessageBuilder(muleContext)
+        this.xmlMessageBuilder = new XMLMessageBuilder(muleContext,
+                                                       false)
     }
 
     def validateContentType(MuleMessage muleMessage) {

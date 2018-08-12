@@ -19,9 +19,23 @@ class XMLMessageBuilder {
         }
     }()
 
-    private final MuleContext muleContext
+    @Lazy
+    private static Class apikitStreamReaderClass = {
+        try {
+            XMLMessageBuilder.classLoader.loadClass('org.mule.module.soapkit.NamespaceRestorerXMLStreamReader')
+        }
+        catch (e) {
+            throw new Exception('Was not able to load NamespaceRestorerXMLStreamReader properly. You need to have CXF in your project to use the XML functions. Consider adding the org.mule.modules:mule-module-apikit-soap:1.0.3 dependency with at least test scope to your project',
+                                e)
+        }
+    }()
 
-    XMLMessageBuilder(MuleContext muleContext) {
+    private final MuleContext muleContext
+    private final boolean wrapWithApiKitStreamReader
+
+    XMLMessageBuilder(MuleContext muleContext,
+                      boolean wrapWithApiKitStreamReader) {
+        this.wrapWithApiKitStreamReader = wrapWithApiKitStreamReader
         this.muleContext = muleContext
     }
 
@@ -37,9 +51,14 @@ class XMLMessageBuilder {
         depthXmlStreamReaderKlass.newInstance(xmlReader)
     }
 
-    private static getPayload(Reader reader) {
+    private getPayload(Reader reader) {
         def factory = XMLInputFactory.newInstance()
         def xmlReader = factory.createXMLStreamReader reader
+        // SOAP Apikit flows have the xmlReader, which is usually a com.ctc.wstx.sr.ValidatingStreamReader
+        // wrapped with apikitStreamReaderClass
+        if (this.wrapWithApiKitStreamReader) {
+            xmlReader = apikitStreamReaderClass.newInstance(xmlReader)
+        }
         depthXmlStreamReaderKlass.newInstance(xmlReader)
     }
 

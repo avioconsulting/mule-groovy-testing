@@ -20,7 +20,8 @@ class SoapInvokerImpl implements SoapInvoker, Invoker {
 
     SoapInvokerImpl(MuleContext muleContext) {
         this.muleContext = muleContext
-        xmlMessageBuilder = new XMLMessageBuilder(muleContext)
+        xmlMessageBuilder = new XMLMessageBuilder(muleContext,
+                                                  true)
     }
 
     @Override
