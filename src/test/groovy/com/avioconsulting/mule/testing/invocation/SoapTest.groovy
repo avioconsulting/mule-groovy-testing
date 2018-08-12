@@ -35,4 +35,25 @@ class SoapTest extends BaseTest implements OverrideConfigList {
         assertThat result.details,
                    is(equalTo('theTitle hello there'))
     }
+
+    @Test
+    void input_output_messagepayloadasstring() {
+        // arrange
+        def input = new SOAPTestRequest().with {
+            title = 'hello there'
+            approvalDate = getXmlDate(2018, 8, 07)
+            it
+        }
+
+        // act
+        def result = runFlow('/some/soap/flow/messagepayloadasstring') {
+            soap {
+                inputJaxbPayload(input)
+            }
+        } as SOAPTestResponse
+
+        // assert
+        assertThat result.details,
+                   is(equalTo('theTitle hello there'))
+    }
 }

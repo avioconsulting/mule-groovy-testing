@@ -53,4 +53,20 @@ http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee
 }]]></dw:set-payload>
         </dw:transform-message>
     </flow>
+    <flow name="/some/soap/flow/messagepayloadasstring">
+        <logger message="before, payload is of type #[payload.getClass().getName()]" level="INFO" doc:name="Logger"/>
+        <set-payload value="#[message.payloadAs(java.lang.String)]" doc:name="Set Payload"/>
+        <logger message="payload is now #[payload] of type #[payload.getClass().getName()]" level="INFO" doc:name="Logger"/>
+        <dw:transform-message doc:name="Transform Message">
+            <dw:set-payload><![CDATA[%dw 1.0
+%output application/xml
+%namespace ns0 http://www.avioconsulting.com/schemas/SOAPTest/v1
+---
+{
+	ns0#SOAPTestResponse: {
+		ns0#details: 'theTitle ' ++ payload.ns0#SOAPTestRequest.title
+	}
+}]]></dw:set-payload>
+        </dw:transform-message>
+    </flow>
 </mule>
