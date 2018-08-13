@@ -38,6 +38,7 @@ class SoapTest extends BaseTest implements OverrideConfigList {
 
     @Test
     void input_output_messagepayloadasstring() {
+        // TODO: Why is this failing? It failed even on the cxf validator project where we invoke the flow via HTTP. That would point to a classpath/environment issue of some sort.
         // arrange
         def input = new SOAPTestRequest().with {
             title = 'hello there'
