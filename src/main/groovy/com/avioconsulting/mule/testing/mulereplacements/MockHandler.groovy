@@ -7,12 +7,12 @@ import org.mule.api.processor.MessageProcessor
 
 import java.lang.reflect.Method
 
-class Handler implements MethodInterceptor {
+class MockHandler implements MethodInterceptor {
     private final MessageProcessor processorWeMightMock
     private final MockingConfiguration mockingConfiguration
 
-    Handler(MessageProcessor processorWeMightMock,
-            MockingConfiguration mockingConfiguration) {
+    MockHandler(MessageProcessor processorWeMightMock,
+                MockingConfiguration mockingConfiguration) {
         this.processorWeMightMock = processorWeMightMock
         this.mockingConfiguration = mockingConfiguration
     }

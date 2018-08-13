@@ -34,8 +34,8 @@ class ConnectorReplacerProcessor implements BeanPostProcessor {
         def beanKlass = bean.class
         try {
             if (bean instanceof MessageProcessor && !noMocking.containsKey(beanKlass.name)) {
-                return Enhancer.create(beanKlass, new Handler(bean,
-                                                              this.mockingConfiguration))
+                return Enhancer.create(beanKlass, new MockHandler(bean,
+                                                                  this.mockingConfiguration))
             }
             return bean
         }
