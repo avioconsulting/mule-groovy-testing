@@ -33,6 +33,7 @@ class HttpMock implements MockProcess<DefaultHttpRequester> {
                                  httpRequester)
         def fullPath = getFullPath(muleEvent,
                                    httpRequester)
+        // TODO: This is awkward, came from spy/mock difference in munit before, do we really need it?
         optionReceivers.each { receiver ->
             receiver.receive(queryParams,
                              headers,
