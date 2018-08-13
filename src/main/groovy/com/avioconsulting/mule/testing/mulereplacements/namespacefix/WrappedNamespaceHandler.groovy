@@ -14,7 +14,11 @@ import javax.xml.namespace.QName
 // aren't loaded
 class WrappedNamespaceHandler implements NamespaceHandler {
     @Delegate
-    NamespaceHandler wrapped
+    private final NamespaceHandler wrapped
+
+    WrappedNamespaceHandler(NamespaceHandler wrapped) {
+        this.wrapped = wrapped
+    }
 
     @Override
     BeanDefinition parse(Element element,

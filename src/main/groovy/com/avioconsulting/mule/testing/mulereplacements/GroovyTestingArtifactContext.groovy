@@ -42,9 +42,7 @@ class GroovyTestingArtifactContext extends MuleArtifactContext {
         def reader = super.createBeanDefinitionReader(beanFactory)
         assert reader instanceof XmlBeanDefinitionReader
         // need to fix annotations for mocking purposes
-        def ourResolver = new AnnotatedNamespaceHandlerResolver()
-        ourResolver.delegate = reader.namespaceHandlerResolver
-        reader.namespaceHandlerResolver = ourResolver
+        reader.namespaceHandlerResolver = new AnnotatedNamespaceHandlerResolver(reader.namespaceHandlerResolver)
         reader
     }
 }

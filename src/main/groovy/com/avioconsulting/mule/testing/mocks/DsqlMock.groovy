@@ -27,7 +27,7 @@ class DsqlMock implements MockProcess {
         this.closure = closure
         this.muleContext = muleContext
     }
-    
+
     MuleEvent process(MuleEvent muleEvent,
                       MessageProcessor processor) {
         assert processor.hasProperty(
