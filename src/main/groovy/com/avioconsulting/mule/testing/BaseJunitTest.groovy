@@ -1,6 +1,7 @@
 package com.avioconsulting.mule.testing
 
 import com.avioconsulting.mule.testing.dsl.invokers.FlowRunner
+import com.avioconsulting.mule.testing.dsl.mocking.HttpRequestResponseChoice
 import com.avioconsulting.mule.testing.mulereplacements.MockingConfiguration
 import groovy.util.logging.Log4j2
 import org.apache.logging.log4j.Logger
@@ -12,6 +13,7 @@ import org.mule.api.MuleEvent
 @Log4j2
 class BaseJunitTest implements BaseMuleGroovyTrait {
     protected static MuleContext muleContext
+    private static MockingConfiguration mockingConfiguration
 
     @Override
     Logger getLogger() {
@@ -21,10 +23,11 @@ class BaseJunitTest implements BaseMuleGroovyTrait {
     @Before
     void startMule() {
         if (!muleContext) {
-            def configuration = new MockingConfiguration()
-            muleContext = createMuleContext(configuration)
+            mockingConfiguration = new MockingConfiguration()
+            muleContext = createMuleContext(mockingConfiguration)
             muleContext.start()
         }
+        mockingConfiguration.mocks.clear()
     }
 
     @AfterClass
@@ -50,5 +53,12 @@ class BaseJunitTest implements BaseMuleGroovyTrait {
         runFlow(muleContext,
                 flowName,
                 event)
+    }
+
+    def mockRestHttpCall(String connectorName,
+                         @DelegatesTo(HttpRequestResponseChoice) Closure closure) {
+        mockRestHttpCall(mockingConfiguration,
+                         connectorName,
+                         closure)
     }
 }

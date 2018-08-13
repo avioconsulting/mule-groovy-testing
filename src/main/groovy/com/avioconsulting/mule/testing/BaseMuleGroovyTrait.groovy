@@ -6,6 +6,7 @@ import com.avioconsulting.mule.testing.dsl.invokers.FlowRunnerImpl
 import com.avioconsulting.mule.testing.dsl.mocking.*
 import com.avioconsulting.mule.testing.dsl.mocking.sfdc.Choice
 import com.avioconsulting.mule.testing.dsl.mocking.sfdc.ChoiceImpl
+import com.avioconsulting.mule.testing.mocks.HttpMock
 import com.avioconsulting.mule.testing.mulereplacements.GroovyTestingSpringXmlConfigurationBuilder
 import com.avioconsulting.mule.testing.mulereplacements.MockingConfiguration
 import com.avioconsulting.mule.testing.payloadvalidators.SOAPPayloadValidator
@@ -222,26 +223,19 @@ trait BaseMuleGroovyTrait {
                     timeoutSeconds * 1000
     }
 
-    def mockRestHttpCall(String connectorName,
+    def mockRestHttpCall(MockingConfiguration mockingConfiguration,
+                         String connectorName,
                          @DelegatesTo(HttpRequestResponseChoice) Closure closure) {
-        def mocker = whenMessageProcessor('request')
-                .ofNamespace('http')
-                .withAttributes(Attribute.attribute('name')
-                                        .ofNamespace('doc')
-                                        .withValue(connectorName))
-        def spy = spyMessageProcessor('request')
-                .ofNamespace('http')
-                .withAttributes(Attribute.attribute('name')
-                                        .ofNamespace('doc')
-                                        .withValue(connectorName))
-        def locator = new ProcessorLocator(connectorName)
-        def formatterChoice = new HttpRequestResponseChoiceImpl(spy,
-                                                                locator,
-                                                                muleContext)
-        def code = closure.rehydrate(formatterChoice, this, this)
-        code.resolveStrategy = Closure.DELEGATE_ONLY
-        code()
-        mocker.thenApply(formatterChoice.transformer)
+        mockingConfiguration.mocks[connectorName] = new HttpMock()
+        // TODO: Hook the rest of this in
+//        def locator = new ProcessorLocator(connectorName)
+//        def formatterChoice = new HttpRequestResponseChoiceImpl(spy,
+//                                                                locator,
+//                                                                muleContext)
+//        def code = closure.rehydrate(formatterChoice, this, this)
+//        code.resolveStrategy = Closure.DELEGATE_ONLY
+//        code()
+//        mocker.thenApply(formatterChoice.transformer)
     }
 
     def mockVmReceive(String connectorName,
