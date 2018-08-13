@@ -31,6 +31,7 @@ abstract class BaseTest {
     protected static MuleContext muleContext
 
     BaseTest() {
+        // TODO: Get the lifecycle right!
         if (!muleContext) {
             def contextFactory = new DefaultMuleContextFactory()
             def muleContextBuilder = new DefaultMuleContextBuilder()

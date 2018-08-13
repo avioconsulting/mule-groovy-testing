@@ -46,9 +46,11 @@ class SoapInvokerImpl implements SoapInvoker, Invoker {
             }
         }
         def message = this.xmlMessageBuilder.build(reader)
+        // TODO: Hard coded flow
+        def flow = muleContext.registry.lookupFlowConstruct('/some/soap/flow/messagepayloadasstring')
         new DefaultMuleEvent(message,
                              MessageExchangePattern.REQUEST_RESPONSE,
-                             MunitMuleTestUtils.getTestFlow(muleContext))
+                             flow)
     }
 
     @Override
