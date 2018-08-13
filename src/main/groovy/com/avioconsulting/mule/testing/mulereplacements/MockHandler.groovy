@@ -28,6 +28,8 @@ class MockHandler implements MethodInterceptor, AnnotatedObject {
                      MethodProxy proxy) throws Throwable {
         if (doAnnotations) {
             switch(method.name) {
+                // some objects miss annotations, we basically implement annotation storage on this class
+                // since each object has its own MockHandler
                 case 'setAnnotations':
                     setAnnotations(args[0])
                     return
