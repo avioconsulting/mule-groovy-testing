@@ -1,5 +1,6 @@
 package com.avioconsulting.mule.testing.mulereplacements.namespacefix
 
+import com.avioconsulting.mule.testing.mulereplacements.MockingConfiguration
 import org.mule.api.AnnotatedObject
 import org.mule.api.processor.MessageProcessor
 import org.springframework.beans.factory.config.BeanDefinition
@@ -7,8 +8,6 @@ import org.springframework.beans.factory.support.RootBeanDefinition
 import org.springframework.beans.factory.xml.NamespaceHandler
 import org.springframework.beans.factory.xml.ParserContext
 import org.w3c.dom.Element
-
-import javax.xml.namespace.QName
 
 // for some processors, like WS-Consumer, annotations, which is how we locate the connector's name
 // aren't loaded. This lets us influence the XML->Java object transition at an early stage
@@ -42,16 +41,15 @@ class WrappedNamespaceHandler implements NamespaceHandler {
         if (!MessageProcessor.isAssignableFrom(beanKlass) || AnnotatedObject.isAssignableFrom(beanKlass)) {
             return
         }
-        def name = element.attributes.getNamedItemNS('http://www.mulesoft.org/schema/mule/documentation',
-                                                     'name')
+        def nameQname = MockingConfiguration.processorName
+        def name = element.attributes.getNamedItemNS(nameQname.namespaceURI,
+                                                     nameQname.localPart)
         if (name) {
-            def qname = new QName(name.namespaceURI,
-                                  'name')
             def annotations = [
-                    (qname): name.nodeValue
+                    (nameQname): name.nodeValue
             ]
             // This will get picked up by the MockMethodInterceptor in this library. This is part of the AnnotatedObject
-            // interface
+            // interface. Then MockingConfiguration will examine the value when making the mock decision
             beanDefinition.propertyValues.add('annotations',
                                               annotations)
         }

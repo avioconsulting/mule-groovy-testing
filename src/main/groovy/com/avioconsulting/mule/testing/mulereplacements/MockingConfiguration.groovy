@@ -6,7 +6,7 @@ import javax.xml.namespace.QName
 
 class MockingConfiguration {
     private final Map<String, MockProcess> mocks = [:]
-    private static final QName processorName = new QName('http://www.mulesoft.org/schema/mule/documentation',
+    static final QName processorName = new QName('http://www.mulesoft.org/schema/mule/documentation',
                                                          'name')
 
     def clearMocks() {
