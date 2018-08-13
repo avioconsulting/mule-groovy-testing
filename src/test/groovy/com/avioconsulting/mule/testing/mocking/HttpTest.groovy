@@ -1,6 +1,6 @@
 package com.avioconsulting.mule.testing.mocking
 
-import com.avioconsulting.mule.testing.BaseTest
+import com.avioconsulting.mule.testing.BaseJunitTest
 import com.avioconsulting.mule.testing.OverrideConfigList
 import com.avioconsulting.mule.testing.SampleJacksonInput
 import groovy.json.JsonOutput
@@ -17,7 +17,7 @@ import static org.hamcrest.Matchers.*
 import static org.junit.Assert.assertThat
 
 @Log4j2
-class HttpTest extends BaseTest implements OverrideConfigList {
+class HttpTest extends BaseJunitTest implements OverrideConfigList {
     List<String> getConfigResourcesList() {
         ['http_test.xml']
     }

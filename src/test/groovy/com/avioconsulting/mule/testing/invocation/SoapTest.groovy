@@ -1,6 +1,6 @@
 package com.avioconsulting.mule.testing.invocation
 
-import com.avioconsulting.mule.testing.BaseTest
+import com.avioconsulting.mule.testing.BaseJunitTest
 import com.avioconsulting.mule.testing.OverrideConfigList
 import com.avioconsulting.mule.testing.soapxmlroot.SOAPTestRequest
 import com.avioconsulting.mule.testing.soapxmlroot.SOAPTestResponse
@@ -10,7 +10,7 @@ import static org.hamcrest.Matchers.equalTo
 import static org.hamcrest.Matchers.is
 import static org.junit.Assert.assertThat
 
-class SoapTest extends BaseTest implements OverrideConfigList {
+class SoapTest extends BaseJunitTest implements OverrideConfigList {
     List<String> getConfigResourcesList() {
         ['soap_test.xml']
     }

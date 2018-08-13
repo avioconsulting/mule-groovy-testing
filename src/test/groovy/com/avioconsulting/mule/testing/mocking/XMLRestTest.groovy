@@ -1,6 +1,6 @@
 package com.avioconsulting.mule.testing.mocking
 
-import com.avioconsulting.mule.testing.BaseTest
+import com.avioconsulting.mule.testing.BaseJunitTest
 import com.avioconsulting.mule.testing.OverrideConfigList
 import groovy.json.JsonOutput
 import org.junit.Test
@@ -11,7 +11,7 @@ import static groovy.test.GroovyAssert.shouldFail
 import static org.hamcrest.Matchers.*
 import static org.junit.Assert.assertThat
 
-class XMLRestTest extends BaseTest implements OverrideConfigList {
+class XMLRestTest extends BaseJunitTest implements OverrideConfigList {
     List<String> getConfigResourcesList() {
         ['simple_xml_test.xml']
     }

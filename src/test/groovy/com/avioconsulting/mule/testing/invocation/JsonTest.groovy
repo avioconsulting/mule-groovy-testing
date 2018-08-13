@@ -1,6 +1,6 @@
 package com.avioconsulting.mule.testing.invocation
 
-import com.avioconsulting.mule.testing.BaseTest
+import com.avioconsulting.mule.testing.BaseJunitTest
 import com.avioconsulting.mule.testing.OverrideConfigList
 import com.avioconsulting.mule.testing.SampleJacksonInput
 import com.avioconsulting.mule.testing.SampleJacksonOutput
@@ -10,7 +10,7 @@ import static groovy.test.GroovyAssert.shouldFail
 import static org.hamcrest.Matchers.*
 import static org.junit.Assert.assertThat
 
-class JsonTest extends BaseTest implements OverrideConfigList {
+class JsonTest extends BaseJunitTest implements OverrideConfigList {
     List<String> getConfigResourcesList() {
         ['simple_json_test.xml']
     }

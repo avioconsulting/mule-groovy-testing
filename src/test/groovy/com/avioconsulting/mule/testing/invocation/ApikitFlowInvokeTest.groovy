@@ -1,9 +1,6 @@
 package com.avioconsulting.mule.testing.invocation
 
-import com.avioconsulting.mule.testing.BaseApiKitTest
-import com.avioconsulting.mule.testing.OverrideConfigList
-import com.avioconsulting.mule.testing.SampleJacksonInput
-import com.avioconsulting.mule.testing.SampleJacksonOutput
+import com.avioconsulting.mule.testing.*
 import org.apache.tools.ant.taskdefs.condition.Os
 import org.junit.Test
 
@@ -11,7 +8,7 @@ import static groovy.test.GroovyAssert.shouldFail
 import static org.hamcrest.Matchers.*
 import static org.junit.Assert.assertThat
 
-class ApikitFlowInvokeTest extends BaseApiKitTest implements OverrideConfigList {
+class ApikitFlowInvokeTest extends BaseJunitTest implements OverrideConfigList, BaseApiKitTest {
     static int getExpectedPort() {
         // not sure why 8088 is occupied on Windows (nothing shows as listening on that port) but
         // took care of test once I changed this
@@ -56,7 +53,7 @@ class ApikitFlowInvokeTest extends BaseApiKitTest implements OverrideConfigList 
 
             // assert
             assertThat port,
-                       is(equalTo(expectedPort+1))
+                       is(equalTo(expectedPort + 1))
         }
         finally {
             serverSocket.close()
@@ -149,11 +146,11 @@ class ApikitFlowInvokeTest extends BaseApiKitTest implements OverrideConfigList 
                    is(equalTo(133))
     }
 
-    protected String getApiNameUnderTest() {
+    String getApiNameUnderTest() {
         'the-app'
     }
 
-    protected String getApiVersionUnderTest() {
+    String getApiVersionUnderTest() {
         'v1'
     }
 

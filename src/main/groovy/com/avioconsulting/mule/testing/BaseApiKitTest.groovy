@@ -5,28 +5,28 @@ import com.avioconsulting.mule.testing.dsl.invokers.FlowRunnerImpl
 import org.mule.api.MuleMessage
 import org.mule.api.transport.PropertyScope
 
-abstract class BaseApiKitTest extends BaseTest {
+trait BaseApiKitTest extends BaseTest {
     private static final String TEST_PORT_PROPERTY = 'avio.test.http.port'
 
-    protected abstract String getApiNameUnderTest()
+    abstract String getApiNameUnderTest()
 
-    protected abstract String getApiVersionUnderTest()
+    abstract String getApiVersionUnderTest()
 
     // version friendly convention
-    protected String getFullApiName() {
+    String getFullApiName() {
         "api-${apiNameUnderTest}-${apiVersionUnderTest}"
     }
 
-    protected String getFlowName() {
+    String getFlowName() {
         "${fullApiName}-main"
     }
 
     // using CloudHub combine friendly convention
-    protected String getHttpListenerPath() {
+    String getHttpListenerPath() {
         '/' + [apiNameUnderTest, 'api', apiVersionUnderTest, '*'].join('/')
     }
 
-    protected static int getChosenHttpPort() {
+    static int getChosenHttpPort() {
         // avoid duplicate ports
         Integer.parseInt(System.getProperty(TEST_PORT_PROPERTY))
     }
@@ -46,8 +46,7 @@ abstract class BaseApiKitTest extends BaseTest {
         properties
     }
 
-    @Override
-    protected List<String> getFlowsExcludedOfInboundDisabling() {
+    List<String> getUnmockedFlowsWithListeners() {
         // apikit complains unless these 2 are both open
         ['main', 'console'].collect { suffix ->
             // toString here to ensure we return Java string and not Groovy strings
@@ -110,7 +109,7 @@ abstract class BaseApiKitTest extends BaseTest {
         }
     }
 
-    protected static int getHttpPort() {
+    static int getHttpPort() {
         (8088..8199).find { candidate ->
             try {
                 def socket = new ServerSocket(candidate)

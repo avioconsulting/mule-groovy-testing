@@ -9,7 +9,6 @@ import com.avioconsulting.mule.testing.dsl.mocking.sfdc.Choice
 import com.avioconsulting.mule.testing.dsl.mocking.sfdc.ChoiceImpl
 import com.avioconsulting.mule.testing.payloadvalidators.SOAPPayloadValidator
 import com.mulesoft.module.batch.engine.BatchJobAdapter
-import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import org.mule.api.MuleContext
 import org.mule.api.MuleEvent
@@ -25,25 +24,20 @@ import org.mule.module.client.MuleClient
 import javax.xml.datatype.DatatypeFactory
 import javax.xml.datatype.XMLGregorianCalendar
 
-abstract class BaseTest {
-    protected static final Logger logger = LogManager.getLogger(BaseTest)
+trait BaseTest {
+    abstract Logger getLogger()
 
-    protected static MuleContext muleContext
-
-    BaseTest() {
-        // TODO: Get the lifecycle right!
-        if (!muleContext) {
-            def contextFactory = new DefaultMuleContextFactory()
-            def muleContextBuilder = new DefaultMuleContextBuilder()
-            def configBuilders = [
-                    // certain processors like validation require this
-                    new ExtensionsManagerConfigurationBuilder(),
-                    new SpringXmlConfigurationBuilder(configResources)
-            ] as List<ConfigurationBuilder>
-            muleContext = contextFactory.createMuleContext(configBuilders,
-                                                           muleContextBuilder)
-            muleContext.start()
-        }
+    MuleContext createMuleContext() {
+        // TODO: Optimize this and only deal w/ new contexts when props/mocks/etc. change
+        def contextFactory = new DefaultMuleContextFactory()
+        def muleContextBuilder = new DefaultMuleContextBuilder()
+        def configBuilders = [
+                // certain processors like validation require this
+                new ExtensionsManagerConfigurationBuilder(),
+                new SpringXmlConfigurationBuilder(configResources)
+        ] as List<ConfigurationBuilder>
+        contextFactory.createMuleContext(configBuilders,
+                                         muleContextBuilder)
     }
 
     Properties getStartUpProperties() {
@@ -65,7 +59,7 @@ abstract class BaseTest {
         [:]
     }
 
-    protected List<String> getFlowsExcludedOfInboundDisabling() {
+    List<String> getUnmockedFlowsWithListeners() {
         []
     }
 
@@ -157,7 +151,8 @@ abstract class BaseTest {
 //        })
     }
 
-    def runFlow(String flowName,
+    def runFlow(MuleContext muleContext,
+                String flowName,
                 @DelegatesTo(FlowRunner) Closure closure) {
         def runner = new FlowRunnerImpl(muleContext)
         def code = closure.rehydrate(runner, this, this)
@@ -167,7 +162,8 @@ abstract class BaseTest {
         runner.transformOutput(outputEvent)
     }
 
-    def runFlow(String flowName,
+    def runFlow(MuleContext muleContext,
+                String flowName,
                 MuleEvent event) {
         def flow = muleContext.registry.lookupFlowConstruct(flowName)
         assert flow instanceof Flow
@@ -181,7 +177,8 @@ abstract class BaseTest {
         //batchWaitUtil.waitFor(jobsToWaitFor, throwUnderlyingException, closure)
     }
 
-    def runBatch(String batchName,
+    def runBatch(MuleContext muleContext,
+                 String batchName,
                  List<String> jobsToWaitFor = null,
                  boolean throwUnderlyingException = false,
                  @DelegatesTo(BatchRunner) Closure closure) {
