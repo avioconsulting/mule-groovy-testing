@@ -92,10 +92,10 @@ artifacts {
 
 dependencies {
     def muleVersion = '3.9.1'
-    //compile 'com.fasterxml.woodstox:woodstox-core:5.0.2'
     compile group: 'com.mulesoft.muleesb', name: 'mule-core-ee', version: muleVersion
-    compile group: 'org.mule.modules', name: 'mule-module-client', version: muleVersion
-    compile group: 'org.mule.modules', name: 'mule-module-json', version: muleVersion
+    ['devkit-support', 'client', 'json'].each { mod ->
+        compile "org.mule.modules:mule-module-${mod}:${muleVersion}"
+    }
     compile group: 'com.mulesoft.muleesb.modules', name: 'mule-module-batch-ee', version: muleVersion
     compile 'xalan:xalan:2.7.2'
     // 3.9.1 is bundled with this Groovy version

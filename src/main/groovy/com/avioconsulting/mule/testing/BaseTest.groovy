@@ -12,10 +12,12 @@ import com.mulesoft.module.batch.engine.BatchJobAdapter
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import org.mule.api.MuleContext
+import org.mule.api.MuleEvent
 import org.mule.api.MuleMessage
 import org.mule.api.config.ConfigurationBuilder
 import org.mule.config.builders.ExtensionsManagerConfigurationBuilder
 import org.mule.config.spring.SpringXmlConfigurationBuilder
+import org.mule.construct.Flow
 import org.mule.context.DefaultMuleContextBuilder
 import org.mule.context.DefaultMuleContextFactory
 import org.mule.module.client.MuleClient
@@ -39,6 +41,7 @@ abstract class BaseTest {
             ] as List<ConfigurationBuilder>
             muleContext = contextFactory.createMuleContext(configBuilders,
                                                            muleContextBuilder)
+            muleContext.start()
         }
     }
 
@@ -161,6 +164,13 @@ abstract class BaseTest {
         code()
         def outputEvent = runFlow(flowName, runner.event)
         runner.transformOutput(outputEvent)
+    }
+
+    def runFlow(String flowName,
+                MuleEvent event) {
+        def flow = muleContext.registry.lookupFlowConstruct(flowName)
+        assert flow instanceof Flow
+        flow.process(event)
     }
 
     static def waitForBatchCompletion(List<String> jobsToWaitFor = null,

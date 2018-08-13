@@ -22,9 +22,10 @@ class JavaInvokerImpl implements JavaInvoker, Invoker {
 
     MuleEvent getEvent() {
         def message = new DefaultMuleMessage(inputObject, muleContext)
+        def flow = muleContext.registry.lookupFlowConstruct('javaFlow')
         new DefaultMuleEvent(message,
                              MessageExchangePattern.REQUEST_RESPONSE,
-                             MunitMuleTestUtils.getTestFlow(muleContext))
+                             flow)
     }
 
     def transformOutput(MuleEvent event) {
