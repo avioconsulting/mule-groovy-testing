@@ -8,17 +8,21 @@ import org.springframework.beans.BeansException
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory
 
 class GroovyTestingArtifactContext extends MuleArtifactContext {
+    private final MockingConfiguration mockingConfiguration
+
     GroovyTestingArtifactContext(MuleContext muleContext,
                                  ConfigResource[] configResources,
-                                 OptionalObjectsController optionalObjectsController) throws BeansException {
+                                 OptionalObjectsController optionalObjectsController,
+                                 MockingConfiguration mockingConfiguration) throws BeansException {
         super(muleContext,
               configResources,
               optionalObjectsController)
+        this.mockingConfiguration = mockingConfiguration
     }
 
     @Override
     protected void prepareBeanFactory(ConfigurableListableBeanFactory beanFactory) {
         super.prepareBeanFactory(beanFactory)
-        beanFactory.addBeanPostProcessor(new ConnectorReplacerProcessor())
+        beanFactory.addBeanPostProcessor(new ConnectorReplacerProcessor(mockingConfiguration))
     }
 }

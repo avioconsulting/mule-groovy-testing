@@ -8,8 +8,12 @@ import org.mule.config.spring.SpringXmlConfigurationBuilder
 import org.springframework.context.ApplicationContext
 
 class GroovyTestingSpringXmlConfigurationBuilder extends SpringXmlConfigurationBuilder {
-    GroovyTestingSpringXmlConfigurationBuilder(String[] configResources) throws ConfigurationException {
+    private final MockingConfiguration mockingConfiguration
+
+    GroovyTestingSpringXmlConfigurationBuilder(String configResources,
+                                               MockingConfiguration mockingConfiguration) throws ConfigurationException {
         super(configResources)
+        this.mockingConfiguration = mockingConfiguration
     }
 
     @Override
@@ -19,6 +23,7 @@ class GroovyTestingSpringXmlConfigurationBuilder extends SpringXmlConfigurationB
         // we have to override MuleArtifactContext (that's the only difference)
         new GroovyTestingArtifactContext(muleContext,
                                          configResources,
-                                         optionalObjectsController)
+                                         optionalObjectsController,
+                                         mockingConfiguration)
     }
 }

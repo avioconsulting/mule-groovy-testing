@@ -10,6 +10,12 @@ import org.springframework.beans.factory.config.BeanPostProcessor
 
 @Log4j2
 class ConnectorReplacerProcessor implements BeanPostProcessor {
+    private final MockingConfiguration mockingConfiguration
+
+    ConnectorReplacerProcessor(MockingConfiguration mockingConfiguration) {
+        this.mockingConfiguration = mockingConfiguration
+    }
+
     private static final Map<String, Integer> noMocking = [
             'com.mulesoft.weave.mule.WeaveMessageProcessor': 1,
             (Flow.name)                                    : 1,
@@ -28,7 +34,8 @@ class ConnectorReplacerProcessor implements BeanPostProcessor {
         def beanKlass = bean.class
         try {
             if (bean instanceof MessageProcessor && !noMocking.containsKey(beanKlass.name)) {
-                return Enhancer.create(beanKlass, new Handler(bean))
+                return Enhancer.create(beanKlass, new Handler(bean,
+                                                              this.mockingConfiguration))
             }
             return bean
         }

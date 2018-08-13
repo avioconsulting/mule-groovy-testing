@@ -1,6 +1,7 @@
 package com.avioconsulting.mule.testing
 
 import com.avioconsulting.mule.testing.dsl.invokers.FlowRunner
+import com.avioconsulting.mule.testing.mulereplacements.MockingConfiguration
 import groovy.util.logging.Log4j2
 import org.apache.logging.log4j.Logger
 import org.junit.AfterClass
@@ -20,7 +21,8 @@ class BaseJunitTest implements BaseMuleGroovyTrait {
     @Before
     void startMule() {
         if (!muleContext) {
-            muleContext = createMuleContext()
+            def configuration = new MockingConfiguration()
+            muleContext = createMuleContext(configuration)
             muleContext.start()
         }
     }

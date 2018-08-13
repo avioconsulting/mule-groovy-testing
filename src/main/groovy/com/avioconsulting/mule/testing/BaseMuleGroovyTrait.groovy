@@ -7,6 +7,7 @@ import com.avioconsulting.mule.testing.dsl.mocking.*
 import com.avioconsulting.mule.testing.dsl.mocking.sfdc.Choice
 import com.avioconsulting.mule.testing.dsl.mocking.sfdc.ChoiceImpl
 import com.avioconsulting.mule.testing.mulereplacements.GroovyTestingSpringXmlConfigurationBuilder
+import com.avioconsulting.mule.testing.mulereplacements.MockingConfiguration
 import com.avioconsulting.mule.testing.payloadvalidators.SOAPPayloadValidator
 import com.mulesoft.module.batch.engine.BatchJobAdapter
 import org.apache.logging.log4j.Logger
@@ -26,14 +27,15 @@ import javax.xml.datatype.XMLGregorianCalendar
 trait BaseMuleGroovyTrait {
     abstract Logger getLogger()
 
-    MuleContext createMuleContext() {
+    MuleContext createMuleContext(MockingConfiguration mockingConfiguration) {
         // TODO: Optimize this and only deal w/ new contexts when props/mocks/etc. change
         def contextFactory = new DefaultMuleContextFactory()
         def muleContextBuilder = new DefaultMuleContextBuilder()
         def configBuilders = [
                 // certain processors like validation require this
                 new ExtensionsManagerConfigurationBuilder(),
-                new GroovyTestingSpringXmlConfigurationBuilder(configResources)
+                new GroovyTestingSpringXmlConfigurationBuilder(configResources,
+                                                               mockingConfiguration)
         ] as List<ConfigurationBuilder>
         contextFactory.createMuleContext(configBuilders,
                                          muleContextBuilder)
