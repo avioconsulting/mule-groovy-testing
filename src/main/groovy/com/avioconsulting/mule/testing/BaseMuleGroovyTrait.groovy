@@ -3,13 +3,12 @@ package com.avioconsulting.mule.testing
 import com.avioconsulting.mule.testing.dsl.invokers.BatchRunner
 import com.avioconsulting.mule.testing.dsl.invokers.FlowRunner
 import com.avioconsulting.mule.testing.dsl.invokers.FlowRunnerImpl
-import com.avioconsulting.mule.testing.dsl.mocking.HttpRequestResponseChoice
-import com.avioconsulting.mule.testing.dsl.mocking.HttpRequestResponseChoiceImpl
-import com.avioconsulting.mule.testing.dsl.mocking.SOAPFormatter
-import com.avioconsulting.mule.testing.dsl.mocking.StandardRequestResponse
+import com.avioconsulting.mule.testing.dsl.mocking.*
 import com.avioconsulting.mule.testing.dsl.mocking.sfdc.Choice
+import com.avioconsulting.mule.testing.mocks.StandardMock
 import com.avioconsulting.mule.testing.mulereplacements.GroovyTestingSpringXmlConfigurationBuilder
 import com.avioconsulting.mule.testing.mulereplacements.MockingConfiguration
+import com.avioconsulting.mule.testing.payloadvalidators.SOAPPayloadValidator
 import com.mulesoft.module.batch.engine.BatchJobAdapter
 import org.apache.logging.log4j.Logger
 import org.mule.api.MuleContext
@@ -221,26 +220,22 @@ trait BaseMuleGroovyTrait {
 //        mocker.thenApply(choice.transformer)
     }
 
-    def mockSoapCall(String connectorName,
+    def mockSoapCall(MockingConfiguration mockingConfiguration,
+                     MuleContext muleContext,
+                     String connectorName,
                      @DelegatesTo(SOAPFormatter) Closure closure) {
-//        def mocker = whenMessageProcessor('consumer')
-//                .ofNamespace('ws')
-//                .withAttributes(Attribute.attribute('name')
-//                                        .ofNamespace('doc')
-//                                        .withValue(connectorName))
-//        def spy = spyMessageProcessor('consumer')
-//                .ofNamespace('ws')
-//                .withAttributes(Attribute.attribute('name')
-//                                        .ofNamespace('doc')
-//                                        .withValue(connectorName))
-//        def payloadValidator = new SOAPPayloadValidator()
-//        def soapFormatter = new SOAPFormatterImpl(muleContext,
-//                                                  spy,
-//                                                  payloadValidator)
-//        def code = closure.rehydrate(soapFormatter, this, this)
-//        code.resolveStrategy = Closure.DELEGATE_ONLY
-//        code()
-//        mocker.thenApply(soapFormatter.transformer)
+        return
+        def payloadValidator = new SOAPPayloadValidator()
+        def soapFormatter = new SOAPFormatterImpl(muleContext,
+                                                  payloadValidator)
+        def code = closure.rehydrate(soapFormatter, this, this)
+        code.resolveStrategy = Closure.DELEGATE_ONLY
+        code()
+        def eventFactory = new EventFactoryImpl(muleContext)
+        def mock = new StandardMock(soapFormatter.transformer,
+                                    eventFactory)
+        mockingConfiguration.addMock(connectorName,
+                                     mock)
     }
 
     static XMLGregorianCalendar getXmlDate(int year, int oneBasedMonth, int dayOfMonth) {

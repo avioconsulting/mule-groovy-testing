@@ -22,7 +22,8 @@ class MockHandler implements MethodInterceptor {
         // TODO: More efficient comparison, also 'cache' the processor name
         if (method.name == 'process' &&
                 method.parameterTypes.size() == 1 &&
-                method.parameterTypes[0] == MuleEvent) {
+                method.parameterTypes[0] == MuleEvent &&
+                obj instanceof AnnotatedObject) {
             def asAnnotated = obj as AnnotatedObject
             def mock = mockingConfiguration.getMockProcess(asAnnotated)
             def muleEvent = args[0] as MuleEvent

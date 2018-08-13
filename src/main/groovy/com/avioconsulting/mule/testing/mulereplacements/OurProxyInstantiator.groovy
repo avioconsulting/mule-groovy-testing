@@ -37,7 +37,8 @@ class OurProxyInstantiator implements InstantiationStrategy {
         def beanKlass = bd.beanClass
         try {
             if (MessageProcessor.isAssignableFrom(beanKlass) && !noMocking.containsKey(beanKlass.name)) {
-                return Enhancer.create(beanKlass, new MockHandler(this.mockingConfiguration))
+                return Enhancer.create(beanKlass,
+                                       new MockHandler(this.mockingConfiguration))
             }
             return wrapped.instantiate(bd, beanName, owner)
         }
