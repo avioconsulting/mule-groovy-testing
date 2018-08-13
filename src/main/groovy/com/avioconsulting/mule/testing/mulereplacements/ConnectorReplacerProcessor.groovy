@@ -8,6 +8,8 @@ import org.mule.processor.chain.InterceptingChainLifecycleWrapper
 import org.springframework.beans.BeansException
 import org.springframework.beans.factory.config.BeanPostProcessor
 
+// Decides during the Mule init cycle whether to sub in our proxy for message processors
+// MockingConfiguration is a consistent map that the tests can manipulate
 @Log4j2
 class ConnectorReplacerProcessor implements BeanPostProcessor {
     private final MockingConfiguration mockingConfiguration

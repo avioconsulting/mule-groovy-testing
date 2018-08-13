@@ -10,6 +10,7 @@ import org.junit.Before
 import org.mule.api.MuleContext
 import org.mule.api.MuleEvent
 
+// takes BaseMuleGroovyTrait and adds JUnit lifecycle/state
 @Log4j2
 class BaseJunitTest implements BaseMuleGroovyTrait {
     protected static MuleContext muleContext

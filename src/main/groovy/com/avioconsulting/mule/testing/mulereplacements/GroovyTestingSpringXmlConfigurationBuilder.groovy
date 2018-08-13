@@ -7,6 +7,8 @@ import org.mule.config.spring.OptionalObjectsController
 import org.mule.config.spring.SpringXmlConfigurationBuilder
 import org.springframework.context.ApplicationContext
 
+// main purpose of this class is to override the application context with one
+// that inserts proxy objects that we can use for mocking. See GroovyTestingArtifactContext
 class GroovyTestingSpringXmlConfigurationBuilder extends SpringXmlConfigurationBuilder {
     private final MockingConfiguration mockingConfiguration
 

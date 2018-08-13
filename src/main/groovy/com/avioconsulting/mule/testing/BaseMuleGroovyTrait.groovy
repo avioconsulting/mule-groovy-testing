@@ -25,6 +25,8 @@ import org.mule.module.client.MuleClient
 import javax.xml.datatype.DatatypeFactory
 import javax.xml.datatype.XMLGregorianCalendar
 
+// basic idea here is to have a trait that could be mixed in to any type of testing framework situation
+// this trait should be stateless
 trait BaseMuleGroovyTrait {
     abstract Logger getLogger()
 

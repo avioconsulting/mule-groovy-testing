@@ -7,6 +7,7 @@ import org.mule.config.spring.OptionalObjectsController
 import org.springframework.beans.BeansException
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory
 
+// uses Spring to insert proxy objects, see ConnectorReplacerProcessor
 class GroovyTestingArtifactContext extends MuleArtifactContext {
     private final MockingConfiguration mockingConfiguration
 
