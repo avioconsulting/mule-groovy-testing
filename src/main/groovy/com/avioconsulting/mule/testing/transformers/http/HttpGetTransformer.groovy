@@ -5,7 +5,7 @@ import org.mule.DefaultMuleMessage
 import org.mule.api.MuleContext
 import org.mule.api.MuleMessage
 import org.mule.module.http.internal.request.ResponseValidator
-import org.mule.modules.interceptor.processors.MuleMessageTransformer
+import com.avioconsulting.mule.testing.mulereplacements.MuleMessageTransformer
 
 class HttpGetTransformer implements MuleMessageTransformer, IReceiveHttpOptions {
     private String httpVerb

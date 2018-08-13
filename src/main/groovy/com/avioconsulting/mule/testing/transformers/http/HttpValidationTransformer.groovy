@@ -10,7 +10,7 @@ import org.mule.api.MuleMessage
 import org.mule.api.transport.PropertyScope
 import org.mule.module.http.internal.request.ResponseValidator
 import org.mule.module.http.internal.request.SuccessStatusCodeValidator
-import org.mule.modules.interceptor.processors.MuleMessageTransformer
+import com.avioconsulting.mule.testing.mulereplacements.MuleMessageTransformer
 
 class HttpValidationTransformer implements IHaveStateToReset,
         IReceiveHttpOptions,

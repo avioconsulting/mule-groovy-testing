@@ -5,7 +5,7 @@ import com.avioconsulting.mule.testing.payloadvalidators.ListGenericPayloadValid
 import com.avioconsulting.mule.testing.transformers.StandardDsqlTransformer
 import com.avioconsulting.mule.testing.transformers.sfdc.UpsertTransformer
 import org.mule.api.MuleContext
-import org.mule.modules.interceptor.processors.MuleMessageTransformer
+import com.avioconsulting.mule.testing.mulereplacements.MuleMessageTransformer
 
 class ChoiceImpl implements Choice {
     String connectorType

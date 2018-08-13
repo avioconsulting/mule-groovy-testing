@@ -5,7 +5,7 @@ import com.avioconsulting.mule.testing.transformers.xml.XMLGroovyParserTransform
 import com.avioconsulting.mule.testing.transformers.xml.XMLJAXBTransformer
 import com.avioconsulting.mule.testing.transformers.xml.XMLMapTransformer
 import org.mule.api.MuleContext
-import org.mule.modules.interceptor.processors.MuleMessageTransformer
+import com.avioconsulting.mule.testing.mulereplacements.MuleMessageTransformer
 
 class XMLFormatterImpl implements XMLFormatter, IFormatter {
     protected final MuleContext muleContext

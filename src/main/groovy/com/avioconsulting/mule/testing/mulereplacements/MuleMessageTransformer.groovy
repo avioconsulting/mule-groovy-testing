@@ -1,4 +1,4 @@
-package org.mule.modules.interceptor.processors
+package com.avioconsulting.mule.testing.mulereplacements
 
 import org.mule.api.MuleMessage
 

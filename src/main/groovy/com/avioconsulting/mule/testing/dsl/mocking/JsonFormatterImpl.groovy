@@ -5,7 +5,7 @@ import com.avioconsulting.mule.testing.transformers.StandardTransformer
 import com.avioconsulting.mule.testing.transformers.json.input.JacksonInputTransformer
 import com.avioconsulting.mule.testing.transformers.json.output.JacksonOutputTransformer
 import org.mule.api.MuleContext
-import org.mule.modules.interceptor.processors.MuleMessageTransformer
+import com.avioconsulting.mule.testing.mulereplacements.MuleMessageTransformer
 
 class JsonFormatterImpl implements JsonFormatter, IFormatter {
     private final MuleContext muleContext

@@ -4,7 +4,7 @@ import com.avioconsulting.mule.testing.payloadvalidators.IPayloadValidator
 import com.avioconsulting.mule.testing.transformers.ClosureMuleMessageHandler
 import org.mule.api.MuleContext
 import org.mule.api.MuleMessage
-import org.mule.modules.interceptor.processors.MuleMessageTransformer
+import com.avioconsulting.mule.testing.mulereplacements.MuleMessageTransformer
 
 class XMLJAXBTransformer extends XMLTransformer implements MuleMessageTransformer,
         ClosureMuleMessageHandler {

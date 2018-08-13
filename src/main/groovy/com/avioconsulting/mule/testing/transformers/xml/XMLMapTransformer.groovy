@@ -6,7 +6,7 @@ import groovy.util.slurpersupport.GPathResult
 import groovy.xml.MarkupBuilder
 import org.mule.api.MuleContext
 import org.mule.api.MuleMessage
-import org.mule.modules.interceptor.processors.MuleMessageTransformer
+import com.avioconsulting.mule.testing.mulereplacements.MuleMessageTransformer
 
 class XMLMapTransformer extends XMLTransformer implements MuleMessageTransformer,
         ClosureMuleMessageHandler{

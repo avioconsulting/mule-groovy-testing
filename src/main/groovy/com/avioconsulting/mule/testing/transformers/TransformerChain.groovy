@@ -1,7 +1,7 @@
 package com.avioconsulting.mule.testing.transformers
 
 import org.mule.api.MuleMessage
-import org.mule.modules.interceptor.processors.MuleMessageTransformer
+import com.avioconsulting.mule.testing.mulereplacements.MuleMessageTransformer
 
 class TransformerChain implements MuleMessageTransformer {
     private final List<MuleMessageTransformer> transformers
