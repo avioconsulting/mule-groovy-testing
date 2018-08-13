@@ -64,26 +64,11 @@ class OurProxyInstantiator implements InstantiationStrategy {
                        BeanFactory owner,
                        Constructor<?> ctor,
                        Object... args) throws BeansException {
-        def beanKlass = bd.beanClass
-        try {
-            if (MessageProcessor.isAssignableFrom(beanKlass) && !noMocking.containsKey(beanKlass.name)) {
-                def en = new Enhancer()
-                en.superclass = beanKlass
-                en.callback = new MockHandler(this.mockingConfiguration)
-                return en.create(ctor.parameterTypes,
-                                 args)
-            }
-            return wrapped.instantiate(bd,
-                                       beanName,
-                                       owner,
-                                       ctor,
-                                       args)
-        }
-        catch (e) {
-            log.error("While intercepting bean class ${beanKlass.name}/bean ${beanName}",
-                      e)
-            throw e
-        }
+        return wrapped.instantiate(bd,
+                                   beanName,
+                                   owner,
+                                   ctor,
+                                   args)
     }
 
     @Override
