@@ -4,7 +4,7 @@ import com.avioconsulting.mule.testing.ProcessorLocator
 import org.mule.api.MuleContext
 import org.mule.api.MuleEvent
 import org.mule.api.MuleException
-import org.mule.munit.common.mocking.SpyProcess
+import com.avioconsulting.mule.testing.mulereplacements.SpyProcess
 
 abstract class DsqlBasedSpy implements SpyProcess {
     @Lazy

@@ -5,7 +5,7 @@ import org.mule.api.MuleContext
 import org.mule.api.MuleEvent
 import org.mule.api.MuleException
 import org.mule.module.http.internal.request.DefaultHttpRequester
-import org.mule.munit.common.mocking.SpyProcess
+import com.avioconsulting.mule.testing.mulereplacements.SpyProcess
 
 // spies are the only way to get access to the underlying event on mocked connectors
 class HttpConnectorSpy implements SpyProcess {

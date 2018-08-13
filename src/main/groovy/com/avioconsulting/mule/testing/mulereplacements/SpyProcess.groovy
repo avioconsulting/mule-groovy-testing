@@ -1,4 +1,4 @@
-package org.mule.munit.common.mocking
+package com.avioconsulting.mule.testing.mulereplacements
 
 import org.mule.api.MuleEvent
 import org.mule.api.MuleException
