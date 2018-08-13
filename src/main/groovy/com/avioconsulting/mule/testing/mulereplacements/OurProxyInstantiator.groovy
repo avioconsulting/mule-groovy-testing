@@ -50,12 +50,12 @@ class OurProxyInstantiator implements InstantiationStrategy {
                 if (!AnnotatedObject.isAssignableFrom(beanKlass)) {
                     return Enhancer.create(beanKlass,
                                            [AnnotatedObject].toArray(new Class[0]),
-                                           new MockHandler(this.mockingConfiguration,
-                                                           true))
+                                           new MockMethodInterceptor(this.mockingConfiguration,
+                                                                     true))
                 } else {
                     return Enhancer.create(beanKlass,
-                                           new MockHandler(this.mockingConfiguration,
-                                                           false))
+                                           new MockMethodInterceptor(this.mockingConfiguration,
+                                                                     false))
                 }
             }
             return wrapped.instantiate(bd,
@@ -81,8 +81,8 @@ class OurProxyInstantiator implements InstantiationStrategy {
             assert AnnotatedObject.isAssignableFrom(beanKlass)
             return new Enhancer().with {
                 superclass = beanKlass
-                callback = new MockHandler(this.mockingConfiguration,
-                                           false)
+                callback = new MockMethodInterceptor(this.mockingConfiguration,
+                                                     false)
                 create(ctor.parameterTypes,
                        args)
             }

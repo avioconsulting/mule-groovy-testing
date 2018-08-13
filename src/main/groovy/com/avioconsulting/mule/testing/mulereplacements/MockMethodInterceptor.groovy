@@ -10,13 +10,13 @@ import javax.xml.namespace.QName
 import java.lang.reflect.Method
 
 @Log4j2
-class MockHandler implements MethodInterceptor, AnnotatedObject {
+class MockMethodInterceptor implements MethodInterceptor, AnnotatedObject {
     private final MockingConfiguration mockingConfiguration
     Map<QName, Object> annotations
     private final boolean doAnnotations
 
-    MockHandler(MockingConfiguration mockingConfiguration,
-                boolean doAnnotations) {
+    MockMethodInterceptor(MockingConfiguration mockingConfiguration,
+                          boolean doAnnotations) {
         this.doAnnotations = doAnnotations
         this.mockingConfiguration = mockingConfiguration
     }
@@ -29,7 +29,7 @@ class MockHandler implements MethodInterceptor, AnnotatedObject {
         if (doAnnotations) {
             switch(method.name) {
                 // some objects miss annotations, we basically implement annotation storage on this class
-                // since each object has its own MockHandler
+                // since each object has its own MockMethodInterceptor
                 case 'setAnnotations':
                     setAnnotations(args[0])
                     return
