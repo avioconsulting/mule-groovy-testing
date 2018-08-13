@@ -11,7 +11,8 @@ import org.w3c.dom.Element
 import javax.xml.namespace.QName
 
 // for some processors, like WS-Consumer, annotations, which is how we locate the connector's name
-// aren't loaded
+// aren't loaded. This lets us influence the XML->Java object transition at an early stage
+// we can "plug the gaps" with missing values here
 class WrappedNamespaceHandler implements NamespaceHandler {
     @Delegate
     private final NamespaceHandler wrapped
