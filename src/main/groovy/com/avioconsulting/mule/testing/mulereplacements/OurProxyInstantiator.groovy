@@ -75,6 +75,18 @@ class OurProxyInstantiator implements InstantiationStrategy {
                        BeanFactory owner,
                        Constructor<?> ctor,
                        Object... args) throws BeansException {
+        def beanKlass = bd.beanClass
+        if (MessageProcessor.isAssignableFrom(beanKlass) && !noMocking.containsKey(beanKlass.name)) {
+            // TODO: Salesforce object is NOT coming across as assignable
+            assert AnnotatedObject.isAssignableFrom(beanKlass)
+            return new Enhancer().with {
+                superclass = beanKlass
+                callback = new MockHandler(this.mockingConfiguration,
+                                           false)
+                create(ctor.parameterTypes,
+                       args)
+            }
+        }
         return wrapped.instantiate(bd,
                                    beanName,
                                    owner,
