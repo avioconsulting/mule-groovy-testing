@@ -5,6 +5,7 @@ import com.avioconsulting.mule.testing.dsl.invokers.FlowRunner
 import com.avioconsulting.mule.testing.dsl.invokers.FlowRunnerImpl
 import com.avioconsulting.mule.testing.dsl.mocking.*
 import com.avioconsulting.mule.testing.dsl.mocking.sfdc.Choice
+import com.avioconsulting.mule.testing.dsl.mocking.sfdc.ChoiceImpl
 import com.avioconsulting.mule.testing.mocks.StandardMock
 import com.avioconsulting.mule.testing.mulereplacements.GroovyTestingSpringXmlConfigurationBuilder
 import com.avioconsulting.mule.testing.mulereplacements.MockingConfiguration
@@ -201,24 +202,18 @@ trait BaseMuleGroovyTrait {
                                      mock)
     }
 
-    def mockSalesForceCall(String connectorName,
+    def mockSalesForceCall(MockingConfiguration mockingConfiguration,
+                           MuleContext muleContext,
+                           String connectorName,
                            @DelegatesTo(Choice) Closure closure) {
-//        def choice = new ChoiceImpl(muleContext, { String processorType ->
-//            spyMessageProcessor(processorType)
-//                    .ofNamespace('sfdc')
-//                    .withAttributes(Attribute.attribute('name')
-//                                            .ofNamespace('doc')
-//                                            .withValue(connectorName))
-//        }, locator)
-//        def code = closure.rehydrate(choice, this, this)
-//        code.resolveStrategy = Closure.DELEGATE_ONLY
-//        code()
-//        def mocker = whenMessageProcessor(choice.connectorType)
-//                .ofNamespace('sfdc')
-//                .withAttributes(Attribute.attribute('name')
-//                                        .ofNamespace('doc')
-//                                        .withValue(connectorName))
-//        mocker.thenApply(choice.transformer)
+        def eventFactory = new EventFactoryImpl(muleContext)
+        def choice = new ChoiceImpl(muleContext,
+                                    eventFactory)
+        def code = closure.rehydrate(choice, this, this)
+        code.resolveStrategy = Closure.DELEGATE_ONLY
+        code()
+        mockingConfiguration.addMock(connectorName,
+                                     choice.mock)
     }
 
     def mockSoapCall(MockingConfiguration mockingConfiguration,

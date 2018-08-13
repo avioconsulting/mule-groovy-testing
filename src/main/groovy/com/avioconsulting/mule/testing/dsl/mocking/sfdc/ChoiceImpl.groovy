@@ -1,46 +1,39 @@
 package com.avioconsulting.mule.testing.dsl.mocking.sfdc
 
+import com.avioconsulting.mule.testing.EventFactory
+import com.avioconsulting.mule.testing.mocks.DsqlMock
 import com.avioconsulting.mule.testing.mulereplacements.MuleMessageTransformer
 import com.avioconsulting.mule.testing.payloadvalidators.ListGenericPayloadValidator
-import com.avioconsulting.mule.testing.transformers.StandardDsqlTransformer
 import com.avioconsulting.mule.testing.transformers.sfdc.UpsertTransformer
 import org.mule.api.MuleContext
 
 class ChoiceImpl implements Choice {
-    String connectorType
     private MuleMessageTransformer transformer
     private final MuleContext muleContext
-    // using a factory because this class handles multiple SFDC operations and we don't know the connector type
-    // until these methods run
-    private final Closure spyFactory
+    private DsqlMock mock
+    private final EventFactory eventFactory
 
     ChoiceImpl(MuleContext muleContext,
-               Closure spyFactory) {
-        this.processorLocator = processorLocator
-        this.spyFactory = spyFactory
+               EventFactory eventFactory) {
+        this.eventFactory = eventFactory
         this.muleContext = muleContext
     }
 
+    DsqlMock getMock() {
+        mock
+    }
+
     def upsert(@DelegatesTo(UpsertResponseUtil) Closure closure) {
-        this.connectorType = 'upsert'
         this.transformer = new UpsertTransformer(closure,
                                                  this.muleContext)
     }
 
     def query(Closure closure) {
-        this.connectorType = 'query'
-        //def spy = spyFactory(this.connectorType) as MunitSpy
         def validator = new ListGenericPayloadValidator(Map)
-        def queryTransformer = new StandardDsqlTransformer(muleContext,
-                                                           closure,
-                                                           validator)
-        this.transformer = queryTransformer
-        spy.before(queryTransformer)
+        this.mock = new DsqlMock(muleContext,
+                                 closure,
+                                 validator,
+                                 eventFactory)
         return null
-    }
-
-    MuleMessageTransformer getTransformer() {
-        assert transformer: 'Need a transformer! Did you declare a closure wrapped in (upsert, etc.) ?'
-        this.transformer
     }
 }

@@ -4,6 +4,7 @@ import com.avioconsulting.mule.testing.dsl.invokers.FlowRunner
 import com.avioconsulting.mule.testing.dsl.mocking.HttpRequestResponseChoice
 import com.avioconsulting.mule.testing.dsl.mocking.SOAPFormatter
 import com.avioconsulting.mule.testing.dsl.mocking.StandardRequestResponse
+import com.avioconsulting.mule.testing.dsl.mocking.sfdc.Choice
 import com.avioconsulting.mule.testing.mulereplacements.MockingConfiguration
 import groovy.util.logging.Log4j2
 import org.apache.logging.log4j.Logger
@@ -80,5 +81,13 @@ class BaseJunitTest implements BaseMuleGroovyTrait {
                       muleContext,
                       connectorName,
                       closure)
+    }
+
+    def mockSalesForceCall(String connectorName,
+                           @DelegatesTo(Choice) Closure closure) {
+        mockSalesForceCall(mockingConfiguration,
+                           muleContext,
+                           connectorName,
+                           closure)
     }
 }
