@@ -1,5 +1,6 @@
 package com.avioconsulting.mule.testing.dsl.invokers
 
+import com.avioconsulting.mule.testing.EventFactory
 import com.avioconsulting.mule.testing.payloadvalidators.ContentTypeCheckDisabledValidator
 import com.avioconsulting.mule.testing.payloadvalidators.HttpListenerPayloadValidator
 import org.mule.api.MuleContext
@@ -64,12 +65,12 @@ class FlowRunnerImpl implements FlowRunner, BatchRunner {
         invoker = invoker.withNewPayloadValidator(new ContentTypeCheckDisabledValidator(invoker.payloadValidator))
     }
 
-    MuleEvent getEvent() {
+    MuleEvent getEvent(EventFactory eventFactory) {
         assert invoker: 'Need to specify a proper format! (e.g. json)'
         def code = closure.rehydrate(invoker, this, this)
         code.resolveStrategy = Closure.DELEGATE_ONLY
         code()
-        def event = invoker.event
+        def event = invoker.getEvent(eventFactory)
         if (withInputEvent) {
             withInputEvent(event)
         }

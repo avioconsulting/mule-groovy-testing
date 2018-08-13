@@ -1,11 +1,11 @@
 package com.avioconsulting.mule.testing.dsl.invokers
 
+import com.avioconsulting.mule.testing.EventFactory
 import com.avioconsulting.mule.testing.payloadvalidators.IPayloadValidator
 import com.avioconsulting.mule.testing.transformers.xml.JAXBMarshalHelper
 import com.avioconsulting.mule.testing.transformers.xml.XMLMessageBuilder
 import groovy.util.logging.Log4j2
 import groovy.xml.XmlUtil
-import org.mule.DefaultMuleEvent
 import org.mule.MessageExchangePattern
 import org.mule.api.MuleContext
 import org.mule.api.MuleEvent
@@ -30,7 +30,7 @@ class SoapInvokerImpl implements SoapInvoker, Invoker {
     }
 
     @Override
-    MuleEvent getEvent() {
+    MuleEvent getEvent(EventFactory eventFactory) {
         StringReader reader
         if (inputObject instanceof File) {
             def xml = inputObject.text
@@ -46,11 +46,8 @@ class SoapInvokerImpl implements SoapInvoker, Invoker {
             }
         }
         def message = this.xmlMessageBuilder.build(reader)
-        // TODO: Hard coded flow
-        def flow = muleContext.registry.lookupFlowConstruct('/some/soap/flow/messagepayloadasstring')
-        new DefaultMuleEvent(message,
-                             MessageExchangePattern.REQUEST_RESPONSE,
-                             flow)
+        eventFactory.getMuleEvent(message,
+                                  MessageExchangePattern.REQUEST_RESPONSE)
     }
 
     @Override
