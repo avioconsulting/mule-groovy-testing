@@ -4,6 +4,6 @@ import org.mule.api.MuleEvent
 import org.mule.api.processor.MessageProcessor
 
 interface MockProcess<T extends MessageProcessor> {
-    MuleEvent processMuleEvent(event,
-                               T originalProcessor)
+    MuleEvent process(MuleEvent event,
+                      T originalProcessor)
 }
