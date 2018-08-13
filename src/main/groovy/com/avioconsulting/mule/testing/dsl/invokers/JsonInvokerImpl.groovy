@@ -14,7 +14,6 @@ import org.mule.api.MuleEvent
 import org.mule.api.MuleMessage
 
 
-
 class JsonInvokerImpl implements JsonInvoker, Invoker {
     private final MuleContext muleContext
     private OutputTransformer transformBeforeCallingFlow
@@ -24,10 +23,13 @@ class JsonInvokerImpl implements JsonInvoker, Invoker {
     private boolean inputOnly
     private final IPayloadValidator initialPayloadValidator
     private final EventFactory eventFactory
+    private final String flowName
 
     JsonInvokerImpl(MuleContext muleContext,
                     IPayloadValidator initialPayloadValidator,
-                    EventFactory eventFactory) {
+                    EventFactory eventFactory,
+                    String flowName) {
+        this.flowName = flowName
         this.eventFactory = eventFactory
         this.initialPayloadValidator = initialPayloadValidator
         this.muleContext = muleContext
@@ -100,6 +102,7 @@ class JsonInvokerImpl implements JsonInvoker, Invoker {
             inputMessage = transformBeforeCallingFlow.transformOutput(this.inputObject)
         }
         eventFactory.getMuleEvent(inputMessage,
+                                  flowName,
                                   MessageExchangePattern.REQUEST_RESPONSE)
     }
 
@@ -114,6 +117,7 @@ class JsonInvokerImpl implements JsonInvoker, Invoker {
     Invoker withNewPayloadValidator(IPayloadValidator validator) {
         new JsonInvokerImpl(muleContext,
                             validator,
-                            eventFactory)
+                            eventFactory,
+                            flowName)
     }
 }

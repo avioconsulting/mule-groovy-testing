@@ -3,6 +3,7 @@ package com.avioconsulting.mule.testing.transformers.http
 
 import org.mule.api.MessagingException
 import org.mule.api.MuleEvent
+import org.mule.module.http.internal.request.DefaultHttpRequester
 import org.mule.module.http.internal.request.ResponseValidatorException
 import org.mule.module.http.internal.request.SuccessStatusCodeValidator
 
@@ -14,9 +15,12 @@ import org.mule.module.http.internal.request.SuccessStatusCodeValidator
 // actual processor that's being mocked as the "failing message processor" rather than the MUnit interceptor
 // the easiest way to do that is to wrap the method call and then set the private field
 class HttpStatusValidator extends SuccessStatusCodeValidator {
+    private final DefaultHttpRequester httpRequester
 
-    HttpStatusValidator(SuccessStatusCodeValidator wrapped) {
+    HttpStatusValidator(SuccessStatusCodeValidator wrapped,
+                        DefaultHttpRequester httpRequester) {
         super(wrapped.values)
+        this.httpRequester = httpRequester
     }
 
     @Override
@@ -26,7 +30,6 @@ class HttpStatusValidator extends SuccessStatusCodeValidator {
         }
         catch (ResponseValidatorException e) {
             // in certain cases, we need this populated or Java/Munit tests choke (e.g. inside an enricher)
-            def httpRequester = processorLocator.getProcessor(responseEvent)
             // this is a private field and there's no way to set it after and we want
             // to preserve the same exception class
             def field = MessagingException.getDeclaredField('failingMessageProcessor')

@@ -17,9 +17,12 @@ class SoapInvokerImpl implements SoapInvoker, Invoker {
     private final XMLMessageBuilder xmlMessageBuilder
     private JAXBMarshalHelper helper
     private final EventFactory eventFactory
+    private final String flowName
 
     SoapInvokerImpl(MuleContext muleContext,
-                    EventFactory eventFactory) {
+                    EventFactory eventFactory,
+                    String flowName) {
+        this.flowName = flowName
         this.muleContext = muleContext
         xmlMessageBuilder = new XMLMessageBuilder(muleContext,
                                                   true)
@@ -50,6 +53,7 @@ class SoapInvokerImpl implements SoapInvoker, Invoker {
         }
         def message = this.xmlMessageBuilder.build(reader)
         eventFactory.getMuleEvent(message,
+                                  flowName,
                                   MessageExchangePattern.REQUEST_RESPONSE)
     }
 

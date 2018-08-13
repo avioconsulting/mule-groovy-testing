@@ -1,16 +1,15 @@
 package com.avioconsulting.mule.testing.transformers.http
 
-
+import com.avioconsulting.mule.testing.mulereplacements.MuleMessageTransformer
 import com.avioconsulting.mule.testing.spies.IReceiveHttpOptions
 import com.avioconsulting.mule.testing.spies.IReceiveMuleEvents
 import com.avioconsulting.mule.testing.transformers.IHaveStateToReset
-import org.mule.api.MuleContext
 import org.mule.api.MuleEvent
 import org.mule.api.MuleMessage
 import org.mule.api.transport.PropertyScope
+import org.mule.module.http.internal.request.DefaultHttpRequester
 import org.mule.module.http.internal.request.ResponseValidator
 import org.mule.module.http.internal.request.SuccessStatusCodeValidator
-import com.avioconsulting.mule.testing.mulereplacements.MuleMessageTransformer
 
 class HttpValidationTransformer implements IHaveStateToReset,
         IReceiveHttpOptions,
@@ -18,11 +17,9 @@ class HttpValidationTransformer implements IHaveStateToReset,
         IReceiveMuleEvents {
     private ResponseValidator responseValidator
     private Integer httpReturnCode
-    private final MuleContext muleContext
     private MuleEvent muleEvent
 
-    HttpValidationTransformer(MuleContext muleContext) {
-        this.muleContext = muleContext
+    HttpValidationTransformer() {
         reset()
     }
 
@@ -46,12 +43,11 @@ class HttpValidationTransformer implements IHaveStateToReset,
     def receive(Map queryParams,
                 Map headers,
                 String fullPath,
-                String httpVerb,
-                ResponseValidator responseValidator) {
+                DefaultHttpRequester httpRequester) {
         // see HttpStatusValidator for why we wrap this
-        def wrappedValidator = responseValidator as SuccessStatusCodeValidator
+        def wrappedValidator = httpRequester.responseValidator as SuccessStatusCodeValidator
         this.responseValidator = new HttpStatusValidator(wrappedValidator,
-                                                         locator)
+                                                         httpRequester)
     }
 
     def receive(MuleEvent muleEvent) {

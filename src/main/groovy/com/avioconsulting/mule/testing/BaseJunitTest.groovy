@@ -59,6 +59,7 @@ class BaseJunitTest implements BaseMuleGroovyTrait {
     def mockRestHttpCall(String connectorName,
                          @DelegatesTo(HttpRequestResponseChoice) Closure closure) {
         mockRestHttpCall(mockingConfiguration,
+                         muleContext,
                          connectorName,
                          closure)
     }

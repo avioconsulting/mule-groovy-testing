@@ -14,25 +14,28 @@ class FlowRunnerImpl implements FlowRunner, BatchRunner {
     private Closure muleOutputEventHook = null
     private Closure withInputEvent = null
     private final EventFactory eventFactory
+    private final String flowName
 
     FlowRunnerImpl(MuleContext muleContext,
                    String flowName) {
+        this.flowName = flowName
         this.muleContext = muleContext
-        this.eventFactory = new EventFactoryImpl(muleContext,
-                                                 flowName)
+        this.eventFactory = new EventFactoryImpl(muleContext)
     }
 
     def json(@DelegatesTo(JsonInvoker) Closure closure) {
         def jsonInvoker = new JsonInvokerImpl(muleContext,
                                               new HttpListenerPayloadValidator(),
-                                              eventFactory)
+                                              eventFactory,
+                                              flowName)
         invoker = jsonInvoker
         this.closure = closure
     }
 
     def java(@DelegatesTo(JavaInvoker) Closure closure) {
         def javaInvoker = new JavaInvokerImpl(muleContext,
-                                              eventFactory)
+                                              eventFactory,
+                                              flowName)
         invoker = javaInvoker
         this.closure = closure
     }
@@ -40,7 +43,8 @@ class FlowRunnerImpl implements FlowRunner, BatchRunner {
     @Override
     def soap(@DelegatesTo(SoapInvoker) Closure closure) {
         def soapInvoker = new SoapInvokerImpl(muleContext,
-                                              eventFactory)
+                                              eventFactory,
+                                              flowName)
         invoker = soapInvoker
         this.closure = closure
     }

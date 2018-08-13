@@ -1,6 +1,8 @@
 package com.avioconsulting.mule.testing.mocks
 
+import com.avioconsulting.mule.testing.EventFactory
 import com.avioconsulting.mule.testing.mulereplacements.MockProcess
+import com.avioconsulting.mule.testing.mulereplacements.MuleMessageTransformer
 import com.avioconsulting.mule.testing.spies.IReceiveHttpOptions
 import com.avioconsulting.mule.testing.spies.IReceiveMuleEvents
 import org.mule.api.MuleEvent
@@ -9,9 +11,15 @@ import org.mule.module.http.internal.request.DefaultHttpRequester
 class HttpMock implements MockProcess<DefaultHttpRequester> {
     private final List<IReceiveHttpOptions> optionReceivers
     private final List<IReceiveMuleEvents> muleEventReceivers
+    private final MuleMessageTransformer mockTransformer
+    private final EventFactory eventFactory
 
     HttpMock(List<IReceiveHttpOptions> optionReceivers,
-             List<IReceiveMuleEvents> muleEventReceivers) {
+             List<IReceiveMuleEvents> muleEventReceivers,
+             MuleMessageTransformer mockTransformer,
+             EventFactory eventFactory) {
+        this.eventFactory = eventFactory
+        this.mockTransformer = mockTransformer
         this.optionReceivers = optionReceivers
         this.muleEventReceivers = muleEventReceivers
     }
@@ -29,14 +37,14 @@ class HttpMock implements MockProcess<DefaultHttpRequester> {
             receiver.receive(queryParams,
                              headers,
                              fullPath,
-                             httpRequester.method,
-                             httpRequester.responseValidator)
+                             httpRequester)
         }
         muleEventReceivers.each { r ->
             r.receive(muleEvent)
         }
-        // TODO: Transformer/mock stuff
-        return null
+        def responseMessage = this.mockTransformer.transform(muleEvent.message)
+        eventFactory.getMuleEvent(responseMessage,
+                                  muleEvent)
     }
 
     private static Map getQueryParams(MuleEvent muleEvent,

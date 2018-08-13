@@ -3,13 +3,13 @@ package com.avioconsulting.mule.testing
 import com.avioconsulting.mule.testing.dsl.invokers.BatchRunner
 import com.avioconsulting.mule.testing.dsl.invokers.FlowRunner
 import com.avioconsulting.mule.testing.dsl.invokers.FlowRunnerImpl
-import com.avioconsulting.mule.testing.dsl.mocking.*
+import com.avioconsulting.mule.testing.dsl.mocking.HttpRequestResponseChoice
+import com.avioconsulting.mule.testing.dsl.mocking.HttpRequestResponseChoiceImpl
+import com.avioconsulting.mule.testing.dsl.mocking.SOAPFormatter
+import com.avioconsulting.mule.testing.dsl.mocking.StandardRequestResponse
 import com.avioconsulting.mule.testing.dsl.mocking.sfdc.Choice
-import com.avioconsulting.mule.testing.dsl.mocking.sfdc.ChoiceImpl
-import com.avioconsulting.mule.testing.mocks.HttpMock
 import com.avioconsulting.mule.testing.mulereplacements.GroovyTestingSpringXmlConfigurationBuilder
 import com.avioconsulting.mule.testing.mulereplacements.MockingConfiguration
-import com.avioconsulting.mule.testing.payloadvalidators.SOAPPayloadValidator
 import com.mulesoft.module.batch.engine.BatchJobAdapter
 import org.apache.logging.log4j.Logger
 import org.mule.api.MuleContext
@@ -147,7 +147,8 @@ trait BaseMuleGroovyTrait {
         }
     }
 
-    static MuleMessage httpPost(map) {
+    static MuleMessage httpPost(MuleContext muleContext,
+                                map) {
         def timeoutSeconds = map.timeoutSeconds ?: 35
         def client = new MuleClient(muleContext)
         def properties = [
@@ -160,7 +161,8 @@ trait BaseMuleGroovyTrait {
                     timeoutSeconds * 1000
     }
 
-    static MuleMessage httpGet(map) {
+    static MuleMessage httpGet(MuleContext muleContext,
+                               map) {
         def timeoutSeconds = map.timeoutSeconds ?: 35
         def client = new MuleClient(muleContext)
         def properties = ['http.method': 'GET']
@@ -172,74 +174,73 @@ trait BaseMuleGroovyTrait {
     }
 
     def mockRestHttpCall(MockingConfiguration mockingConfiguration,
+                         MuleContext muleContext,
                          String connectorName,
                          @DelegatesTo(HttpRequestResponseChoice) Closure closure) {
-        mockingConfiguration.addMock(connectorName,
-                                     new HttpMock())
-        // TODO: Hook the rest of this in
-        def formatterChoice = new HttpRequestResponseChoiceImpl(spy,
-                                                                locator,
-                                                                muleContext)
+        def eventFactory = new EventFactoryImpl(muleContext)
+        def formatterChoice = new HttpRequestResponseChoiceImpl(muleContext,
+                                                                eventFactory)
         def code = closure.rehydrate(formatterChoice, this, this)
         code.resolveStrategy = Closure.DELEGATE_ONLY
         code()
-        mocker.thenApply(formatterChoice.transformer)
+        mockingConfiguration.addMock(connectorName,
+                                     formatterChoice.httpMock)
     }
 
     def mockVmReceive(String connectorName,
                       @DelegatesTo(StandardRequestResponse) Closure closure) {
-        def mocker = whenMessageProcessor('outbound-endpoint')
-                .ofNamespace('vm')
-                .withAttributes(Attribute.attribute('name')
-                                        .ofNamespace('doc')
-                                        .withValue(connectorName))
-        def formatterChoice = new VMRequestResponseChoiceImpl(muleContext)
-        def code = closure.rehydrate(formatterChoice, this, this)
-        code.resolveStrategy = Closure.DELEGATE_ONLY
-        code()
-        mocker.thenApply(formatterChoice.transformer)
+//        def mocker = whenMessageProcessor('outbound-endpoint')
+//                .ofNamespace('vm')
+//                .withAttributes(Attribute.attribute('name')
+//                                        .ofNamespace('doc')
+//                                        .withValue(connectorName))
+//        def formatterChoice = new VMRequestResponseChoiceImpl(muleContext)
+//        def code = closure.rehydrate(formatterChoice, this, this)
+//        code.resolveStrategy = Closure.DELEGATE_ONLY
+//        code()
+//        mocker.thenApply(formatterChoice.transformer)
     }
 
     def mockSalesForceCall(String connectorName,
                            @DelegatesTo(Choice) Closure closure) {
-        def choice = new ChoiceImpl(muleContext, { String processorType ->
-            spyMessageProcessor(processorType)
-                    .ofNamespace('sfdc')
-                    .withAttributes(Attribute.attribute('name')
-                                            .ofNamespace('doc')
-                                            .withValue(connectorName))
-        }, locator)
-        def code = closure.rehydrate(choice, this, this)
-        code.resolveStrategy = Closure.DELEGATE_ONLY
-        code()
-        def mocker = whenMessageProcessor(choice.connectorType)
-                .ofNamespace('sfdc')
-                .withAttributes(Attribute.attribute('name')
-                                        .ofNamespace('doc')
-                                        .withValue(connectorName))
-        mocker.thenApply(choice.transformer)
+//        def choice = new ChoiceImpl(muleContext, { String processorType ->
+//            spyMessageProcessor(processorType)
+//                    .ofNamespace('sfdc')
+//                    .withAttributes(Attribute.attribute('name')
+//                                            .ofNamespace('doc')
+//                                            .withValue(connectorName))
+//        }, locator)
+//        def code = closure.rehydrate(choice, this, this)
+//        code.resolveStrategy = Closure.DELEGATE_ONLY
+//        code()
+//        def mocker = whenMessageProcessor(choice.connectorType)
+//                .ofNamespace('sfdc')
+//                .withAttributes(Attribute.attribute('name')
+//                                        .ofNamespace('doc')
+//                                        .withValue(connectorName))
+//        mocker.thenApply(choice.transformer)
     }
 
     def mockSoapCall(String connectorName,
                      @DelegatesTo(SOAPFormatter) Closure closure) {
-        def mocker = whenMessageProcessor('consumer')
-                .ofNamespace('ws')
-                .withAttributes(Attribute.attribute('name')
-                                        .ofNamespace('doc')
-                                        .withValue(connectorName))
-        def spy = spyMessageProcessor('consumer')
-                .ofNamespace('ws')
-                .withAttributes(Attribute.attribute('name')
-                                        .ofNamespace('doc')
-                                        .withValue(connectorName))
-        def payloadValidator = new SOAPPayloadValidator()
-        def soapFormatter = new SOAPFormatterImpl(muleContext,
-                                                  spy,
-                                                  payloadValidator)
-        def code = closure.rehydrate(soapFormatter, this, this)
-        code.resolveStrategy = Closure.DELEGATE_ONLY
-        code()
-        mocker.thenApply(soapFormatter.transformer)
+//        def mocker = whenMessageProcessor('consumer')
+//                .ofNamespace('ws')
+//                .withAttributes(Attribute.attribute('name')
+//                                        .ofNamespace('doc')
+//                                        .withValue(connectorName))
+//        def spy = spyMessageProcessor('consumer')
+//                .ofNamespace('ws')
+//                .withAttributes(Attribute.attribute('name')
+//                                        .ofNamespace('doc')
+//                                        .withValue(connectorName))
+//        def payloadValidator = new SOAPPayloadValidator()
+//        def soapFormatter = new SOAPFormatterImpl(muleContext,
+//                                                  spy,
+//                                                  payloadValidator)
+//        def code = closure.rehydrate(soapFormatter, this, this)
+//        code.resolveStrategy = Closure.DELEGATE_ONLY
+//        code()
+//        mocker.thenApply(soapFormatter.transformer)
     }
 
     static XMLGregorianCalendar getXmlDate(int year, int oneBasedMonth, int dayOfMonth) {

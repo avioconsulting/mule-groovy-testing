@@ -11,9 +11,12 @@ class JavaInvokerImpl implements JavaInvoker, Invoker {
     private final MuleContext muleContext
     private inputObject
     private final EventFactory eventFactory
+    private final String flowName
 
     JavaInvokerImpl(MuleContext muleContext,
-                    EventFactory eventFactory) {
+                    EventFactory eventFactory,
+                    String flowName) {
+        this.flowName = flowName
         this.muleContext = muleContext
         this.eventFactory = eventFactory
     }
@@ -25,6 +28,7 @@ class JavaInvokerImpl implements JavaInvoker, Invoker {
     MuleEvent getEvent() {
         def message = new DefaultMuleMessage(inputObject, muleContext)
         eventFactory.getMuleEvent(message,
+                                  flowName,
                                   MessageExchangePattern.REQUEST_RESPONSE)
     }
 
