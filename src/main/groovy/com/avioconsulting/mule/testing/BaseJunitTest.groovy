@@ -27,7 +27,7 @@ class BaseJunitTest implements BaseMuleGroovyTrait {
 
     @AfterClass
     static void shutdownMule() {
-        if (muleContext.started) {
+        if (muleContext && muleContext.started) {
             muleContext.stop()
             assert muleContext.stopped
             muleContext.dispose()
