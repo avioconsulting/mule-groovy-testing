@@ -28,7 +28,7 @@ class BaseJunitTest implements BaseMuleGroovyTrait {
             muleContext = createMuleContext(mockingConfiguration)
             muleContext.start()
         }
-        mockingConfiguration.mocks.clear()
+        mockingConfiguration.clearMocks()
     }
 
     @AfterClass
