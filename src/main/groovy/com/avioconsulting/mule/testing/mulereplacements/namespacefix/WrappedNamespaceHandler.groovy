@@ -25,7 +25,8 @@ class WrappedNamespaceHandler implements NamespaceHandler {
                          ParserContext parserContext) {
         def beanDefinition = wrapped.parse(element, parserContext)
         // connectors like WSConsumer will already have a loaded class w/ RootBeanDefinition
-        if (beanDefinition instanceof RootBeanDefinition) {
+        // some classes won't have a bean class yet
+        if (beanDefinition instanceof RootBeanDefinition && beanDefinition.hasBeanClass()) {
             checkForMissingAnnotations(beanDefinition,
                                        element)
         }
