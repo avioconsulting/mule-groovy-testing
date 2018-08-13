@@ -50,7 +50,8 @@ class WrappedNamespaceHandler implements NamespaceHandler {
             def annotations = [
                     (qname): name.nodeValue
             ]
-            // This will get picked up by the MockHandler in this library
+            // This will get picked up by the MockHandler in this library. This is part of the AnnotatedObject
+            // interface
             beanDefinition.propertyValues.add('annotations',
                                               annotations)
         }
