@@ -9,12 +9,9 @@ import org.mule.api.processor.MessageProcessor
 import java.lang.reflect.Method
 
 class MockHandler implements MethodInterceptor {
-    private final MessageProcessor processorWeMightMock
     private final MockingConfiguration mockingConfiguration
 
-    MockHandler(MessageProcessor processorWeMightMock,
-                MockingConfiguration mockingConfiguration) {
-        this.processorWeMightMock = processorWeMightMock
+    MockHandler(MockingConfiguration mockingConfiguration) {
         this.mockingConfiguration = mockingConfiguration
     }
 
@@ -27,16 +24,17 @@ class MockHandler implements MethodInterceptor {
         if (method.name == 'process' &&
                 method.parameterTypes.size() == 1 &&
                 method.parameterTypes[0] == MuleEvent) {
-            def asAnnotated = processorWeMightMock as AnnotatedObject
+            def asAnnotated = obj as AnnotatedObject
             def mock = mockingConfiguration.getMockProcess(asAnnotated)
             def muleEvent = args[0] as MuleEvent
             if (mock) {
                 return mock.process(muleEvent,
-                                    processorWeMightMock)
+                                    obj)
             }
         }
         // work around protected methods for now
         method.accessible = true
-        return method.invoke(processorWeMightMock, args)
+        return proxy.invokeSuper(obj, args)
+        //return method.invoke(processorWeMightMock, args)
     }
 }
