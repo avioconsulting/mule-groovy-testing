@@ -101,61 +101,6 @@ trait BaseMuleGroovyTrait {
         list.join(',')
     }
 
-    void handleUnmocked() {
-        // don't complain if they explicitly said they don't want to mock these
-        if (!haveToMockMuleConnectors()) {
-            return
-        }
-        setupFallThroughMock('consumer', 'ws')
-        setupFallThroughMock('request', 'http')
-        setupFallThroughMock('outbound-endpoint', 'vm')
-    }
-
-    // if you miss a mock, the error message is far from obvious
-    // this helps mock things by default and return a useful error message
-    private void setupFallThroughMock(String processorName, String namespace) {
-        // this is the easiest way to get ahold of the event surrounding a message
-//        MuleEvent capturedEvent = null
-//        spyMessageProcessor(processorName)
-//                .ofNamespace(namespace)
-//                .before(new SpyProcess() {
-//            void spy(MuleEvent muleEvent) {
-//                capturedEvent = muleEvent
-//            }
-//        })
-//        // any other mock will supercede this one
-//        whenMessageProcessor(processorName)
-//                .ofNamespace(namespace)
-//                .thenApply(new MuleMessageTransformer() {
-//            MuleMessage transform(MuleMessage incoming) {
-//                // best we can do right now is get the activity before
-//                def madeIt = false
-//                try {
-//                    def processor = capturedEvent.flowConstruct.messageProcessors.last()
-//                    def fetcher = { item ->
-//                        def annotations = processor.getAnnotations()
-//                        annotations[new QName('http://www.mulesoft.org/schema/mule/documentation', item)]
-//                    }
-//                    def fileName = fetcher('sourceFileName')
-//                    def sourceFileLine = fetcher('sourceFileLine')
-//                    def name = fetcher('name')
-//                    madeIt = true
-//                    throw new Exception(
-//                            "You have an unmocked ${namespace}:${processorName} transport! It's located NEAR the '${name}' processor on line ${sourceFileLine} in ${fileName}")
-//                }
-//                // in case our detection method breaks, still show something
-//                catch (e) {
-//                    // don't interrupt what we just did
-//                    if (madeIt) {
-//                        throw e
-//                    }
-//                    throw new Exception(
-//                            "You have an unmocked ${namespace}:${processorName} transport! Its location in the code could not be located!")
-//                }
-//            }
-//        })
-    }
-
     def runFlow(MuleContext muleContext,
                 String flowName,
                 @DelegatesTo(FlowRunner) Closure closure) {
@@ -229,7 +174,8 @@ trait BaseMuleGroovyTrait {
     def mockRestHttpCall(MockingConfiguration mockingConfiguration,
                          String connectorName,
                          @DelegatesTo(HttpRequestResponseChoice) Closure closure) {
-        mockingConfiguration.mocks[connectorName] = new HttpMock()
+        mockingConfiguration.addMock(connectorName,
+                                     new HttpMock())
         // TODO: Hook the rest of this in
 //        def locator = new ProcessorLocator(connectorName)
 //        def formatterChoice = new HttpRequestResponseChoiceImpl(spy,

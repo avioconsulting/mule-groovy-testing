@@ -6,13 +6,11 @@ import org.mule.api.AnnotatedObject
 import org.mule.api.MuleEvent
 import org.mule.api.processor.MessageProcessor
 
-import javax.xml.namespace.QName
 import java.lang.reflect.Method
 
 class MockHandler implements MethodInterceptor {
     private final MessageProcessor processorWeMightMock
     private final MockingConfiguration mockingConfiguration
-    private static final QName processorName = new QName('http://www.mulesoft.org/schema/mule/documentation', 'name')
 
     MockHandler(MessageProcessor processorWeMightMock,
                 MockingConfiguration mockingConfiguration) {
@@ -30,10 +28,10 @@ class MockHandler implements MethodInterceptor {
                 method.parameterTypes.size() == 1 &&
                 method.parameterTypes[0] == MuleEvent) {
             def asAnnotated = processorWeMightMock as AnnotatedObject
-            def processorName = asAnnotated.annotations.get(processorName) as String
-            def mock = mockingConfiguration.mocks[processorName]
+            def mock = mockingConfiguration.getMockProcess(asAnnotated)
+            def muleEvent = args[0] as MuleEvent
             if (mock) {
-                return mock.process(args[0],
+                return mock.process(muleEvent,
                                     processorWeMightMock)
             }
         }
