@@ -1,6 +1,6 @@
 package com.avioconsulting.mule.testing.spies
 
-import com.avioconsulting.mule.testing.ProcessorLocator
+
 import org.mule.api.MuleContext
 import org.mule.api.MuleEvent
 import org.mule.api.MuleException
@@ -9,20 +9,17 @@ import com.avioconsulting.mule.testing.mulereplacements.SpyProcess
 
 // spies are the only way to get access to the underlying event on mocked connectors
 class HttpConnectorSpy implements SpyProcess {
-    private final ProcessorLocator processorLocator
     private final MuleContext muleContext
     private MuleEvent muleEvent
     private final List<IReceiveHttpOptions> optionReceivers
     private final List<IReceiveMuleEvents> muleEventReceivers
 
-    HttpConnectorSpy(ProcessorLocator processorLocator,
-                     MuleContext muleContext,
+    HttpConnectorSpy(MuleContext muleContext,
                      List<IReceiveHttpOptions> optionReceivers,
                      List<IReceiveMuleEvents> muleEventReceivers) {
         this.muleEventReceivers = muleEventReceivers
         this.optionReceivers = optionReceivers
         this.muleContext = muleContext
-        this.processorLocator = processorLocator
     }
 
     void spy(MuleEvent incomingEvent) throws MuleException {

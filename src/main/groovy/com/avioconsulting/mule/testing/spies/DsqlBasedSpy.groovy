@@ -1,6 +1,6 @@
 package com.avioconsulting.mule.testing.spies
 
-import com.avioconsulting.mule.testing.ProcessorLocator
+
 import org.mule.api.MuleContext
 import org.mule.api.MuleEvent
 import org.mule.api.MuleException
@@ -12,13 +12,10 @@ abstract class DsqlBasedSpy implements SpyProcess {
         DsqlBasedSpy.classLoader.loadClass('org.mule.devkit.internal.dsql.DsqlMelParserUtils')
     }()
 
-    private final ProcessorLocator locator
     protected final MuleContext muleContext
     private String dSqlQuery
 
-    DsqlBasedSpy(ProcessorLocator locator,
-                 MuleContext muleContext) {
-        this.locator = locator
+    DsqlBasedSpy(MuleContext muleContext) {
         this.muleContext = muleContext
     }
 

@@ -1,22 +1,20 @@
 package com.avioconsulting.mule.testing.transformers
 
-import com.avioconsulting.mule.testing.ProcessorLocator
+import com.avioconsulting.mule.testing.mulereplacements.MuleMessageTransformer
 import com.avioconsulting.mule.testing.payloadvalidators.IPayloadValidator
 import com.avioconsulting.mule.testing.spies.DsqlBasedSpy
 import org.mule.DefaultMuleMessage
 import org.mule.api.MuleContext
 import org.mule.api.MuleMessage
-import com.avioconsulting.mule.testing.mulereplacements.MuleMessageTransformer
 
 class StandardDsqlTransformer extends DsqlBasedSpy implements MuleMessageTransformer {
     private final Closure closure
     private final IPayloadValidator payloadValidator
 
-    StandardDsqlTransformer(ProcessorLocator locator,
-                            MuleContext muleContext,
+    StandardDsqlTransformer(MuleContext muleContext,
                             Closure closure,
                             IPayloadValidator payloadValidator) {
-        super(locator, muleContext)
+        super(muleContext)
         this.payloadValidator = payloadValidator
         this.closure = closure
     }

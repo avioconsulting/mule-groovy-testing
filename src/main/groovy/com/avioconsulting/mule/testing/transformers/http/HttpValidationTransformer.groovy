@@ -1,6 +1,6 @@
 package com.avioconsulting.mule.testing.transformers.http
 
-import com.avioconsulting.mule.testing.ProcessorLocator
+
 import com.avioconsulting.mule.testing.spies.IReceiveHttpOptions
 import com.avioconsulting.mule.testing.spies.IReceiveMuleEvents
 import com.avioconsulting.mule.testing.transformers.IHaveStateToReset
@@ -20,11 +20,8 @@ class HttpValidationTransformer implements IHaveStateToReset,
     private Integer httpReturnCode
     private final MuleContext muleContext
     private MuleEvent muleEvent
-    private final ProcessorLocator locator
 
-    HttpValidationTransformer(MuleContext muleContext,
-                              ProcessorLocator locator) {
-        this.locator = locator
+    HttpValidationTransformer(MuleContext muleContext) {
         this.muleContext = muleContext
         reset()
     }

@@ -1,6 +1,6 @@
 package com.avioconsulting.mule.testing.transformers.http
 
-import com.avioconsulting.mule.testing.ProcessorLocator
+
 import org.mule.api.MessagingException
 import org.mule.api.MuleEvent
 import org.mule.module.http.internal.request.ResponseValidatorException
@@ -14,12 +14,9 @@ import org.mule.module.http.internal.request.SuccessStatusCodeValidator
 // actual processor that's being mocked as the "failing message processor" rather than the MUnit interceptor
 // the easiest way to do that is to wrap the method call and then set the private field
 class HttpStatusValidator extends SuccessStatusCodeValidator {
-    private final ProcessorLocator processorLocator
 
-    HttpStatusValidator(SuccessStatusCodeValidator wrapped,
-                        ProcessorLocator processorLocator) {
+    HttpStatusValidator(SuccessStatusCodeValidator wrapped) {
         super(wrapped.values)
-        this.processorLocator = processorLocator
     }
 
     @Override

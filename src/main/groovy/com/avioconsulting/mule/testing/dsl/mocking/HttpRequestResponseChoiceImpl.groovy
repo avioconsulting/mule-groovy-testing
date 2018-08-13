@@ -1,6 +1,6 @@
 package com.avioconsulting.mule.testing.dsl.mocking
 
-import com.avioconsulting.mule.testing.ProcessorLocator
+
 import com.avioconsulting.mule.testing.payloadvalidators.ContentTypeCheckDisabledValidator
 import com.avioconsulting.mule.testing.payloadvalidators.HttpRequestPayloadValidator
 import com.avioconsulting.mule.testing.spies.HttpConnectorSpy
@@ -23,13 +23,11 @@ class HttpRequestResponseChoiceImpl extends StandardRequestResponseImpl
     private String httpVerb
 
     HttpRequestResponseChoiceImpl(Object spy,
-                                  ProcessorLocator processorLocator,
                                   MuleContext muleContext) {
         super(muleContext,
               new HttpRequestPayloadValidator())
         def payloadTypeFetcher = initialPayloadValidator as HttpRequestPayloadValidator
-        httpValidationTransformer = new HttpValidationTransformer(muleContext,
-                                                                  processorLocator)
+        httpValidationTransformer = new HttpValidationTransformer(muleContext)
         httpGetTransformer = new HttpGetTransformer(muleContext)
         httpConnectorErrorTransformer = new HttpConnectorErrorTransformer(muleContext)
         def httpPathEtcReceivers = [this.httpValidationTransformer,
@@ -37,8 +35,7 @@ class HttpRequestResponseChoiceImpl extends StandardRequestResponseImpl
                                     payloadTypeFetcher,
                                     httpGetTransformer]
         def muleEventReceivers = [httpValidationTransformer]
-        def httpConnectorSpy = new HttpConnectorSpy(processorLocator,
-                                                    muleContext,
+        def httpConnectorSpy = new HttpConnectorSpy(muleContext,
                                                     httpPathEtcReceivers,
                                                     muleEventReceivers)
         spy.before(httpConnectorSpy)

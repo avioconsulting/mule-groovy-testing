@@ -177,14 +177,13 @@ trait BaseMuleGroovyTrait {
         mockingConfiguration.addMock(connectorName,
                                      new HttpMock())
         // TODO: Hook the rest of this in
-//        def locator = new ProcessorLocator(connectorName)
-//        def formatterChoice = new HttpRequestResponseChoiceImpl(spy,
-//                                                                locator,
-//                                                                muleContext)
-//        def code = closure.rehydrate(formatterChoice, this, this)
-//        code.resolveStrategy = Closure.DELEGATE_ONLY
-//        code()
-//        mocker.thenApply(formatterChoice.transformer)
+        def formatterChoice = new HttpRequestResponseChoiceImpl(spy,
+                                                                locator,
+                                                                muleContext)
+        def code = closure.rehydrate(formatterChoice, this, this)
+        code.resolveStrategy = Closure.DELEGATE_ONLY
+        code()
+        mocker.thenApply(formatterChoice.transformer)
     }
 
     def mockVmReceive(String connectorName,
@@ -203,7 +202,6 @@ trait BaseMuleGroovyTrait {
 
     def mockSalesForceCall(String connectorName,
                            @DelegatesTo(Choice) Closure closure) {
-        def locator = new ProcessorLocator(connectorName)
         def choice = new ChoiceImpl(muleContext, { String processorType ->
             spyMessageProcessor(processorType)
                     .ofNamespace('sfdc')
