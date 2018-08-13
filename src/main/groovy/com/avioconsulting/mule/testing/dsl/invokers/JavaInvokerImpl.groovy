@@ -10,16 +10,19 @@ import org.mule.api.MuleEvent
 class JavaInvokerImpl implements JavaInvoker, Invoker {
     private final MuleContext muleContext
     private inputObject
+    private final EventFactory eventFactory
 
-    JavaInvokerImpl(MuleContext muleContext) {
+    JavaInvokerImpl(MuleContext muleContext,
+                    EventFactory eventFactory) {
         this.muleContext = muleContext
+        this.eventFactory = eventFactory
     }
 
     def inputPayload(Object inputObject) {
         this.inputObject = inputObject
     }
 
-    MuleEvent getEvent(EventFactory eventFactory) {
+    MuleEvent getEvent() {
         def message = new DefaultMuleMessage(inputObject, muleContext)
         eventFactory.getMuleEvent(message,
                                   MessageExchangePattern.REQUEST_RESPONSE)

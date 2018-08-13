@@ -151,23 +151,17 @@ trait BaseMuleGroovyTrait {
 //        })
     }
 
-    EventFactory getEventFactory(MuleContext muleContext,
-                        String flowName) {
-        new EventFactoryImpl(muleContext,
-                             flowName)
-    }
-
     def runFlow(MuleContext muleContext,
                 String flowName,
                 @DelegatesTo(FlowRunner) Closure closure) {
-        def runner = new FlowRunnerImpl(muleContext)
+        def runner = new FlowRunnerImpl(muleContext,
+                                        flowName)
         def code = closure.rehydrate(runner, this, this)
         code.resolveStrategy = Closure.DELEGATE_ONLY
         code()
-        def eventFactory = getEventFactory(muleContext, flowName)
         def outputEvent = runFlow(muleContext,
                                   flowName,
-                                  runner.getEvent(eventFactory))
+                                  runner.getEvent())
         runner.transformOutput(outputEvent)
     }
 
@@ -191,14 +185,15 @@ trait BaseMuleGroovyTrait {
                  List<String> jobsToWaitFor = null,
                  boolean throwUnderlyingException = false,
                  @DelegatesTo(BatchRunner) Closure closure) {
-        def runner = new FlowRunnerImpl(muleContext)
+        def runner = new FlowRunnerImpl(muleContext,
+                                        batchName)
         def code = closure.rehydrate(runner, this, this)
         code.resolveStrategy = Closure.DELEGATE_ONLY
         code()
         def batchJob = muleContext.registry.get(batchName) as BatchJobAdapter
         waitForBatchCompletion(jobsToWaitFor,
                                throwUnderlyingException) {
-            batchJob.execute(runner.getEvent(batchName))
+            batchJob.execute(runner.getEvent())
         }
     }
 

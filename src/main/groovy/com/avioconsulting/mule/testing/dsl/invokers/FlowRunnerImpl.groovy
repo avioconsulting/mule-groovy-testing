@@ -1,6 +1,7 @@
 package com.avioconsulting.mule.testing.dsl.invokers
 
 import com.avioconsulting.mule.testing.EventFactory
+import com.avioconsulting.mule.testing.EventFactoryImpl
 import com.avioconsulting.mule.testing.payloadvalidators.ContentTypeCheckDisabledValidator
 import com.avioconsulting.mule.testing.payloadvalidators.HttpListenerPayloadValidator
 import org.mule.api.MuleContext
@@ -12,27 +13,34 @@ class FlowRunnerImpl implements FlowRunner, BatchRunner {
     private Closure closure
     private Closure muleOutputEventHook = null
     private Closure withInputEvent = null
+    private final EventFactory eventFactory
 
-    FlowRunnerImpl(MuleContext muleContext) {
+    FlowRunnerImpl(MuleContext muleContext,
+                   String flowName) {
         this.muleContext = muleContext
+        this.eventFactory = new EventFactoryImpl(muleContext,
+                                                 flowName)
     }
 
     def json(@DelegatesTo(JsonInvoker) Closure closure) {
         def jsonInvoker = new JsonInvokerImpl(muleContext,
-                                              new HttpListenerPayloadValidator())
+                                              new HttpListenerPayloadValidator(),
+                                              eventFactory)
         invoker = jsonInvoker
         this.closure = closure
     }
 
     def java(@DelegatesTo(JavaInvoker) Closure closure) {
-        def javaInvoker = new JavaInvokerImpl(muleContext)
+        def javaInvoker = new JavaInvokerImpl(muleContext,
+                                              eventFactory)
         invoker = javaInvoker
         this.closure = closure
     }
 
     @Override
     def soap(@DelegatesTo(SoapInvoker) Closure closure) {
-        def soapInvoker = new SoapInvokerImpl(muleContext)
+        def soapInvoker = new SoapInvokerImpl(muleContext,
+                                              eventFactory)
         invoker = soapInvoker
         this.closure = closure
     }
@@ -65,12 +73,12 @@ class FlowRunnerImpl implements FlowRunner, BatchRunner {
         invoker = invoker.withNewPayloadValidator(new ContentTypeCheckDisabledValidator(invoker.payloadValidator))
     }
 
-    MuleEvent getEvent(EventFactory eventFactory) {
+    MuleEvent getEvent() {
         assert invoker: 'Need to specify a proper format! (e.g. json)'
         def code = closure.rehydrate(invoker, this, this)
         code.resolveStrategy = Closure.DELEGATE_ONLY
         code()
-        def event = invoker.getEvent(eventFactory)
+        def event = invoker.getEvent()
         if (withInputEvent) {
             withInputEvent(event)
         }

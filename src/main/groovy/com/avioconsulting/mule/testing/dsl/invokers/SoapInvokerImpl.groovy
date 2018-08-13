@@ -16,11 +16,14 @@ class SoapInvokerImpl implements SoapInvoker, Invoker {
     private final MuleContext muleContext
     private final XMLMessageBuilder xmlMessageBuilder
     private JAXBMarshalHelper helper
+    private final EventFactory eventFactory
 
-    SoapInvokerImpl(MuleContext muleContext) {
+    SoapInvokerImpl(MuleContext muleContext,
+                    EventFactory eventFactory) {
         this.muleContext = muleContext
         xmlMessageBuilder = new XMLMessageBuilder(muleContext,
                                                   true)
+        this.eventFactory = eventFactory
     }
 
     @Override
@@ -30,7 +33,7 @@ class SoapInvokerImpl implements SoapInvoker, Invoker {
     }
 
     @Override
-    MuleEvent getEvent(EventFactory eventFactory) {
+    MuleEvent getEvent() {
         StringReader reader
         if (inputObject instanceof File) {
             def xml = inputObject.text

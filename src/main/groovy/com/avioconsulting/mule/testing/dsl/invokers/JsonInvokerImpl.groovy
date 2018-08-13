@@ -23,9 +23,12 @@ class JsonInvokerImpl implements JsonInvoker, Invoker {
     private boolean outputOnly
     private boolean inputOnly
     private final IPayloadValidator initialPayloadValidator
+    private final EventFactory eventFactory
 
     JsonInvokerImpl(MuleContext muleContext,
-                    IPayloadValidator initialPayloadValidator) {
+                    IPayloadValidator initialPayloadValidator,
+                    EventFactory eventFactory) {
+        this.eventFactory = eventFactory
         this.initialPayloadValidator = initialPayloadValidator
         this.muleContext = muleContext
         this.outputOnly = false
@@ -88,7 +91,7 @@ class JsonInvokerImpl implements JsonInvoker, Invoker {
         }
     }
 
-    MuleEvent getEvent(EventFactory eventFactory) {
+    MuleEvent getEvent() {
         MuleMessage inputMessage
         if (outputOnly) {
             inputMessage = new DefaultMuleMessage(null, muleContext)
