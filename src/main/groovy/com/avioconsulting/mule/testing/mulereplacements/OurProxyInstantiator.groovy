@@ -2,6 +2,7 @@ package com.avioconsulting.mule.testing.mulereplacements
 
 import groovy.util.logging.Log4j2
 import net.sf.cglib.proxy.Enhancer
+import org.mule.api.endpoint.EndpointFactory
 import org.mule.api.processor.MessageProcessor
 import org.mule.construct.Flow
 import org.mule.processor.chain.InterceptingChainLifecycleWrapper
@@ -36,11 +37,19 @@ class OurProxyInstantiator implements InstantiationStrategy {
                        BeanFactory owner) throws BeansException {
         def beanKlass = bd.beanClass
         try {
+            if (EndpointFactory.isAssignableFrom(beanKlass)) {
+                def underlying = wrapped.instantiate(bd, beanName, owner)
+                assert underlying instanceof EndpointFactory
+                return new OverrideEndpointFactory(underlying,
+                                                   mockingConfiguration)
+            }
             if (MessageProcessor.isAssignableFrom(beanKlass) && !noMocking.containsKey(beanKlass.name)) {
                 return Enhancer.create(beanKlass,
                                        new MockHandler(this.mockingConfiguration))
             }
-            return wrapped.instantiate(bd, beanName, owner)
+            return wrapped.instantiate(bd,
+                                       beanName,
+                                       owner)
         }
         catch (e) {
             log.error("While intercepting bean class ${beanKlass.name}/bean ${beanName}",
@@ -53,8 +62,28 @@ class OurProxyInstantiator implements InstantiationStrategy {
     Object instantiate(RootBeanDefinition bd,
                        String beanName,
                        BeanFactory owner,
-                       Constructor<?> ctor, Object... args) throws BeansException {
-        wrapped.instantiate(bd, beanName, owner, ctor, args)
+                       Constructor<?> ctor,
+                       Object... args) throws BeansException {
+        def beanKlass = bd.beanClass
+        try {
+            if (MessageProcessor.isAssignableFrom(beanKlass) && !noMocking.containsKey(beanKlass.name)) {
+                def en = new Enhancer()
+                en.superclass = beanKlass
+                en.callback = new MockHandler(this.mockingConfiguration)
+                return en.create(ctor.parameterTypes,
+                                 args)
+            }
+            return wrapped.instantiate(bd,
+                                       beanName,
+                                       owner,
+                                       ctor,
+                                       args)
+        }
+        catch (e) {
+            log.error("While intercepting bean class ${beanKlass.name}/bean ${beanName}",
+                      e)
+            throw e
+        }
     }
 
     @Override
