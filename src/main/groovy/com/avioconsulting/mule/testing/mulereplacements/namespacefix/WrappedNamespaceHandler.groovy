@@ -20,23 +20,33 @@ class WrappedNamespaceHandler implements NamespaceHandler {
     BeanDefinition parse(Element element,
                          ParserContext parserContext) {
         def beanDefinition = wrapped.parse(element, parserContext)
+        // connectors like WSConsumer will already have a loaded class w/ RootBeanDefinition
         if (beanDefinition instanceof RootBeanDefinition) {
-            def beanKlass = beanDefinition.beanClass
-            if (MessageProcessor.isAssignableFrom(beanKlass) &&
-                    !AnnotatedObject.isAssignableFrom(beanKlass)) {
-                def name = element.attributes.getNamedItemNS('http://www.mulesoft.org/schema/mule/documentation',
-                                                             'name')
-                if (name) {
-                    def qname = new QName(name.namespaceURI,
-                                          'name')
-                    def annotations = [
-                            (qname): name.nodeValue
-                    ]
-                    beanDefinition.propertyValues.add('annotations',
-                                                      annotations)
-                }
-            }
+            checkForMissingAnnotations(beanDefinition,
+                                       element)
         }
         beanDefinition
+    }
+
+    private static void checkForMissingAnnotations(RootBeanDefinition beanDefinition,
+                                                   Element element) {
+        def beanKlass = beanDefinition.beanClass
+        // don't care if it's not a message processor
+        // some classes with annotations already may end up here
+        if (!MessageProcessor.isAssignableFrom(beanKlass) || AnnotatedObject.isAssignableFrom(beanKlass)) {
+            return
+        }
+        def name = element.attributes.getNamedItemNS('http://www.mulesoft.org/schema/mule/documentation',
+                                                     'name')
+        if (name) {
+            def qname = new QName(name.namespaceURI,
+                                  'name')
+            def annotations = [
+                    (qname): name.nodeValue
+            ]
+            // This will get picked up by the MockHandler in this library
+            beanDefinition.propertyValues.add('annotations',
+                                              annotations)
+        }
     }
 }
