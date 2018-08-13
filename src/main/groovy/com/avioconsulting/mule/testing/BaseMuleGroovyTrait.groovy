@@ -1,12 +1,12 @@
 package com.avioconsulting.mule.testing
 
-
 import com.avioconsulting.mule.testing.dsl.invokers.BatchRunner
 import com.avioconsulting.mule.testing.dsl.invokers.FlowRunner
 import com.avioconsulting.mule.testing.dsl.invokers.FlowRunnerImpl
 import com.avioconsulting.mule.testing.dsl.mocking.*
 import com.avioconsulting.mule.testing.dsl.mocking.sfdc.Choice
 import com.avioconsulting.mule.testing.dsl.mocking.sfdc.ChoiceImpl
+import com.avioconsulting.mule.testing.mulereplacements.GroovyTestingSpringXmlConfigurationBuilder
 import com.avioconsulting.mule.testing.payloadvalidators.SOAPPayloadValidator
 import com.mulesoft.module.batch.engine.BatchJobAdapter
 import org.apache.logging.log4j.Logger
@@ -15,7 +15,6 @@ import org.mule.api.MuleEvent
 import org.mule.api.MuleMessage
 import org.mule.api.config.ConfigurationBuilder
 import org.mule.config.builders.ExtensionsManagerConfigurationBuilder
-import org.mule.config.spring.SpringXmlConfigurationBuilder
 import org.mule.construct.Flow
 import org.mule.context.DefaultMuleContextBuilder
 import org.mule.context.DefaultMuleContextFactory
@@ -34,7 +33,7 @@ trait BaseMuleGroovyTrait {
         def configBuilders = [
                 // certain processors like validation require this
                 new ExtensionsManagerConfigurationBuilder(),
-                new SpringXmlConfigurationBuilder(configResources)
+                new GroovyTestingSpringXmlConfigurationBuilder(configResources)
         ] as List<ConfigurationBuilder>
         contextFactory.createMuleContext(configBuilders,
                                          muleContextBuilder)
