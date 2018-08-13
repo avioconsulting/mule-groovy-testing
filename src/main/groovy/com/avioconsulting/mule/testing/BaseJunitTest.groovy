@@ -6,6 +6,7 @@ import org.apache.logging.log4j.Logger
 import org.junit.AfterClass
 import org.junit.Before
 import org.mule.api.MuleContext
+import org.mule.api.MuleEvent
 
 @Log4j2
 class BaseJunitTest implements BaseMuleGroovyTrait {
@@ -35,11 +36,17 @@ class BaseJunitTest implements BaseMuleGroovyTrait {
         muleContext = null
     }
 
-    def runFlow(MuleContext muleContext,
-                String flowName,
+    def runFlow(String flowName,
                 @DelegatesTo(FlowRunner) Closure closure) {
         runFlow(muleContext,
                 flowName,
                 closure)
+    }
+
+    def runFlow(String flowName,
+                MuleEvent event) {
+        runFlow(muleContext,
+                flowName,
+                event)
     }
 }
