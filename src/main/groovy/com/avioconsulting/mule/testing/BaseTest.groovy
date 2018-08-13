@@ -1,6 +1,6 @@
 package com.avioconsulting.mule.testing
 
-import com.avioconsulting.mule.testing.batch.BatchWaitUtil
+
 import com.avioconsulting.mule.testing.dsl.invokers.BatchRunner
 import com.avioconsulting.mule.testing.dsl.invokers.FlowRunner
 import com.avioconsulting.mule.testing.dsl.invokers.FlowRunnerImpl
@@ -11,21 +11,36 @@ import com.avioconsulting.mule.testing.payloadvalidators.SOAPPayloadValidator
 import com.mulesoft.module.batch.engine.BatchJobAdapter
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
-import org.junit.Before
-import org.mule.api.MuleEvent
+import org.mule.api.MuleContext
 import org.mule.api.MuleMessage
+import org.mule.api.config.ConfigurationBuilder
+import org.mule.config.builders.ExtensionsManagerConfigurationBuilder
+import org.mule.config.spring.SpringXmlConfigurationBuilder
+import org.mule.context.DefaultMuleContextBuilder
+import org.mule.context.DefaultMuleContextFactory
 import org.mule.module.client.MuleClient
-import org.mule.modules.interceptor.processors.MuleMessageTransformer
-import org.mule.munit.common.mocking.Attribute
-import org.mule.munit.common.mocking.SpyProcess
-import org.mule.munit.runner.functional.FunctionalMunitSuite
 
 import javax.xml.datatype.DatatypeFactory
 import javax.xml.datatype.XMLGregorianCalendar
-import javax.xml.namespace.QName
 
-abstract class BaseTest extends FunctionalMunitSuite {
+abstract class BaseTest {
     protected static final Logger logger = LogManager.getLogger(BaseTest)
+
+    protected static MuleContext muleContext
+
+    BaseTest() {
+        if (!muleContext) {
+            def contextFactory = new DefaultMuleContextFactory()
+            def muleContextBuilder = new DefaultMuleContextBuilder()
+            def configBuilders = [
+                    // certain processors like validation require this
+                    new ExtensionsManagerConfigurationBuilder(),
+                    new SpringXmlConfigurationBuilder(configResources)
+            ] as List<ConfigurationBuilder>
+            muleContext = contextFactory.createMuleContext(configBuilders,
+                                                           muleContextBuilder)
+        }
+    }
 
     Properties getStartUpProperties() {
         // MUnit Maven plugin uses this technique to avoid a license just to run unit tests
@@ -46,13 +61,22 @@ abstract class BaseTest extends FunctionalMunitSuite {
         [:]
     }
 
-    @Override
     protected List<String> getFlowsExcludedOfInboundDisabling() {
         []
     }
 
     Map<String, String> getConfigResourceSubstitutes() {
         [:]
+    }
+
+    String getMuleDeployPropertiesResources() {
+        def muleDeployProperties = new Properties()
+        def propsFile = new File('mule-deploy.properties')
+        assert propsFile.exists(): 'Expected mule-deploy.properties to exist!'
+        def inputStream = propsFile.newInputStream()
+        muleDeployProperties.load(inputStream)
+        inputStream.close()
+        muleDeployProperties.getProperty('config.resources')
     }
 
     String getConfigResources() {
@@ -63,7 +87,7 @@ abstract class BaseTest extends FunctionalMunitSuite {
             directory.deleteDir()
         }
         def mapping = configResourceSubstitutes
-        def list = super.configResources.split(',').collect { p ->
+        def list = muleDeployPropertiesResources.split(',').collect { p ->
             def xmlEntry = p.trim()
             if (!mapping.containsKey(xmlEntry)) {
                 return xmlEntry
@@ -74,7 +98,6 @@ abstract class BaseTest extends FunctionalMunitSuite {
         list.join(',')
     }
 
-    @Before
     void handleUnmocked() {
         // don't complain if they explicitly said they don't want to mock these
         if (!haveToMockMuleConnectors()) {
@@ -89,45 +112,45 @@ abstract class BaseTest extends FunctionalMunitSuite {
     // this helps mock things by default and return a useful error message
     private void setupFallThroughMock(String processorName, String namespace) {
         // this is the easiest way to get ahold of the event surrounding a message
-        MuleEvent capturedEvent = null
-        spyMessageProcessor(processorName)
-                .ofNamespace(namespace)
-                .before(new SpyProcess() {
-            void spy(MuleEvent muleEvent) {
-                capturedEvent = muleEvent
-            }
-        })
-        // any other mock will supercede this one
-        whenMessageProcessor(processorName)
-                .ofNamespace(namespace)
-                .thenApply(new MuleMessageTransformer() {
-            MuleMessage transform(MuleMessage incoming) {
-                // best we can do right now is get the activity before
-                def madeIt = false
-                try {
-                    def processor = capturedEvent.flowConstruct.messageProcessors.last()
-                    def fetcher = { item ->
-                        def annotations = processor.getAnnotations()
-                        annotations[new QName('http://www.mulesoft.org/schema/mule/documentation', item)]
-                    }
-                    def fileName = fetcher('sourceFileName')
-                    def sourceFileLine = fetcher('sourceFileLine')
-                    def name = fetcher('name')
-                    madeIt = true
-                    throw new Exception(
-                            "You have an unmocked ${namespace}:${processorName} transport! It's located NEAR the '${name}' processor on line ${sourceFileLine} in ${fileName}")
-                }
-                // in case our detection method breaks, still show something
-                catch (e) {
-                    // don't interrupt what we just did
-                    if (madeIt) {
-                        throw e
-                    }
-                    throw new Exception(
-                            "You have an unmocked ${namespace}:${processorName} transport! Its location in the code could not be located!")
-                }
-            }
-        })
+//        MuleEvent capturedEvent = null
+//        spyMessageProcessor(processorName)
+//                .ofNamespace(namespace)
+//                .before(new SpyProcess() {
+//            void spy(MuleEvent muleEvent) {
+//                capturedEvent = muleEvent
+//            }
+//        })
+//        // any other mock will supercede this one
+//        whenMessageProcessor(processorName)
+//                .ofNamespace(namespace)
+//                .thenApply(new MuleMessageTransformer() {
+//            MuleMessage transform(MuleMessage incoming) {
+//                // best we can do right now is get the activity before
+//                def madeIt = false
+//                try {
+//                    def processor = capturedEvent.flowConstruct.messageProcessors.last()
+//                    def fetcher = { item ->
+//                        def annotations = processor.getAnnotations()
+//                        annotations[new QName('http://www.mulesoft.org/schema/mule/documentation', item)]
+//                    }
+//                    def fileName = fetcher('sourceFileName')
+//                    def sourceFileLine = fetcher('sourceFileLine')
+//                    def name = fetcher('name')
+//                    madeIt = true
+//                    throw new Exception(
+//                            "You have an unmocked ${namespace}:${processorName} transport! It's located NEAR the '${name}' processor on line ${sourceFileLine} in ${fileName}")
+//                }
+//                // in case our detection method breaks, still show something
+//                catch (e) {
+//                    // don't interrupt what we just did
+//                    if (madeIt) {
+//                        throw e
+//                    }
+//                    throw new Exception(
+//                            "You have an unmocked ${namespace}:${processorName} transport! Its location in the code could not be located!")
+//                }
+//            }
+//        })
     }
 
     def runFlow(String flowName,
@@ -143,8 +166,8 @@ abstract class BaseTest extends FunctionalMunitSuite {
     static def waitForBatchCompletion(List<String> jobsToWaitFor = null,
                                       boolean throwUnderlyingException = false,
                                       Closure closure) {
-        def batchWaitUtil = new BatchWaitUtil(muleContext)
-        batchWaitUtil.waitFor(jobsToWaitFor, throwUnderlyingException, closure)
+        //def batchWaitUtil = new BatchWaitUtil(muleContext)
+        //batchWaitUtil.waitFor(jobsToWaitFor, throwUnderlyingException, closure)
     }
 
     def runBatch(String batchName,

@@ -11,7 +11,6 @@ import com.avioconsulting.mule.testing.transformers.http.HttpGetTransformer
 import com.avioconsulting.mule.testing.transformers.http.HttpValidationTransformer
 import org.mule.api.MuleContext
 import org.mule.module.http.internal.request.ResponseValidator
-import org.mule.munit.common.mocking.MunitSpy
 
 class HttpRequestResponseChoiceImpl extends StandardRequestResponseImpl
         implements HttpRequestResponseChoice, IReceiveHttpOptions {
@@ -23,7 +22,7 @@ class HttpRequestResponseChoiceImpl extends StandardRequestResponseImpl
     private String fullPath
     private String httpVerb
 
-    HttpRequestResponseChoiceImpl(MunitSpy spy,
+    HttpRequestResponseChoiceImpl(Object spy,
                                   ProcessorLocator processorLocator,
                                   MuleContext muleContext) {
         super(muleContext,

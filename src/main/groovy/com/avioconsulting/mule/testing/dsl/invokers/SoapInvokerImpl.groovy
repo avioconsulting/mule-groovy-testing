@@ -9,7 +9,6 @@ import org.mule.DefaultMuleEvent
 import org.mule.MessageExchangePattern
 import org.mule.api.MuleContext
 import org.mule.api.MuleEvent
-import org.mule.munit.common.util.MunitMuleTestUtils
 
 @Log4j2
 class SoapInvokerImpl implements SoapInvoker, Invoker {

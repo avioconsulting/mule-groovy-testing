@@ -12,7 +12,7 @@ import org.mule.MessageExchangePattern
 import org.mule.api.MuleContext
 import org.mule.api.MuleEvent
 import org.mule.api.MuleMessage
-import org.mule.munit.common.util.MunitMuleTestUtils
+//import org.mule.munit.common.util.MunitMuleTestUtils
 
 class JsonInvokerImpl implements JsonInvoker, Invoker {
     private final MuleContext muleContext

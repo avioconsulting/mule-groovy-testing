@@ -6,7 +6,7 @@ import org.mule.DefaultMuleMessage
 import org.mule.MessageExchangePattern
 import org.mule.api.MuleContext
 import org.mule.api.MuleEvent
-import org.mule.munit.common.util.MunitMuleTestUtils
+//import org.mule.munit.common.util.MunitMuleTestUtils
 
 class JavaInvokerImpl implements JavaInvoker, Invoker {
     private final MuleContext muleContext

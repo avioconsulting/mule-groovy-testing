@@ -6,7 +6,6 @@ import com.avioconsulting.mule.testing.transformers.StandardDsqlTransformer
 import com.avioconsulting.mule.testing.transformers.sfdc.UpsertTransformer
 import org.mule.api.MuleContext
 import org.mule.modules.interceptor.processors.MuleMessageTransformer
-import org.mule.munit.common.mocking.MunitSpy
 
 class ChoiceImpl implements Choice {
     String connectorType
@@ -33,7 +32,7 @@ class ChoiceImpl implements Choice {
 
     def query(Closure closure) {
         this.connectorType = 'query'
-        def spy = spyFactory(this.connectorType) as MunitSpy
+        //def spy = spyFactory(this.connectorType) as MunitSpy
         def validator = new ListGenericPayloadValidator(Map)
         def queryTransformer = new StandardDsqlTransformer(processorLocator,
                                                            muleContext,

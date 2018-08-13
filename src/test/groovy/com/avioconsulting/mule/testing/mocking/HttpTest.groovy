@@ -9,7 +9,6 @@ import groovy.util.logging.Log4j2
 import org.junit.Test
 import org.mule.api.MessagingException
 import org.mule.module.http.internal.request.DefaultHttpRequester
-import org.mule.munit.common.util.ReusableByteArrayInputStream
 
 import java.util.concurrent.TimeoutException
 
@@ -329,7 +328,7 @@ class HttpTest extends BaseTest implements OverrideConfigList {
             java {
                 inputPayload(input)
             }
-        } as ReusableByteArrayInputStream
+        }
 
         // assert
         assert result
@@ -354,7 +353,7 @@ class HttpTest extends BaseTest implements OverrideConfigList {
             java {
                 inputPayload([foo: 123])
             }
-        } as ReusableByteArrayInputStream
+        }
 
         // assert
         assert result
