@@ -24,7 +24,7 @@ import org.mule.module.client.MuleClient
 import javax.xml.datatype.DatatypeFactory
 import javax.xml.datatype.XMLGregorianCalendar
 
-trait BaseTest {
+trait BaseMuleGroovyTrait {
     abstract Logger getLogger()
 
     MuleContext createMuleContext() {

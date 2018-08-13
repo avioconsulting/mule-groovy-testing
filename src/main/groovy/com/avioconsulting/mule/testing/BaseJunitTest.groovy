@@ -8,7 +8,7 @@ import org.junit.Before
 import org.mule.api.MuleContext
 
 @Log4j2
-class BaseJunitTest implements BaseTest {
+class BaseJunitTest implements BaseMuleGroovyTrait {
     protected static MuleContext muleContext
 
     @Override

@@ -5,7 +5,7 @@ import com.avioconsulting.mule.testing.dsl.invokers.FlowRunnerImpl
 import org.mule.api.MuleMessage
 import org.mule.api.transport.PropertyScope
 
-trait BaseApiKitTest extends BaseTest {
+trait BaseApiKitTest extends BaseMuleGroovyTrait {
     private static final String TEST_PORT_PROPERTY = 'avio.test.http.port'
 
     abstract String getApiNameUnderTest()
