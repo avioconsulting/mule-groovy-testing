@@ -1,5 +1,6 @@
 package com.avioconsulting.mule.testing.mulereplacements
 
+import com.avioconsulting.mule.testing.mulereplacements.namespacefix.AnnotatedNamespaceHandlerResolver
 import org.mule.api.MuleContext
 import org.mule.config.ConfigResource
 import org.mule.config.spring.MuleArtifactContext
@@ -9,7 +10,6 @@ import org.springframework.beans.BeansException
 import org.springframework.beans.factory.support.BeanDefinitionReader
 import org.springframework.beans.factory.support.CglibSubclassingInstantiationStrategy
 import org.springframework.beans.factory.support.DefaultListableBeanFactory
-import org.springframework.beans.factory.xml.NamespaceHandlerResolver
 import org.springframework.beans.factory.xml.XmlBeanDefinitionReader
 
 // uses Spring to insert proxy objects, see ConnectorReplacerProcessor
@@ -29,6 +29,7 @@ class GroovyTestingArtifactContext extends MuleArtifactContext {
     @Override
     protected DefaultListableBeanFactory createBeanFactory() {
         def factory = super.createBeanFactory()
+        // allows us to change implementations w/ proxy objects that we can use for mocking
         def existInstantiationStrategy = new LaxInstantiationStrategyWrapper(new CglibSubclassingInstantiationStrategy(),
                                                                              optionalObjectsController)
         factory.instantiationStrategy = new OurProxyInstantiator(existInstantiationStrategy,
@@ -40,6 +41,7 @@ class GroovyTestingArtifactContext extends MuleArtifactContext {
     protected BeanDefinitionReader createBeanDefinitionReader(DefaultListableBeanFactory beanFactory) {
         def reader = super.createBeanDefinitionReader(beanFactory)
         assert reader instanceof XmlBeanDefinitionReader
+        // need to fix annotations for mocking purposes
         def ourResolver = new AnnotatedNamespaceHandlerResolver()
         ourResolver.delegate = reader.namespaceHandlerResolver
         reader.namespaceHandlerResolver = ourResolver
