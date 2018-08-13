@@ -3,7 +3,7 @@ package com.avioconsulting.mule.testing.dsl.mocking
 
 import com.avioconsulting.mule.testing.payloadvalidators.ContentTypeCheckDisabledValidator
 import com.avioconsulting.mule.testing.payloadvalidators.HttpRequestPayloadValidator
-import com.avioconsulting.mule.testing.spies.HttpConnectorSpy
+
 import com.avioconsulting.mule.testing.spies.IReceiveHttpOptions
 import com.avioconsulting.mule.testing.transformers.TransformerChain
 import com.avioconsulting.mule.testing.transformers.http.HttpConnectorErrorTransformer
