@@ -4,7 +4,6 @@ import net.sf.cglib.proxy.MethodInterceptor
 import net.sf.cglib.proxy.MethodProxy
 import org.mule.api.AnnotatedObject
 import org.mule.api.MuleEvent
-import org.mule.api.processor.MessageProcessor
 
 import java.lang.reflect.Method
 
@@ -32,9 +31,6 @@ class MockHandler implements MethodInterceptor {
                                     obj)
             }
         }
-        // work around protected methods for now
-        method.accessible = true
         return proxy.invokeSuper(obj, args)
-        //return method.invoke(processorWeMightMock, args)
     }
 }
