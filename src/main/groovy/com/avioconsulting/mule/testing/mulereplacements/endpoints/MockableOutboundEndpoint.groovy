@@ -1,5 +1,6 @@
-package com.avioconsulting.mule.testing.mulereplacements
+package com.avioconsulting.mule.testing.mulereplacements.endpoints
 
+import com.avioconsulting.mule.testing.mulereplacements.MockingConfiguration
 import groovy.util.logging.Log4j2
 import org.mule.api.AnnotatedObject
 import org.mule.api.MuleEvent
@@ -7,6 +8,7 @@ import org.mule.api.MuleException
 import org.mule.api.endpoint.OutboundEndpoint
 import org.mule.api.processor.MessageProcessor
 
+// some connectors, like outgoing VM, are implemented as endpoints, so we need to control it here for mocking
 @Log4j2
 class MockableOutboundEndpoint implements OutboundEndpoint {
     @Delegate

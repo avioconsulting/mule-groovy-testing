@@ -1,5 +1,6 @@
 package com.avioconsulting.mule.testing.mulereplacements
 
+import com.avioconsulting.mule.testing.mulereplacements.endpoints.OverrideEndpointFactory
 import groovy.util.logging.Log4j2
 import net.sf.cglib.proxy.Enhancer
 import org.mule.api.AnnotatedObject
@@ -38,6 +39,7 @@ class OurProxyInstantiator implements InstantiationStrategy {
                        BeanFactory owner) throws BeansException {
         def beanKlass = bd.beanClass
         try {
+            // need to change the endpoint factory for VMs, etc.
             if (EndpointFactory.isAssignableFrom(beanKlass)) {
                 def underlying = wrapped.instantiate(bd, beanName, owner)
                 assert underlying instanceof EndpointFactory
