@@ -3,6 +3,7 @@ package com.avioconsulting.mule.testing
 import com.avioconsulting.mule.testing.dsl.invokers.FlowRunner
 import com.avioconsulting.mule.testing.dsl.mocking.HttpRequestResponseChoice
 import com.avioconsulting.mule.testing.dsl.mocking.SOAPFormatter
+import com.avioconsulting.mule.testing.dsl.mocking.StandardRequestResponse
 import com.avioconsulting.mule.testing.mulereplacements.MockingConfiguration
 import groovy.util.logging.Log4j2
 import org.apache.logging.log4j.Logger
@@ -71,5 +72,13 @@ class BaseJunitTest implements BaseMuleGroovyTrait {
                      muleContext,
                      connectorName,
                      closure)
+    }
+
+    def mockVmReceive(String connectorName,
+                      @DelegatesTo(StandardRequestResponse) Closure closure) {
+        mockVmReceive(mockingConfiguration,
+                      muleContext,
+                      connectorName,
+                      closure)
     }
 }

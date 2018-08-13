@@ -186,18 +186,19 @@ trait BaseMuleGroovyTrait {
                                      formatterChoice.httpMock)
     }
 
-    def mockVmReceive(String connectorName,
+    def mockVmReceive(MockingConfiguration mockingConfiguration,
+                      MuleContext muleContext,
+                      String connectorName,
                       @DelegatesTo(StandardRequestResponse) Closure closure) {
-//        def mocker = whenMessageProcessor('outbound-endpoint')
-//                .ofNamespace('vm')
-//                .withAttributes(Attribute.attribute('name')
-//                                        .ofNamespace('doc')
-//                                        .withValue(connectorName))
-//        def formatterChoice = new VMRequestResponseChoiceImpl(muleContext)
-//        def code = closure.rehydrate(formatterChoice, this, this)
-//        code.resolveStrategy = Closure.DELEGATE_ONLY
-//        code()
-//        mocker.thenApply(formatterChoice.transformer)
+        def formatterChoice = new VMRequestResponseChoiceImpl(muleContext)
+        def code = closure.rehydrate(formatterChoice, this, this)
+        code.resolveStrategy = Closure.DELEGATE_ONLY
+        code()
+        def eventFactory = new EventFactoryImpl(muleContext)
+        def mock = new StandardMock(formatterChoice.transformer,
+                                    eventFactory)
+        mockingConfiguration.addMock(connectorName,
+                                     mock)
     }
 
     def mockSalesForceCall(String connectorName,
@@ -224,7 +225,6 @@ trait BaseMuleGroovyTrait {
                      MuleContext muleContext,
                      String connectorName,
                      @DelegatesTo(SOAPFormatter) Closure closure) {
-        return
         def payloadValidator = new SOAPPayloadValidator()
         def soapFormatter = new SOAPFormatterImpl(muleContext,
                                                   payloadValidator)
