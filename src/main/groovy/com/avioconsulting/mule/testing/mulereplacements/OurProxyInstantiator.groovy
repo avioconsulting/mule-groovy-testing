@@ -2,6 +2,7 @@ package com.avioconsulting.mule.testing.mulereplacements
 
 import groovy.util.logging.Log4j2
 import net.sf.cglib.proxy.Enhancer
+import org.mule.api.AnnotatedObject
 import org.mule.api.endpoint.EndpointFactory
 import org.mule.api.processor.MessageProcessor
 import org.mule.construct.Flow
@@ -44,8 +45,16 @@ class OurProxyInstantiator implements InstantiationStrategy {
                                                    mockingConfiguration)
             }
             if (MessageProcessor.isAssignableFrom(beanKlass) && !noMocking.containsKey(beanKlass.name)) {
-                return Enhancer.create(beanKlass,
-                                       new MockHandler(this.mockingConfiguration))
+                if (!AnnotatedObject.isAssignableFrom(beanKlass)) {
+                    return Enhancer.create(beanKlass,
+                                           [AnnotatedObject].toArray(new Class[0]),
+                                           new MockHandler(this.mockingConfiguration,
+                                                           true))
+                } else {
+                    return Enhancer.create(beanKlass,
+                                           new MockHandler(this.mockingConfiguration,
+                                                           false))
+                }
             }
             return wrapped.instantiate(bd,
                                        beanName,

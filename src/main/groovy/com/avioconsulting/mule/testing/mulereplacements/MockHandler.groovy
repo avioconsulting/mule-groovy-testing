@@ -6,13 +6,18 @@ import net.sf.cglib.proxy.MethodProxy
 import org.mule.api.AnnotatedObject
 import org.mule.api.MuleEvent
 
+import javax.xml.namespace.QName
 import java.lang.reflect.Method
 
 @Log4j2
-class MockHandler implements MethodInterceptor {
+class MockHandler implements MethodInterceptor, AnnotatedObject {
     private final MockingConfiguration mockingConfiguration
+    Map<QName, Object> annotations
+    private final boolean doAnnotations
 
-    MockHandler(MockingConfiguration mockingConfiguration) {
+    MockHandler(MockingConfiguration mockingConfiguration,
+                boolean doAnnotations) {
+        this.doAnnotations = doAnnotations
         this.mockingConfiguration = mockingConfiguration
     }
 
@@ -21,6 +26,17 @@ class MockHandler implements MethodInterceptor {
                      Method method,
                      Object[] args,
                      MethodProxy proxy) throws Throwable {
+        if (doAnnotations) {
+            switch(method.name) {
+                case 'setAnnotations':
+                    setAnnotations(args[0])
+                    return
+                case 'getAnnotations':
+                    return getAnnotations()
+                case 'getAnnotation':
+                    return getAnnotation(args[0])
+            }
+        }
         // TODO: More efficient comparison, also 'cache' the processor name
         if (method.name == 'process' &&
                 method.parameterTypes.size() == 1 &&
@@ -42,5 +58,10 @@ class MockHandler implements MethodInterceptor {
             }
         }
         return proxy.invokeSuper(obj, args)
+    }
+
+    @Override
+    Object getAnnotation(QName name) {
+        this.annotations[name]
     }
 }
