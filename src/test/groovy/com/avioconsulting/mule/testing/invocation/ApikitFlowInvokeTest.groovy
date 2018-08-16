@@ -1,6 +1,10 @@
 package com.avioconsulting.mule.testing.invocation
 
-import com.avioconsulting.mule.testing.*
+
+import com.avioconsulting.mule.testing.BaseApiKitTest
+import com.avioconsulting.mule.testing.OverrideConfigList
+import com.avioconsulting.mule.testing.SampleJacksonInput
+import com.avioconsulting.mule.testing.SampleJacksonOutput
 import org.apache.tools.ant.taskdefs.condition.Os
 import org.junit.Test
 
@@ -8,7 +12,7 @@ import static groovy.test.GroovyAssert.shouldFail
 import static org.hamcrest.Matchers.*
 import static org.junit.Assert.assertThat
 
-class ApikitFlowInvokeTest extends BaseJunitTest implements BaseApiKitTest, OverrideConfigList {
+class ApikitFlowInvokeTest extends BaseApiKitTest implements OverrideConfigList {
     static int getExpectedPort() {
         // not sure why 8088 is occupied on Windows (nothing shows as listening on that port) but
         // took care of test once I changed this

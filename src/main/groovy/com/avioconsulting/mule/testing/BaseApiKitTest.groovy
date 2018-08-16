@@ -5,7 +5,7 @@ import com.avioconsulting.mule.testing.dsl.invokers.FlowRunnerImpl
 import org.mule.api.MuleMessage
 import org.mule.api.transport.PropertyScope
 
-trait BaseApiKitTest extends BaseMuleGroovyTrait {
+abstract class BaseApiKitTest extends BaseJunitTest {
     private static final String TEST_PORT_PROPERTY = 'avio.test.http.port'
 
     abstract String getApiNameUnderTest()
@@ -63,7 +63,8 @@ trait BaseApiKitTest extends BaseMuleGroovyTrait {
                       String path,
                       Map queryParams = null,
                       @DelegatesTo(FlowRunner) Closure closure) {
-        def runner = new FlowRunnerImpl(muleContext)
+        def runner = new FlowRunnerImpl(muleContext,
+                                        flowName)
         def code = closure.rehydrate(runner, this, this)
         code.resolveStrategy = Closure.DELEGATE_ONLY
         code()
@@ -72,7 +73,9 @@ trait BaseApiKitTest extends BaseMuleGroovyTrait {
                      httpMethod,
                      path,
                      queryParams)
-        def outputEvent = runFlow(flowName, inputEvent)
+        def outputEvent = runFlow(muleContext,
+                                  flowName,
+                                  inputEvent)
         runner.transformOutput(outputEvent)
     }
 
