@@ -76,8 +76,9 @@ trait BaseMuleGroovyTrait {
 
     String getMuleDeployPropertiesResources() {
         def muleDeployProperties = new Properties()
-        def propsFile = new File('mule-deploy.properties')
-        assert propsFile.exists(): 'Expected mule-deploy.properties to exist!'
+        def url = BaseMuleGroovyTrait.getResource('/mule-deploy.properties')
+        assert url: 'Expected mule-deploy.properties to exist!'
+        def propsFile = new File(url.toURI())
         def inputStream = propsFile.newInputStream()
         muleDeployProperties.load(inputStream)
         inputStream.close()
