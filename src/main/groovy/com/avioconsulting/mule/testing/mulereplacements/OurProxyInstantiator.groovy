@@ -71,6 +71,11 @@ class OurProxyInstantiator implements InstantiationStrategy {
                        Constructor<?> ctor,
                        Object... args) throws BeansException {
         def beanKlass = bd.beanClass
+        if (beanKlass == Flow) {
+            log.info "Disabling listener for flow '{}'",
+                     beanName
+            bd.propertyValues.removePropertyValue('messageSource')
+        }
         if (MessageProcessor.isAssignableFrom(beanKlass) && !noMocking.containsKey(beanKlass.name)) {
             def missingConnectorName = AnnotatedObject.isAssignableFrom(beanKlass) ? null :
                     bd.getAttribute(WrappedNamespaceHandler.ANNOTATION_NAME_ATTRIBUTE) as String
