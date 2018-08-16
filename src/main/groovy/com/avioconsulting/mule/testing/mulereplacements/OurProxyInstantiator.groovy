@@ -24,6 +24,7 @@ class OurProxyInstantiator implements InstantiationStrategy {
             (Flow.name)                                    : 1,
             (InterceptingChainLifecycleWrapper.name)       : 1
     ]
+    public static final String SPRING_PROPERTY_XML_FLOW_LISTENER = 'messageSource'
 
     private final InstantiationStrategy wrapped
     private final MockingConfiguration mockingConfiguration
@@ -72,9 +73,12 @@ class OurProxyInstantiator implements InstantiationStrategy {
                        Object... args) throws BeansException {
         def beanKlass = bd.beanClass
         if (beanKlass == Flow && !mockingConfiguration.shouldFlowListenerBeEnabled(beanName)) {
-            log.info "Disabling listener for flow '{}'",
-                     beanName
-            bd.propertyValues.removePropertyValue('messageSource')
+            def props = bd.propertyValues
+            if (props.contains(SPRING_PROPERTY_XML_FLOW_LISTENER)) {
+                log.info "Disabling listener for flow '{}'",
+                         beanName
+                props.removePropertyValue(SPRING_PROPERTY_XML_FLOW_LISTENER)
+            }
         }
         if (MessageProcessor.isAssignableFrom(beanKlass) && !noMocking.containsKey(beanKlass.name)) {
             def missingConnectorName = AnnotatedObject.isAssignableFrom(beanKlass) ? null :
