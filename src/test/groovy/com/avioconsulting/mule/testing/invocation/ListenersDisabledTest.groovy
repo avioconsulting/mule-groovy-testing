@@ -32,7 +32,9 @@ class ListenersDisabledTest extends BaseJunitTest implements OverrideConfigList 
     static int getUnusedPort() {
         (8088..8199).find { candidate ->
             try {
-                def socket = new ServerSocket(candidate)
+                def socket = new ServerSocket(candidate,
+                                              1,
+                                              InetAddress.loopbackAddress)
                 socket.close()
                 true
             }

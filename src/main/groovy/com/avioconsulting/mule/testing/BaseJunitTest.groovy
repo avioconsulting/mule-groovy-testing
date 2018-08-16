@@ -28,7 +28,7 @@ class BaseJunitTest implements BaseMuleGroovyTrait {
     @Before
     void startMule() {
         if (!muleContext) {
-            mockingConfiguration = new MockingConfiguration()
+            mockingConfiguration = new MockingConfiguration(this.keepListenersOnForTheseFlows())
             muleContext = createMuleContext(mockingConfiguration)
             muleContext.start()
         }

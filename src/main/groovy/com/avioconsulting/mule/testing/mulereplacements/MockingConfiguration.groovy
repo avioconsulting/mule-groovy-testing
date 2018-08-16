@@ -8,6 +8,11 @@ class MockingConfiguration {
     static final QName processorName = new QName('http://www.mulesoft.org/schema/mule/documentation',
                                                  'name')
     private final Map<String, MockProcess> mocks = [:]
+    private final List<String> keepListenersOnForTheseFlows
+
+    MockingConfiguration(List<String> keepListenersOnForTheseFlows) {
+        this.keepListenersOnForTheseFlows = keepListenersOnForTheseFlows
+    }
 
     def clearMocks() {
         mocks.clear()
@@ -25,5 +30,9 @@ class MockingConfiguration {
     MockProcess getMockProcess(AnnotatedObject processor) {
         def processorName = processor.annotations.get(processorName) as String
         mocks[processorName]
+    }
+
+    boolean shouldFlowListenerBeEnabled(String flowName) {
+        keepListenersOnForTheseFlows.contains(flowName)
     }
 }

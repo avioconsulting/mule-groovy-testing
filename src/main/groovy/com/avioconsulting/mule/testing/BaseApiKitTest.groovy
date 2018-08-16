@@ -37,8 +37,11 @@ abstract class BaseApiKitTest extends BaseJunitTest {
         // have to have the listener running to use apikit
         // http listener gets go
         // ing before the properties object this method creates has had its values take effect
+        def port = OpenPortLocator.httpPort
+        logger.info 'Using open port {} for HTTP listener',
+                    port
         System.setProperty(TEST_PORT_PROPERTY,
-                           httpPort as String)
+                           port as String)
         properties.put('http.listener.config', 'test-http-listener-config')
         // by convention, assume this
         properties.put('skip.apikit.validation', 'false')
@@ -46,7 +49,8 @@ abstract class BaseApiKitTest extends BaseJunitTest {
         properties
     }
 
-    List<String> getUnmockedFlowsWithListeners() {
+    @Override
+    List<String> keepListenersOnForTheseFlows() {
         // apikit complains unless these 2 are both open
         ['main', 'console'].collect { suffix ->
             // toString here to ensure we return Java string and not Groovy strings
@@ -109,19 +113,6 @@ abstract class BaseApiKitTest extends BaseJunitTest {
         httpProps['host'] = "localhost:${System.getProperty(TEST_PORT_PROPERTY)}".toString()
         httpProps.each { prop, value ->
             message.setProperty(prop, value, PropertyScope.INBOUND)
-        }
-    }
-
-    static int getHttpPort() {
-        (8088..8199).find { candidate ->
-            try {
-                def socket = new ServerSocket(candidate)
-                socket.close()
-                true
-            }
-            catch (IOException ignored) {
-                false
-            }
         }
     }
 }

@@ -71,7 +71,7 @@ class OurProxyInstantiator implements InstantiationStrategy {
                        Constructor<?> ctor,
                        Object... args) throws BeansException {
         def beanKlass = bd.beanClass
-        if (beanKlass == Flow) {
+        if (beanKlass == Flow && !mockingConfiguration.shouldFlowListenerBeEnabled(beanName)) {
             log.info "Disabling listener for flow '{}'",
                      beanName
             bd.propertyValues.removePropertyValue('messageSource')
