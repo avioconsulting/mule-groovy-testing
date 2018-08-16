@@ -1,6 +1,7 @@
 package com.avioconsulting.mule.testing.mulereplacements
 
 import com.avioconsulting.mule.testing.mulereplacements.endpoints.OverrideEndpointFactory
+import com.avioconsulting.mule.testing.mulereplacements.namespacefix.WrappedNamespaceHandler
 import groovy.util.logging.Log4j2
 import net.sf.cglib.proxy.Enhancer
 import org.mule.api.AnnotatedObject
@@ -47,16 +48,10 @@ class OurProxyInstantiator implements InstantiationStrategy {
                                                    mockingConfiguration)
             }
             if (MessageProcessor.isAssignableFrom(beanKlass) && !noMocking.containsKey(beanKlass.name)) {
-                if (!AnnotatedObject.isAssignableFrom(beanKlass)) {
-                    return Enhancer.create(beanKlass,
-                                           [AnnotatedObject].toArray(new Class[0]),
-                                           new MockMethodInterceptor(this.mockingConfiguration,
-                                                                     true))
-                } else {
-                    return Enhancer.create(beanKlass,
-                                           new MockMethodInterceptor(this.mockingConfiguration,
-                                                                     false))
-                }
+                def missingConnectorName = AnnotatedObject.isAssignableFrom(beanKlass) ? null :
+                        bd.getAttribute(WrappedNamespaceHandler.ANNOTATION_NAME_ATTRIBUTE) as String
+                return Enhancer.create(beanKlass, new MockMethodInterceptor(this.mockingConfiguration,
+                                                                            missingConnectorName))
             }
             return wrapped.instantiate(bd,
                                        beanName,
@@ -77,12 +72,12 @@ class OurProxyInstantiator implements InstantiationStrategy {
                        Object... args) throws BeansException {
         def beanKlass = bd.beanClass
         if (MessageProcessor.isAssignableFrom(beanKlass) && !noMocking.containsKey(beanKlass.name)) {
-            // TODO: Salesforce object is NOT coming across as assignable
-            assert AnnotatedObject.isAssignableFrom(beanKlass)
+            def missingConnectorName = AnnotatedObject.isAssignableFrom(beanKlass) ? null :
+                    bd.getAttribute(WrappedNamespaceHandler.ANNOTATION_NAME_ATTRIBUTE) as String
             return new Enhancer().with {
                 superclass = beanKlass
                 callback = new MockMethodInterceptor(this.mockingConfiguration,
-                                                     false)
+                                                     missingConnectorName)
                 create(ctor.parameterTypes,
                        args)
             }

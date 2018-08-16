@@ -1,10 +1,8 @@
 package com.avioconsulting.mule.testing.mulereplacements.namespacefix
 
+import com.avioconsulting.mule.testing.mulereplacements.MockMethodInterceptor
 import com.avioconsulting.mule.testing.mulereplacements.MockingConfiguration
-import org.mule.api.AnnotatedObject
-import org.mule.api.processor.MessageProcessor
 import org.springframework.beans.factory.config.BeanDefinition
-import org.springframework.beans.factory.support.RootBeanDefinition
 import org.springframework.beans.factory.xml.NamespaceHandler
 import org.springframework.beans.factory.xml.ParserContext
 import org.w3c.dom.Element
@@ -13,6 +11,7 @@ import org.w3c.dom.Element
 // aren't loaded. This lets us influence the XML->Java object transition at an early stage
 // we can "plug the gaps" with missing values here
 class WrappedNamespaceHandler implements NamespaceHandler {
+    static final String ANNOTATION_NAME_ATTRIBUTE = 'MULE_GROOVY_TESTING_ANNOTATION_NAME'
     @Delegate
     private final NamespaceHandler wrapped
 
@@ -26,32 +25,20 @@ class WrappedNamespaceHandler implements NamespaceHandler {
         def beanDefinition = wrapped.parse(element, parserContext)
         // connectors like WSConsumer will already have a loaded class w/ RootBeanDefinition
         // some classes won't have a bean class yet
-        if (beanDefinition instanceof RootBeanDefinition && beanDefinition.hasBeanClass()) {
+        if (beanDefinition && !beanDefinition.propertyValues.contains('annotations')) {
             checkForMissingAnnotations(beanDefinition,
                                        element)
         }
         beanDefinition
     }
 
-    private static void checkForMissingAnnotations(RootBeanDefinition beanDefinition,
+    private static void checkForMissingAnnotations(BeanDefinition beanDefinition,
                                                    Element element) {
-        def beanKlass = beanDefinition.beanClass
-        // don't care if it's not a message processor
-        // some classes with annotations already may end up here
-        if (!MessageProcessor.isAssignableFrom(beanKlass) || AnnotatedObject.isAssignableFrom(beanKlass)) {
-            return
-        }
         def nameQname = MockingConfiguration.processorName
         def name = element.attributes.getNamedItemNS(nameQname.namespaceURI,
                                                      nameQname.localPart)
         if (name) {
-            def annotations = [
-                    (nameQname): name.nodeValue
-            ]
-            // This will get picked up by the MockMethodInterceptor in this library. This is part of the AnnotatedObject
-            // interface. Then MockingConfiguration will examine the value when making the mock decision
-            beanDefinition.propertyValues.add('annotations',
-                                              annotations)
+            beanDefinition.setAttribute(ANNOTATION_NAME_ATTRIBUTE, name.nodeValue)
         }
     }
 }

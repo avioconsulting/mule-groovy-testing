@@ -6,19 +6,17 @@ import net.sf.cglib.proxy.MethodProxy
 import org.mule.api.AnnotatedObject
 import org.mule.api.MuleEvent
 
-import javax.xml.namespace.QName
 import java.lang.reflect.Method
 
 @Log4j2
-class MockMethodInterceptor implements MethodInterceptor, AnnotatedObject {
+class MockMethodInterceptor implements MethodInterceptor {
     private final MockingConfiguration mockingConfiguration
-    Map<QName, Object> annotations
-    private final boolean doAnnotations
+    private String connectorName
 
     MockMethodInterceptor(MockingConfiguration mockingConfiguration,
-                          boolean doAnnotations) {
-        this.doAnnotations = doAnnotations
+                          String missingConnectorName) {
         this.mockingConfiguration = mockingConfiguration
+        this.connectorName = missingConnectorName
     }
 
     @Override
@@ -26,44 +24,25 @@ class MockMethodInterceptor implements MethodInterceptor, AnnotatedObject {
                      Method method,
                      Object[] args,
                      MethodProxy proxy) throws Throwable {
-        if (doAnnotations) {
-            switch(method.name) {
-                // some objects miss annotations, we basically implement annotation storage on this class
-                // since each object has its own MockMethodInterceptor
-                case 'setAnnotations':
-                    setAnnotations(args[0])
-                    return
-                case 'getAnnotations':
-                    return getAnnotations()
-                case 'getAnnotation':
-                    return getAnnotation(args[0])
-            }
-        }
         // TODO: More efficient comparison, also 'cache' the processor name
         if (method.name == 'process' &&
                 method.parameterTypes.size() == 1 &&
                 method.parameterTypes[0] == MuleEvent) {
-            if (!(obj instanceof AnnotatedObject)) {
-                log.warn 'Processor {} does not implement AnnotatedObject so we cannot locate it for mocking',
-                         obj
-            } else if ((obj as AnnotatedObject).annotations.isEmpty()) {
-                log.warn 'Processor {} has zero annotations so we cannot locate it for mocking',
-                         obj
+            MockProcess mockProcess = null
+            if (obj instanceof AnnotatedObject) {
+                mockProcess = mockingConfiguration.getMockProcess(obj)
+            } else if (connectorName) {
+                mockProcess = mockingConfiguration.getMockProcess(connectorName)
             } else {
-                def asAnnotated = obj as AnnotatedObject
-                def mock = mockingConfiguration.getMockProcess(asAnnotated)
+                log.warn "Processor {} does not implement AnnotatedObject and we didn't see annotations in the XML so we cannot locate it for mocking",
+                         obj
+            }
+            if (mockProcess) {
                 def muleEvent = args[0] as MuleEvent
-                if (mock) {
-                    return mock.process(muleEvent,
-                                        obj)
-                }
+                return mockProcess.process(muleEvent,
+                                           obj)
             }
         }
         return proxy.invokeSuper(obj, args)
-    }
-
-    @Override
-    Object getAnnotation(QName name) {
-        this.annotations[name]
     }
 }
