@@ -2,15 +2,15 @@ package com.avioconsulting.mule.testing.dsl.mocking.sfdc
 
 import com.avioconsulting.mule.testing.EventFactory
 import com.avioconsulting.mule.testing.mocks.DsqlMock
-import com.avioconsulting.mule.testing.mulereplacements.MuleMessageTransformer
+import com.avioconsulting.mule.testing.mocks.StandardMock
+import com.avioconsulting.mule.testing.mulereplacements.MockProcess
 import com.avioconsulting.mule.testing.payloadvalidators.ListGenericPayloadValidator
 import com.avioconsulting.mule.testing.transformers.sfdc.UpsertTransformer
 import org.mule.api.MuleContext
 
 class ChoiceImpl implements Choice {
-    private MuleMessageTransformer transformer
     private final MuleContext muleContext
-    private DsqlMock mock
+    private MockProcess mock
     private final EventFactory eventFactory
 
     ChoiceImpl(MuleContext muleContext,
@@ -19,13 +19,16 @@ class ChoiceImpl implements Choice {
         this.muleContext = muleContext
     }
 
-    DsqlMock getMock() {
+    MockProcess getMock() {
         mock
     }
 
     def upsert(@DelegatesTo(UpsertResponseUtil) Closure closure) {
-        this.transformer = new UpsertTransformer(closure,
-                                                 this.muleContext)
+        def transformer = new UpsertTransformer(closure,
+                                                this.muleContext)
+        this.mock = new StandardMock(transformer,
+                                     this.eventFactory)
+        return null
     }
 
     def query(Closure closure) {
