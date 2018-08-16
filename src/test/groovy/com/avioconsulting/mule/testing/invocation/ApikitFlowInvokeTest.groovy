@@ -8,7 +8,7 @@ import static groovy.test.GroovyAssert.shouldFail
 import static org.hamcrest.Matchers.*
 import static org.junit.Assert.assertThat
 
-class ApikitFlowInvokeTest extends BaseJunitTest implements OverrideConfigList, BaseApiKitTest {
+class ApikitFlowInvokeTest extends BaseJunitTest implements BaseApiKitTest, OverrideConfigList {
     static int getExpectedPort() {
         // not sure why 8088 is occupied on Windows (nothing shows as listening on that port) but
         // took care of test once I changed this

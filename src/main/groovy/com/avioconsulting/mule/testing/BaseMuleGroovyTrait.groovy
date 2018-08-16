@@ -17,6 +17,7 @@ import org.mule.api.MuleEvent
 import org.mule.api.MuleMessage
 import org.mule.api.config.ConfigurationBuilder
 import org.mule.config.builders.ExtensionsManagerConfigurationBuilder
+import org.mule.config.builders.SimpleConfigurationBuilder
 import org.mule.construct.Flow
 import org.mule.context.DefaultMuleContextBuilder
 import org.mule.context.DefaultMuleContextFactory
@@ -35,6 +36,7 @@ trait BaseMuleGroovyTrait {
         def contextFactory = new DefaultMuleContextFactory()
         def muleContextBuilder = new DefaultMuleContextBuilder()
         def configBuilders = [
+                new SimpleConfigurationBuilder(startUpProperties),
                 // certain processors like validation require this
                 new ExtensionsManagerConfigurationBuilder(),
                 new GroovyTestingSpringXmlConfigurationBuilder(configResources,
