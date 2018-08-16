@@ -1,5 +1,6 @@
 package com.avioconsulting.mule.testing
 
+import com.avioconsulting.mule.testing.batch.BatchWaitUtil
 import com.avioconsulting.mule.testing.dsl.invokers.BatchRunner
 import com.avioconsulting.mule.testing.dsl.invokers.FlowRunner
 import com.avioconsulting.mule.testing.dsl.invokers.FlowRunnerImpl
@@ -126,11 +127,12 @@ trait BaseMuleGroovyTrait {
         flow.process(event)
     }
 
-    static def waitForBatchCompletion(List<String> jobsToWaitFor = null,
-                                      boolean throwUnderlyingException = false,
-                                      Closure closure) {
-        //def batchWaitUtil = new BatchWaitUtil(muleContext)
-        //batchWaitUtil.waitFor(jobsToWaitFor, throwUnderlyingException, closure)
+    def waitForBatchCompletion(MuleContext muleContext,
+                               List<String> jobsToWaitFor = null,
+                               boolean throwUnderlyingException = false,
+                               Closure closure) {
+        def batchWaitUtil = new BatchWaitUtil(muleContext)
+        batchWaitUtil.waitFor(jobsToWaitFor, throwUnderlyingException, closure)
     }
 
     def runBatch(MuleContext muleContext,
@@ -144,7 +146,8 @@ trait BaseMuleGroovyTrait {
         code.resolveStrategy = Closure.DELEGATE_ONLY
         code()
         def batchJob = muleContext.registry.get(batchName) as BatchJobAdapter
-        waitForBatchCompletion(jobsToWaitFor,
+        waitForBatchCompletion(muleContext,
+                               jobsToWaitFor,
                                throwUnderlyingException) {
             batchJob.execute(runner.getEvent())
         }
