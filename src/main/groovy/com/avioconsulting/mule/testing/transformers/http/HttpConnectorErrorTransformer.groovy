@@ -3,7 +3,7 @@ package com.avioconsulting.mule.testing.transformers.http
 import com.avioconsulting.mule.testing.transformers.IHaveStateToReset
 import org.mule.api.MuleContext
 import org.mule.api.MuleMessage
-import org.mule.modules.interceptor.processors.MuleMessageTransformer
+import com.avioconsulting.mule.testing.mulereplacements.MuleMessageTransformer
 
 import java.util.concurrent.TimeoutException
 

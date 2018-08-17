@@ -1,19 +1,24 @@
 package com.avioconsulting.mule.testing.dsl.invokers
 
+import com.avioconsulting.mule.testing.EventFactory
 import com.avioconsulting.mule.testing.payloadvalidators.IPayloadValidator
-import org.mule.DefaultMuleEvent
 import org.mule.DefaultMuleMessage
 import org.mule.MessageExchangePattern
 import org.mule.api.MuleContext
 import org.mule.api.MuleEvent
-import org.mule.munit.common.util.MunitMuleTestUtils
 
 class JavaInvokerImpl implements JavaInvoker, Invoker {
     private final MuleContext muleContext
     private inputObject
+    private final EventFactory eventFactory
+    private final String flowName
 
-    JavaInvokerImpl(MuleContext muleContext) {
+    JavaInvokerImpl(MuleContext muleContext,
+                    EventFactory eventFactory,
+                    String flowName) {
+        this.flowName = flowName
         this.muleContext = muleContext
+        this.eventFactory = eventFactory
     }
 
     def inputPayload(Object inputObject) {
@@ -22,9 +27,9 @@ class JavaInvokerImpl implements JavaInvoker, Invoker {
 
     MuleEvent getEvent() {
         def message = new DefaultMuleMessage(inputObject, muleContext)
-        new DefaultMuleEvent(message,
-                             MessageExchangePattern.REQUEST_RESPONSE,
-                             MunitMuleTestUtils.getTestFlow(muleContext))
+        eventFactory.getMuleEvent(message,
+                                  flowName,
+                                  MessageExchangePattern.REQUEST_RESPONSE)
     }
 
     def transformOutput(MuleEvent event) {

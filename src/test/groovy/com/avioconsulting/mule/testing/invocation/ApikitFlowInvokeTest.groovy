@@ -1,10 +1,9 @@
 package com.avioconsulting.mule.testing.invocation
 
-import com.avioconsulting.mule.testing.BaseApiKitTest
+import com.avioconsulting.mule.testing.junit.BaseApiKitTest
 import com.avioconsulting.mule.testing.OverrideConfigList
 import com.avioconsulting.mule.testing.SampleJacksonInput
 import com.avioconsulting.mule.testing.SampleJacksonOutput
-import org.apache.tools.ant.taskdefs.condition.Os
 import org.junit.Test
 
 import static groovy.test.GroovyAssert.shouldFail
@@ -12,15 +11,6 @@ import static org.hamcrest.Matchers.*
 import static org.junit.Assert.assertThat
 
 class ApikitFlowInvokeTest extends BaseApiKitTest implements OverrideConfigList {
-    static int getExpectedPort() {
-        // not sure why 8088 is occupied on Windows (nothing shows as listening on that port) but
-        // took care of test once I changed this
-        // where it's 8088 or 8089 for the first port is not important. What is import is
-        // that the 2nd port is used if the first port is taken and that will be 8090 for Windows
-        // see getHttpPort_secondPortOpen
-        Os.isFamily(Os.FAMILY_WINDOWS) ? 8089 : 8088
-    }
-
     @Test
     void getConfigResourceSubstitutes_hasCorrectGlobalXmls() {
         // arrange
@@ -31,36 +21,6 @@ class ApikitFlowInvokeTest extends BaseApiKitTest implements OverrideConfigList 
         // assert
         assertThat result,
                    is(equalTo(['global.xml': 'global-test.xml']))
-    }
-
-    @Test
-    void getHttpPort_firstPortOpen() {
-        // arrange
-
-        // act
-        def port = getHttpPort()
-
-        // assert
-        assertThat port,
-                   is(equalTo(expectedPort))
-    }
-
-    @Test
-    void getHttpPort_secondPortOpen() {
-        // arrange
-        def serverSocket = new ServerSocket(expectedPort)
-        try {
-
-            // act
-            def port = getHttpPort()
-
-            // assert
-            assertThat port,
-                       is(equalTo(expectedPort+1))
-        }
-        finally {
-            serverSocket.close()
-        }
     }
 
     @Test
@@ -149,11 +109,11 @@ class ApikitFlowInvokeTest extends BaseApiKitTest implements OverrideConfigList 
                    is(equalTo(133))
     }
 
-    protected String getApiNameUnderTest() {
+    String getApiNameUnderTest() {
         'the-app'
     }
 
-    protected String getApiVersionUnderTest() {
+    String getApiVersionUnderTest() {
         'v1'
     }
 

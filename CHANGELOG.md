@@ -1,3 +1,7 @@
+# 1.0.18
+* Remove dependency on MUnit libraries because MUnit was manipulating SOAP payloads and causing test problems AND because we can't depend on this for Mule 4.0 anyways
+* Have tests reuse Mule context if possible (speeds up execution)
+
 # 1.0.17
 * Add ability to gain access to the Mule message within the same closure for XML/SOAP mocks (e.g. whenCalledWithMapAsXml, whenCalledWithGroovyXmlParser, etc.)
 

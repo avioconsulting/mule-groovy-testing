@@ -41,6 +41,7 @@ http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee
         <set-property propertyName="Content-Type" value="application/json"/>
     </flow>
     <flow name="/some/soap/flow">
+        <logger message="invoked" level="INFO" />
         <dw:transform-message doc:name="Transform Message">
             <dw:set-payload><![CDATA[%dw 1.0
 %output application/xml
@@ -62,6 +63,7 @@ http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee
         <set-payload value="#[message.payloadAs(java.lang.String)]" doc:name="Set Payload"/>
         <logger message="payload is now #[payload] of type #[payload.getClass().getName()]" level="INFO" doc:name="Logger"/>
         <dw:transform-message doc:name="Transform Message">
+            <dw:input-payload mimeType="application/xml"/>
             <dw:set-payload><![CDATA[%dw 1.0
 %output application/xml
 %namespace ns0 http://www.avioconsulting.com/schemas/SOAPTest/v1

@@ -1,20 +1,21 @@
 package com.avioconsulting.mule.testing.dsl.mocking
 
-import com.avioconsulting.mule.testing.ProcessorLocator
+import com.avioconsulting.mule.testing.EventFactory
+import com.avioconsulting.mule.testing.mocks.HttpMock
 import com.avioconsulting.mule.testing.payloadvalidators.ContentTypeCheckDisabledValidator
 import com.avioconsulting.mule.testing.payloadvalidators.HttpRequestPayloadValidator
-import com.avioconsulting.mule.testing.spies.HttpConnectorSpy
 import com.avioconsulting.mule.testing.spies.IReceiveHttpOptions
+import com.avioconsulting.mule.testing.spies.IReceiveMuleEvents
 import com.avioconsulting.mule.testing.transformers.TransformerChain
 import com.avioconsulting.mule.testing.transformers.http.HttpConnectorErrorTransformer
 import com.avioconsulting.mule.testing.transformers.http.HttpGetTransformer
 import com.avioconsulting.mule.testing.transformers.http.HttpValidationTransformer
 import org.mule.api.MuleContext
-import org.mule.module.http.internal.request.ResponseValidator
-import org.mule.munit.common.mocking.MunitSpy
+import org.mule.module.http.internal.request.DefaultHttpRequester
 
 class HttpRequestResponseChoiceImpl extends StandardRequestResponseImpl
-        implements HttpRequestResponseChoice, IReceiveHttpOptions {
+        implements HttpRequestResponseChoice,
+                IReceiveHttpOptions {
     private final HttpValidationTransformer httpValidationTransformer
     private final HttpGetTransformer httpGetTransformer
     private final HttpConnectorErrorTransformer httpConnectorErrorTransformer
@@ -22,27 +23,32 @@ class HttpRequestResponseChoiceImpl extends StandardRequestResponseImpl
     private Map headers
     private String fullPath
     private String httpVerb
+    private final EventFactory eventFactory
+    private final List<IReceiveHttpOptions> httpPathEtcReceivers
+    private final List<IReceiveMuleEvents> muleEventReceivers
 
-    HttpRequestResponseChoiceImpl(MunitSpy spy,
-                                  ProcessorLocator processorLocator,
-                                  MuleContext muleContext) {
+    HttpRequestResponseChoiceImpl(MuleContext muleContext,
+                                  EventFactory eventFactory) {
         super(muleContext,
               new HttpRequestPayloadValidator())
+        this.eventFactory = eventFactory
         def payloadTypeFetcher = initialPayloadValidator as HttpRequestPayloadValidator
-        httpValidationTransformer = new HttpValidationTransformer(muleContext,
-                                                                  processorLocator)
+        httpValidationTransformer = new HttpValidationTransformer()
         httpGetTransformer = new HttpGetTransformer(muleContext)
         httpConnectorErrorTransformer = new HttpConnectorErrorTransformer(muleContext)
-        def httpPathEtcReceivers = [this.httpValidationTransformer,
-                                    this,
-                                    payloadTypeFetcher,
-                                    httpGetTransformer]
-        def muleEventReceivers = [httpValidationTransformer]
-        def httpConnectorSpy = new HttpConnectorSpy(processorLocator,
-                                                    muleContext,
-                                                    httpPathEtcReceivers,
-                                                    muleEventReceivers)
-        spy.before(httpConnectorSpy)
+        httpPathEtcReceivers = [this.httpValidationTransformer,
+                                this,
+                                payloadTypeFetcher,
+                                httpGetTransformer]
+        muleEventReceivers = [httpValidationTransformer]
+    }
+
+    // TODO: Improve this design?
+    HttpMock getHttpMock() {
+        new HttpMock(httpPathEtcReceivers,
+                     muleEventReceivers,
+                     this.transformer,
+                     eventFactory)
     }
 
     TransformerChain getTransformer() {
@@ -91,11 +97,10 @@ class HttpRequestResponseChoiceImpl extends StandardRequestResponseImpl
     def receive(Map queryParams,
                 Map headers,
                 String fullPath,
-                String httpVerb,
-                ResponseValidator responseValidator) {
+                DefaultHttpRequester httpRequester) {
         this.queryParams = queryParams
         this.headers = headers
         this.fullPath = fullPath
-        this.httpVerb = httpVerb
+        this.httpVerb = httpRequester.method
     }
 }

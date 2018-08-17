@@ -7,7 +7,7 @@ import com.avioconsulting.mule.testing.transformers.StandardTransformer
 import org.mule.DefaultMuleMessage
 import org.mule.api.MuleContext
 import org.mule.api.MuleMessage
-import org.mule.modules.interceptor.processors.MuleMessageTransformer
+import com.avioconsulting.mule.testing.mulereplacements.MuleMessageTransformer
 
 class RawFormatterImpl implements RawFormatter, IFormatter {
     private final IPayloadValidator payloadValidator

@@ -5,7 +5,7 @@ import com.avioconsulting.mule.testing.transformers.ClosureMuleMessageHandler
 import groovy.xml.XmlUtil
 import org.mule.api.MuleContext
 import org.mule.api.MuleMessage
-import org.mule.modules.interceptor.processors.MuleMessageTransformer
+import com.avioconsulting.mule.testing.mulereplacements.MuleMessageTransformer
 
 class XMLGroovyParserTransformer extends XMLTransformer implements MuleMessageTransformer,
         ClosureMuleMessageHandler{

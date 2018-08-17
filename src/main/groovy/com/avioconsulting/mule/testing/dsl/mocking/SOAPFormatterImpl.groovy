@@ -3,18 +3,14 @@ package com.avioconsulting.mule.testing.dsl.mocking
 import com.avioconsulting.mule.testing.payloadvalidators.IPayloadValidator
 import com.avioconsulting.mule.testing.transformers.http.HttpConnectorErrorTransformer
 import org.mule.api.MuleContext
-import org.mule.modules.interceptor.processors.MuleMessageTransformer
-import org.mule.munit.common.mocking.MunitSpy
+import com.avioconsulting.mule.testing.mulereplacements.MuleMessageTransformer
 
 class SOAPFormatterImpl extends XMLFormatterImpl implements SOAPFormatter {
     private HttpConnectorErrorTransformer httpConnectorErrorTransformer
-    private final MunitSpy spy
 
     SOAPFormatterImpl(MuleContext muleContext,
-                      MunitSpy spy,
                       IPayloadValidator payloadValidator) {
         super(muleContext, payloadValidator)
-        this.spy = spy
     }
 
     def httpConnectError() {
@@ -39,7 +35,6 @@ class SOAPFormatterImpl extends XMLFormatterImpl implements SOAPFormatter {
     @Override
     IFormatter withNewPayloadValidator(IPayloadValidator validator) {
         new SOAPFormatterImpl(muleContext,
-                              spy,
                               validator)
     }
 }

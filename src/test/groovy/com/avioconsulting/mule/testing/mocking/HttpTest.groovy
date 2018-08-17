@@ -1,6 +1,6 @@
 package com.avioconsulting.mule.testing.mocking
 
-import com.avioconsulting.mule.testing.BaseTest
+import com.avioconsulting.mule.testing.junit.BaseJunitTest
 import com.avioconsulting.mule.testing.OverrideConfigList
 import com.avioconsulting.mule.testing.SampleJacksonInput
 import groovy.json.JsonOutput
@@ -9,7 +9,6 @@ import groovy.util.logging.Log4j2
 import org.junit.Test
 import org.mule.api.MessagingException
 import org.mule.module.http.internal.request.DefaultHttpRequester
-import org.mule.munit.common.util.ReusableByteArrayInputStream
 
 import java.util.concurrent.TimeoutException
 
@@ -18,7 +17,7 @@ import static org.hamcrest.Matchers.*
 import static org.junit.Assert.assertThat
 
 @Log4j2
-class HttpTest extends BaseTest implements OverrideConfigList {
+class HttpTest extends BaseJunitTest implements OverrideConfigList {
     List<String> getConfigResourcesList() {
         ['http_test.xml']
     }
@@ -329,7 +328,7 @@ class HttpTest extends BaseTest implements OverrideConfigList {
             java {
                 inputPayload(input)
             }
-        } as ReusableByteArrayInputStream
+        }
 
         // assert
         assert result
@@ -354,7 +353,7 @@ class HttpTest extends BaseTest implements OverrideConfigList {
             java {
                 inputPayload([foo: 123])
             }
-        } as ReusableByteArrayInputStream
+        }
 
         // assert
         assert result

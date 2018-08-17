@@ -1,12 +1,13 @@
 package com.avioconsulting.mule.testing
 
+import com.avioconsulting.mule.testing.junit.BaseJunitTest
 import org.junit.Test
 
 import static org.hamcrest.Matchers.equalTo
 import static org.hamcrest.Matchers.is
 import static org.junit.Assert.assertThat
 
-class MuleDeployPropertiesTest extends BaseTest {
+class MuleDeployPropertiesTest extends BaseJunitTest {
     @Override
     Map<String, String> getConfigResourceSubstitutes() {
         [

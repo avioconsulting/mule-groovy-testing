@@ -1,32 +1,33 @@
-package com.avioconsulting.mule.testing
+package com.avioconsulting.mule.testing.junit
 
+import com.avioconsulting.mule.testing.OpenPortLocator
 import com.avioconsulting.mule.testing.dsl.invokers.FlowRunner
 import com.avioconsulting.mule.testing.dsl.invokers.FlowRunnerImpl
 import org.mule.api.MuleMessage
 import org.mule.api.transport.PropertyScope
 
-abstract class BaseApiKitTest extends BaseTest {
+abstract class BaseApiKitTest extends BaseJunitTest {
     private static final String TEST_PORT_PROPERTY = 'avio.test.http.port'
 
-    protected abstract String getApiNameUnderTest()
+    abstract String getApiNameUnderTest()
 
-    protected abstract String getApiVersionUnderTest()
+    abstract String getApiVersionUnderTest()
 
     // version friendly convention
-    protected String getFullApiName() {
+    String getFullApiName() {
         "api-${apiNameUnderTest}-${apiVersionUnderTest}"
     }
 
-    protected String getFlowName() {
+    String getFlowName() {
         "${fullApiName}-main"
     }
 
     // using CloudHub combine friendly convention
-    protected String getHttpListenerPath() {
+    String getHttpListenerPath() {
         '/' + [apiNameUnderTest, 'api', apiVersionUnderTest, '*'].join('/')
     }
 
-    protected static int getChosenHttpPort() {
+    static int getChosenHttpPort() {
         // avoid duplicate ports
         Integer.parseInt(System.getProperty(TEST_PORT_PROPERTY))
     }
@@ -37,8 +38,11 @@ abstract class BaseApiKitTest extends BaseTest {
         // have to have the listener running to use apikit
         // http listener gets go
         // ing before the properties object this method creates has had its values take effect
+        def port = OpenPortLocator.httpPort
+        logger.info 'Using open port {} for HTTP listener',
+                    port
         System.setProperty(TEST_PORT_PROPERTY,
-                           httpPort as String)
+                           port as String)
         properties.put('http.listener.config', 'test-http-listener-config')
         // by convention, assume this
         properties.put('skip.apikit.validation', 'false')
@@ -47,7 +51,7 @@ abstract class BaseApiKitTest extends BaseTest {
     }
 
     @Override
-    protected List<String> getFlowsExcludedOfInboundDisabling() {
+    List<String> keepListenersOnForTheseFlows() {
         // apikit complains unless these 2 are both open
         ['main', 'console'].collect { suffix ->
             // toString here to ensure we return Java string and not Groovy strings
@@ -64,7 +68,8 @@ abstract class BaseApiKitTest extends BaseTest {
                       String path,
                       Map queryParams = null,
                       @DelegatesTo(FlowRunner) Closure closure) {
-        def runner = new FlowRunnerImpl(muleContext)
+        def runner = new FlowRunnerImpl(muleContext,
+                                        flowName)
         def code = closure.rehydrate(runner, this, this)
         code.resolveStrategy = Closure.DELEGATE_ONLY
         code()
@@ -73,7 +78,9 @@ abstract class BaseApiKitTest extends BaseTest {
                      httpMethod,
                      path,
                      queryParams)
-        def outputEvent = runFlow(flowName, inputEvent)
+        def outputEvent = runFlow(muleContext,
+                                  flowName,
+                                  inputEvent)
         runner.transformOutput(outputEvent)
     }
 
@@ -107,19 +114,6 @@ abstract class BaseApiKitTest extends BaseTest {
         httpProps['host'] = "localhost:${System.getProperty(TEST_PORT_PROPERTY)}".toString()
         httpProps.each { prop, value ->
             message.setProperty(prop, value, PropertyScope.INBOUND)
-        }
-    }
-
-    protected static int getHttpPort() {
-        (8088..8199).find { candidate ->
-            try {
-                def socket = new ServerSocket(candidate)
-                socket.close()
-                true
-            }
-            catch (IOException ignored) {
-                false
-            }
         }
     }
 }

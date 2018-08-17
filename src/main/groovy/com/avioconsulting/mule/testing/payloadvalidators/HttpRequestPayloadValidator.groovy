@@ -2,7 +2,7 @@ package com.avioconsulting.mule.testing.payloadvalidators
 
 import com.avioconsulting.mule.testing.spies.IReceiveHttpOptions
 import org.mule.api.MuleMessage
-import org.mule.module.http.internal.request.ResponseValidator
+import org.mule.module.http.internal.request.DefaultHttpRequester
 
 class HttpRequestPayloadValidator implements IPayloadValidator,
         IReceiveHttpOptions,
@@ -34,7 +34,7 @@ class HttpRequestPayloadValidator implements IPayloadValidator,
     def receive(Map queryParams,
                 Map headers,
                 String fullPath,
-                String httpVerb,ResponseValidator responseValidator) {
-        this.httpVerb = httpVerb
+                DefaultHttpRequester httpRequester) {
+        this.httpVerb = httpRequester.method
     }
 }

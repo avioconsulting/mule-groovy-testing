@@ -1,6 +1,6 @@
 package com.avioconsulting.mule.testing.mocking
 
-import com.avioconsulting.mule.testing.BaseTest
+import com.avioconsulting.mule.testing.junit.BaseJunitTest
 import com.avioconsulting.mule.testing.OverrideConfigList
 import org.junit.Test
 import org.mule.modules.salesforce.bulk.EnrichedUpsertResult
@@ -9,7 +9,7 @@ import static groovy.test.GroovyAssert.shouldFail
 import static org.hamcrest.Matchers.*
 import static org.junit.Assert.assertThat
 
-class SalesForceTest extends BaseTest implements OverrideConfigList {
+class SalesForceTest extends BaseJunitTest implements OverrideConfigList {
     List<String> getConfigResourcesList() {
         ['sfdc_test.xml']
     }

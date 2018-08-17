@@ -6,7 +6,7 @@ import com.avioconsulting.mule.testing.payloadvalidators.ListGenericPayloadValid
 import org.mule.DefaultMuleMessage
 import org.mule.api.MuleContext
 import org.mule.api.MuleMessage
-import org.mule.modules.interceptor.processors.MuleMessageTransformer
+import com.avioconsulting.mule.testing.mulereplacements.MuleMessageTransformer
 
 class UpsertTransformer implements MuleMessageTransformer {
     private final Closure closure
