@@ -1,14 +1,15 @@
 package com.avioconsulting.mule.testing.invocation
 
-import com.avioconsulting.mule.testing.junit.BaseBatchJunitTest
+
 import com.avioconsulting.mule.testing.OverrideConfigList
+import com.avioconsulting.mule.testing.junit.BaseJunitTest
 import org.junit.Test
 
 import static groovy.test.GroovyAssert.shouldFail
 import static org.hamcrest.Matchers.*
 import static org.junit.Assert.assertThat
 
-class BatchInvokeTest extends BaseBatchJunitTest implements OverrideConfigList {
+class BatchInvokeTest extends BaseJunitTest implements OverrideConfigList {
     @Override
     List<String> getConfigResourcesList() {
         ['batch_test.xml']

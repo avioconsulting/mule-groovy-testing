@@ -1,3 +1,6 @@
+# 1.0.19
+* Move .mule directory removal to when context is actually created
+
 # 1.0.18
 * Remove dependency on MUnit libraries because MUnit was manipulating SOAP payloads and causing test problems AND because we can't depend on this for Mule 4.0 anyways
 * Have tests reuse Mule context if possible (speeds up execution)

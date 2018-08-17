@@ -1,6 +1,7 @@
 package com.avioconsulting.mule.testing.junit
 
 import com.avioconsulting.mule.testing.BaseMuleGroovyTrait
+import com.avioconsulting.mule.testing.dsl.invokers.BatchRunner
 import com.avioconsulting.mule.testing.dsl.invokers.FlowRunner
 import com.avioconsulting.mule.testing.dsl.mocking.HttpRequestResponseChoice
 import com.avioconsulting.mule.testing.dsl.mocking.SOAPFormatter
@@ -105,5 +106,16 @@ class BaseJunitTest implements BaseMuleGroovyTrait {
                            muleContext,
                            connectorName,
                            closure)
+    }
+
+    def runBatch(String batchName,
+                 List<String> jobsToWaitFor = null,
+                 boolean throwUnderlyingException = false,
+                 @DelegatesTo(BatchRunner) Closure closure) {
+        runBatch(muleContext,
+                 batchName,
+                 jobsToWaitFor,
+                 throwUnderlyingException,
+                 closure)
     }
 }

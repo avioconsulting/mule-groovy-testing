@@ -30,6 +30,13 @@ trait BaseMuleGroovyTrait {
     abstract Logger getLogger()
 
     MuleContext createMuleContext(MockingConfiguration mockingConfiguration) {
+        def directory = new File('.mule')
+        logger.info "Checking for .mule directory at ${directory.absolutePath}"
+        if (directory.exists()) {
+            logger.info "Removing ${directory.absolutePath}"
+
+            directory.deleteDir()
+        }
         def contextFactory = new DefaultMuleContextFactory()
         def muleContextBuilder = new DefaultMuleContextBuilder()
         def configBuilders = [
@@ -82,12 +89,6 @@ trait BaseMuleGroovyTrait {
     }
 
     String getConfigResources() {
-        def directory = new File('.mule')
-        logger.info "Checking for .mule directory at ${directory.absolutePath}"
-        if (directory.exists()) {
-            logger.info "Removing ${directory.absolutePath}"
-            directory.deleteDir()
-        }
         def mapping = configResourceSubstitutes
         def list = muleDeployPropertiesResources.split(',').collect { p ->
             def xmlEntry = p.trim()
