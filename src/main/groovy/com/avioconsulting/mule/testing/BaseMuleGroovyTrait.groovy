@@ -24,9 +24,6 @@ import org.mule.context.DefaultMuleContextBuilder
 import org.mule.context.DefaultMuleContextFactory
 import org.mule.module.client.MuleClient
 
-import javax.xml.datatype.DatatypeFactory
-import javax.xml.datatype.XMLGregorianCalendar
-
 // basic idea here is to have a trait that could be mixed in to any type of testing framework situation
 // this trait should be stateless
 trait BaseMuleGroovyTrait {
@@ -235,19 +232,5 @@ trait BaseMuleGroovyTrait {
                                     eventFactory)
         mockingConfiguration.addMock(connectorName,
                                      mock)
-    }
-
-    static XMLGregorianCalendar getXmlDate(int year, int oneBasedMonth, int dayOfMonth) {
-        def zeroBasedMonth = oneBasedMonth - 1
-        def gregorian = new GregorianCalendar(year, zeroBasedMonth, dayOfMonth)
-        DatatypeFactory.newInstance().newXMLGregorianCalendar(gregorian)
-    }
-
-    static XMLGregorianCalendar getXmlDateTime(int year, int oneBasedMonth, int dayOfMonth, int hourOfDay, int minute,
-                                               int second = 0, String timeZoneId) {
-        def zeroBasedMonth = oneBasedMonth - 1
-        def gregorian = new GregorianCalendar(year, zeroBasedMonth, dayOfMonth, hourOfDay, minute, second)
-        gregorian.setTimeZone(TimeZone.getTimeZone(timeZoneId))
-        DatatypeFactory.newInstance().newXMLGregorianCalendar(gregorian)
     }
 }
