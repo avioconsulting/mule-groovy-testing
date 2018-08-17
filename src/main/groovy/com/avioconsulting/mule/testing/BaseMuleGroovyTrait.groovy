@@ -33,7 +33,6 @@ trait BaseMuleGroovyTrait {
     abstract Logger getLogger()
 
     MuleContext createMuleContext(MockingConfiguration mockingConfiguration) {
-        // TODO: Optimize this and only deal w/ new contexts when props/mocks/etc. change
         def contextFactory = new DefaultMuleContextFactory()
         def muleContextBuilder = new DefaultMuleContextBuilder()
         def configBuilders = [

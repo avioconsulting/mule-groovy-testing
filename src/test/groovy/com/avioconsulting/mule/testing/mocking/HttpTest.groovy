@@ -1,6 +1,6 @@
 package com.avioconsulting.mule.testing.mocking
 
-import com.avioconsulting.mule.testing.BaseJunitTest
+import com.avioconsulting.mule.testing.junit.BaseJunitTest
 import com.avioconsulting.mule.testing.OverrideConfigList
 import com.avioconsulting.mule.testing.SampleJacksonInput
 import groovy.json.JsonOutput

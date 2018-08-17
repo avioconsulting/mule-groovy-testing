@@ -1,6 +1,6 @@
 package com.avioconsulting.mule.testing.invocation
 
-import com.avioconsulting.mule.testing.BaseJunitTest
+import com.avioconsulting.mule.testing.junit.BaseJunitTest
 import com.avioconsulting.mule.testing.OverrideConfigList
 import groovy.util.logging.Log4j2
 import org.junit.Ignore
@@ -14,6 +14,7 @@ import static org.junit.Assert.fail
 @Log4j2
 class ListenersDisabledTest extends BaseJunitTest implements OverrideConfigList {
     private static final String TEST_PORT_PROPERTY = 'avio.test.http.port'
+    static int unusedPort = -1
 
     @Override
     Properties getStartUpProperties() {
@@ -21,15 +22,17 @@ class ListenersDisabledTest extends BaseJunitTest implements OverrideConfigList 
         // have to have the listener running to use apikit
         // http listener gets go
         // ing before the properties object this method creates has had its values take effect
-        def port = unusedPort
-        log.info 'Setting HTTP listener port to {}',
-                 port
-        System.setProperty(TEST_PORT_PROPERTY,
-                           port as String)
+        if (unusedPort == -1) {
+            unusedPort = findUnusedPort()
+            log.info 'Setting HTTP listener port to {}',
+                     unusedPort
+        }
+        properties.put(TEST_PORT_PROPERTY,
+                       unusedPort as String)
         properties
     }
 
-    static int getUnusedPort() {
+    static int findUnusedPort() {
         (8088..8199).find { candidate ->
             try {
                 def socket = new ServerSocket(candidate,
@@ -44,16 +47,10 @@ class ListenersDisabledTest extends BaseJunitTest implements OverrideConfigList 
         }
     }
 
-    static int getChosenHttpPort() {
-        // avoid duplicate ports
-        Integer.parseInt(System.getProperty(TEST_PORT_PROPERTY))
-    }
-
     @Test
     void cant_access_url() {
         // arrange
-        def port = getChosenHttpPort()
-        def url = "http://localhost:${port}/the-app/api/v1/howdy".toURL()
+        def url = "http://localhost:${unusedPort}/the-app/api/v1/howdy".toURL()
 
         // act
         log.info 'Attempting to access {}',
@@ -73,12 +70,11 @@ class ListenersDisabledTest extends BaseJunitTest implements OverrideConfigList 
     @Ignore('MUnit does not disable the actual listener config/global element, just the flow listener. Will come back to this')
     void port_not_used() {
         // arrange
-        def port = getChosenHttpPort()
         log.info 'Will attempt to bind to socket {}',
-                 port
+                 unusedPort
 
         try {
-            def server = new ServerSocket(port,
+            def server = new ServerSocket(unusedPort,
                                           1,
                                           InetAddress.loopbackAddress)
             server.close()

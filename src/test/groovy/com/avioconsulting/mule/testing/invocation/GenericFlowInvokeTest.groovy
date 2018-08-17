@@ -1,6 +1,6 @@
 package com.avioconsulting.mule.testing.invocation
 
-import com.avioconsulting.mule.testing.BaseJunitTest
+import com.avioconsulting.mule.testing.junit.BaseJunitTest
 import com.avioconsulting.mule.testing.OverrideConfigList
 import org.junit.Test
 

@@ -1,5 +1,6 @@
 package com.avioconsulting.mule.testing
 
+import com.avioconsulting.mule.testing.junit.BaseJunitTest
 import org.junit.Test
 
 import static org.hamcrest.Matchers.equalTo

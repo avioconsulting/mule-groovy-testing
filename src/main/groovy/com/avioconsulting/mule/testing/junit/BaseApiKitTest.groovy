@@ -1,5 +1,6 @@
-package com.avioconsulting.mule.testing
+package com.avioconsulting.mule.testing.junit
 
+import com.avioconsulting.mule.testing.OpenPortLocator
 import com.avioconsulting.mule.testing.dsl.invokers.FlowRunner
 import com.avioconsulting.mule.testing.dsl.invokers.FlowRunnerImpl
 import org.mule.api.MuleMessage

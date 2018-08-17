@@ -1,6 +1,6 @@
-package com.avioconsulting.mule.testing
+package com.avioconsulting.mule.testing.junit
 
-import com.avioconsulting.mule.testing.dsl.invokers.BatchRunner
+import com.avioconsulting.mule.testing.BaseMuleGroovyTrait
 import com.avioconsulting.mule.testing.dsl.invokers.FlowRunner
 import com.avioconsulting.mule.testing.dsl.mocking.HttpRequestResponseChoice
 import com.avioconsulting.mule.testing.dsl.mocking.SOAPFormatter
@@ -9,15 +9,17 @@ import com.avioconsulting.mule.testing.dsl.mocking.sfdc.Choice
 import com.avioconsulting.mule.testing.mulereplacements.MockingConfiguration
 import groovy.util.logging.Log4j2
 import org.apache.logging.log4j.Logger
-import org.junit.AfterClass
 import org.junit.Before
+import org.junit.runner.RunWith
 import org.mule.api.MuleContext
 import org.mule.api.MuleEvent
 
 // takes BaseMuleGroovyTrait and adds JUnit lifecycle/state
 @Log4j2
+@RunWith(MuleGroovyJunitRunner)
 class BaseJunitTest implements BaseMuleGroovyTrait {
     protected static MuleContext muleContext
+    protected static TestingConfiguration currentTestingConfig
     private static MockingConfiguration mockingConfiguration
 
     @Override
@@ -27,15 +29,28 @@ class BaseJunitTest implements BaseMuleGroovyTrait {
 
     @Before
     void startMule() {
+        def proposedTestingConfig = new TestingConfiguration(startUpProperties,
+                                                             configResources,
+                                                             this.keepListenersOnForTheseFlows())
+        def newContextNeeded = proposedTestingConfig != currentTestingConfig || !muleContext
         if (!muleContext) {
+            log.info 'Starting up Mule test context for the first time'
+        } else if (proposedTestingConfig != currentTestingConfig) {
+            log.info 'Existing Mule context will not work because config has changed, killing existing context'
+            shutdownMule()
+            log.info 'Starting fresh Mule context...'
+        } else {
+            log.info 'Using existing Mule context'
+        }
+        if (newContextNeeded) {
             mockingConfiguration = new MockingConfiguration(this.keepListenersOnForTheseFlows())
             muleContext = createMuleContext(mockingConfiguration)
             muleContext.start()
+            currentTestingConfig = proposedTestingConfig
         }
         mockingConfiguration.clearMocks()
     }
 
-    @AfterClass
     static void shutdownMule() {
         if (muleContext && muleContext.started) {
             muleContext.stop()
@@ -90,16 +105,5 @@ class BaseJunitTest implements BaseMuleGroovyTrait {
                            muleContext,
                            connectorName,
                            closure)
-    }
-
-    def runBatch(String batchName,
-                 List<String> jobsToWaitFor = null,
-                 boolean throwUnderlyingException = false,
-                 @DelegatesTo(BatchRunner) Closure closure) {
-        runBatch(muleContext,
-                 batchName,
-                 jobsToWaitFor,
-                 throwUnderlyingException,
-                 closure)
     }
 }
