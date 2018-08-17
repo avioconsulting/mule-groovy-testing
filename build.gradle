@@ -34,7 +34,6 @@ def getMavenCreds = { String id ->
 def eeCreds = getMavenCreds('avio-mule-ee-releases')
 
 repositories {
-    //mavenLocal()
     mavenCentral()
     maven {
         url "http://repository.mulesoft.org/releases"
