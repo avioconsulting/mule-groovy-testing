@@ -16,13 +16,14 @@ class SoapApikitInvokerImpl extends SoapInvokerBaseImpl {
     SoapApikitInvokerImpl(MuleContext muleContext,
                           EventFactory eventFactory,
                           String flowName,
-                          String soapAction) {
+                          String operation) {
         super(muleContext, eventFactory, flowName)
-        this.soapAction = soapAction
+        this.soapAction = operation
     }
 
     @Override
     protected MuleMessage getMessage() {
+
         def doc = jaxbHelper.getMarshalledDocument(this.inputObject)
         def soapFactory = MessageFactory.newInstance()
         def msg = soapFactory.createMessage()

@@ -114,14 +114,14 @@ trait BaseMuleGroovyTrait {
     }
 
     def runSoapApikitFlow(MuleContext muleContext,
-                          String soapAction,
+                          String operation,
                           String apiKitFlowName = 'api-main',
                           @DelegatesTo(SoapInvoker) Closure closure) {
         def eventFactory = new EventFactoryImpl(muleContext)
         def invoker = new SoapApikitInvokerImpl(muleContext,
                                                 eventFactory,
                                                 apiKitFlowName,
-                                                soapAction)
+                                                operation)
         def code = closure.rehydrate(invoker, this, this)
         code.resolveStrategy = Closure.DELEGATE_ONLY
         code()

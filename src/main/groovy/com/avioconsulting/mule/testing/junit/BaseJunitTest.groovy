@@ -120,11 +120,11 @@ class BaseJunitTest implements BaseMuleGroovyTrait {
                  closure)
     }
 
-    def runSoapApikitFlow(String soapAction,
+    def runSoapApikitFlow(String operation,
                           String apiKitFlowName = 'api-main',
                           @DelegatesTo(SoapInvoker) Closure closure) {
         runSoapApikitFlow(muleContext,
-                          soapAction,
+                          operation,
                           apiKitFlowName,
                           closure)
     }
