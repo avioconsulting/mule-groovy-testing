@@ -17,6 +17,7 @@ class EventFactoryImpl implements EventFactory {
                            String flowName,
                            MessageExchangePattern messageExchangePattern) {
         def flowConstruct = muleContext.registry.lookupFlowConstruct(flowName)
+        assert flowConstruct : "Flow with name '${flowName}' was not found. Are you using the right flow name?"
         new DefaultMuleEvent(muleMessage,
                              messageExchangePattern,
                              flowConstruct)

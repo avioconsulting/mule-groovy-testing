@@ -1,15 +1,26 @@
 package com.avioconsulting.mule.testing.transformers.xml
 
 import org.mule.api.MuleMessage
+import org.w3c.dom.Document
 
 import javax.xml.bind.JAXBContext
 import javax.xml.bind.JAXBElement
+import javax.xml.parsers.DocumentBuilderFactory
 
 class JAXBMarshalHelper {
     private final JAXBContext jaxbContext
 
     JAXBMarshalHelper(Class inputJaxbClass) {
         this.jaxbContext = JAXBContext.newInstance(inputJaxbClass.getPackage().name)
+    }
+
+    Document getMarshalledDocument(objectOrJaxbElement) {
+        def dbf = DocumentBuilderFactory.newInstance()
+        def deb = dbf.newDocumentBuilder()
+        def doc = deb.newDocument()
+        def marshaller = this.jaxbContext.createMarshaller()
+        marshaller.marshal(objectOrJaxbElement, doc)
+        doc
     }
 
     StringReader getMarshalled(objectOrJaxbElement,
