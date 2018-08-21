@@ -113,7 +113,7 @@ trait BaseMuleGroovyTrait {
         runner.transformOutput(outputEvent)
     }
 
-    def runSoapApikitFlow(MuleContext muleContext,
+    MuleEvent runSoapApikitFlow(MuleContext muleContext,
                           String operation,
                           String apiKitFlowName = 'api-main',
                           @DelegatesTo(SoapInvoker) Closure closure) {

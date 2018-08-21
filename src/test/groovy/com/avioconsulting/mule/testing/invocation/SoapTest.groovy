@@ -7,8 +7,7 @@ import com.avioconsulting.mule.testing.soapxmlroot.SOAPTestRequest
 import com.avioconsulting.mule.testing.soapxmlroot.SOAPTestResponse
 import org.junit.Test
 
-import static org.hamcrest.Matchers.equalTo
-import static org.hamcrest.Matchers.is
+import static org.hamcrest.Matchers.*
 import static org.junit.Assert.assertThat
 
 class SoapTest extends BaseJunitTest implements OverrideConfigList,
@@ -71,10 +70,13 @@ class SoapTest extends BaseJunitTest implements OverrideConfigList,
         // act
         def result = runSoapApikitFlow('operation1') {
             inputJaxbPayload(input)
-        } as SOAPTestResponse
+        }
 
         // assert
-        assertThat result.details,
-                   is(equalTo('theTitle hello there'))
+        def payload = result.messageAsString
+        assertThat payload,
+                   is(startsWith('<soap:Envelope'))
+        assertThat payload,
+                   is(containsString('<ns0:details>theTitle hello there'))
     }
 }
