@@ -6,6 +6,8 @@ import com.avioconsulting.mule.testing.junit.BaseJunitTest
 import com.avioconsulting.mule.testing.soapxmlroot.SOAPTestRequest
 import com.avioconsulting.mule.testing.soapxmlroot.SOAPTestResponse
 import org.junit.Test
+import org.mule.construct.Flow
+import org.mule.module.soapkit.Router
 
 import javax.wsdl.BindingOperation
 import javax.wsdl.extensions.soap.SOAPOperation
@@ -72,23 +74,27 @@ class SoapTest extends BaseJunitTest implements OverrideConfigList,
             approvalDate = getXmlDate(2018, 8, 07)
             it
         }
-        // TODO: More clear asserts
-        // TODO: WSDL Path from flow's apikitrouter config
+
+        def operationTarget = 'operation1'
+        def flowName = 'api-main'
         // TODO: Remove types from closures and use reflection for factory
         def fact = WSDLFactory.newInstance()
         def reader = fact.newWSDLReader()
-        def wsdlPath = 'soap/test.wsdl'
-        def res = SoapTest.getResource("/${wsdlPath}")
-        assert res: "Unable to find WSDL at path ${wsdlPath}"
-        def defin = reader.readWSDL(res.toString())
+        def flow = muleContext.registry.lookupFlowConstruct(flowName) as Flow
+        def apiKitRouter = flow.messageProcessors.find { p ->
+            p instanceof Router
+        } as Router
+        assert apiKitRouter : "Expected flow ${flowName} to have an apikit SOAP router!"
+        def wsdlUrl = apiKitRouter.config.wsdlResource
+        def defin = reader.readWSDL(wsdlUrl.toString())
         def bindings = defin.bindings.values() as List<javax.wsdl.Binding>
         def operations = bindings.collect { javax.wsdl.Binding binding ->
             binding.bindingOperations
         }.flatten() as List<BindingOperation>
         def op = operations.find { operation ->
-            operation.name == 'operation1'
+            operation.name == operationTarget
         }
-        assert op
+        assert op: "Was unable to find operation ${operationTarget}, operations found were: ${operations.collect { o -> o.name }}"
         def soapOperation = op.extensibilityElements.find() { el ->
             el.elementType == new QName('http://schemas.xmlsoap.org/wsdl/soap/',
                                         'operation')
