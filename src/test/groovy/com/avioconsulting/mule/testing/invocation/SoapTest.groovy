@@ -58,4 +58,23 @@ class SoapTest extends BaseJunitTest implements OverrideConfigList,
         assertThat result.details,
                    is(equalTo('theTitle hello there'))
     }
+
+    @Test
+    void runs_via_apikit() {
+        // arrange
+        def input = new SOAPTestRequest().with {
+            title = 'hello there'
+            approvalDate = getXmlDate(2018, 8, 07)
+            it
+        }
+
+        // act
+        def result = runSoapApikitFlow('http://www.avioconsulting.com/services/SOAPTest/v1/SOAPTest') {
+            inputJaxbPayload(input)
+        } as SOAPTestResponse
+
+        // assert
+        assertThat result.details,
+                   is(equalTo('theTitle hello there'))
+    }
 }

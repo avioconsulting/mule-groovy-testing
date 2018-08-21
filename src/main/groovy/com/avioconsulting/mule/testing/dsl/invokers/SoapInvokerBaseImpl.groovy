@@ -4,55 +4,40 @@ import com.avioconsulting.mule.testing.EventFactory
 import com.avioconsulting.mule.testing.payloadvalidators.IPayloadValidator
 import com.avioconsulting.mule.testing.transformers.xml.JAXBMarshalHelper
 import com.avioconsulting.mule.testing.transformers.xml.XMLMessageBuilder
-import groovy.util.logging.Log4j2
-import groovy.xml.XmlUtil
 import org.mule.MessageExchangePattern
 import org.mule.api.MuleContext
 import org.mule.api.MuleEvent
+import org.mule.api.MuleMessage
 
-@Log4j2
-class SoapInvokerImpl implements SoapInvoker, Invoker {
-    private inputObject
+abstract class SoapInvokerBaseImpl implements Invoker, SoapInvoker {
+    protected inputObject
     private final MuleContext muleContext
-    private final XMLMessageBuilder xmlMessageBuilder
-    private JAXBMarshalHelper helper
+    protected final XMLMessageBuilder xmlMessageBuilder
+    protected JAXBMarshalHelper jaxbHelper
     private final EventFactory eventFactory
     private final String flowName
 
-    SoapInvokerImpl(MuleContext muleContext,
-                    EventFactory eventFactory,
-                    String flowName) {
+    SoapInvokerBaseImpl(MuleContext muleContext,
+                        EventFactory eventFactory,
+                        String flowName) {
         this.flowName = flowName
         this.muleContext = muleContext
-        xmlMessageBuilder = new XMLMessageBuilder(muleContext,
-                                                  true)
+        this.xmlMessageBuilder = new XMLMessageBuilder(muleContext,
+                                                       true)
         this.eventFactory = eventFactory
     }
 
     @Override
     def inputJaxbPayload(Object inputObject) {
         this.inputObject = inputObject
-        this.helper = new JAXBMarshalHelper(inputObject.class)
+        this.jaxbHelper = new JAXBMarshalHelper(inputObject.class)
     }
+
+    protected abstract MuleMessage getMessage()
 
     @Override
     MuleEvent getEvent() {
-        StringReader reader
-        if (inputObject instanceof File) {
-            def xml = inputObject.text
-            reader = new StringReader(xml)
-        } else {
-            reader = helper.getMarshalled(inputObject) { String xml ->
-                def parsedNode = new XmlParser().parseText(xml)
-                def xmlOutput = new StringWriter()
-                def printer = new XmlNodePrinter(new PrintWriter(xmlOutput))
-                printer.print(parsedNode)
-                log.info 'Put together SOAP request payload of {}',
-                         XmlUtil.serialize(xmlOutput.toString())
-            }
-        }
-        def message = this.xmlMessageBuilder.build(reader)
-        eventFactory.getMuleEvent(message,
+        eventFactory.getMuleEvent(getMessage(),
                                   flowName,
                                   MessageExchangePattern.REQUEST_RESPONSE)
     }
@@ -67,7 +52,7 @@ class SoapInvokerImpl implements SoapInvoker, Invoker {
             println 'Groovy Test WARNING: SOAP mock was sent a message with empty payload! using MuleMessage payload.'
             strongTypedPayload = incomingMessage
         } else {
-            strongTypedPayload = helper.unmarshal(incomingMessage)
+            strongTypedPayload = jaxbHelper.unmarshal(incomingMessage)
         }
         strongTypedPayload
     }

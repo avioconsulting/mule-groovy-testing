@@ -13,6 +13,10 @@ http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee
     <ws:consumer-config name="Web_Service_Consumer" service="SOAPTestService" port="SOAPTestService"
                         serviceAddress="http://localhost:8081" wsdlLocation="soap/test.wsdl"
                         doc:name="Web Service Consumer"/>
+    <apikit-soap:config name="/SOAPTestService/SOAPTestService/api-config"
+                        wsdlUrl="soap/test.wsdl"
+                        serviceName="SOAPTestService"
+                        portName="SOAPTestService" doc:name="APIkit SOAP: Configuration"/>
     <flow name="soaptestFlow">
         <dw:transform-message doc:name="Transform Message">
             <dw:set-payload><![CDATA[%dw 1.0
@@ -41,7 +45,7 @@ http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee
         <set-property propertyName="Content-Type" value="application/json"/>
     </flow>
     <flow name="/some/soap/flow">
-        <logger message="invoked" level="INFO" />
+        <logger message="invoked" level="INFO"/>
         <dw:transform-message doc:name="Transform Message">
             <dw:set-payload><![CDATA[%dw 1.0
 %output application/xml
@@ -55,15 +59,37 @@ http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee
         </dw:transform-message>
     </flow>
     <flow name="/some/soap/flow/messagepayloadasstring">
-        <logger message="before, payload is of type #[payload.getClass().getName()] loaded from source #[payload.getClass().getProtectionDomain().getCodeSource().getLocation()]" level="INFO" doc:name="Logger"/>
-        <set-variable variableName="readerTest" value="#[payload.getReader()]" />
-        <logger message="before, underlying reader is #[flowVars.readerTest.getClass().getName()] loaded from source #[flowVars.readerTest.getClass().getProtectionDomain().getCodeSource().getLocation()]" level="INFO" doc:name="Logger"/>
-        <set-variable variableName="readerTest" value="#[payload.getReader().getDelegateReader()]" />
-        <logger message="before, underlying reader 2 is #[flowVars.readerTest.getClass().getName()] loaded from source #[flowVars.readerTest.getClass().getProtectionDomain().getCodeSource().getLocation()]" level="INFO" doc:name="Logger"/>
+        <logger message="before, payload is of type #[payload.getClass().getName()] loaded from source #[payload.getClass().getProtectionDomain().getCodeSource().getLocation()]"
+                level="INFO" doc:name="Logger"/>
+        <set-variable variableName="readerTest" value="#[payload.getReader()]"/>
+        <logger message="before, underlying reader is #[flowVars.readerTest.getClass().getName()] loaded from source #[flowVars.readerTest.getClass().getProtectionDomain().getCodeSource().getLocation()]"
+                level="INFO" doc:name="Logger"/>
+        <set-variable variableName="readerTest" value="#[payload.getReader().getDelegateReader()]"/>
+        <logger message="before, underlying reader 2 is #[flowVars.readerTest.getClass().getName()] loaded from source #[flowVars.readerTest.getClass().getProtectionDomain().getCodeSource().getLocation()]"
+                level="INFO" doc:name="Logger"/>
         <set-payload value="#[message.payloadAs(java.lang.String)]" doc:name="Set Payload"/>
-        <logger message="payload is now #[payload] of type #[payload.getClass().getName()]" level="INFO" doc:name="Logger"/>
+        <logger message="payload is now #[payload] of type #[payload.getClass().getName()]" level="INFO"
+                doc:name="Logger"/>
         <dw:transform-message doc:name="Transform Message">
             <dw:input-payload mimeType="application/xml"/>
+            <dw:set-payload><![CDATA[%dw 1.0
+%output application/xml
+%namespace ns0 http://www.avioconsulting.com/schemas/SOAPTest/v1
+---
+{
+	ns0#SOAPTestResponse: {
+		ns0#details: 'theTitle ' ++ payload.ns0#SOAPTestRequest.title
+	}
+}]]></dw:set-payload>
+        </dw:transform-message>
+    </flow>
+    <flow name="api-main">
+        <logger message="got message #[message]" level="INFO" />
+        <apikit-soap:router config-ref="/SOAPTestService/SOAPTestService/api-config" doc:name="SOAP Router"/>
+    </flow>
+    <flow name="operation1:/SOAPTestService/SOAPTestService/api-config">
+        <logger message="invoked" level="INFO"/>
+        <dw:transform-message doc:name="Transform Message">
             <dw:set-payload><![CDATA[%dw 1.0
 %output application/xml
 %namespace ns0 http://www.avioconsulting.com/schemas/SOAPTest/v1

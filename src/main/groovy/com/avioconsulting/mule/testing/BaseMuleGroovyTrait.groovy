@@ -1,9 +1,7 @@
 package com.avioconsulting.mule.testing
 
 import com.avioconsulting.mule.testing.batch.BatchWaitUtil
-import com.avioconsulting.mule.testing.dsl.invokers.BatchRunner
-import com.avioconsulting.mule.testing.dsl.invokers.FlowRunner
-import com.avioconsulting.mule.testing.dsl.invokers.FlowRunnerImpl
+import com.avioconsulting.mule.testing.dsl.invokers.*
 import com.avioconsulting.mule.testing.dsl.mocking.*
 import com.avioconsulting.mule.testing.dsl.mocking.sfdc.Choice
 import com.avioconsulting.mule.testing.dsl.mocking.sfdc.ChoiceImpl
@@ -113,6 +111,24 @@ trait BaseMuleGroovyTrait {
                                   flowName,
                                   runner.getEvent())
         runner.transformOutput(outputEvent)
+    }
+
+    def runSoapApikitFlow(MuleContext muleContext,
+                          String soapAction,
+                          String apiKitFlowName = 'api-main',
+                          @DelegatesTo(SoapInvoker) Closure closure) {
+        def eventFactory = new EventFactoryImpl(muleContext)
+        def invoker = new SoapApikitInvokerImpl(muleContext,
+                                                eventFactory,
+                                                apiKitFlowName,
+                                                soapAction)
+        def code = closure.rehydrate(invoker, this, this)
+        code.resolveStrategy = Closure.DELEGATE_ONLY
+        code()
+        def event = invoker.event
+        runFlow(muleContext,
+                apiKitFlowName,
+                event)
     }
 
     MuleEvent runFlow(MuleContext muleContext,

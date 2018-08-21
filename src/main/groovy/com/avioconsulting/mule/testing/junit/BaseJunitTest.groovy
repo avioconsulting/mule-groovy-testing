@@ -3,6 +3,7 @@ package com.avioconsulting.mule.testing.junit
 import com.avioconsulting.mule.testing.BaseMuleGroovyTrait
 import com.avioconsulting.mule.testing.dsl.invokers.BatchRunner
 import com.avioconsulting.mule.testing.dsl.invokers.FlowRunner
+import com.avioconsulting.mule.testing.dsl.invokers.SoapInvoker
 import com.avioconsulting.mule.testing.dsl.mocking.HttpRequestResponseChoice
 import com.avioconsulting.mule.testing.dsl.mocking.SOAPFormatter
 import com.avioconsulting.mule.testing.dsl.mocking.StandardRequestResponse
@@ -117,5 +118,14 @@ class BaseJunitTest implements BaseMuleGroovyTrait {
                  jobsToWaitFor,
                  throwUnderlyingException,
                  closure)
+    }
+
+    def runSoapApikitFlow(String soapAction,
+                          String apiKitFlowName = 'api-main',
+                          @DelegatesTo(SoapInvoker) Closure closure) {
+        runSoapApikitFlow(muleContext,
+                          soapAction,
+                          apiKitFlowName,
+                          closure)
     }
 }
