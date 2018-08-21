@@ -15,7 +15,7 @@ abstract class SoapInvokerBaseImpl implements Invoker, SoapInvoker {
     protected final XMLMessageBuilder xmlMessageBuilder
     protected JAXBMarshalHelper jaxbHelper
     private final EventFactory eventFactory
-    private final String flowName
+    protected final String flowName
 
     SoapInvokerBaseImpl(MuleContext muleContext,
                         EventFactory eventFactory,

@@ -84,7 +84,6 @@ http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee
         </dw:transform-message>
     </flow>
     <flow name="api-main">
-        <logger message="got message #[message]" level="INFO" />
         <apikit-soap:router config-ref="/SOAPTestService/SOAPTestService/api-config" doc:name="SOAP Router"/>
     </flow>
     <flow name="operation1:/SOAPTestService/SOAPTestService/api-config">
