@@ -37,7 +37,9 @@ class XMLMapTransformer extends XMLTransformer implements MuleMessageTransformer
             xmlReply = generateXmlFromMap(result)
         }
         def reader = new StringReader(xmlReply)
-        this.xmlMessageBuilder.build(reader, 200)
+        this.xmlMessageBuilder.build(reader,
+                                     incomingEvent,
+                                     200)
     }
 
     private static Map convertToMap(GPathResult node,

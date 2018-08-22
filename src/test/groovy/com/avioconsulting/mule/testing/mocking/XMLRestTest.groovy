@@ -1,9 +1,10 @@
 package com.avioconsulting.mule.testing.mocking
 
-import com.avioconsulting.mule.testing.junit.BaseJunitTest
 import com.avioconsulting.mule.testing.OverrideConfigList
+import com.avioconsulting.mule.testing.junit.BaseJunitTest
 import groovy.json.JsonOutput
 import org.junit.Test
+import org.mule.api.MuleEvent
 import org.mule.api.MuleMessage
 import org.mule.api.transport.PropertyScope
 
@@ -55,11 +56,11 @@ class XMLRestTest extends BaseJunitTest implements OverrideConfigList {
     @Test
     void mockViaMap_withMuleMsg() {
         // arrange
-        MuleMessage sentMessage = null
+        MuleEvent sentMessage = null
         mockRestHttpCall('SomeSystem Call') {
             xml {
                 whenCalledWithMapAsXml { Map input,
-                                         MuleMessage message ->
+                                         MuleEvent message ->
                     sentMessage = message
                     [
                             rootElementResponse: [
@@ -78,7 +79,7 @@ class XMLRestTest extends BaseJunitTest implements OverrideConfigList {
         }
 
         // assert
-        assertThat sentMessage.getProperty('content-type', PropertyScope.INBOUND),
+        assertThat sentMessage.message.getProperty('content-type', PropertyScope.INBOUND),
                    is(equalTo('application/json; charset=utf-8'))
     }
 
@@ -192,12 +193,12 @@ class XMLRestTest extends BaseJunitTest implements OverrideConfigList {
     @Test
     void mockGroovyXmlParser_withMuleMsg() {
         // arrange
-        MuleMessage sentMessage = null
+        MuleEvent sentMessage = null
         mockRestHttpCall('SomeSystem Call') {
             xml {
                 whenCalledWithGroovyXmlParser { Node input,
-                                                MuleMessage message ->
-                    sentMessage = message
+                                                MuleEvent muleEvent ->
+                    sentMessage = muleEvent
                     def node = new Node(null, 'rootElementResponse')
                     node.appendNode('reply', 22)
                     node
@@ -213,7 +214,7 @@ class XMLRestTest extends BaseJunitTest implements OverrideConfigList {
         }
 
         // assert
-        assertThat sentMessage.getProperty('content-type', PropertyScope.INBOUND),
+        assertThat sentMessage.message.getProperty('content-type', PropertyScope.INBOUND),
                    is(equalTo('application/json; charset=utf-8'))
     }
 

@@ -39,6 +39,8 @@ class XMLGroovyParserTransformer extends XMLTransformer implements MuleMessageTr
         }
 
         def reader = new StringReader(outputXmlString)
-        this.xmlMessageBuilder.build(reader, 200)
+        this.xmlMessageBuilder.build(reader,
+                                     muleEvent,
+                                     200)
     }
 }

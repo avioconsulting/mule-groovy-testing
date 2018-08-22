@@ -49,6 +49,8 @@ class XMLJAXBTransformer extends XMLTransformer implements MuleMessageTransforme
             reader = helper.getMarshalled(reply)
         }
 
-        this.xmlMessageBuilder.build(reader, 200)
+        this.xmlMessageBuilder.build(reader,
+                                     event,
+                                     200)
     }
 }

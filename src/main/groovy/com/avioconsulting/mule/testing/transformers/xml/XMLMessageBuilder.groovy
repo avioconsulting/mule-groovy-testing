@@ -1,7 +1,6 @@
 package com.avioconsulting.mule.testing.transformers.xml
 
 import com.avioconsulting.mule.testing.EventFactory
-import org.mule.DefaultMuleMessage
 import org.mule.api.MuleEvent
 
 import javax.xml.stream.XMLInputFactory
@@ -40,9 +39,12 @@ class XMLMessageBuilder {
     }
 
     MuleEvent build(Reader reader,
+                    MuleEvent rewriteEvent,
                     Integer httpStatus = null) {
         def payload = getPayload(reader)
-        constructXMLMessage(httpStatus, payload)
+        constructXMLMessage(rewriteEvent,
+                            httpStatus,
+                            payload)
     }
 
     private static getPayload(InputStream stream) {
@@ -62,7 +64,8 @@ class XMLMessageBuilder {
         depthXmlStreamReaderKlass.newInstance(xmlReader)
     }
 
-    private MuleEvent constructXMLMessage(Integer httpStatus,
+    private MuleEvent constructXMLMessage(MuleEvent rewriteEvent,
+                                          Integer httpStatus,
                                           Object payload) {
         // need some of these props for SOAP mock to work properly
         def messageProps = [
@@ -71,13 +74,8 @@ class XMLMessageBuilder {
         if (httpStatus != null) {
             messageProps['http.status'] = httpStatus
         }
-        def outboundProps = null
-        def attachments = null
-        new DefaultMuleMessage(payload,
-                               messageProps,
-                               outboundProps,
-                               attachments,
-                               this.muleContext)
+        eventFactory.getMuleEventWithPayload(payload,
+                                             rewriteEvent,
+                                             messageProps)
     }
-
 }
