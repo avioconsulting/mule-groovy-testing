@@ -5,7 +5,7 @@ import com.avioconsulting.mule.testing.mulereplacements.MuleMessageTransformer
 import com.avioconsulting.mule.testing.payloadvalidators.IPayloadValidator
 import com.avioconsulting.mule.testing.transformers.TransformerChain
 import com.avioconsulting.mule.testing.transformers.http.HttpConnectorErrorTransformer
-import com.avioconsulting.mule.testing.transformers.xml.SoapTransformer
+import com.avioconsulting.mule.testing.transformers.xml.SoapFaultTransformer
 import groovy.xml.MarkupBuilder
 import org.xml.sax.InputSource
 
@@ -26,12 +26,12 @@ class SOAPFormatterImpl extends XMLFormatterImpl implements SOAPFormatter {
     }()
 
     private HttpConnectorErrorTransformer httpConnectorErrorTransformer
-    private SoapTransformer soapTransformer
+    private SoapFaultTransformer soapFaultTransformer
 
     SOAPFormatterImpl(EventFactory eventFactory,
                       IPayloadValidator payloadValidator) {
         super(eventFactory, payloadValidator)
-        this.soapTransformer = new SoapTransformer()
+        this.soapFaultTransformer = new SoapFaultTransformer()
     }
 
     def httpConnectError() {
@@ -63,7 +63,8 @@ class SOAPFormatterImpl extends XMLFormatterImpl implements SOAPFormatter {
         def soapFault = soapFaultClass.newInstance(message, faultCode)
         soapFault.detail = element
         soapFault.addSubCode(subCode)
-        def wsConsumerException = this.soapTransformer.createSoapFaultException(soapFault)
+        // for the last step, we need the MuleEvent
+        def wsConsumerException = this.soapFaultTransformer.createSoapFaultException(soapFault)
         throw wsConsumerException
     }
 
@@ -72,7 +73,7 @@ class SOAPFormatterImpl extends XMLFormatterImpl implements SOAPFormatter {
         if (httpConnectorErrorTransformer) {
             return httpConnectorErrorTransformer
         }
-        new TransformerChain(this.soapTransformer,
+        new TransformerChain(this.soapFaultTransformer,
                              super.transformer)
     }
 
