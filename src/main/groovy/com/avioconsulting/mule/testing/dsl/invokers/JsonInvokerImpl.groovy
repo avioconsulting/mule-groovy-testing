@@ -7,15 +7,11 @@ import com.avioconsulting.mule.testing.transformers.OutputTransformer
 import com.avioconsulting.mule.testing.transformers.StringInputTransformer
 import com.avioconsulting.mule.testing.transformers.json.input.JacksonInputTransformer
 import com.avioconsulting.mule.testing.transformers.json.output.JacksonOutputTransformer
-import org.mule.DefaultMuleMessage
 import org.mule.MessageExchangePattern
-import org.mule.api.MuleContext
 import org.mule.api.MuleEvent
-import org.mule.api.MuleMessage
-
+import org.mule.construct.Flow
 
 class JsonInvokerImpl implements JsonInvoker, Invoker {
-    private final MuleContext muleContext
     private OutputTransformer transformBeforeCallingFlow
     private InputTransformer transformAfterCallingFlow
     private inputObject
@@ -23,16 +19,14 @@ class JsonInvokerImpl implements JsonInvoker, Invoker {
     private boolean inputOnly
     private final IPayloadValidator initialPayloadValidator
     private final EventFactory eventFactory
-    private final String flowName
+    private final Flow flow
 
-    JsonInvokerImpl(MuleContext muleContext,
-                    IPayloadValidator initialPayloadValidator,
+    JsonInvokerImpl(IPayloadValidator initialPayloadValidator,
                     EventFactory eventFactory,
-                    String flowName) {
-        this.flowName = flowName
+                    Flow flow) {
+        this.flow = flow
         this.eventFactory = eventFactory
         this.initialPayloadValidator = initialPayloadValidator
-        this.muleContext = muleContext
         this.outputOnly = false
         this.inputOnly = false
     }
@@ -43,8 +37,7 @@ class JsonInvokerImpl implements JsonInvoker, Invoker {
 
     def inputPayload(Object inputObject) {
         setInputTransformer(inputObject)
-        transformAfterCallingFlow = new JacksonInputTransformer(muleContext,
-                                                                initialPayloadValidator,
+        transformAfterCallingFlow = new JacksonInputTransformer(initialPayloadValidator,
                                                                 [Map, Map[]])
     }
 
@@ -52,8 +45,7 @@ class JsonInvokerImpl implements JsonInvoker, Invoker {
                      Class outputClass) {
         setInputTransformer(inputObject)
         if (outputClass == String) {
-            transformAfterCallingFlow = new StringInputTransformer(initialPayloadValidator,
-                                                                   muleContext)
+            transformAfterCallingFlow = new StringInputTransformer(initialPayloadValidator)
         } else {
             setJacksonOutputTransformer(outputClass)
         }
@@ -65,8 +57,7 @@ class JsonInvokerImpl implements JsonInvoker, Invoker {
     }
 
     private void setJacksonOutputTransformer(Class outputClass) {
-        transformAfterCallingFlow = new JacksonInputTransformer(muleContext,
-                                                                initialPayloadValidator,
+        transformAfterCallingFlow = new JacksonInputTransformer(initialPayloadValidator,
                                                                 outputClass)
     }
 
@@ -79,7 +70,7 @@ class JsonInvokerImpl implements JsonInvoker, Invoker {
     private setInputTransformer(inputObject) {
         assert !(inputObject instanceof Class): 'Use outputOnly if a only an output class is being supplied!'
         this.inputObject = inputObject
-        transformBeforeCallingFlow = new JacksonOutputTransformer(muleContext)
+        transformBeforeCallingFlow = new JacksonOutputTransformer(eventFactory)
     }
 
     def noStreaming() {
@@ -94,16 +85,17 @@ class JsonInvokerImpl implements JsonInvoker, Invoker {
     }
 
     MuleEvent getEvent() {
-        MuleMessage inputMessage
+        def input = outputOnly ? null : this.inputObject
+        def event = eventFactory.getMuleEventWithPayload(input,
+                                                         flow.name,
+                                                         MessageExchangePattern.REQUEST_RESPONSE)
         if (outputOnly) {
-            inputMessage = new DefaultMuleMessage(null, muleContext)
+            return event
         } else {
             assert transformBeforeCallingFlow: 'Need to specify a type of JSON serialization (jackson, map)'
-            inputMessage = transformBeforeCallingFlow.transformOutput(this.inputObject)
+            return transformBeforeCallingFlow.transformOutput(this.inputObject,
+                                                              event)
         }
-        eventFactory.getMuleEvent(inputMessage,
-                                  flowName,
-                                  MessageExchangePattern.REQUEST_RESPONSE)
     }
 
     def transformOutput(MuleEvent event) {
@@ -111,13 +103,13 @@ class JsonInvokerImpl implements JsonInvoker, Invoker {
             return
         }
         assert transformAfterCallingFlow
-        transformAfterCallingFlow.transformInput(event.message)
+        transformAfterCallingFlow.transformInput(event,
+                                                 flow)
     }
 
     Invoker withNewPayloadValidator(IPayloadValidator validator) {
-        new JsonInvokerImpl(muleContext,
-                            validator,
+        new JsonInvokerImpl(validator,
                             eventFactory,
-                            flowName)
+                            flow)
     }
 }

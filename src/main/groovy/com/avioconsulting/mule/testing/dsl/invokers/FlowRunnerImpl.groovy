@@ -6,6 +6,7 @@ import com.avioconsulting.mule.testing.payloadvalidators.ContentTypeCheckDisable
 import com.avioconsulting.mule.testing.payloadvalidators.HttpListenerPayloadValidator
 import org.mule.api.MuleContext
 import org.mule.api.MuleEvent
+import org.mule.construct.Flow
 
 class FlowRunnerImpl implements FlowRunner, BatchRunner {
     private final MuleContext muleContext
@@ -14,20 +15,19 @@ class FlowRunnerImpl implements FlowRunner, BatchRunner {
     private Closure muleOutputEventHook = null
     private Closure withInputEvent = null
     private final EventFactory eventFactory
-    private final String flowName
+    private final Flow flow
 
     FlowRunnerImpl(MuleContext muleContext,
                    String flowName) {
-        this.flowName = flowName
+        this.flow = muleContext.registry.lookupFlowConstruct(flowName) as Flow
         this.muleContext = muleContext
         this.eventFactory = new EventFactoryImpl(muleContext)
     }
 
     def json(@DelegatesTo(JsonInvoker) Closure closure) {
-        def jsonInvoker = new JsonInvokerImpl(muleContext,
-                                              new HttpListenerPayloadValidator(),
+        def jsonInvoker = new JsonInvokerImpl(new HttpListenerPayloadValidator(),
                                               eventFactory,
-                                              flowName)
+                                              flow)
         invoker = jsonInvoker
         this.closure = closure
     }

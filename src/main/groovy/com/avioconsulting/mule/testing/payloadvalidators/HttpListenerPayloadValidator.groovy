@@ -7,13 +7,16 @@ import org.mule.module.http.internal.request.DefaultHttpRequester
 class HttpListenerPayloadValidator implements IPayloadValidator,
         PayloadHelper {
 
-    boolean isPayloadTypeValidationRequired(MessageProcessor httpRequester) {
-        assert httpRequester instanceof DefaultHttpRequester
-        // GET should not require a payload at all
-        httpRequester.method != 'GET'
+    boolean isPayloadTypeValidationRequired(MessageProcessor messageProcessor) {
+        if (messageProcessor instanceof DefaultHttpRequester) {
+            // GET should not require a payload at all
+            messageProcessor.method != 'GET'
+        } else {
+            true
+        }
     }
 
-    boolean isContentTypeValidationRequired(MessageProcessor httpRequester) {
+    boolean isContentTypeValidationRequired(MessageProcessor messageProcessor) {
         return true
     }
 

@@ -17,6 +17,10 @@ interface EventFactory {
                            MuleEvent rewriteEvent)
 
     MuleEvent getMuleEventWithPayload(Object payload,
+                                      String flowName,
+                                      MessageExchangePattern messageExchangePattern)
+
+    MuleEvent getMuleEventWithPayload(Object payload,
                                       MuleEvent rewriteEvent)
 
     MuleEvent getMuleEventWithPayload(Object payload,

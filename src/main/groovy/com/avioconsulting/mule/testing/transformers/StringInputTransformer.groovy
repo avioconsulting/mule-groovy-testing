@@ -1,19 +1,15 @@
 package com.avioconsulting.mule.testing.transformers
 
 import com.avioconsulting.mule.testing.payloadvalidators.IPayloadValidator
-import org.mule.api.MuleContext
 import org.mule.api.MuleEvent
 import org.mule.api.processor.MessageProcessor
 import org.mule.transport.NullPayload
 
 class StringInputTransformer implements InputTransformer {
-    private final MuleContext muleContext
     private final IPayloadValidator payloadValidator
 
-    StringInputTransformer(IPayloadValidator payloadValidator,
-                           MuleContext muleContext) {
+    StringInputTransformer(IPayloadValidator payloadValidator) {
         this.payloadValidator = payloadValidator
-        this.muleContext = muleContext
     }
 
     def transformInput(MuleEvent muleEvent,
