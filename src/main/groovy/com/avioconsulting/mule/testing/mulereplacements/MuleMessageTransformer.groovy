@@ -1,8 +1,9 @@
 package com.avioconsulting.mule.testing.mulereplacements
 
-import org.mule.api.MuleMessage
+import org.mule.api.MuleEvent
+import org.mule.api.processor.MessageProcessor
 
-// TODO: Remove this one we're done converting
 interface MuleMessageTransformer {
-    MuleMessage transform(MuleMessage var1)
+    MuleEvent transform(MuleEvent var1,
+                        MessageProcessor originalProcessor)
 }

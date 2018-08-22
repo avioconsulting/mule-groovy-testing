@@ -1,21 +1,22 @@
 package com.avioconsulting.mule.testing.transformers.sfdc
 
+import com.avioconsulting.mule.testing.EventFactory
 import com.avioconsulting.mule.testing.dsl.mocking.sfdc.UpsertResponseUtil
+import com.avioconsulting.mule.testing.mulereplacements.MuleMessageTransformer
 import com.avioconsulting.mule.testing.payloadvalidators.IPayloadValidator
 import com.avioconsulting.mule.testing.payloadvalidators.ListGenericPayloadValidator
 import org.mule.DefaultMuleMessage
-import org.mule.api.MuleContext
-import org.mule.api.MuleMessage
-import com.avioconsulting.mule.testing.mulereplacements.MuleMessageTransformer
+import org.mule.api.MuleEvent
+import org.mule.api.processor.MessageProcessor
 
 class UpsertTransformer implements MuleMessageTransformer {
     private final Closure closure
-    private final MuleContext muleContext
     private final IPayloadValidator payloadValidator
+    private final EventFactory eventFactory
 
     UpsertTransformer(@DelegatesTo(UpsertResponseUtil) Closure closure,
-                      MuleContext muleContext) {
-        this.muleContext = muleContext
+                      EventFactory eventFactory) {
+        this.eventFactory = eventFactory
         this.closure = closure
         this.payloadValidator = new ListGenericPayloadValidator(Map)
     }
@@ -36,7 +37,8 @@ class UpsertTransformer implements MuleMessageTransformer {
                 "Must return a SalesForce result from your mock. Options include ${options}. See ${responseUtilClass} class for options.")
     }
 
-    MuleMessage transform(MuleMessage muleMessage) {
+    MuleEvent transform(MuleEvent muleEvent,
+                        MessageProcessor messageProcessor) {
         def payload = muleMessage.payload as List<Map>
         this.payloadValidator.validatePayloadType(payload)
         if (payload.size() > 200) {

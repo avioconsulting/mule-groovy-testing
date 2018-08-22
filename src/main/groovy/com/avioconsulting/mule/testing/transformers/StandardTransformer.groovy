@@ -1,7 +1,8 @@
 package com.avioconsulting.mule.testing.transformers
 
-import org.mule.api.MuleMessage
 import com.avioconsulting.mule.testing.mulereplacements.MuleMessageTransformer
+import org.mule.api.MuleEvent
+import org.mule.api.processor.MessageProcessor
 
 class StandardTransformer implements MuleMessageTransformer {
     private final OutputTransformer outputTransformer
@@ -16,7 +17,8 @@ class StandardTransformer implements MuleMessageTransformer {
         this.outputTransformer = outputTransformer
     }
 
-    MuleMessage transform(MuleMessage muleMessage) {
+    MuleEvent transform(MuleEvent muleMessage,
+                        MessageProcessor messageProcessor) {
         def input = inputTransformer.transformInput(muleMessage)
         def result = closure(input)
         outputTransformer.transformOutput(result)

@@ -2,23 +2,20 @@ package com.avioconsulting.mule.testing.transformers.json.input
 
 import com.avioconsulting.mule.testing.payloadvalidators.IPayloadValidator
 import com.fasterxml.jackson.databind.ObjectMapper
-import org.mule.api.MuleContext
 
 class JacksonInputTransformer extends Common {
     def mapper = new ObjectMapper()
     private final List<Class> inputClasses
 
-    JacksonInputTransformer(MuleContext muleContext,
-                            IPayloadValidator payloadValidator,
+    JacksonInputTransformer(IPayloadValidator payloadValidator,
                             List<Class> inputClasses) {
-        super(muleContext, payloadValidator)
+        super(payloadValidator)
         this.inputClasses = inputClasses
     }
 
-    JacksonInputTransformer(MuleContext muleContext,
-                            IPayloadValidator payloadValidator,
+    JacksonInputTransformer(IPayloadValidator payloadValidator,
                             Class inputClass) {
-        super(muleContext, payloadValidator)
+        super(payloadValidator)
         this.inputClasses = [inputClass]
     }
 

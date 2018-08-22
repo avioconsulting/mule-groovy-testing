@@ -1,8 +1,8 @@
 package com.avioconsulting.mule.testing.transformers.xml
 
+import com.avioconsulting.mule.testing.EventFactory
 import org.mule.DefaultMuleMessage
-import org.mule.api.MuleContext
-import org.mule.api.MuleMessage
+import org.mule.api.MuleEvent
 
 import javax.xml.stream.XMLInputFactory
 
@@ -30,17 +30,17 @@ class XMLMessageBuilder {
         }
     }()
 
-    private final MuleContext muleContext
+    private final EventFactory eventFactory
     private final boolean wrapWithApiKitStreamReader
 
-    XMLMessageBuilder(MuleContext muleContext,
+    XMLMessageBuilder(EventFactory eventFactory,
                       boolean wrapWithApiKitStreamReader) {
         this.wrapWithApiKitStreamReader = wrapWithApiKitStreamReader
-        this.muleContext = muleContext
+        this.eventFactory = eventFactory
     }
 
-    MuleMessage build(Reader reader,
-                      Integer httpStatus = null) {
+    MuleEvent build(Reader reader,
+                    Integer httpStatus = null) {
         def payload = getPayload(reader)
         constructXMLMessage(httpStatus, payload)
     }
@@ -62,8 +62,8 @@ class XMLMessageBuilder {
         depthXmlStreamReaderKlass.newInstance(xmlReader)
     }
 
-    private MuleMessage constructXMLMessage(Integer httpStatus,
-                                            Object payload) {
+    private MuleEvent constructXMLMessage(Integer httpStatus,
+                                          Object payload) {
         // need some of these props for SOAP mock to work properly
         def messageProps = [
                 'content-type': 'text/xml; charset=utf-8'

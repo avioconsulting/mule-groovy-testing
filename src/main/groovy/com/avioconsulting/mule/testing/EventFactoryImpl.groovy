@@ -1,6 +1,7 @@
 package com.avioconsulting.mule.testing
 
 import org.mule.DefaultMuleEvent
+import org.mule.DefaultMuleMessage
 import org.mule.MessageExchangePattern
 import org.mule.api.MuleContext
 import org.mule.api.MuleEvent
@@ -17,7 +18,7 @@ class EventFactoryImpl implements EventFactory {
                            String flowName,
                            MessageExchangePattern messageExchangePattern) {
         def flowConstruct = muleContext.registry.lookupFlowConstruct(flowName)
-        assert flowConstruct : "Flow with name '${flowName}' was not found. Are you using the right flow name?"
+        assert flowConstruct: "Flow with name '${flowName}' was not found. Are you using the right flow name?"
         new DefaultMuleEvent(muleMessage,
                              messageExchangePattern,
                              flowConstruct)
@@ -28,5 +29,25 @@ class EventFactoryImpl implements EventFactory {
                            MuleEvent rewriteEvent) {
         new DefaultMuleEvent(muleMessage,
                              rewriteEvent)
+    }
+
+    @Override
+    MuleEvent getMuleEventWithPayload(Object payload,
+                                      MuleEvent rewriteEvent) {
+        getMuleEventWithPayload(payload,
+                                rewriteEvent,
+                                null)
+    }
+
+    @Override
+    MuleEvent getMuleEventWithPayload(Object payload,
+                                      MuleEvent rewriteEvent,
+                                      Map messageProps) {
+        def message = new DefaultMuleMessage(payload,
+                                             messageProps,
+                                             null,
+                                             null,
+                                             muleContext)
+        getMuleEvent(message, rewriteEvent)
     }
 }

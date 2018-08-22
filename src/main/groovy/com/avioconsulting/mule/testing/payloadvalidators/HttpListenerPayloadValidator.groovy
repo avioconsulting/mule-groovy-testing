@@ -1,26 +1,25 @@
 package com.avioconsulting.mule.testing.payloadvalidators
 
-import com.avioconsulting.mule.testing.spies.IReceiveHttpOptions
-import org.mule.api.MuleMessage
+import org.mule.api.MuleEvent
+import org.mule.api.processor.MessageProcessor
 import org.mule.module.http.internal.request.DefaultHttpRequester
 
 class HttpListenerPayloadValidator implements IPayloadValidator,
-        IReceiveHttpOptions,
         PayloadHelper {
-    private String httpVerb
 
-    boolean isPayloadTypeValidationRequired() {
+    boolean isPayloadTypeValidationRequired(MessageProcessor httpRequester) {
+        assert httpRequester instanceof DefaultHttpRequester
         // GET should not require a payload at all
-        this.httpVerb != 'GET'
+        httpRequester.method != 'GET'
     }
 
-    boolean isContentTypeValidationRequired() {
+    boolean isContentTypeValidationRequired(MessageProcessor httpRequester) {
         return true
     }
 
-    void validateContentType(MuleMessage message,
+    void validateContentType(MuleEvent event,
                              List<String> validContentTypes) {
-        validateContentType(message,
+        validateContentType(event,
                             validContentTypes,
                             "This happened while calling your flow. Add a set-property before the end of the flow.")
     }
@@ -29,12 +28,5 @@ class HttpListenerPayloadValidator implements IPayloadValidator,
         validatePayloadType(payload,
                             [InputStream],
                             "This happened while calling your flow. Check your input payload.")
-    }
-
-    def receive(Map queryParams,
-                Map headers,
-                String fullPath,
-                DefaultHttpRequester httpRequester) {
-        this.httpVerb = httpRequester.method
     }
 }

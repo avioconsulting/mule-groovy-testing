@@ -1,6 +1,6 @@
 package com.avioconsulting.mule.testing.transformers.xml
 
-import org.mule.api.MuleMessage
+
 import org.w3c.dom.Document
 
 import javax.xml.bind.JAXBContext
@@ -44,10 +44,10 @@ class JAXBMarshalHelper {
         }
     }
 
-    def unmarshal(MuleMessage message) {
+    def unmarshal(Object payload) {
         def unmarshaller = this.jaxbContext.createUnmarshaller()
         // until successful/alternate path is a string
-        def stream = message.payload instanceof String ? new StringReader(message.payload) : message.payload
+        def stream = payload instanceof String ? new StringReader(payload) : payload
         try {
             def result = unmarshaller.unmarshal(stream)
             if (result instanceof JAXBElement) {

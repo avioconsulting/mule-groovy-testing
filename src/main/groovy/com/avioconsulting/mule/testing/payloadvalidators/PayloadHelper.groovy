@@ -1,6 +1,6 @@
 package com.avioconsulting.mule.testing.payloadvalidators
 
-import org.mule.api.MuleMessage
+import org.mule.api.MuleEvent
 
 trait PayloadHelper {
     void validatePayloadType(Object payload,
@@ -15,10 +15,10 @@ trait PayloadHelper {
         }
     }
 
-    void validateContentType(MuleMessage message,
+    void validateContentType(MuleEvent event,
                              List<String> validContentTypes,
                              String context) {
-        def actualContentType = message.getOutboundProperty('Content-Type') as String
+        def actualContentType = event.message.getOutboundProperty('Content-Type') as String
         if (!validContentTypes.contains(actualContentType)) {
             validContentTypes = validContentTypes.collect { type ->
                 // Clarify 'not set' case in the error message
