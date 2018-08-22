@@ -7,7 +7,8 @@ interface SOAPFormatter extends XMLFormatter {
 
     def httpTimeoutError()
 
-    def soapFault(QName faultCode,
+    def soapFault(String message,
+                  QName faultCode,
                   QName subCode,
-                  Node detail)
+                  Closure markupBuilderClosure)
 }

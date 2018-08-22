@@ -7,6 +7,7 @@ import com.avioconsulting.mule.testing.soapxmlroot.SOAPTestResponse
 import com.avioconsulting.schemas.soaptest.v1.ObjectFactory
 import com.avioconsulting.schemas.soaptest.v1.SOAPTestRequestType
 import com.avioconsulting.schemas.soaptest.v1.SOAPTestResponseType
+import groovy.xml.MarkupBuilder
 import org.junit.Test
 import org.mule.api.MessagingException
 import org.mule.api.MuleMessage
@@ -218,16 +219,16 @@ class SoapTest extends BaseJunitTest implements OverrideConfigList {
     @Test
     void soap_fault() {
         // arrange
-//        mockSoapCall('Get Weather') {
-//            whenCalledWithJaxb(SOAPTestRequestType) { SOAPTestRequestType request ->
-//                soapFault('soap call failed',
-//                          new QName('',
-//                                    'SERVER'),
-//                          null) { MarkupBuilder detailBuilder ->
-//                    detailBuilder.error('some error')
-//                }
-//            }
-//        }
+        mockSoapCall('Get Weather') {
+            whenCalledWithMapAsXml { request ->
+                soapFault('soap call failed',
+                          new QName('',
+                                    'SERVER'),
+                          null) { MarkupBuilder detailBuilder ->
+                    detailBuilder.error('some error')
+                }
+            }
+        }
 
         // act
         def exception = shouldFail {
