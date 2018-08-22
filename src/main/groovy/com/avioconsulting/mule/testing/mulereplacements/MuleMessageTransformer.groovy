@@ -3,7 +3,13 @@ package com.avioconsulting.mule.testing.mulereplacements
 import org.mule.api.MuleEvent
 import org.mule.api.processor.MessageProcessor
 
-interface MuleMessageTransformer {
-    MuleEvent transform(MuleEvent var1,
-                        MessageProcessor originalProcessor)
+// TODO: Collapse this??
+trait MuleMessageTransformer implements MockProcess<MessageProcessor> {
+    abstract MuleEvent transform(MuleEvent var1,
+                                 MessageProcessor originalProcessor)
+
+    MuleEvent process(MuleEvent event,
+                      MessageProcessor originalProcessor) {
+        transform(event, originalProcessor)
+    }
 }

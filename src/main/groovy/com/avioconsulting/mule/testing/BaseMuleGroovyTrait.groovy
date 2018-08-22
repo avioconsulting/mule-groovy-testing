@@ -114,9 +114,9 @@ trait BaseMuleGroovyTrait {
     }
 
     MuleEvent runSoapApikitFlow(MuleContext muleContext,
-                          String operation,
-                          String apiKitFlowName = 'api-main',
-                          @DelegatesTo(SoapInvoker) Closure closure) {
+                                String operation,
+                                String apiKitFlowName = 'api-main',
+                                @DelegatesTo(SoapInvoker) Closure closure) {
         def eventFactory = new EventFactoryImpl(muleContext)
         def invoker = new SoapApikitInvokerImpl(muleContext,
                                                 eventFactory,
@@ -196,13 +196,12 @@ trait BaseMuleGroovyTrait {
                          String connectorName,
                          @DelegatesTo(HttpRequestResponseChoice) Closure closure) {
         def eventFactory = new EventFactoryImpl(muleContext)
-        def formatterChoice = new HttpRequestResponseChoiceImpl(muleContext,
-                                                                eventFactory)
+        def formatterChoice = new HttpRequestResponseChoiceImpl(eventFactory)
         def code = closure.rehydrate(formatterChoice, this, this)
         code.resolveStrategy = Closure.DELEGATE_ONLY
         code()
         mockingConfiguration.addMock(connectorName,
-                                     formatterChoice.httpMock)
+                                     formatterChoice.transformer)
     }
 
     def mockVmReceive(MockingConfiguration mockingConfiguration,

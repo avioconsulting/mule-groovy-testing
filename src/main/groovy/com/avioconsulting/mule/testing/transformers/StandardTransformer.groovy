@@ -17,10 +17,12 @@ class StandardTransformer implements MuleMessageTransformer {
         this.outputTransformer = outputTransformer
     }
 
-    MuleEvent transform(MuleEvent muleMessage,
+    MuleEvent transform(MuleEvent muleEvent,
                         MessageProcessor messageProcessor) {
-        def input = inputTransformer.transformInput(muleMessage)
+        def input = inputTransformer.transformInput(muleEvent,
+                                                    messageProcessor)
         def result = closure(input)
-        outputTransformer.transformOutput(result)
+        outputTransformer.transformOutput(result,
+                                          muleEvent)
     }
 }

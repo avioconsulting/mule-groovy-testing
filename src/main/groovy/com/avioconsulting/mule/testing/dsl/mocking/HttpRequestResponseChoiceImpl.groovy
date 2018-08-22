@@ -7,7 +7,6 @@ import com.avioconsulting.mule.testing.transformers.TransformerChain
 import com.avioconsulting.mule.testing.transformers.http.HttpConnectorErrorTransformer
 import com.avioconsulting.mule.testing.transformers.http.HttpGetTransformer
 import com.avioconsulting.mule.testing.transformers.http.HttpValidationTransformer
-import org.mule.api.MuleContext
 
 class HttpRequestResponseChoiceImpl extends StandardRequestResponseImpl
         implements HttpRequestResponseChoice {
@@ -16,14 +15,13 @@ class HttpRequestResponseChoiceImpl extends StandardRequestResponseImpl
     private final HttpConnectorErrorTransformer httpConnectorErrorTransformer
     private final EventFactory eventFactory
 
-    HttpRequestResponseChoiceImpl(MuleContext muleContext,
-                                  EventFactory eventFactory) {
-        super(muleContext,
-              new HttpRequestPayloadValidator())
+    HttpRequestResponseChoiceImpl(EventFactory eventFactory) {
+        super(new HttpRequestPayloadValidator(),
+              eventFactory)
         this.eventFactory = eventFactory
         httpValidationTransformer = new HttpValidationTransformer()
         httpGetTransformer = new HttpGetTransformer(eventFactory)
-        httpConnectorErrorTransformer = new HttpConnectorErrorTransformer(muleContext)
+        httpConnectorErrorTransformer = new HttpConnectorErrorTransformer()
     }
 
     TransformerChain getTransformer() {

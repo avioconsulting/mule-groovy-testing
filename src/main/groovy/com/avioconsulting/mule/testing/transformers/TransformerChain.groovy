@@ -28,7 +28,8 @@ class TransformerChain implements MuleMessageTransformer {
             }
         }
         transformers.inject(muleMessage) { MuleEvent output, transformer ->
-            transformer.transform(output)
+            transformer.transform(output,
+                                  originalProcessor)
         }
     }
 }
