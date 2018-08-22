@@ -45,7 +45,8 @@ abstract class StandardRequestResponseImpl implements StandardRequestResponse {
     @Override
     def raw(@DelegatesTo(RawFormatter) Closure closure) {
         formatter = new RawFormatterImpl(eventFactory,
-                                         initialPayloadValidator)
+                                         initialPayloadValidator,
+                                         closureCurrier)
         this.closure = closure
     }
 }

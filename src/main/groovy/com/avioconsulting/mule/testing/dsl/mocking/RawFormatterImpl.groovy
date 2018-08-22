@@ -3,6 +3,7 @@ package com.avioconsulting.mule.testing.dsl.mocking
 import com.avioconsulting.mule.testing.EventFactory
 import com.avioconsulting.mule.testing.mulereplacements.MuleMessageTransformer
 import com.avioconsulting.mule.testing.payloadvalidators.IPayloadValidator
+import com.avioconsulting.mule.testing.transformers.ClosureCurrier
 import com.avioconsulting.mule.testing.transformers.InputTransformer
 import com.avioconsulting.mule.testing.transformers.OutputTransformer
 import com.avioconsulting.mule.testing.transformers.StandardTransformer
@@ -13,9 +14,12 @@ class RawFormatterImpl implements RawFormatter, IFormatter {
     private final IPayloadValidator payloadValidator
     private MuleMessageTransformer transformer
     private final EventFactory eventFactory
+    private final ClosureCurrier closureCurrier
 
     RawFormatterImpl(EventFactory eventFactory,
-                     IPayloadValidator payloadValidator) {
+                     IPayloadValidator payloadValidator,
+                     ClosureCurrier closureCurrier) {
+        this.closureCurrier = closureCurrier
         this.eventFactory = eventFactory
         this.payloadValidator = payloadValidator
     }
@@ -48,6 +52,7 @@ class RawFormatterImpl implements RawFormatter, IFormatter {
             }
         }
         this.transformer = new StandardTransformer(closure,
+                                                   closureCurrier,
                                                    input,
                                                    output)
     }
