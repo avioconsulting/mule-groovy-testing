@@ -16,10 +16,13 @@ class FlowRunnerImpl implements FlowRunner, BatchRunner {
     private Closure withInputEvent = null
     private final EventFactory eventFactory
     private final Flow flow
+    private final String flowName
 
     FlowRunnerImpl(MuleContext muleContext,
+                   Flow flowMessageProcessor,
                    String flowName) {
-        this.flow = muleContext.registry.lookupFlowConstruct(flowName) as Flow
+        this.flowName = flowName
+        this.flow = flowMessageProcessor
         this.muleContext = muleContext
         this.eventFactory = new EventFactoryImpl(muleContext)
     }
@@ -34,7 +37,7 @@ class FlowRunnerImpl implements FlowRunner, BatchRunner {
 
     def java(@DelegatesTo(JavaInvoker) Closure closure) {
         def javaInvoker = new JavaInvokerImpl(eventFactory,
-                                              flow.name)
+                                              flowName)
         invoker = javaInvoker
         this.closure = closure
     }
@@ -42,7 +45,7 @@ class FlowRunnerImpl implements FlowRunner, BatchRunner {
     @Override
     def soap(@DelegatesTo(SoapInvoker) Closure closure) {
         def soapInvoker = new SoapOperationFlowInvokerImpl(eventFactory,
-                                                           flow.name)
+                                                           flowName)
         invoker = soapInvoker
         this.closure = closure
     }

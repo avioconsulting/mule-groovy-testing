@@ -102,7 +102,9 @@ trait BaseMuleGroovyTrait {
     def runFlow(MuleContext muleContext,
                 String flowName,
                 @DelegatesTo(FlowRunner) Closure closure) {
+        def flow = muleContext.registry.lookupFlowConstruct(flowName) as Flow
         def runner = new FlowRunnerImpl(muleContext,
+                                        flow,
                                         flowName)
         def code = closure.rehydrate(runner, this, this)
         code.resolveStrategy = Closure.DELEGATE_ONLY
@@ -153,6 +155,7 @@ trait BaseMuleGroovyTrait {
                  boolean throwUnderlyingException = false,
                  @DelegatesTo(BatchRunner) Closure closure) {
         def runner = new FlowRunnerImpl(muleContext,
+                                        null,// batch doesn't inherit from flow
                                         batchName)
         def code = closure.rehydrate(runner, this, this)
         code.resolveStrategy = Closure.DELEGATE_ONLY
