@@ -3,7 +3,9 @@ package com.avioconsulting.mule.testing.dsl.mocking
 import com.avioconsulting.mule.testing.EventFactory
 import com.avioconsulting.mule.testing.mulereplacements.MuleMessageTransformer
 import com.avioconsulting.mule.testing.payloadvalidators.IPayloadValidator
+import com.avioconsulting.mule.testing.transformers.TransformerChain
 import com.avioconsulting.mule.testing.transformers.http.HttpConnectorErrorTransformer
+import com.avioconsulting.mule.testing.transformers.xml.SoapTransformer
 import groovy.xml.MarkupBuilder
 import org.xml.sax.InputSource
 
@@ -12,17 +14,6 @@ import javax.xml.parsers.DocumentBuilderFactory
 
 class SOAPFormatterImpl extends XMLFormatterImpl implements SOAPFormatter {
     // don't want to tie ourselves to a given version of CXF/ws by expressing a compile dependency
-    @Lazy
-    private static Class soapFaultExceptionClass = {
-        try {
-            SOAPFormatterImpl.classLoader.loadClass('org.mule.module.ws.consumer.SoapFaultException')
-        }
-        catch (e) {
-            throw new Exception('Was not able to load SoapFaultException properly. You need to have mule-module-ws in your project to use the XML functions. Consider adding the org.mule.modules:mule-module-ws:jar:3.9.1 dependency with at least test scope to your project',
-                                e)
-        }
-    }()
-
     @Lazy
     private static Class soapFaultClass = {
         try {
@@ -35,10 +26,12 @@ class SOAPFormatterImpl extends XMLFormatterImpl implements SOAPFormatter {
     }()
 
     private HttpConnectorErrorTransformer httpConnectorErrorTransformer
+    private SoapTransformer soapTransformer
 
     SOAPFormatterImpl(EventFactory eventFactory,
                       IPayloadValidator payloadValidator) {
         super(eventFactory, payloadValidator)
+        this.soapTransformer = new SoapTransformer()
     }
 
     def httpConnectError() {
@@ -70,15 +63,17 @@ class SOAPFormatterImpl extends XMLFormatterImpl implements SOAPFormatter {
         def soapFault = soapFaultClass.newInstance(message, faultCode)
         soapFault.detail = element
         soapFault.addSubCode(subCode)
-        // TODO: need to arrange this to get event & message processor
-        soapFaultExceptionClass.newInstance(muleEvent,
-                                            soapFault,
-                                            messageProcessor)
+        def wsConsumerException = this.soapTransformer.createSoapFaultException(soapFault)
+        throw wsConsumerException
     }
 
     @Override
     MuleMessageTransformer getTransformer() {
-        httpConnectorErrorTransformer ?: super.transformer
+        if (httpConnectorErrorTransformer) {
+            return httpConnectorErrorTransformer
+        }
+        new TransformerChain(this.soapTransformer,
+                             super.transformer)
     }
 
     @Override

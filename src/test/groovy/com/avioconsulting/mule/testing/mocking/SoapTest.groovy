@@ -222,7 +222,7 @@ class SoapTest extends BaseJunitTest implements OverrideConfigList {
         // arrange
         mockSoapCall('Get Weather') {
             whenCalledWithMapAsXml { request ->
-                soapFault('soap call failed',
+                soapFault('Error with one or more zip codes: ',
                           new QName('',
                                     'SERVER'),
                           null) { MarkupBuilder detailBuilder ->

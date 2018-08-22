@@ -11,6 +11,10 @@ class TransformerChain implements MuleMessageTransformer {
         this.transformers = []
     }
 
+    TransformerChain(MuleMessageTransformer... transformers) {
+        this.transformers = transformers
+    }
+
     def prependTransformer(MuleMessageTransformer transformer) {
         transformers.add(0, transformer)
     }
