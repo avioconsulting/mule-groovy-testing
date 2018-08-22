@@ -5,7 +5,6 @@ import com.avioconsulting.mule.testing.dsl.mocking.sfdc.UpsertResponseUtil
 import com.avioconsulting.mule.testing.mulereplacements.MuleMessageTransformer
 import com.avioconsulting.mule.testing.payloadvalidators.IPayloadValidator
 import com.avioconsulting.mule.testing.payloadvalidators.ListGenericPayloadValidator
-import org.mule.DefaultMuleMessage
 import org.mule.api.MuleEvent
 import org.mule.api.processor.MessageProcessor
 
@@ -39,7 +38,7 @@ class UpsertTransformer implements MuleMessageTransformer {
 
     MuleEvent transform(MuleEvent muleEvent,
                         MessageProcessor messageProcessor) {
-        def payload = muleMessage.payload as List<Map>
+        def payload = muleEvent.message.payload as List<Map>
         this.payloadValidator.validatePayloadType(payload)
         if (payload.size() > 200) {
             throw new Exception("You can only upsert a maximum of 200 records but you just tried to upsert ${payload.size()} records. Consider using a batch processor?")
@@ -50,7 +49,7 @@ class UpsertTransformer implements MuleMessageTransformer {
         validateReturnPayloadList(result,
                                   UpsertResponseUtil,
                                   UpsertResponseUtil.enrichedUpsertResultKlass)
-        new DefaultMuleMessage(result,
-                               this.muleContext)
+        eventFactory.getMuleEventWithPayload(result,
+                                             muleEvent)
     }
 }
