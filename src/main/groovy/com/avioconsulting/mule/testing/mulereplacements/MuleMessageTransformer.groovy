@@ -3,7 +3,7 @@ package com.avioconsulting.mule.testing.mulereplacements
 import org.mule.api.MuleEvent
 import org.mule.api.processor.MessageProcessor
 
-// TODO: Collapse this??
+// TODO: Collapse this and MockProcess??
 trait MuleMessageTransformer implements MockProcess<MessageProcessor> {
     abstract MuleEvent transform(MuleEvent var1,
                                  MessageProcessor originalProcessor)

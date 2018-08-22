@@ -28,7 +28,6 @@ class SoapApikitInvokerImpl extends SoapInvokerBaseImpl {
 
     @Override
     protected MuleMessage getMessage() {
-
         def doc = jaxbHelper.getMarshalledDocument(this.inputObject)
         def soapFactory = MessageFactory.newInstance()
         def msg = soapFactory.createMessage()

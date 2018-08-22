@@ -208,13 +208,12 @@ trait BaseMuleGroovyTrait {
                       MuleContext muleContext,
                       String connectorName,
                       @DelegatesTo(StandardRequestResponse) Closure closure) {
-        def formatterChoice = new VMRequestResponseChoiceImpl(muleContext)
+        def eventFactory = new EventFactoryImpl(muleContext)
+        def formatterChoice = new VMRequestResponseChoiceImpl(eventFactory)
         def code = closure.rehydrate(formatterChoice, this, this)
         code.resolveStrategy = Closure.DELEGATE_ONLY
         code()
-        def eventFactory = new EventFactoryImpl(muleContext)
-        def mock = new StandardMock(formatterChoice.transformer,
-                                    eventFactory)
+        def mock = new StandardMock(formatterChoice.transformer)
         mockingConfiguration.addMock(connectorName,
                                      mock)
     }
@@ -243,9 +242,7 @@ trait BaseMuleGroovyTrait {
         def code = closure.rehydrate(soapFormatter, this, this)
         code.resolveStrategy = Closure.DELEGATE_ONLY
         code()
-        def eventFactory = new EventFactoryImpl(muleContext)
-        def mock = new StandardMock(soapFormatter.transformer,
-                                    eventFactory)
+        def mock = new StandardMock(soapFormatter.transformer)
         mockingConfiguration.addMock(connectorName,
                                      mock)
     }
