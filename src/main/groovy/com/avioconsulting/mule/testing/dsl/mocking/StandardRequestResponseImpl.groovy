@@ -32,14 +32,14 @@ abstract class StandardRequestResponseImpl implements StandardRequestResponse {
     }
 
     def xml(@DelegatesTo(XMLFormatter) Closure closure) {
-        formatter = new XMLFormatterImpl(this.muleContext,
+        formatter = new XMLFormatterImpl(eventFactory,
                                          initialPayloadValidator)
         this.closure = closure
     }
 
     @Override
     def raw(@DelegatesTo(RawFormatter) Closure closure) {
-        formatter = new RawFormatterImpl(muleContext,
+        formatter = new RawFormatterImpl(eventFactory,
                                          initialPayloadValidator)
         this.closure = closure
     }

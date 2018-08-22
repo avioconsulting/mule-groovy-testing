@@ -1,40 +1,40 @@
 package com.avioconsulting.mule.testing.dsl.mocking
 
+import com.avioconsulting.mule.testing.EventFactory
+import com.avioconsulting.mule.testing.mulereplacements.MuleMessageTransformer
 import com.avioconsulting.mule.testing.payloadvalidators.IPayloadValidator
 import com.avioconsulting.mule.testing.transformers.xml.XMLGroovyParserTransformer
 import com.avioconsulting.mule.testing.transformers.xml.XMLJAXBTransformer
 import com.avioconsulting.mule.testing.transformers.xml.XMLMapTransformer
-import org.mule.api.MuleContext
-import com.avioconsulting.mule.testing.mulereplacements.MuleMessageTransformer
 
 class XMLFormatterImpl implements XMLFormatter, IFormatter {
-    protected final MuleContext muleContext
     protected MuleMessageTransformer transformer
     private final IPayloadValidator payloadValidator
+    private final EventFactory eventFactory
 
-    XMLFormatterImpl(MuleContext muleContext,
+    XMLFormatterImpl(EventFactory eventFactory,
                      IPayloadValidator payloadValidator) {
+        this.eventFactory = eventFactory
         this.payloadValidator = payloadValidator
-        this.muleContext = muleContext
     }
 
     def whenCalledWithJaxb(Class inputJaxbClass,
                            Closure closure) {
         transformer = new XMLJAXBTransformer(closure,
-                                             muleContext,
+                                             eventFactory,
                                              inputJaxbClass,
                                              payloadValidator)
     }
 
     def whenCalledWithMapAsXml(Closure closure) {
         transformer = new XMLMapTransformer(closure,
-                                            muleContext,
+                                            eventFactory,
                                             payloadValidator)
     }
 
     def whenCalledWithGroovyXmlParser(Closure closure) {
         transformer = new XMLGroovyParserTransformer(closure,
-                                                     muleContext,
+                                                     eventFactory,
                                                      payloadValidator)
     }
 
@@ -43,7 +43,7 @@ class XMLFormatterImpl implements XMLFormatter, IFormatter {
     }
 
     IFormatter withNewPayloadValidator(IPayloadValidator validator) {
-        new XMLFormatterImpl(muleContext, validator)
+        new XMLFormatterImpl(eventFactory, validator)
     }
 
     IPayloadValidator getPayloadValidator() {
