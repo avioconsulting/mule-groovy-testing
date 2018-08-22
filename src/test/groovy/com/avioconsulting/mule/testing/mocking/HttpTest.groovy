@@ -1,8 +1,9 @@
 package com.avioconsulting.mule.testing.mocking
 
-import com.avioconsulting.mule.testing.junit.BaseJunitTest
 import com.avioconsulting.mule.testing.OverrideConfigList
 import com.avioconsulting.mule.testing.SampleJacksonInput
+import com.avioconsulting.mule.testing.junit.BaseJunitTest
+import com.avioconsulting.mule.testing.mocks.HttpRequestInfo
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 import groovy.util.logging.Log4j2
@@ -244,13 +245,11 @@ class HttpTest extends BaseJunitTest implements OverrideConfigList {
         String actualHttpVerb = null
         mockRestHttpCall('SomeSystem Call') {
             json {
-                whenCalledWith {
-                    withHttpOptions { String httpVerb, String uri, Map queryParams ->
-                        actualParams = queryParams
-                        actualUri = uri
-                        actualHttpVerb = httpVerb
-                        [reply: 456]
-                    }
+                whenCalledWith { HttpRequestInfo requestInfo ->
+                    actualParams = requestInfo.queryParams
+                    actualUri = requestInfo.uri
+                    actualHttpVerb = requestInfo.httpVerb
+                    [reply: 456]
                 }
             }
         }
@@ -282,11 +281,11 @@ class HttpTest extends BaseJunitTest implements OverrideConfigList {
         String actualVerb = null
         mockRestHttpCall('SomeSystem Call') {
             json {
-                whenCalledWith { Map incoming ->
-                    withHttpOptions { String httpVerb, String uri, Map queryParams ->
-                        actualVerb = httpVerb
-                        [reply: 456]
-                    }
+                whenCalledWith { Map incoming,
+                                 HttpRequestInfo requestInfo ->
+                    actualVerb = requestInfo.httpVerb
+                    [reply: 456]
+
                 }
             }
         }
@@ -302,6 +301,33 @@ class HttpTest extends BaseJunitTest implements OverrideConfigList {
         assert actualVerb
         assertThat actualVerb,
                    is(equalTo('POST'))
+    }
+
+    @Test
+    void request_payload_is_passed() {
+        // arrange
+        Map actualIncoming = null
+        mockRestHttpCall('SomeSystem Call') {
+            json {
+                whenCalledWith { Map incoming,
+                                 HttpRequestInfo requestInfo ->
+                    actualIncoming = incoming
+                    [reply: 456]
+
+                }
+            }
+        }
+
+        // act
+        runFlow('restRequest') {
+            json {
+                inputPayload([foo: 123])
+            }
+        }
+
+        // assert
+        assertThat actualIncoming,
+                   is(equalTo([key: 123]))
     }
 
     class Dummy {
@@ -523,13 +549,12 @@ class HttpTest extends BaseJunitTest implements OverrideConfigList {
 
         mockRestHttpCall('SomeSystem Call') {
             json {
-                whenCalledWith {
-                    withHttpOptions { String httpVerb, String uri, Map queryParams ->
-                        actualParams = queryParams
-                        actualUri = uri
-                        actualHttpVerb = httpVerb
-                        [reply: 456]
-                    }
+                whenCalledWith { String httpVerb, String uri, Map queryParams ->
+                    actualParams = queryParams
+                    actualUri = uri
+                    actualHttpVerb = httpVerb
+                    [reply: 456]
+
                 }
             }
         }

@@ -4,6 +4,7 @@ import com.avioconsulting.mule.testing.EventFactory
 import com.avioconsulting.mule.testing.payloadvalidators.ContentTypeCheckDisabledValidator
 import com.avioconsulting.mule.testing.payloadvalidators.HttpRequestPayloadValidator
 import com.avioconsulting.mule.testing.transformers.TransformerChain
+import com.avioconsulting.mule.testing.transformers.http.HttpClosureCurrier
 import com.avioconsulting.mule.testing.transformers.http.HttpConnectorErrorTransformer
 import com.avioconsulting.mule.testing.transformers.http.HttpGetTransformer
 import com.avioconsulting.mule.testing.transformers.http.HttpValidationTransformer
@@ -17,7 +18,8 @@ class HttpRequestResponseChoiceImpl extends StandardRequestResponseImpl
 
     HttpRequestResponseChoiceImpl(EventFactory eventFactory) {
         super(new HttpRequestPayloadValidator(),
-              eventFactory)
+              eventFactory,
+              new HttpClosureCurrier())
         this.eventFactory = eventFactory
         httpValidationTransformer = new HttpValidationTransformer()
         httpGetTransformer = new HttpGetTransformer(eventFactory)

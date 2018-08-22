@@ -3,6 +3,7 @@ package com.avioconsulting.mule.testing.dsl.mocking
 import com.avioconsulting.mule.testing.EventFactory
 import com.avioconsulting.mule.testing.mulereplacements.MuleMessageTransformer
 import com.avioconsulting.mule.testing.payloadvalidators.IPayloadValidator
+import com.avioconsulting.mule.testing.transformers.ClosureCurrier
 import com.avioconsulting.mule.testing.transformers.StandardTransformer
 import com.avioconsulting.mule.testing.transformers.json.input.JacksonInputTransformer
 import com.avioconsulting.mule.testing.transformers.json.output.JacksonOutputTransformer
@@ -11,9 +12,12 @@ class JsonFormatterImpl implements JsonFormatter, IFormatter {
     private MuleMessageTransformer transformer
     private final IPayloadValidator payloadValidator
     private final EventFactory eventFactory
+    private final ClosureCurrier closureCurrier
 
     JsonFormatterImpl(IPayloadValidator payloadValidator,
-                      EventFactory eventFactory) {
+                      EventFactory eventFactory,
+                      ClosureCurrier closureCurrier) {
+        this.closureCurrier = closureCurrier
         this.eventFactory = eventFactory
         this.payloadValidator = payloadValidator
     }
@@ -22,7 +26,10 @@ class JsonFormatterImpl implements JsonFormatter, IFormatter {
         def input = new JacksonInputTransformer(payloadValidator,
                                                 Map)
         def output = new JacksonOutputTransformer(eventFactory)
-        this.transformer = new StandardTransformer(closure, input, output)
+        this.transformer = new StandardTransformer(closure,
+                                                   closureCurrier,
+                                                   input,
+                                                   output)
     }
 
     def whenCalledWith(Class inputClass,
@@ -30,7 +37,10 @@ class JsonFormatterImpl implements JsonFormatter, IFormatter {
         def input = new JacksonInputTransformer(payloadValidator,
                                                 inputClass)
         def output = new JacksonOutputTransformer(eventFactory)
-        this.transformer = new StandardTransformer(closure, input, output)
+        this.transformer = new StandardTransformer(closure,
+                                                   closureCurrier,
+                                                   input,
+                                                   output)
     }
 
     MuleMessageTransformer getTransformer() {
@@ -38,7 +48,9 @@ class JsonFormatterImpl implements JsonFormatter, IFormatter {
     }
 
     IFormatter withNewPayloadValidator(IPayloadValidator validator) {
-        new JsonFormatterImpl(validator, eventFactory)
+        new JsonFormatterImpl(validator,
+                              eventFactory,
+                              closureCurrier)
     }
 
     IPayloadValidator getPayloadValidator() {
