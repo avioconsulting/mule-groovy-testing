@@ -33,9 +33,8 @@ class FlowRunnerImpl implements FlowRunner, BatchRunner {
     }
 
     def java(@DelegatesTo(JavaInvoker) Closure closure) {
-        def javaInvoker = new JavaInvokerImpl(muleContext,
-                                              eventFactory,
-                                              flowName)
+        def javaInvoker = new JavaInvokerImpl(eventFactory,
+                                              flow.name)
         invoker = javaInvoker
         this.closure = closure
     }
