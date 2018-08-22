@@ -17,6 +17,8 @@ http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee
                         wsdlUrl="soap/test.wsdl"
                         serviceName="SOAPTestService"
                         portName="SOAPTestService" doc:name="APIkit SOAP: Configuration"/>
+    <ws:consumer-config name="Web_Service_Consumer_Weather" wsdlLocation="https://graphical.weather.gov/xml/DWMLgen/wsdl/ndfdXML.wsdl" service="ndfdXML" port="ndfdXMLPort" serviceAddress="https://graphical.weather.gov/xml/SOAP_server/ndfdXMLserver.php" doc:name="Web Service Consumer"/>
+
     <flow name="soaptestFlow">
         <dw:transform-message doc:name="Transform Message">
             <dw:set-payload><![CDATA[%dw 1.0
@@ -99,5 +101,14 @@ http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee
 	}
 }]]></dw:set-payload>
         </dw:transform-message>
+    </flow>
+    <flow name="weatherSoapFaultFlow">
+        <dw:transform-message doc:name="Transform Message">
+            <dw:set-payload><![CDATA[%dw 1.0
+%output application/xml
+---
+zipCodeList: "?"]]></dw:set-payload>
+        </dw:transform-message>
+        <ws:consumer config-ref="Web_Service_Consumer_Weather" operation="LatLonListZipCode" doc:name="Get Weather"/>
     </flow>
 </mule>

@@ -1,7 +1,7 @@
 package com.avioconsulting.mule.testing.mocking
 
-import com.avioconsulting.mule.testing.junit.BaseJunitTest
 import com.avioconsulting.mule.testing.OverrideConfigList
+import com.avioconsulting.mule.testing.junit.BaseJunitTest
 import com.avioconsulting.mule.testing.soapxmlroot.SOAPTestRequest
 import com.avioconsulting.mule.testing.soapxmlroot.SOAPTestResponse
 import com.avioconsulting.schemas.soaptest.v1.ObjectFactory
@@ -11,7 +11,9 @@ import org.junit.Test
 import org.mule.api.MessagingException
 import org.mule.api.MuleMessage
 import org.mule.api.transport.PropertyScope
+import org.mule.module.ws.consumer.SoapFaultException
 
+import javax.xml.namespace.QName
 import java.util.concurrent.TimeoutException
 
 import static groovy.test.GroovyAssert.shouldFail
@@ -211,5 +213,45 @@ class SoapTest extends BaseJunitTest implements OverrideConfigList {
                    is(instanceOf(MessagingException))
         assertThat result.cause,
                    is(instanceOf(TimeoutException))
+    }
+
+    @Test
+    void soap_fault() {
+        // arrange
+//        mockSoapCall('Get Weather') {
+//            whenCalledWithJaxb(SOAPTestRequestType) { SOAPTestRequestType request ->
+//                soapFault('soap call failed',
+//                          new QName('',
+//                                    'SERVER'),
+//                          null) { MarkupBuilder detailBuilder ->
+//                    detailBuilder.error('some error')
+//                }
+//            }
+//        }
+
+        // act
+        def exception = shouldFail {
+            runFlow('weatherSoapFaultFlow') {
+                json {
+                    inputPayload([foo: 123])
+                }
+            }
+        }
+
+        // assert
+        assertThat exception,
+                   is(instanceOf(SoapFaultException))
+        // for intellij
+        assert exception instanceof SoapFaultException
+        assertThat exception.message,
+                   is(equalTo('Error with one or more zip codes: .'))
+        assertThat exception.faultCode,
+                   is(equalTo(new QName('', 'SERVER')))
+        assertThat exception.subCode,
+                   is(nullValue())
+        def detail = exception.detail
+        assert detail
+        assertThat detail.serialize().trim(),
+                   is(equalTo('<detail xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xsd:string">&lt;error&gt;Error: Zip code "" is not a valid US zip code&lt;/error&gt;</detail>'))
     }
 }
