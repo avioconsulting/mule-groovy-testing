@@ -10,7 +10,7 @@ import com.avioconsulting.mule.testing.transformers.xml.XMLMapTransformer
 class XMLFormatterImpl implements XMLFormatter, IFormatter {
     protected MuleMessageTransformer transformer
     private final IPayloadValidator payloadValidator
-    private final EventFactory eventFactory
+    protected final EventFactory eventFactory
 
     XMLFormatterImpl(EventFactory eventFactory,
                      IPayloadValidator payloadValidator) {

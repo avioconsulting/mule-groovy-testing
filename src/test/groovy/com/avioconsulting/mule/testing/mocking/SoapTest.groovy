@@ -10,6 +10,7 @@ import com.avioconsulting.schemas.soaptest.v1.SOAPTestResponseType
 import groovy.xml.MarkupBuilder
 import org.junit.Test
 import org.mule.api.MessagingException
+import org.mule.api.MuleEvent
 import org.mule.api.MuleMessage
 import org.mule.api.transport.PropertyScope
 import org.mule.module.ws.consumer.SoapFaultException
@@ -60,10 +61,10 @@ class SoapTest extends BaseJunitTest implements OverrideConfigList {
     @Test
     void with_mule_message() {
         // arrange
-        MuleMessage sentMessage = null
+        MuleEvent sentMessage = null
         mockSoapCall('A SOAP Call') {
             whenCalledWithJaxb(SOAPTestRequestType) { SOAPTestRequestType request,
-                                                      MuleMessage msg ->
+                                                      MuleEvent msg ->
                 sentMessage = msg
                 def response = new SOAPTestResponseType()
                 response.details = 'yes!'
@@ -79,7 +80,7 @@ class SoapTest extends BaseJunitTest implements OverrideConfigList {
         }
 
         // assert
-        assertThat sentMessage.getProperty('content-type', PropertyScope.INBOUND),
+        assertThat sentMessage.message.getProperty('content-type', PropertyScope.INBOUND),
                    is(equalTo('application/json; charset=utf-8'))
     }
 

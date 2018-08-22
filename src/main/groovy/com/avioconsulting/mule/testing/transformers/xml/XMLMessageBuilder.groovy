@@ -1,6 +1,7 @@
 package com.avioconsulting.mule.testing.transformers.xml
 
 import com.avioconsulting.mule.testing.EventFactory
+import org.mule.MessageExchangePattern
 import org.mule.api.MuleEvent
 
 import javax.xml.stream.XMLInputFactory
@@ -47,6 +48,15 @@ class XMLMessageBuilder {
                             payload)
     }
 
+    MuleEvent build(Reader reader,
+                    String flowName,
+                    Integer httpStatus = null) {
+        def payload = getPayload(reader)
+        constructXMLMessage(flowName,
+                            httpStatus,
+                            payload)
+    }
+
     private static getPayload(InputStream stream) {
         def factory = XMLInputFactory.newInstance()
         def xmlReader = factory.createXMLStreamReader stream
@@ -67,6 +77,23 @@ class XMLMessageBuilder {
     private MuleEvent constructXMLMessage(MuleEvent rewriteEvent,
                                           Integer httpStatus,
                                           Object payload) {
+        def messageProps = getXmlProperties(httpStatus)
+        eventFactory.getMuleEventWithPayload(payload,
+                                             rewriteEvent,
+                                             messageProps)
+    }
+
+    private MuleEvent constructXMLMessage(String flowName,
+                                          Integer httpStatus,
+                                          Object payload) {
+        def messageProps = getXmlProperties(httpStatus)
+        eventFactory.getMuleEventWithPayload(payload,
+                                             flowName,
+                                             MessageExchangePattern.REQUEST_RESPONSE,
+                                             messageProps)
+    }
+
+    private static LinkedHashMap<String, String> getXmlProperties(Integer httpStatus) {
         // need some of these props for SOAP mock to work properly
         def messageProps = [
                 'content-type': 'text/xml; charset=utf-8'
@@ -74,8 +101,6 @@ class XMLMessageBuilder {
         if (httpStatus != null) {
             messageProps['http.status'] = httpStatus
         }
-        eventFactory.getMuleEventWithPayload(payload,
-                                             rewriteEvent,
-                                             messageProps)
+        messageProps
     }
 }

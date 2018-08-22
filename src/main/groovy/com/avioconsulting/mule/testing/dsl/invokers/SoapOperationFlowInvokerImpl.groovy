@@ -3,19 +3,19 @@ package com.avioconsulting.mule.testing.dsl.invokers
 import com.avioconsulting.mule.testing.EventFactory
 import groovy.util.logging.Log4j2
 import groovy.xml.XmlUtil
-import org.mule.api.MuleContext
-import org.mule.api.MuleMessage
+import org.mule.api.MuleEvent
 
 @Log4j2
-class SoapOperationFlowInvokerImpl extends SoapInvokerBaseImpl  {
-    SoapOperationFlowInvokerImpl(MuleContext muleContext,
-                                 EventFactory eventFactory,
+class SoapOperationFlowInvokerImpl extends SoapInvokerBaseImpl {
+    private final String flowName
+
+    SoapOperationFlowInvokerImpl(EventFactory eventFactory,
                                  String flowName) {
-        super(muleContext, eventFactory, flowName)
+        super(eventFactory)
+        this.flowName = flowName
     }
 
-    @Override
-    protected  MuleMessage getMessage() {
+    MuleEvent getEvent() {
         StringReader reader
         if (inputObject instanceof File) {
             def xml = inputObject.text
@@ -30,6 +30,7 @@ class SoapOperationFlowInvokerImpl extends SoapInvokerBaseImpl  {
                          XmlUtil.serialize(xmlOutput.toString())
             }
         }
-        this.xmlMessageBuilder.build(reader)
+        this.xmlMessageBuilder.build(reader,
+                                     flowName)
     }
 }

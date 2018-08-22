@@ -47,6 +47,22 @@ class EventFactoryImpl implements EventFactory {
 
     @Override
     MuleEvent getMuleEventWithPayload(Object payload,
+                                      String flowName,
+                                      MessageExchangePattern messageExchangePattern,
+                                      Map properties) {
+
+        def message = new DefaultMuleMessage(payload,
+                                             properties,
+                                             null,
+                                             null,
+                                             muleContext)
+        getMuleEvent(message,
+                     flowName,
+                     messageExchangePattern)
+    }
+
+    @Override
+    MuleEvent getMuleEventWithPayload(Object payload,
                                       MuleEvent rewriteEvent) {
         getMuleEventWithPayload(payload,
                                 rewriteEvent,

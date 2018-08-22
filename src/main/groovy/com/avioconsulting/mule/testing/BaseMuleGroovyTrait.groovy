@@ -236,8 +236,9 @@ trait BaseMuleGroovyTrait {
                      MuleContext muleContext,
                      String connectorName,
                      @DelegatesTo(SOAPFormatter) Closure closure) {
+        def eventFactory = new EventFactoryImpl(muleContext)
         def payloadValidator = new SOAPPayloadValidator()
-        def soapFormatter = new SOAPFormatterImpl(muleContext,
+        def soapFormatter = new SOAPFormatterImpl(eventFactory,
                                                   payloadValidator)
         def code = closure.rehydrate(soapFormatter, this, this)
         code.resolveStrategy = Closure.DELEGATE_ONLY

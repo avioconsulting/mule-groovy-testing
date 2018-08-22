@@ -1,10 +1,10 @@
 package com.avioconsulting.mule.testing.dsl.mocking
 
+import com.avioconsulting.mule.testing.EventFactory
 import com.avioconsulting.mule.testing.mulereplacements.MuleMessageTransformer
 import com.avioconsulting.mule.testing.payloadvalidators.IPayloadValidator
 import com.avioconsulting.mule.testing.transformers.http.HttpConnectorErrorTransformer
 import groovy.xml.MarkupBuilder
-import org.mule.api.MuleContext
 import org.xml.sax.InputSource
 
 import javax.xml.namespace.QName
@@ -36,20 +36,20 @@ class SOAPFormatterImpl extends XMLFormatterImpl implements SOAPFormatter {
 
     private HttpConnectorErrorTransformer httpConnectorErrorTransformer
 
-    SOAPFormatterImpl(MuleContext muleContext,
+    SOAPFormatterImpl(EventFactory eventFactory,
                       IPayloadValidator payloadValidator) {
-        super(muleContext, payloadValidator)
+        super(eventFactory, payloadValidator)
     }
 
     def httpConnectError() {
-        httpConnectorErrorTransformer = new HttpConnectorErrorTransformer(muleContext)
+        httpConnectorErrorTransformer = new HttpConnectorErrorTransformer()
         httpConnectorErrorTransformer.triggerConnectException()
         // avoid DSL weirdness
         return null
     }
 
     def httpTimeoutError() {
-        httpConnectorErrorTransformer = new HttpConnectorErrorTransformer(muleContext)
+        httpConnectorErrorTransformer = new HttpConnectorErrorTransformer()
         httpConnectorErrorTransformer.triggerTimeoutException()
         // avoid DSL weirdness
         return null
@@ -83,7 +83,7 @@ class SOAPFormatterImpl extends XMLFormatterImpl implements SOAPFormatter {
 
     @Override
     IFormatter withNewPayloadValidator(IPayloadValidator validator) {
-        new SOAPFormatterImpl(muleContext,
+        new SOAPFormatterImpl(eventFactory,
                               validator)
     }
 }
