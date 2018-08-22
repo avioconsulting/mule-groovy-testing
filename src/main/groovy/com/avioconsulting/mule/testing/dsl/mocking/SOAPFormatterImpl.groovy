@@ -7,7 +7,6 @@ import com.avioconsulting.mule.testing.transformers.TransformerChain
 import com.avioconsulting.mule.testing.transformers.http.HttpConnectorErrorTransformer
 import com.avioconsulting.mule.testing.transformers.xml.SoapFaultTransformer
 import groovy.xml.MarkupBuilder
-import org.xml.sax.InputSource
 
 import javax.xml.namespace.QName
 import javax.xml.parsers.DocumentBuilderFactory
@@ -58,10 +57,16 @@ class SOAPFormatterImpl extends XMLFormatterImpl implements SOAPFormatter {
         markupBuilderClosure(markupBuilder)
         def dbf = DocumentBuilderFactory.newInstance()
         def db = dbf.newDocumentBuilder()
-        def document = db.parse(new InputSource(new StringReader(stringWriter.toString())))
-        def element = document.documentElement
+        def detailDoc = db.newDocument()
+        def detailElement = detailDoc.createElement('detail').with {
+            textContent = stringWriter.toString()
+            setAttributeNS('http://www.w3.org/2001/XMLSchema-instance',
+                           'type',
+                           'xsd:string')
+            it
+        }
         def soapFault = soapFaultClass.newInstance(message, faultCode)
-        soapFault.detail = element
+        soapFault.detail = detailElement
         soapFault.addSubCode(subCode)
         // for the last step, we need the MuleEvent
         def wsConsumerException = this.soapFaultTransformer.createSoapFaultException(soapFault)

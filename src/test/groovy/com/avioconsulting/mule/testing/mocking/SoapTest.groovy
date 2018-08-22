@@ -226,7 +226,7 @@ class SoapTest extends BaseJunitTest implements OverrideConfigList {
                           new QName('',
                                     'SERVER'),
                           null) { MarkupBuilder detailBuilder ->
-                    detailBuilder.error('some error')
+                    detailBuilder.error('Error: Zip code "" is not a valid US zip code')
                 }
             }
         }
@@ -254,6 +254,6 @@ class SoapTest extends BaseJunitTest implements OverrideConfigList {
         def detail = exception.detail
         assert detail
         assertThat detail.serialize().trim(),
-                   is(equalTo('<detail xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xsd:string">&lt;error&gt;Error: Zip code "" is not a valid US zip code&lt;/error&gt;</detail>'))
+                   is(equalTo('<detail type="xsd:string">&lt;error&gt;Error: Zip code "" is not a valid US zip code&lt;/error&gt;</detail>'))
     }
 }
