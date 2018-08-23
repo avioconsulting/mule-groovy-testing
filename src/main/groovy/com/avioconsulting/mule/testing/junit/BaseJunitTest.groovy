@@ -17,6 +17,7 @@ import org.mule.api.MuleContext
 import org.mule.api.MuleEvent
 
 // takes BaseMuleGroovyTrait and adds JUnit lifecycle/state
+// TODO: Use annotations to supply all the config stuff in startMule. That way Mule can be started before the test runs, which should make things more clear
 @Log4j2
 @RunWith(MuleGroovyJunitRunner)
 class BaseJunitTest implements BaseMuleGroovyTrait {
