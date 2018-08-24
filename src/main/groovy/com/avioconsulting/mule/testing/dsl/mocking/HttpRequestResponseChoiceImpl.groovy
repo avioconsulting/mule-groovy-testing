@@ -19,7 +19,8 @@ class HttpRequestResponseChoiceImpl extends StandardRequestResponseImpl
     HttpRequestResponseChoiceImpl(EventFactory eventFactory) {
         super(new HttpRequestPayloadValidator(),
               eventFactory,
-              new HttpClosureCurrier())
+              new HttpClosureCurrier(),
+              'HTTP Request Mock')
         this.eventFactory = eventFactory
         httpValidationTransformer = new HttpValidationTransformer()
         httpGetTransformer = new HttpGetTransformer(eventFactory)

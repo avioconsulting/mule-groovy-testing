@@ -21,7 +21,8 @@ abstract class SoapInvokerBaseImpl implements Invoker, SoapInvoker {
     @Override
     def inputJaxbPayload(Object inputObject) {
         this.inputObject = inputObject
-        this.jaxbHelper = new JAXBMarshalHelper(inputObject.class)
+        this.jaxbHelper = new JAXBMarshalHelper(inputObject.class,
+                                                'SOAP Invoker/HTTP Listener Reply')
     }
 
     @Override

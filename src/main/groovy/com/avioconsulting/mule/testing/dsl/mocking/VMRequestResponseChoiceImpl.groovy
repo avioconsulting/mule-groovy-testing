@@ -8,6 +8,7 @@ class VMRequestResponseChoiceImpl extends StandardRequestResponseImpl {
     VMRequestResponseChoiceImpl(EventFactory eventFactory) {
         super(new VmPayloadValidator(),
               eventFactory,
-              new ClosureCurrierNoop())
+              new ClosureCurrierNoop(),
+              'VM Mock')
     }
 }

@@ -11,10 +11,13 @@ abstract class StandardRequestResponseImpl implements StandardRequestResponse {
     private Closure closure
     private final EventFactory eventFactory
     private final ClosureCurrier closureCurrier
+    private final String requestResponseUse
 
     StandardRequestResponseImpl(IPayloadValidator initialPayloadValidator,
                                 EventFactory eventFactory,
-                                ClosureCurrier closureCurrier) {
+                                ClosureCurrier closureCurrier,
+                                String requestResponseUse) {
+        this.requestResponseUse = requestResponseUse
         this.closureCurrier = closureCurrier
         this.eventFactory = eventFactory
         this.initialPayloadValidator = initialPayloadValidator
@@ -38,7 +41,8 @@ abstract class StandardRequestResponseImpl implements StandardRequestResponse {
 
     def xml(@DelegatesTo(XMLFormatter) Closure closure) {
         formatter = new XMLFormatterImpl(eventFactory,
-                                         initialPayloadValidator)
+                                         initialPayloadValidator,
+                                         requestResponseUse)
         this.closure = closure
     }
 

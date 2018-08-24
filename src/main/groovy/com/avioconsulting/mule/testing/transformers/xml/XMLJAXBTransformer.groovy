@@ -17,10 +17,12 @@ class XMLJAXBTransformer extends XMLTransformer implements MuleMessageTransforme
     XMLJAXBTransformer(Closure closure,
                        EventFactory eventFactory,
                        Class inputJaxbClass,
-                       IPayloadValidator payloadValidator) {
+                       IPayloadValidator payloadValidator,
+                       String transformerUse) {
         super(eventFactory, payloadValidator)
         this.closure = closure
-        this.helper = new JAXBMarshalHelper(inputJaxbClass)
+        this.helper = new JAXBMarshalHelper(inputJaxbClass,
+                                            transformerUse)
     }
 
     MuleEvent transform(MuleEvent event,

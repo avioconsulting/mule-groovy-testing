@@ -29,7 +29,9 @@ class SOAPFormatterImpl extends XMLFormatterImpl implements SOAPFormatter {
 
     SOAPFormatterImpl(EventFactory eventFactory,
                       IPayloadValidator payloadValidator) {
-        super(eventFactory, payloadValidator)
+        super(eventFactory,
+              payloadValidator,
+              'SOAP/WS Consumer Mock')
         this.soapFaultTransformer = new SoapFaultTransformer()
     }
 

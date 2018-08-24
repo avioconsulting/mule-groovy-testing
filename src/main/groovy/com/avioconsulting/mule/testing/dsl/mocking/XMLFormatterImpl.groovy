@@ -11,9 +11,12 @@ class XMLFormatterImpl implements XMLFormatter, IFormatter {
     protected MuleMessageTransformer transformer
     private final IPayloadValidator payloadValidator
     protected final EventFactory eventFactory
+    private final String transformerUse
 
     XMLFormatterImpl(EventFactory eventFactory,
-                     IPayloadValidator payloadValidator) {
+                     IPayloadValidator payloadValidator,
+                     String transformerUse) {
+        this.transformerUse = transformerUse
         this.eventFactory = eventFactory
         this.payloadValidator = payloadValidator
     }
@@ -23,7 +26,8 @@ class XMLFormatterImpl implements XMLFormatter, IFormatter {
         transformer = new XMLJAXBTransformer(closure,
                                              eventFactory,
                                              inputJaxbClass,
-                                             payloadValidator)
+                                             payloadValidator,
+                                             transformerUse)
     }
 
     def whenCalledWithMapAsXml(Closure closure) {

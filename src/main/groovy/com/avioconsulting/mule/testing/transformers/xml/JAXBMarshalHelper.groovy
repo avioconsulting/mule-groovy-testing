@@ -1,16 +1,20 @@
 package com.avioconsulting.mule.testing.transformers.xml
 
-
+import groovy.util.logging.Log4j2
 import org.w3c.dom.Document
 
 import javax.xml.bind.JAXBContext
 import javax.xml.bind.JAXBElement
 import javax.xml.parsers.DocumentBuilderFactory
 
+@Log4j2
 class JAXBMarshalHelper {
     private final JAXBContext jaxbContext
+    private final String helperUse
 
-    JAXBMarshalHelper(Class inputJaxbClass) {
+    JAXBMarshalHelper(Class inputJaxbClass,
+                      String helperUse) {
+        this.helperUse = helperUse
         this.jaxbContext = JAXBContext.newInstance(inputJaxbClass.getPackage().name)
     }
 
@@ -46,10 +50,23 @@ class JAXBMarshalHelper {
 
     def unmarshal(Object payload) {
         def unmarshaller = this.jaxbContext.createUnmarshaller()
+        String payloadAsStr = null
+        switch (payload) {
         // until successful/alternate path is a string
-        def stream = payload instanceof String ? new StringReader(payload) : payload
+            case String:
+                payloadAsStr = payload
+                break
+            case InputStream:
+                payloadAsStr = payload.text
+                break
+            default:
+                throw new Exception("do not know how to handle XML payload of ${payload.getClass().name}")
+        }
+        log.info 'JAXB Unmarshaller for {}, received payload of {}',
+                 this.helperUse,
+                 payloadAsStr
         try {
-            def result = unmarshaller.unmarshal(stream)
+            def result = unmarshaller.unmarshal(new StringReader(payloadAsStr))
             if (result instanceof JAXBElement) {
                 result.value
             } else {
