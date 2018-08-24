@@ -1,6 +1,7 @@
 package com.avioconsulting.mule.testing.transformers.xml
 
 import groovy.util.logging.Log4j2
+import groovy.xml.XmlUtil
 import org.w3c.dom.Document
 
 import javax.xml.bind.JAXBContext
@@ -35,6 +36,8 @@ class JAXBMarshalHelper {
             marshaller.marshal objectOrJaxbElement, stringWriter
             stringWriter.close()
             def asString = stringWriter.toString()
+            // will pretty print the XML
+            asString = XmlUtil.serialize(asString)
             log.info 'JAXB Marshaller for {}, marshalled a payload of {}',
                      this.helperUse,
                      asString
