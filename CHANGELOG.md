@@ -2,7 +2,7 @@
 * Add support for throwing SOAP faults from SOAP mocks
 * Restructure test code to use a simplified mocking model under the hood
 * Simplified how query params, path, verb are passed into HTTP request mock closures
-* When mocking using XML and JAXB objects (either SOAP or via the HTTP request connector), the unmarshalled XML going from the actual Mule flow into the flow is logged
+* When mocking using XML and JAXB objects (either SOAP or via the HTTP request connector), the unmarshalled/marshalled XML going from the actual Mule flow into the flow is logged
 
 # 1.0.20
 * Add convenience code to invoke APIKit router flows from the listener/api-main flow level

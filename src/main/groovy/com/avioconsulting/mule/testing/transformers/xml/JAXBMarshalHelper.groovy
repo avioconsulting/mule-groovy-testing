@@ -27,8 +27,7 @@ class JAXBMarshalHelper {
         doc
     }
 
-    StringReader getMarshalled(objectOrJaxbElement,
-                               Closure stringPreview = null) {
+    StringReader getMarshalled(objectOrJaxbElement) {
         def marshaller = this.jaxbContext.createMarshaller()
         def stringWriter = new StringWriter()
 
@@ -36,9 +35,9 @@ class JAXBMarshalHelper {
             marshaller.marshal objectOrJaxbElement, stringWriter
             stringWriter.close()
             def asString = stringWriter.toString()
-            if (stringPreview) {
-                stringPreview(asString)
-            }
+            log.info 'JAXB Marshaller for {}, marshalled a payload of {}',
+                     this.helperUse,
+                     asString
             new StringReader(asString)
         }
         catch (e) {
