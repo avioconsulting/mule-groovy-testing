@@ -1,21 +1,20 @@
 package com.avioconsulting.mule.testing.transformers
 
 import com.avioconsulting.mule.testing.payloadvalidators.IPayloadValidator
-import org.mule.api.MuleContext
-import org.mule.api.MuleMessage
+import org.mule.api.MuleEvent
+import org.mule.api.processor.MessageProcessor
 import org.mule.transport.NullPayload
 
 class StringInputTransformer implements InputTransformer {
-    private final MuleContext muleContext
     private final IPayloadValidator payloadValidator
 
-    StringInputTransformer(IPayloadValidator payloadValidator,
-                           MuleContext muleContext) {
+    StringInputTransformer(IPayloadValidator payloadValidator) {
         this.payloadValidator = payloadValidator
-        this.muleContext = muleContext
     }
 
-    def transformInput(MuleMessage muleMessage) {
+    def transformInput(MuleEvent muleEvent,
+                       MessageProcessor messageProcessor) {
+        def muleMessage = muleEvent.message
         // comes back from some Mule connectors like JSON
         if (muleMessage.payload instanceof NullPayload) {
             return null
@@ -24,7 +23,8 @@ class StringInputTransformer implements InputTransformer {
             throw new Exception(
                     "Expected payload to be of type String here but it actually was ${muleMessage.payload.class}. Check the connectors you're mocking and make sure you transformed the payload properly! (e.g. payload into VMs must be Strings)")
         }
-        validateContentType(muleMessage)
+        validateContentType(muleEvent,
+                            messageProcessor)
         muleMessage.payload
     }
 
@@ -32,15 +32,16 @@ class StringInputTransformer implements InputTransformer {
         // we already expect a string
     }
 
-    private def validateContentType(MuleMessage muleMessage) {
-        if (!payloadValidator.contentTypeValidationRequired) {
+    private def validateContentType(MuleEvent muleEvent,
+                                    MessageProcessor messageProcessor) {
+        if (!payloadValidator.isContentTypeValidationRequired(messageProcessor)) {
             return
         }
         def validContentTypes = [
                 'text/plain',
                 null // HTTP is text/plain by default
         ]
-        payloadValidator.validateContentType(muleMessage,
+        payloadValidator.validateContentType(muleEvent,
                                              validContentTypes)
     }
 }

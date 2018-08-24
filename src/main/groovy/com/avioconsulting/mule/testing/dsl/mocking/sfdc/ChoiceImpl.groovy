@@ -25,9 +25,8 @@ class ChoiceImpl implements Choice {
 
     def upsert(@DelegatesTo(UpsertResponseUtil) Closure closure) {
         def transformer = new UpsertTransformer(closure,
-                                                this.muleContext)
-        this.mock = new StandardMock(transformer,
-                                     this.eventFactory)
+                                                eventFactory)
+        this.mock = new StandardMock(transformer)
         return null
     }
 

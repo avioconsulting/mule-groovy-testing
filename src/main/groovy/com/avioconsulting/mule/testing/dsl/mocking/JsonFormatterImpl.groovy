@@ -1,38 +1,46 @@
 package com.avioconsulting.mule.testing.dsl.mocking
 
+import com.avioconsulting.mule.testing.EventFactory
+import com.avioconsulting.mule.testing.mulereplacements.MuleMessageTransformer
 import com.avioconsulting.mule.testing.payloadvalidators.IPayloadValidator
+import com.avioconsulting.mule.testing.transformers.ClosureCurrier
 import com.avioconsulting.mule.testing.transformers.StandardTransformer
 import com.avioconsulting.mule.testing.transformers.json.input.JacksonInputTransformer
 import com.avioconsulting.mule.testing.transformers.json.output.JacksonOutputTransformer
-import org.mule.api.MuleContext
-import com.avioconsulting.mule.testing.mulereplacements.MuleMessageTransformer
 
 class JsonFormatterImpl implements JsonFormatter, IFormatter {
-    private final MuleContext muleContext
     private MuleMessageTransformer transformer
     private final IPayloadValidator payloadValidator
+    private final EventFactory eventFactory
+    private final ClosureCurrier closureCurrier
 
-    JsonFormatterImpl(MuleContext muleContext,
-                      IPayloadValidator payloadValidator) {
+    JsonFormatterImpl(IPayloadValidator payloadValidator,
+                      EventFactory eventFactory,
+                      ClosureCurrier closureCurrier) {
+        this.closureCurrier = closureCurrier
+        this.eventFactory = eventFactory
         this.payloadValidator = payloadValidator
-        this.muleContext = muleContext
     }
 
     def whenCalledWith(Closure closure) {
-        def input = new JacksonInputTransformer(muleContext,
-                                                payloadValidator,
+        def input = new JacksonInputTransformer(payloadValidator,
                                                 Map)
-        def output = new JacksonOutputTransformer(muleContext)
-        this.transformer = new StandardTransformer(closure, input, output)
+        def output = new JacksonOutputTransformer(eventFactory)
+        this.transformer = new StandardTransformer(closure,
+                                                   closureCurrier,
+                                                   input,
+                                                   output)
     }
 
     def whenCalledWith(Class inputClass,
                        Closure closure) {
-        def input = new JacksonInputTransformer(muleContext,
-                                                payloadValidator,
+        def input = new JacksonInputTransformer(payloadValidator,
                                                 inputClass)
-        def output = new JacksonOutputTransformer(muleContext)
-        this.transformer = new StandardTransformer(closure, input, output)
+        def output = new JacksonOutputTransformer(eventFactory)
+        this.transformer = new StandardTransformer(closure,
+                                                   closureCurrier,
+                                                   input,
+                                                   output)
     }
 
     MuleMessageTransformer getTransformer() {
@@ -40,7 +48,9 @@ class JsonFormatterImpl implements JsonFormatter, IFormatter {
     }
 
     IFormatter withNewPayloadValidator(IPayloadValidator validator) {
-        new JsonFormatterImpl(muleContext, validator)
+        new JsonFormatterImpl(validator,
+                              eventFactory,
+                              closureCurrier)
     }
 
     IPayloadValidator getPayloadValidator() {

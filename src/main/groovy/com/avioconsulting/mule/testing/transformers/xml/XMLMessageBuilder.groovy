@@ -1,8 +1,8 @@
 package com.avioconsulting.mule.testing.transformers.xml
 
-import org.mule.DefaultMuleMessage
-import org.mule.api.MuleContext
-import org.mule.api.MuleMessage
+import com.avioconsulting.mule.testing.EventFactory
+import org.mule.MessageExchangePattern
+import org.mule.api.MuleEvent
 
 import javax.xml.stream.XMLInputFactory
 
@@ -30,19 +30,31 @@ class XMLMessageBuilder {
         }
     }()
 
-    private final MuleContext muleContext
+    private final EventFactory eventFactory
     private final boolean wrapWithApiKitStreamReader
 
-    XMLMessageBuilder(MuleContext muleContext,
+    XMLMessageBuilder(EventFactory eventFactory,
                       boolean wrapWithApiKitStreamReader) {
         this.wrapWithApiKitStreamReader = wrapWithApiKitStreamReader
-        this.muleContext = muleContext
+        this.eventFactory = eventFactory
     }
 
-    MuleMessage build(Reader reader,
-                      Integer httpStatus = null) {
+    MuleEvent build(Reader reader,
+                    MuleEvent rewriteEvent,
+                    Integer httpStatus = null) {
         def payload = getPayload(reader)
-        constructXMLMessage(httpStatus, payload)
+        constructXMLMessage(rewriteEvent,
+                            httpStatus,
+                            payload)
+    }
+
+    MuleEvent build(Reader reader,
+                    String flowName,
+                    Integer httpStatus = null) {
+        def payload = getPayload(reader)
+        constructXMLMessage(flowName,
+                            httpStatus,
+                            payload)
     }
 
     private static getPayload(InputStream stream) {
@@ -62,8 +74,26 @@ class XMLMessageBuilder {
         depthXmlStreamReaderKlass.newInstance(xmlReader)
     }
 
-    private MuleMessage constructXMLMessage(Integer httpStatus,
-                                            Object payload) {
+    private MuleEvent constructXMLMessage(MuleEvent rewriteEvent,
+                                          Integer httpStatus,
+                                          Object payload) {
+        def messageProps = getXmlProperties(httpStatus)
+        eventFactory.getMuleEventWithPayload(payload,
+                                             rewriteEvent,
+                                             messageProps)
+    }
+
+    private MuleEvent constructXMLMessage(String flowName,
+                                          Integer httpStatus,
+                                          Object payload) {
+        def messageProps = getXmlProperties(httpStatus)
+        eventFactory.getMuleEventWithPayload(payload,
+                                             flowName,
+                                             MessageExchangePattern.REQUEST_RESPONSE,
+                                             messageProps)
+    }
+
+    private static LinkedHashMap<String, String> getXmlProperties(Integer httpStatus) {
         // need some of these props for SOAP mock to work properly
         def messageProps = [
                 'content-type': 'text/xml; charset=utf-8'
@@ -71,13 +101,6 @@ class XMLMessageBuilder {
         if (httpStatus != null) {
             messageProps['http.status'] = httpStatus
         }
-        def outboundProps = null
-        def attachments = null
-        new DefaultMuleMessage(payload,
-                               messageProps,
-                               outboundProps,
-                               attachments,
-                               this.muleContext)
+        messageProps
     }
-
 }

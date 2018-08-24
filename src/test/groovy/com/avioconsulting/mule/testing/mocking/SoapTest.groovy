@@ -1,17 +1,21 @@
 package com.avioconsulting.mule.testing.mocking
 
-import com.avioconsulting.mule.testing.junit.BaseJunitTest
 import com.avioconsulting.mule.testing.OverrideConfigList
+import com.avioconsulting.mule.testing.junit.BaseJunitTest
 import com.avioconsulting.mule.testing.soapxmlroot.SOAPTestRequest
 import com.avioconsulting.mule.testing.soapxmlroot.SOAPTestResponse
 import com.avioconsulting.schemas.soaptest.v1.ObjectFactory
 import com.avioconsulting.schemas.soaptest.v1.SOAPTestRequestType
 import com.avioconsulting.schemas.soaptest.v1.SOAPTestResponseType
+import groovy.xml.MarkupBuilder
 import org.junit.Test
 import org.mule.api.MessagingException
+import org.mule.api.MuleEvent
 import org.mule.api.MuleMessage
 import org.mule.api.transport.PropertyScope
+import org.mule.module.ws.consumer.SoapFaultException
 
+import javax.xml.namespace.QName
 import java.util.concurrent.TimeoutException
 
 import static groovy.test.GroovyAssert.shouldFail
@@ -57,10 +61,10 @@ class SoapTest extends BaseJunitTest implements OverrideConfigList {
     @Test
     void with_mule_message() {
         // arrange
-        MuleMessage sentMessage = null
+        MuleEvent sentMessage = null
         mockSoapCall('A SOAP Call') {
             whenCalledWithJaxb(SOAPTestRequestType) { SOAPTestRequestType request,
-                                                      MuleMessage msg ->
+                                                      MuleEvent msg ->
                 sentMessage = msg
                 def response = new SOAPTestResponseType()
                 response.details = 'yes!'
@@ -76,7 +80,7 @@ class SoapTest extends BaseJunitTest implements OverrideConfigList {
         }
 
         // assert
-        assertThat sentMessage.getProperty('content-type', PropertyScope.INBOUND),
+        assertThat sentMessage.message.getProperty('content-type', PropertyScope.INBOUND),
                    is(equalTo('application/json; charset=utf-8'))
     }
 
@@ -211,5 +215,45 @@ class SoapTest extends BaseJunitTest implements OverrideConfigList {
                    is(instanceOf(MessagingException))
         assertThat result.cause,
                    is(instanceOf(TimeoutException))
+    }
+
+    @Test
+    void soap_fault() {
+        // arrange
+        mockSoapCall('Get Weather') {
+            whenCalledWithMapAsXml { request ->
+                soapFault('Error with one or more zip codes: ',
+                          new QName('',
+                                    'SERVER'),
+                          null) { MarkupBuilder detailBuilder ->
+                    detailBuilder.error('Error: Zip code "" is not a valid US zip code')
+                }
+            }
+        }
+
+        // act
+        def exception = shouldFail {
+            runFlow('weatherSoapFaultFlow') {
+                json {
+                    inputPayload([foo: 123])
+                }
+            }
+        }
+
+        // assert
+        assertThat exception,
+                   is(instanceOf(SoapFaultException))
+        // for intellij
+        assert exception instanceof SoapFaultException
+        assertThat exception.message,
+                   is(equalTo('Error with one or more zip codes: .'))
+        assertThat exception.faultCode,
+                   is(equalTo(new QName('', 'SERVER')))
+        assertThat exception.subCode,
+                   is(nullValue())
+        def detail = exception.detail
+        assert detail
+        assertThat detail.serialize().trim(),
+                   is(equalTo('<detail type="xsd:string">&lt;error&gt;Error: Zip code "" is not a valid US zip code&lt;/error&gt;</detail>'))
     }
 }

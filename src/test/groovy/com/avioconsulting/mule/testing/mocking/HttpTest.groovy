@@ -1,8 +1,9 @@
 package com.avioconsulting.mule.testing.mocking
 
-import com.avioconsulting.mule.testing.junit.BaseJunitTest
 import com.avioconsulting.mule.testing.OverrideConfigList
 import com.avioconsulting.mule.testing.SampleJacksonInput
+import com.avioconsulting.mule.testing.junit.BaseJunitTest
+import com.avioconsulting.mule.testing.mocks.HttpRequestInfo
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 import groovy.util.logging.Log4j2
@@ -244,13 +245,11 @@ class HttpTest extends BaseJunitTest implements OverrideConfigList {
         String actualHttpVerb = null
         mockRestHttpCall('SomeSystem Call') {
             json {
-                whenCalledWith {
-                    withHttpOptions { String httpVerb, String uri, Map queryParams ->
-                        actualParams = queryParams
-                        actualUri = uri
-                        actualHttpVerb = httpVerb
-                        [reply: 456]
-                    }
+                whenCalledWith { HttpRequestInfo requestInfo ->
+                    actualParams = requestInfo.queryParams
+                    actualUri = requestInfo.uri
+                    actualHttpVerb = requestInfo.httpVerb
+                    [reply: 456]
                 }
             }
         }
@@ -282,11 +281,11 @@ class HttpTest extends BaseJunitTest implements OverrideConfigList {
         String actualVerb = null
         mockRestHttpCall('SomeSystem Call') {
             json {
-                whenCalledWith { Map incoming ->
-                    withHttpOptions { String httpVerb, String uri, Map queryParams ->
-                        actualVerb = httpVerb
-                        [reply: 456]
-                    }
+                whenCalledWith { Map incoming,
+                                 HttpRequestInfo requestInfo ->
+                    actualVerb = requestInfo.httpVerb
+                    [reply: 456]
+
                 }
             }
         }
@@ -304,6 +303,33 @@ class HttpTest extends BaseJunitTest implements OverrideConfigList {
                    is(equalTo('POST'))
     }
 
+    @Test
+    void request_payload_is_passed() {
+        // arrange
+        Map actualIncoming = null
+        mockRestHttpCall('SomeSystem Call') {
+            json {
+                whenCalledWith { Map incoming,
+                                 HttpRequestInfo requestInfo ->
+                    actualIncoming = incoming
+                    [reply: 456]
+
+                }
+            }
+        }
+
+        // act
+        runFlow('restRequest') {
+            json {
+                inputPayload([foo: 123])
+            }
+        }
+
+        // assert
+        assertThat actualIncoming,
+                   is(equalTo([key: 123]))
+    }
+
     class Dummy {
 
     }
@@ -315,9 +341,7 @@ class HttpTest extends BaseJunitTest implements OverrideConfigList {
         mockRestHttpCall('SomeSystem Call') {
             json {
                 whenCalledWith {
-                    withHttpOptions { String httpVerb, String uri, Map queryParams ->
-                        [reply: 456]
-                    }
+                    [reply: 456]
                 }
             }
         }
@@ -340,9 +364,7 @@ class HttpTest extends BaseJunitTest implements OverrideConfigList {
         mockRestHttpCall('SomeSystem Call') {
             json {
                 whenCalledWith {
-                    withHttpOptions { String httpVerb, String uri, Map queryParams ->
-                        [reply: 456]
-                    }
+                    [reply: 456]
                 }
             }
         }
@@ -360,15 +382,13 @@ class HttpTest extends BaseJunitTest implements OverrideConfigList {
     }
 
     @Test
-    void queryParameters_http_return_set_201_code() {
+    void http_return_set_201_code() {
         // arrange
         mockRestHttpCall('SomeSystem Call') {
             json {
                 whenCalledWith {
-                    withHttpOptions { String httpVerb, String uri, Map queryParams ->
-                        setHttpReturnCode(201)
-                        [reply: 456]
-                    }
+                    setHttpReturnCode(201)
+                    [reply: 456]
                 }
             }
         }
@@ -386,15 +406,13 @@ class HttpTest extends BaseJunitTest implements OverrideConfigList {
     }
 
     @Test
-    void queryParameters_http_return_error_code_custom() {
+    void http_return_error_code_custom() {
         // arrange
         mockRestHttpCall('SomeSystem Call') {
             json {
                 whenCalledWith {
-                    withHttpOptions { String httpVerb, String uri, Map queryParams ->
-                        setHttpReturnCode(202)
-                        [reply: 456]
-                    }
+                    setHttpReturnCode(202)
+                    [reply: 456]
                 }
             }
         }
@@ -414,15 +432,13 @@ class HttpTest extends BaseJunitTest implements OverrideConfigList {
     }
 
     @Test
-    void queryParameters_http_return_error_code() {
+    void qhttp_return_error_code() {
         // arrange
         mockRestHttpCall('SomeSystem Call') {
             json {
                 whenCalledWith {
-                    withHttpOptions { String httpVerb, String uri, Map queryParams ->
-                        setHttpReturnCode(500)
-                        [reply: 456]
-                    }
+                    setHttpReturnCode(500)
+                    [reply: 456]
                 }
             }
         }
@@ -523,13 +539,12 @@ class HttpTest extends BaseJunitTest implements OverrideConfigList {
 
         mockRestHttpCall('SomeSystem Call') {
             json {
-                whenCalledWith {
-                    withHttpOptions { String httpVerb, String uri, Map queryParams ->
-                        actualParams = queryParams
-                        actualUri = uri
-                        actualHttpVerb = httpVerb
-                        [reply: 456]
-                    }
+                whenCalledWith { HttpRequestInfo requestInfo ->
+                    actualParams = requestInfo.queryParams
+                    actualUri = requestInfo.uri
+                    actualHttpVerb = requestInfo.httpVerb
+                    [reply: 456]
+
                 }
             }
         }
@@ -561,11 +576,9 @@ class HttpTest extends BaseJunitTest implements OverrideConfigList {
         def actualHeaders = null
         mockRestHttpCall('SomeSystem Call') {
             json {
-                whenCalledWith {
-                    withHttpOptionsIncludingHeaders { String httpVerb, String uri, Map queryParams, Map headers ->
-                        actualHeaders = headers
-                        [reply: 456]
-                    }
+                whenCalledWith { HttpRequestInfo requestInfo ->
+                    actualHeaders = requestInfo.headers
+                    [reply: 456]
                 }
             }
         }
@@ -595,13 +608,11 @@ class HttpTest extends BaseJunitTest implements OverrideConfigList {
 
         mockRestHttpCall('SomeSystem Call') {
             json {
-                whenCalledWith {
-                    withHttpOptions { String httpVerb, String uri, Map queryParams ->
-                        actualParams = queryParams
-                        actualUri = uri
-                        actualHttpVerb = httpVerb
-                        [reply: 456]
-                    }
+                whenCalledWith { HttpRequestInfo requestInfo ->
+                    actualParams = requestInfo.queryParams
+                    actualUri = requestInfo.uri
+                    actualHttpVerb = requestInfo.httpVerb
+                    [reply: 456]
                 }
             }
         }

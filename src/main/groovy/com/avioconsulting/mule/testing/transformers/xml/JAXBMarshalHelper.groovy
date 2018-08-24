@@ -1,16 +1,21 @@
 package com.avioconsulting.mule.testing.transformers.xml
 
-import org.mule.api.MuleMessage
+import groovy.util.logging.Log4j2
+import groovy.xml.XmlUtil
 import org.w3c.dom.Document
 
 import javax.xml.bind.JAXBContext
 import javax.xml.bind.JAXBElement
 import javax.xml.parsers.DocumentBuilderFactory
 
+@Log4j2
 class JAXBMarshalHelper {
     private final JAXBContext jaxbContext
+    private final String helperUse
 
-    JAXBMarshalHelper(Class inputJaxbClass) {
+    JAXBMarshalHelper(Class inputJaxbClass,
+                      String helperUse) {
+        this.helperUse = helperUse
         this.jaxbContext = JAXBContext.newInstance(inputJaxbClass.getPackage().name)
     }
 
@@ -23,8 +28,7 @@ class JAXBMarshalHelper {
         doc
     }
 
-    StringReader getMarshalled(objectOrJaxbElement,
-                               Closure stringPreview = null) {
+    StringReader getMarshalled(objectOrJaxbElement) {
         def marshaller = this.jaxbContext.createMarshaller()
         def stringWriter = new StringWriter()
 
@@ -32,9 +36,11 @@ class JAXBMarshalHelper {
             marshaller.marshal objectOrJaxbElement, stringWriter
             stringWriter.close()
             def asString = stringWriter.toString()
-            if (stringPreview) {
-                stringPreview(asString)
-            }
+            // will pretty print the XML
+            asString = XmlUtil.serialize(asString)
+            log.info 'JAXB Marshaller for {}, marshalled a payload of {}',
+                     this.helperUse,
+                     asString
             new StringReader(asString)
         }
         catch (e) {
@@ -44,12 +50,25 @@ class JAXBMarshalHelper {
         }
     }
 
-    def unmarshal(MuleMessage message) {
+    def unmarshal(Object payload) {
         def unmarshaller = this.jaxbContext.createUnmarshaller()
+        String payloadAsStr = null
+        switch (payload) {
         // until successful/alternate path is a string
-        def stream = message.payload instanceof String ? new StringReader(message.payload) : message.payload
+            case String:
+                payloadAsStr = payload
+                break
+            case InputStream:
+                payloadAsStr = payload.text
+                break
+            default:
+                throw new Exception("do not know how to handle XML payload of ${payload.getClass().name}")
+        }
+        log.info 'JAXB Unmarshaller for {}, received payload of {}',
+                 this.helperUse,
+                 payloadAsStr
         try {
-            def result = unmarshaller.unmarshal(stream)
+            def result = unmarshaller.unmarshal(new StringReader(payloadAsStr))
             if (result instanceof JAXBElement) {
                 result.value
             } else {

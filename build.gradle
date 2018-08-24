@@ -3,7 +3,7 @@ plugins {
 }
 
 group 'com.avioconsulting.mule'
-version '1.0.20'
+version '1.0.21'
 
 configurations {
     provided
@@ -112,7 +112,7 @@ dependencies {
     }
     testRuntime group: 'org.mule.transports', name: 'mule-transport-http', version: muleVersion
     testRuntime group: 'org.mule.transports', name: 'mule-transport-vm', version: muleVersion
-    testRuntime group: 'org.mule.modules', name: 'mule-module-ws', version: muleVersion
+    testCompile group: 'org.mule.modules', name: 'mule-module-ws', version: muleVersion
     testRuntime group: 'org.mule.modules', name: 'mule-module-apikit', version: muleVersion
     testRuntime group: 'org.mule.modules', name: 'mule-module-apikit-soap', version: '1.0.3'
 }

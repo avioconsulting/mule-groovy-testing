@@ -5,6 +5,7 @@ import com.avioconsulting.mule.testing.dsl.invokers.FlowRunner
 import com.avioconsulting.mule.testing.dsl.invokers.FlowRunnerImpl
 import org.mule.api.MuleMessage
 import org.mule.api.transport.PropertyScope
+import org.mule.construct.Flow
 
 abstract class BaseApiKitTest extends BaseJunitTest {
     private static final String TEST_PORT_PROPERTY = 'avio.test.http.port'
@@ -68,7 +69,9 @@ abstract class BaseApiKitTest extends BaseJunitTest {
                       String path,
                       Map queryParams = null,
                       @DelegatesTo(FlowRunner) Closure closure) {
+        def flow = muleContext.registry.lookupFlowConstruct(flowName) as Flow
         def runner = new FlowRunnerImpl(muleContext,
+                                        flow,
                                         flowName)
         def code = closure.rehydrate(runner, this, this)
         code.resolveStrategy = Closure.DELEGATE_ONLY

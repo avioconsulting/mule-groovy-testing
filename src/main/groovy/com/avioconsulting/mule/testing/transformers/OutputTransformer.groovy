@@ -1,9 +1,10 @@
 package com.avioconsulting.mule.testing.transformers
 
-import org.mule.api.MuleMessage
+import org.mule.api.MuleEvent
 
 interface OutputTransformer {
-    MuleMessage transformOutput(input)
+    MuleEvent transformOutput(input,
+                              MuleEvent originalMuleEvent)
 
     def disableStreaming()
 }

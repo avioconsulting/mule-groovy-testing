@@ -1,22 +1,26 @@
 package com.avioconsulting.mule.testing.dsl.mocking
 
+import com.avioconsulting.mule.testing.EventFactory
+import com.avioconsulting.mule.testing.mulereplacements.MuleMessageTransformer
 import com.avioconsulting.mule.testing.payloadvalidators.IPayloadValidator
+import com.avioconsulting.mule.testing.transformers.ClosureCurrier
 import com.avioconsulting.mule.testing.transformers.InputTransformer
 import com.avioconsulting.mule.testing.transformers.OutputTransformer
 import com.avioconsulting.mule.testing.transformers.StandardTransformer
-import org.mule.DefaultMuleMessage
-import org.mule.api.MuleContext
-import org.mule.api.MuleMessage
-import com.avioconsulting.mule.testing.mulereplacements.MuleMessageTransformer
+import org.mule.api.MuleEvent
+import org.mule.api.processor.MessageProcessor
 
 class RawFormatterImpl implements RawFormatter, IFormatter {
     private final IPayloadValidator payloadValidator
     private MuleMessageTransformer transformer
-    private final MuleContext muleContext
+    private final EventFactory eventFactory
+    private final ClosureCurrier closureCurrier
 
-    RawFormatterImpl(MuleContext muleContext,
-                     IPayloadValidator payloadValidator) {
-        this.muleContext = muleContext
+    RawFormatterImpl(EventFactory eventFactory,
+                     IPayloadValidator payloadValidator,
+                     ClosureCurrier closureCurrier) {
+        this.closureCurrier = closureCurrier
+        this.eventFactory = eventFactory
         this.payloadValidator = payloadValidator
     }
 
@@ -24,8 +28,9 @@ class RawFormatterImpl implements RawFormatter, IFormatter {
     def whenCalledWith(Closure closure) {
         def input = new InputTransformer() {
             @Override
-            def transformInput(MuleMessage input) {
-                input.payload
+            def transformInput(MuleEvent input,
+                               MessageProcessor messageProcessor) {
+                input.message.payload
             }
 
             @Override
@@ -35,8 +40,10 @@ class RawFormatterImpl implements RawFormatter, IFormatter {
         }
         def output = new OutputTransformer() {
             @Override
-            MuleMessage transformOutput(Object inputMessage) {
-                new DefaultMuleMessage(inputMessage, muleContext)
+            MuleEvent transformOutput(Object inputMessage,
+                                      MuleEvent originalMuleEvent) {
+                eventFactory.getMuleEventWithPayload(inputMessage,
+                                                     originalMuleEvent)
             }
 
             @Override
@@ -45,6 +52,7 @@ class RawFormatterImpl implements RawFormatter, IFormatter {
             }
         }
         this.transformer = new StandardTransformer(closure,
+                                                   closureCurrier,
                                                    input,
                                                    output)
     }
@@ -56,7 +64,7 @@ class RawFormatterImpl implements RawFormatter, IFormatter {
 
     @Override
     IFormatter withNewPayloadValidator(IPayloadValidator validator) {
-        new RawFormatterImpl(muleContext, validator)
+        new RawFormatterImpl(eventFactory, validator)
     }
 
     @Override

@@ -3,29 +3,27 @@ package com.avioconsulting.mule.testing.transformers.json.input
 import com.avioconsulting.mule.testing.payloadvalidators.IPayloadValidator
 import com.avioconsulting.mule.testing.payloadvalidators.StreamingDisabledPayloadValidator
 import com.avioconsulting.mule.testing.transformers.InputTransformer
-import org.mule.api.MuleContext
-import org.mule.api.MuleMessage
+import org.mule.api.MuleEvent
+import org.mule.api.processor.MessageProcessor
 import org.mule.transport.NullPayload
 
 abstract class Common implements InputTransformer {
-    private final MuleContext muleContext
     private IPayloadValidator payloadValidator
 
-    Common(MuleContext muleContext,
-           IPayloadValidator payloadValidator) {
+    Common(IPayloadValidator payloadValidator) {
         this.payloadValidator = payloadValidator
-        this.muleContext = muleContext
     }
 
-    def validateContentType(MuleMessage message) {
+    def validateContentType(MuleEvent event,
+                            MessageProcessor messageProcessor) {
         // don't need content-type for VM or empty strings
-        if (!payloadValidator.isPayloadTypeValidationRequired() || message.payloadAsString == '') {
+        if (!payloadValidator.isPayloadTypeValidationRequired(messageProcessor) || event.messageAsString == '') {
             return
         }
-        if (!payloadValidator.contentTypeValidationRequired) {
+        if (!payloadValidator.isContentTypeValidationRequired(messageProcessor)) {
             return
         }
-        payloadValidator.validateContentType(message,
+        payloadValidator.validateContentType(event,
                                              [
                                                      'application/json',
                                                      'application/json;charset=UTF-8',
@@ -36,26 +34,30 @@ abstract class Common implements InputTransformer {
 
     abstract def transform(String jsonString)
 
-    def transformInput(MuleMessage muleMessage) {
+    def transformInput(MuleEvent muleEvent,
+                       MessageProcessor messageProcessor) {
         // comes back from some Mule connectors like JSON
-        if (muleMessage.payload instanceof NullPayload) {
+        if (muleEvent.message.payload instanceof NullPayload) {
             return null
         }
-        if (payloadValidator.payloadTypeValidationRequired) {
-            validatePayloadType(muleMessage)
+        if (payloadValidator.isPayloadTypeValidationRequired(messageProcessor)) {
+            validatePayloadType(muleEvent,
+                                messageProcessor)
         }
         // want to wait to do this after if the payload type check above since it consumes the string
-        def jsonString = muleMessage.payloadAsString
-        validateContentType(muleMessage)
+        def jsonString = muleEvent.messageAsString
+        validateContentType(muleEvent,
+                            messageProcessor)
         return transform(jsonString)
     }
 
-    private void validatePayloadType(MuleMessage muleMessage) {
-        if (!payloadValidator.isPayloadTypeValidationRequired()) {
+    private void validatePayloadType(MuleEvent muleEvent,
+                                     MessageProcessor messageProcessor) {
+        if (!payloadValidator.isPayloadTypeValidationRequired(messageProcessor)) {
             println 'Skipping payload type validation'
             return
         }
-        payloadValidator.validatePayloadType(muleMessage.payload)
+        payloadValidator.validatePayloadType(muleEvent.message.payload)
     }
 
     def disableStreaming() {

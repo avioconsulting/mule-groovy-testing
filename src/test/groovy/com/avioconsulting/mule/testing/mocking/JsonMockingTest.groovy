@@ -1,8 +1,9 @@
 package com.avioconsulting.mule.testing.mocking
 
-import com.avioconsulting.mule.testing.junit.BaseJunitTest
 import com.avioconsulting.mule.testing.OverrideConfigList
 import com.avioconsulting.mule.testing.SampleJacksonInput
+import com.avioconsulting.mule.testing.junit.BaseJunitTest
+import com.avioconsulting.mule.testing.mocks.HttpRequestInfo
 import org.junit.Test
 
 import static org.hamcrest.Matchers.equalTo
@@ -48,12 +49,10 @@ class JsonMockingTest extends BaseJunitTest implements OverrideConfigList {
         String actualUri = null
         mockRestHttpCall('SomeSystem Call') {
             json {
-                whenCalledWith {
-                    withHttpOptions { String httpVerb, String uri, Map queryParams ->
-                        actualParams = queryParams
-                        actualUri = uri
-                        [reply: 456]
-                    }
+                whenCalledWith { HttpRequestInfo requestInfo ->
+                    actualParams = requestInfo.queryParams
+                    actualUri = requestInfo.uri
+                    [reply: 456]
                 }
             }
         }
@@ -84,14 +83,12 @@ class JsonMockingTest extends BaseJunitTest implements OverrideConfigList {
 
         mockRestHttpCall('SomeSystem Call') {
             json {
-                whenCalledWith {
-                    withHttpOptions { String httpVerb, String uri, Map queryParams ->
-                        actualParams = queryParams
-                        actualUri = uri
-                        def reply = new SampleMockedJacksonOutput()
-                        reply.foobar = 456
-                        reply
-                    }
+                whenCalledWith { HttpRequestInfo requestInfo ->
+                    actualParams = requestInfo.queryParams
+                    actualUri = requestInfo.uri
+                    def reply = new SampleMockedJacksonOutput()
+                    reply.foobar = 456
+                    reply
                 }
             }
         }

@@ -1,33 +1,30 @@
 package com.avioconsulting.mule.testing.transformers.http
 
 import com.avioconsulting.mule.testing.mulereplacements.MuleMessageTransformer
-import com.avioconsulting.mule.testing.spies.IReceiveHttpOptions
-import com.avioconsulting.mule.testing.spies.IReceiveMuleEvents
 import com.avioconsulting.mule.testing.transformers.IHaveStateToReset
 import org.mule.api.MuleEvent
 import org.mule.api.MuleMessage
+import org.mule.api.processor.MessageProcessor
 import org.mule.api.transport.PropertyScope
 import org.mule.module.http.internal.request.DefaultHttpRequester
-import org.mule.module.http.internal.request.ResponseValidator
 import org.mule.module.http.internal.request.SuccessStatusCodeValidator
 
-class HttpValidationTransformer implements IHaveStateToReset,
-        IReceiveHttpOptions,
-        MuleMessageTransformer,
-        IReceiveMuleEvents {
-    private ResponseValidator responseValidator
+class HttpValidationTransformer implements IHaveStateToReset, MuleMessageTransformer {
     private Integer httpReturnCode
-    private MuleEvent muleEvent
 
     HttpValidationTransformer() {
         reset()
     }
 
-    MuleMessage transform(MuleMessage muleMessage) {
-        setStatusCode(muleMessage)
+    MuleEvent transform(MuleEvent muleEvent,
+                        MessageProcessor messageProcessor) {
+        assert messageProcessor instanceof DefaultHttpRequester
         setStatusCode(muleEvent.message)
-        this.responseValidator.validate(muleEvent)
-        return muleMessage
+        def wrappedValidator = messageProcessor.responseValidator as SuccessStatusCodeValidator
+        def responseValidator = new HttpStatusValidator(wrappedValidator,
+                                                        messageProcessor)
+        responseValidator.validate(muleEvent)
+        return muleEvent
     }
 
     private def setStatusCode(MuleMessage message) {
@@ -38,20 +35,6 @@ class HttpValidationTransformer implements IHaveStateToReset,
 
     def setHttpReturnCode(Integer code) {
         this.httpReturnCode = code
-    }
-
-    def receive(Map queryParams,
-                Map headers,
-                String fullPath,
-                DefaultHttpRequester httpRequester) {
-        // see HttpStatusValidator for why we wrap this
-        def wrappedValidator = httpRequester.responseValidator as SuccessStatusCodeValidator
-        this.responseValidator = new HttpStatusValidator(wrappedValidator,
-                                                         httpRequester)
-    }
-
-    def receive(MuleEvent muleEvent) {
-        this.muleEvent = muleEvent
     }
 
     @Override

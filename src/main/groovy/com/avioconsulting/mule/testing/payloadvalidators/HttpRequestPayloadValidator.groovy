@@ -1,26 +1,25 @@
 package com.avioconsulting.mule.testing.payloadvalidators
 
-import com.avioconsulting.mule.testing.spies.IReceiveHttpOptions
-import org.mule.api.MuleMessage
+import org.mule.api.MuleEvent
+import org.mule.api.processor.MessageProcessor
 import org.mule.module.http.internal.request.DefaultHttpRequester
 
 class HttpRequestPayloadValidator implements IPayloadValidator,
-        IReceiveHttpOptions,
         PayloadHelper {
-    private String httpVerb
 
-    boolean isPayloadTypeValidationRequired() {
+    boolean isPayloadTypeValidationRequired(MessageProcessor messageProcessor) {
+        assert messageProcessor instanceof DefaultHttpRequester
         // GET should not require a payload at all
-        this.httpVerb != 'GET'
+        messageProcessor.method != 'GET'
     }
 
-    boolean isContentTypeValidationRequired() {
+    boolean isContentTypeValidationRequired(MessageProcessor messageProcessor) {
         return true
     }
 
-    void validateContentType(MuleMessage message,
+    void validateContentType(MuleEvent event,
                              List<String> validContentTypes) {
-        validateContentType(message,
+        validateContentType(event,
                             validContentTypes,
                             'Check your mock endpoints.')
     }
@@ -29,12 +28,5 @@ class HttpRequestPayloadValidator implements IPayloadValidator,
         validatePayloadType(payload,
                             [InputStream, String],
                             'Check your mock endpoints.')
-    }
-
-    def receive(Map queryParams,
-                Map headers,
-                String fullPath,
-                DefaultHttpRequester httpRequester) {
-        this.httpVerb = httpRequester.method
     }
 }

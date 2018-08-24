@@ -6,6 +6,7 @@ import com.avioconsulting.mule.testing.payloadvalidators.ContentTypeCheckDisable
 import com.avioconsulting.mule.testing.payloadvalidators.HttpListenerPayloadValidator
 import org.mule.api.MuleContext
 import org.mule.api.MuleEvent
+import org.mule.construct.Flow
 
 class FlowRunnerImpl implements FlowRunner, BatchRunner {
     private final MuleContext muleContext
@@ -14,27 +15,28 @@ class FlowRunnerImpl implements FlowRunner, BatchRunner {
     private Closure muleOutputEventHook = null
     private Closure withInputEvent = null
     private final EventFactory eventFactory
+    private final Flow flow
     private final String flowName
 
     FlowRunnerImpl(MuleContext muleContext,
+                   Flow flowMessageProcessor,
                    String flowName) {
         this.flowName = flowName
+        this.flow = flowMessageProcessor
         this.muleContext = muleContext
         this.eventFactory = new EventFactoryImpl(muleContext)
     }
 
     def json(@DelegatesTo(JsonInvoker) Closure closure) {
-        def jsonInvoker = new JsonInvokerImpl(muleContext,
-                                              new HttpListenerPayloadValidator(),
+        def jsonInvoker = new JsonInvokerImpl(new HttpListenerPayloadValidator(),
                                               eventFactory,
-                                              flowName)
+                                              flow)
         invoker = jsonInvoker
         this.closure = closure
     }
 
     def java(@DelegatesTo(JavaInvoker) Closure closure) {
-        def javaInvoker = new JavaInvokerImpl(muleContext,
-                                              eventFactory,
+        def javaInvoker = new JavaInvokerImpl(eventFactory,
                                               flowName)
         invoker = javaInvoker
         this.closure = closure
@@ -42,8 +44,7 @@ class FlowRunnerImpl implements FlowRunner, BatchRunner {
 
     @Override
     def soap(@DelegatesTo(SoapInvoker) Closure closure) {
-        def soapInvoker = new SoapOperationFlowInvokerImpl(muleContext,
-                                                           eventFactory,
+        def soapInvoker = new SoapOperationFlowInvokerImpl(eventFactory,
                                                            flowName)
         invoker = soapInvoker
         this.closure = closure

@@ -1,30 +1,33 @@
 package com.avioconsulting.mule.testing.transformers.xml
 
+import com.avioconsulting.mule.testing.EventFactory
+import com.avioconsulting.mule.testing.mulereplacements.MuleMessageTransformer
 import com.avioconsulting.mule.testing.payloadvalidators.IPayloadValidator
 import com.avioconsulting.mule.testing.transformers.ClosureMuleMessageHandler
 import groovy.util.slurpersupport.GPathResult
 import groovy.xml.MarkupBuilder
-import org.mule.api.MuleContext
-import org.mule.api.MuleMessage
-import com.avioconsulting.mule.testing.mulereplacements.MuleMessageTransformer
+import org.mule.api.MuleEvent
+import org.mule.api.processor.MessageProcessor
 
 class XMLMapTransformer extends XMLTransformer implements MuleMessageTransformer,
-        ClosureMuleMessageHandler{
+        ClosureMuleMessageHandler {
     private final Closure closure
 
     XMLMapTransformer(Closure closure,
-                      MuleContext muleContext,
+                      EventFactory eventFactory,
                       IPayloadValidator payloadValidator) {
-        super(muleContext, payloadValidator)
+        super(eventFactory, payloadValidator)
         this.closure = closure
     }
 
-    MuleMessage transform(MuleMessage incomingMessage) {
-        validateContentType(incomingMessage)
-        def xmlString = incomingMessage.payloadAsString
+    MuleEvent transform(MuleEvent incomingEvent,
+                        MessageProcessor messageProcessor) {
+        validateContentType(incomingEvent,
+                            messageProcessor)
+        def xmlString = incomingEvent.messageAsString
         def node = new XmlSlurper().parseText(xmlString) as GPathResult
         def asMap = convertToMap(node)
-        def forMuleMsg = withMuleMessage(closure, incomingMessage)
+        def forMuleMsg = withMuleEvent(closure, incomingEvent)
         def result = forMuleMsg(asMap)
         String xmlReply
         if (result instanceof File) {
@@ -34,7 +37,9 @@ class XMLMapTransformer extends XMLTransformer implements MuleMessageTransformer
             xmlReply = generateXmlFromMap(result)
         }
         def reader = new StringReader(xmlReply)
-        this.xmlMessageBuilder.build(reader, 200)
+        this.xmlMessageBuilder.build(reader,
+                                     incomingEvent,
+                                     200)
     }
 
     private static Map convertToMap(GPathResult node,

@@ -4,7 +4,7 @@ import com.avioconsulting.mule.testing.EventFactory
 import groovy.util.logging.Log4j2
 import groovy.xml.XmlUtil
 import org.mule.api.MuleContext
-import org.mule.api.MuleMessage
+import org.mule.api.MuleEvent
 import org.mule.api.transport.PropertyScope
 import org.mule.construct.Flow
 
@@ -14,12 +14,14 @@ import javax.xml.soap.MessageFactory
 @Log4j2
 class SoapApikitInvokerImpl extends SoapInvokerBaseImpl {
     private final String soapAction
+    private final String flowName
 
     SoapApikitInvokerImpl(MuleContext muleContext,
                           EventFactory eventFactory,
                           String flowName,
                           String operation) {
-        super(muleContext, eventFactory, flowName)
+        super(eventFactory)
+        this.flowName = flowName
         def flow = muleContext.registry.lookupFlowConstruct(flowName) as Flow
         assert flow: "Could not find flow ${flowName}!"
         soapAction = deriveSoapAction(flow,
@@ -27,8 +29,7 @@ class SoapApikitInvokerImpl extends SoapInvokerBaseImpl {
     }
 
     @Override
-    protected MuleMessage getMessage() {
-
+    MuleEvent getEvent() {
         def doc = jaxbHelper.getMarshalledDocument(this.inputObject)
         def soapFactory = MessageFactory.newInstance()
         def msg = soapFactory.createMessage()
@@ -43,7 +44,8 @@ class SoapApikitInvokerImpl extends SoapInvokerBaseImpl {
         log.info 'Put together a SOAP request payload of {}',
                  XmlUtil.serialize(soapRequest)
         def reader = new StringReader(soapRequest)
-        def muleMessage = this.xmlMessageBuilder.build(reader).with {
+        def muleEvent = this.xmlMessageBuilder.build(reader, flowName)
+        def muleMessage = muleEvent.message.with {
             // without soapaction, you get weird null pointer exceptions
             setProperty('SOAPAction',
                         soapAction,
@@ -56,7 +58,7 @@ class SoapApikitInvokerImpl extends SoapInvokerBaseImpl {
         }
         log.info "Put together SOAP/Mule message {}",
                  muleMessage.toString()
-        muleMessage
+        muleEvent
     }
 
     private static String deriveSoapAction(Flow flow,

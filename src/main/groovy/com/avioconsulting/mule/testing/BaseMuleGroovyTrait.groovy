@@ -102,7 +102,9 @@ trait BaseMuleGroovyTrait {
     def runFlow(MuleContext muleContext,
                 String flowName,
                 @DelegatesTo(FlowRunner) Closure closure) {
+        def flow = muleContext.registry.lookupFlowConstruct(flowName) as Flow
         def runner = new FlowRunnerImpl(muleContext,
+                                        flow,
                                         flowName)
         def code = closure.rehydrate(runner, this, this)
         code.resolveStrategy = Closure.DELEGATE_ONLY
@@ -114,9 +116,9 @@ trait BaseMuleGroovyTrait {
     }
 
     MuleEvent runSoapApikitFlow(MuleContext muleContext,
-                          String operation,
-                          String apiKitFlowName = 'api-main',
-                          @DelegatesTo(SoapInvoker) Closure closure) {
+                                String operation,
+                                String apiKitFlowName = 'api-main',
+                                @DelegatesTo(SoapInvoker) Closure closure) {
         def eventFactory = new EventFactoryImpl(muleContext)
         def invoker = new SoapApikitInvokerImpl(muleContext,
                                                 eventFactory,
@@ -153,6 +155,7 @@ trait BaseMuleGroovyTrait {
                  boolean throwUnderlyingException = false,
                  @DelegatesTo(BatchRunner) Closure closure) {
         def runner = new FlowRunnerImpl(muleContext,
+                                        null,// batch doesn't inherit from flow
                                         batchName)
         def code = closure.rehydrate(runner, this, this)
         code.resolveStrategy = Closure.DELEGATE_ONLY
@@ -196,26 +199,24 @@ trait BaseMuleGroovyTrait {
                          String connectorName,
                          @DelegatesTo(HttpRequestResponseChoice) Closure closure) {
         def eventFactory = new EventFactoryImpl(muleContext)
-        def formatterChoice = new HttpRequestResponseChoiceImpl(muleContext,
-                                                                eventFactory)
+        def formatterChoice = new HttpRequestResponseChoiceImpl(eventFactory)
         def code = closure.rehydrate(formatterChoice, this, this)
         code.resolveStrategy = Closure.DELEGATE_ONLY
         code()
         mockingConfiguration.addMock(connectorName,
-                                     formatterChoice.httpMock)
+                                     formatterChoice.transformer)
     }
 
     def mockVmReceive(MockingConfiguration mockingConfiguration,
                       MuleContext muleContext,
                       String connectorName,
                       @DelegatesTo(StandardRequestResponse) Closure closure) {
-        def formatterChoice = new VMRequestResponseChoiceImpl(muleContext)
+        def eventFactory = new EventFactoryImpl(muleContext)
+        def formatterChoice = new VMRequestResponseChoiceImpl(eventFactory)
         def code = closure.rehydrate(formatterChoice, this, this)
         code.resolveStrategy = Closure.DELEGATE_ONLY
         code()
-        def eventFactory = new EventFactoryImpl(muleContext)
-        def mock = new StandardMock(formatterChoice.transformer,
-                                    eventFactory)
+        def mock = new StandardMock(formatterChoice.transformer)
         mockingConfiguration.addMock(connectorName,
                                      mock)
     }
@@ -238,15 +239,14 @@ trait BaseMuleGroovyTrait {
                      MuleContext muleContext,
                      String connectorName,
                      @DelegatesTo(SOAPFormatter) Closure closure) {
+        def eventFactory = new EventFactoryImpl(muleContext)
         def payloadValidator = new SOAPPayloadValidator()
-        def soapFormatter = new SOAPFormatterImpl(muleContext,
+        def soapFormatter = new SOAPFormatterImpl(eventFactory,
                                                   payloadValidator)
         def code = closure.rehydrate(soapFormatter, this, this)
         code.resolveStrategy = Closure.DELEGATE_ONLY
         code()
-        def eventFactory = new EventFactoryImpl(muleContext)
-        def mock = new StandardMock(soapFormatter.transformer,
-                                    eventFactory)
+        def mock = new StandardMock(soapFormatter.transformer)
         mockingConfiguration.addMock(connectorName,
                                      mock)
     }

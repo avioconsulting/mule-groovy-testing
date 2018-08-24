@@ -1,38 +1,46 @@
 package com.avioconsulting.mule.testing.transformers.xml
 
+import com.avioconsulting.mule.testing.EventFactory
+import com.avioconsulting.mule.testing.mulereplacements.MuleMessageTransformer
 import com.avioconsulting.mule.testing.payloadvalidators.IPayloadValidator
 import com.avioconsulting.mule.testing.transformers.ClosureMuleMessageHandler
-import org.mule.api.MuleContext
-import org.mule.api.MuleMessage
-import com.avioconsulting.mule.testing.mulereplacements.MuleMessageTransformer
+import groovy.util.logging.Log4j2
+import org.mule.api.MuleEvent
+import org.mule.api.processor.MessageProcessor
 
+@Log4j2
 class XMLJAXBTransformer extends XMLTransformer implements MuleMessageTransformer,
         ClosureMuleMessageHandler {
     private final Closure closure
     private final JAXBMarshalHelper helper
 
     XMLJAXBTransformer(Closure closure,
-                       MuleContext muleContext,
+                       EventFactory eventFactory,
                        Class inputJaxbClass,
-                       IPayloadValidator payloadValidator) {
-        super(muleContext, payloadValidator)
+                       IPayloadValidator payloadValidator,
+                       String transformerUse) {
+        super(eventFactory, payloadValidator)
         this.closure = closure
-        this.helper = new JAXBMarshalHelper(inputJaxbClass)
+        this.helper = new JAXBMarshalHelper(inputJaxbClass,
+                                            transformerUse)
     }
 
-    MuleMessage transform(MuleMessage incomingMessage) {
-        validateContentType(incomingMessage)
-        def payload = incomingMessage.payload
+    MuleEvent transform(MuleEvent event,
+                        MessageProcessor messageProcessor) {
+        validateContentType(event,
+                            messageProcessor)
+        def payload = event.message.payload
         def nullPayload = payload instanceof byte[] && payload.length == 0
         def strongTypedPayload
         if (nullPayload) {
-            println 'Groovy Test WARNING: SOAP mock was sent a message with empty payload! using MuleMessage payload.'
-            strongTypedPayload = incomingMessage
+            log.warn('SOAP mock was sent a message with empty payload! using MuleMessage payload.')
+            strongTypedPayload = event.message
         } else {
-            strongTypedPayload = helper.unmarshal(incomingMessage)
+            strongTypedPayload = helper.unmarshal(payload)
         }
 
-        def forMuleMsg = withMuleMessage(this.closure, incomingMessage)
+        def forMuleMsg = withMuleEvent(this.closure,
+                                       event)
         def reply = forMuleMsg(strongTypedPayload)
 
         StringReader reader
@@ -43,6 +51,8 @@ class XMLJAXBTransformer extends XMLTransformer implements MuleMessageTransforme
             reader = helper.getMarshalled(reply)
         }
 
-        this.xmlMessageBuilder.build(reader, 200)
+        this.xmlMessageBuilder.build(reader,
+                                     event,
+                                     200)
     }
 }
