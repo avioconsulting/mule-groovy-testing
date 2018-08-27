@@ -1,3 +1,6 @@
+# 1.0.22
+* Don't assume anything about the structure of a SOAP fault, let the test user define that
+
 # 1.0.21
 * Add support for throwing SOAP faults from SOAP mocks
 * Restructure test code to use a simplified mocking model under the hood

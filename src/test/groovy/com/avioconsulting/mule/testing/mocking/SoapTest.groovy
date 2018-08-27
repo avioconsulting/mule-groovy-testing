@@ -7,6 +7,7 @@ import com.avioconsulting.mule.testing.soapxmlroot.SOAPTestResponse
 import com.avioconsulting.schemas.soaptest.v1.ObjectFactory
 import com.avioconsulting.schemas.soaptest.v1.SOAPTestRequestType
 import com.avioconsulting.schemas.soaptest.v1.SOAPTestResponseType
+import groovy.xml.DOMBuilder
 import groovy.xml.MarkupBuilder
 import org.junit.Test
 import org.mule.api.MessagingException
@@ -225,8 +226,10 @@ class SoapTest extends BaseJunitTest implements OverrideConfigList {
                 soapFault('Error with one or more zip codes: ',
                           new QName('',
                                     'SERVER'),
-                          null) { MarkupBuilder detailBuilder ->
-                    detailBuilder.error('Error: Zip code "" is not a valid US zip code')
+                          null) { DOMBuilder detailBuilder ->
+                    detailBuilder.detail {
+                        foobar()
+                    }
                 }
             }
         }
@@ -254,6 +257,6 @@ class SoapTest extends BaseJunitTest implements OverrideConfigList {
         def detail = exception.detail
         assert detail
         assertThat detail.serialize().trim(),
-                   is(equalTo('<detail type="xsd:string">&lt;error&gt;Error: Zip code "" is not a valid US zip code&lt;/error&gt;</detail>'))
+                   is(equalTo('<detail>\n<foobar/>\n</detail>'))
     }
 }
