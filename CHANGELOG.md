@@ -1,3 +1,6 @@
+# 1.0.23
+* Add generic method to mock connectors that do not yet have helper methods
+
 # 1.0.22
 * Don't assume anything about the structure of a SOAP fault, let the test user define that
 

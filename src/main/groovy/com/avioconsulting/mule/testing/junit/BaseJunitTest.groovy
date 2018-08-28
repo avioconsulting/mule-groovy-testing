@@ -102,6 +102,14 @@ class BaseJunitTest implements BaseMuleGroovyTrait {
                       closure)
     }
 
+    def mockGeneric(String connectorName,
+                    @DelegatesTo(StandardRequestResponse) Closure closure) {
+        mockGeneric(mockingConfiguration,
+                    muleContext,
+                    connectorName,
+                    closure)
+    }
+
     def mockSalesForceCall(String connectorName,
                            @DelegatesTo(Choice) Closure closure) {
         mockSalesForceCall(mockingConfiguration,
