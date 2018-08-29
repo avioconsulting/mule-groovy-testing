@@ -55,6 +55,8 @@ class OurProxyInstantiator implements InstantiationStrategy {
                 return Enhancer.create(beanKlass, new MockMethodInterceptor(this.mockingConfiguration,
                                                                             missingConnectorName))
             }
+            // some connectors are not created directly, they use factory beans
+            // so we have to intercept that
             if (FactoryBean.isAssignableFrom(beanKlass)) {
                 return Enhancer.create(beanKlass,
                                        new MockFactoryBeanInterceptor(this.mockingConfiguration))

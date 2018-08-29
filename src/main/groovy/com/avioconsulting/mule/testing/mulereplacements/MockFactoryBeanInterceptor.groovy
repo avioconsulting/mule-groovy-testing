@@ -1,5 +1,6 @@
 package com.avioconsulting.mule.testing.mulereplacements
 
+import groovy.util.logging.Log4j2
 import net.sf.cglib.proxy.MethodInterceptor
 import net.sf.cglib.proxy.MethodProxy
 import org.mule.api.AnnotatedObject
@@ -9,6 +10,7 @@ import org.mule.api.processor.MessageProcessor
 
 import java.lang.reflect.Method
 
+@Log4j2
 class MockFactoryBeanInterceptor implements MethodInterceptor {
     private final MockingConfiguration mockingConfiguration
 
@@ -22,7 +24,11 @@ class MockFactoryBeanInterceptor implements MethodInterceptor {
                      Object[] args,
                      MethodProxy proxy) throws Throwable {
         if (method.name == 'getObject' && obj.getObjectType() == MessageProcessor) {
-            assert obj instanceof AnnotatedObject
+            if (!(obj instanceof AnnotatedObject)) {
+                log.info 'Processor/bean factory {} does not have annotations, so it will not be mockable',
+                         obj
+                return proxy.invokeSuper(obj, args)
+            }
             def beanFactory = obj
             def actualMessageProcessor = proxy.invokeSuper(obj, args)
             return new MessageProcessor() {
