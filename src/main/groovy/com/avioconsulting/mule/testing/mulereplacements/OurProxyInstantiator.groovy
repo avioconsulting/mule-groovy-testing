@@ -7,10 +7,12 @@ import net.sf.cglib.proxy.Enhancer
 import org.mule.api.AnnotatedObject
 import org.mule.api.endpoint.EndpointFactory
 import org.mule.api.processor.MessageProcessor
+import org.mule.config.spring.factories.FlowRefFactoryBean
 import org.mule.construct.Flow
 import org.mule.processor.chain.InterceptingChainLifecycleWrapper
 import org.springframework.beans.BeansException
 import org.springframework.beans.factory.BeanFactory
+import org.springframework.beans.factory.FactoryBean
 import org.springframework.beans.factory.support.InstantiationStrategy
 import org.springframework.beans.factory.support.RootBeanDefinition
 
@@ -53,6 +55,9 @@ class OurProxyInstantiator implements InstantiationStrategy {
                         bd.getAttribute(WrappedNamespaceHandler.ANNOTATION_NAME_ATTRIBUTE) as String
                 return Enhancer.create(beanKlass, new MockMethodInterceptor(this.mockingConfiguration,
                                                                             missingConnectorName))
+            }
+            if (beanKlass == FlowRefFactoryBean) {
+                return new MockableFlowRefFactoryBean(this.mockingConfiguration)
             }
             return wrapped.instantiate(bd,
                                        beanName,
