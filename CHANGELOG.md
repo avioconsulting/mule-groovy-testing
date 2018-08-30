@@ -1,3 +1,6 @@
+# 1.0.24
+* Support mocking flow refs and other factory bean instantiated stuff
+
 # 1.0.23
 * Add generic method to mock connectors that do not yet have helper methods
 

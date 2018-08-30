@@ -11,6 +11,7 @@ import org.mule.construct.Flow
 import org.mule.processor.chain.InterceptingChainLifecycleWrapper
 import org.springframework.beans.BeansException
 import org.springframework.beans.factory.BeanFactory
+import org.springframework.beans.factory.FactoryBean
 import org.springframework.beans.factory.support.InstantiationStrategy
 import org.springframework.beans.factory.support.RootBeanDefinition
 
@@ -53,6 +54,12 @@ class OurProxyInstantiator implements InstantiationStrategy {
                         bd.getAttribute(WrappedNamespaceHandler.ANNOTATION_NAME_ATTRIBUTE) as String
                 return Enhancer.create(beanKlass, new MockMethodInterceptor(this.mockingConfiguration,
                                                                             missingConnectorName))
+            }
+            // some connectors are not created directly, they use factory beans
+            // so we have to intercept that
+            if (FactoryBean.isAssignableFrom(beanKlass)) {
+                return Enhancer.create(beanKlass,
+                                       new MockFactoryBeanInterceptor(this.mockingConfiguration))
             }
             return wrapped.instantiate(bd,
                                        beanName,
