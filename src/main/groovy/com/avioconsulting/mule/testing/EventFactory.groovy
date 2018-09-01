@@ -1,34 +1,33 @@
 package com.avioconsulting.mule.testing
 
-import org.mule.MessageExchangePattern
-import org.mule.api.MuleEvent
-import org.mule.api.MuleMessage
+import org.mule.runtime.api.message.Message
+import org.mule.runtime.core.api.event.CoreEvent
 
 interface EventFactory {
     // TODO: Try and avoid building messages everywhere too
     @Deprecated
-    MuleEvent getMuleEvent(MuleMessage muleMessage,
+    CoreEvent getMuleEvent(Message muleMessage,
                            String flowName,
-                           MessageExchangePattern messageExchangePattern)
+                           Object messageExchangePattern)
 
     // TODO: Try and avoid building messages everywhere too
     @Deprecated
-    MuleEvent getMuleEvent(MuleMessage muleMessage,
-                           MuleEvent rewriteEvent)
+    CoreEvent getMuleEvent(Message muleMessage,
+                           CoreEvent rewriteEvent)
 
-    MuleEvent getMuleEventWithPayload(Object payload,
+    CoreEvent getMuleEventWithPayload(Object payload,
                                       String flowName,
-                                      MessageExchangePattern messageExchangePattern)
+                                      Object messageExchangePattern)
 
-    MuleEvent getMuleEventWithPayload(Object payload,
+    CoreEvent getMuleEventWithPayload(Object payload,
                                       String flowName,
-                                      MessageExchangePattern messageExchangePattern,
+                                      Object messageExchangePattern,
                                       Map properties)
 
-    MuleEvent getMuleEventWithPayload(Object payload,
-                                      MuleEvent rewriteEvent)
+    CoreEvent getMuleEventWithPayload(Object payload,
+                                      CoreEvent rewriteEvent)
 
-    MuleEvent getMuleEventWithPayload(Object payload,
-                                      MuleEvent rewriteEvent,
+    CoreEvent getMuleEventWithPayload(Object payload,
+                                      CoreEvent rewriteEvent,
                                       Map properties)
 }

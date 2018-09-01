@@ -1,9 +1,8 @@
 package com.avioconsulting.mule.testing.transformers
 
 import com.avioconsulting.mule.testing.payloadvalidators.IPayloadValidator
-import org.mule.api.MuleEvent
-import org.mule.api.processor.MessageProcessor
-import org.mule.transport.NullPayload
+import org.mule.runtime.core.api.event.CoreEvent
+import org.mule.runtime.core.api.processor.Processor
 
 class StringInputTransformer implements InputTransformer {
     private final IPayloadValidator payloadValidator
@@ -12,11 +11,11 @@ class StringInputTransformer implements InputTransformer {
         this.payloadValidator = payloadValidator
     }
 
-    def transformInput(MuleEvent muleEvent,
-                       MessageProcessor messageProcessor) {
+    def transformInput(CoreEvent muleEvent,
+                       Processor messageProcessor) {
         def muleMessage = muleEvent.message
         // comes back from some Mule connectors like JSON
-        if (muleMessage.payload instanceof NullPayload) {
+        if (muleMessage.payload == null) {
             return null
         }
         if (muleMessage.payload.class != String) {
@@ -32,8 +31,8 @@ class StringInputTransformer implements InputTransformer {
         // we already expect a string
     }
 
-    private def validateContentType(MuleEvent muleEvent,
-                                    MessageProcessor messageProcessor) {
+    private def validateContentType(CoreEvent muleEvent,
+                                    Processor messageProcessor) {
         if (!payloadValidator.isContentTypeValidationRequired(messageProcessor)) {
             return
         }

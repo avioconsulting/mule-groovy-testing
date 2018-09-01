@@ -12,7 +12,6 @@ import org.junit.Test
 import org.mule.api.MessagingException
 import org.mule.api.MuleEvent
 import org.mule.api.transport.PropertyScope
-import org.mule.module.ws.consumer.SoapFaultException
 
 import javax.xml.namespace.QName
 import java.util.concurrent.TimeoutException
@@ -245,7 +244,8 @@ class SoapTest extends BaseJunitTest implements OverrideConfigList {
         assertThat exception,
                    is(instanceOf(SoapFaultException))
         // for intellij
-        assert exception instanceof SoapFaultException
+        assert false : 'soapfaultexception??'
+        //assert exception instanceof SoapFaultException
         assertThat exception.message,
                    is(equalTo('Error with one or more zip codes: .'))
         assertThat exception.faultCode,

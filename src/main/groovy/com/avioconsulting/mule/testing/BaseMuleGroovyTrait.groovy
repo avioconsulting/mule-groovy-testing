@@ -9,18 +9,15 @@ import com.avioconsulting.mule.testing.mocks.StandardMock
 import com.avioconsulting.mule.testing.mulereplacements.GroovyTestingSpringXmlConfigurationBuilder
 import com.avioconsulting.mule.testing.mulereplacements.MockingConfiguration
 import com.avioconsulting.mule.testing.payloadvalidators.SOAPPayloadValidator
-import com.mulesoft.module.batch.engine.BatchJobAdapter
+import org.apache.commons.lang.NotImplementedException
 import org.apache.logging.log4j.Logger
-import org.mule.api.MuleContext
-import org.mule.api.MuleEvent
-import org.mule.api.MuleMessage
-import org.mule.api.config.ConfigurationBuilder
-import org.mule.config.builders.ExtensionsManagerConfigurationBuilder
-import org.mule.config.builders.SimpleConfigurationBuilder
-import org.mule.construct.Flow
-import org.mule.context.DefaultMuleContextBuilder
-import org.mule.context.DefaultMuleContextFactory
-import org.mule.module.client.MuleClient
+import org.mule.runtime.core.api.MuleContext
+import org.mule.runtime.core.api.config.ConfigurationBuilder
+import org.mule.runtime.core.api.config.builders.SimpleConfigurationBuilder
+import org.mule.runtime.core.api.construct.Flow
+import org.mule.runtime.core.api.context.DefaultMuleContextFactory
+import org.mule.runtime.core.api.event.CoreEvent
+import org.mule.runtime.core.internal.context.DefaultMuleContextBuilder
 
 // basic idea here is to have a trait that could be mixed in to any type of testing framework situation
 // this trait should be stateless
@@ -40,7 +37,6 @@ trait BaseMuleGroovyTrait {
         def configBuilders = [
                 new SimpleConfigurationBuilder(startUpProperties),
                 // certain processors like validation require this
-                new ExtensionsManagerConfigurationBuilder(),
                 new GroovyTestingSpringXmlConfigurationBuilder(configResources,
                                                                mockingConfiguration)
         ] as List<ConfigurationBuilder>
@@ -115,7 +111,7 @@ trait BaseMuleGroovyTrait {
         runner.transformOutput(outputEvent)
     }
 
-    MuleEvent runSoapApikitFlow(MuleContext muleContext,
+    CoreEvent runSoapApikitFlow(MuleContext muleContext,
                                 String operation,
                                 String apiKitFlowName = 'api-main',
                                 @DelegatesTo(SoapInvoker) Closure closure) {
@@ -133,9 +129,9 @@ trait BaseMuleGroovyTrait {
                 event)
     }
 
-    MuleEvent runFlow(MuleContext muleContext,
+    CoreEvent runFlow(MuleContext muleContext,
                       String flowName,
-                      MuleEvent event) {
+                      CoreEvent event) {
         def flow = muleContext.registry.lookupFlowConstruct(flowName)
         assert flow instanceof Flow
         flow.process(event)
@@ -154,44 +150,19 @@ trait BaseMuleGroovyTrait {
                  List<String> jobsToWaitFor = null,
                  boolean throwUnderlyingException = false,
                  @DelegatesTo(BatchRunner) Closure closure) {
-        def runner = new FlowRunnerImpl(muleContext,
-                                        null,// batch doesn't inherit from flow
-                                        batchName)
-        def code = closure.rehydrate(runner, this, this)
-        code.resolveStrategy = Closure.DELEGATE_ONLY
-        code()
-        def batchJob = muleContext.registry.get(batchName) as BatchJobAdapter
-        waitForBatchCompletion(muleContext,
-                               jobsToWaitFor,
-                               throwUnderlyingException) {
-            batchJob.execute(runner.getEvent())
-        }
-    }
-
-    static MuleMessage httpPost(MuleContext muleContext,
-                                map) {
-        def timeoutSeconds = map.timeoutSeconds ?: 35
-        def client = new MuleClient(muleContext)
-        def properties = [
-                'http.method' : 'POST',
-                'content-type': map.contentType
-        ]
-        client.send map.url,
-                    map.payload,
-                    properties,
-                    timeoutSeconds * 1000
-    }
-
-    static MuleMessage httpGet(MuleContext muleContext,
-                               map) {
-        def timeoutSeconds = map.timeoutSeconds ?: 35
-        def client = new MuleClient(muleContext)
-        def properties = ['http.method': 'GET']
-        def payload = null
-        client.send map.url,
-                    payload,
-                    properties,
-                    timeoutSeconds * 1000
+        throw new NotImplementedException()
+//        def runner = new FlowRunnerImpl(muleContext,
+//                                        null,// batch doesn't inherit from flow
+//                                        batchName)
+//        def code = closure.rehydrate(runner, this, this)
+//        code.resolveStrategy = Closure.DELEGATE_ONLY
+//        code()
+//        def batchJob = muleContext.registry.get(batchName) as BatchJobAdapter
+//        waitForBatchCompletion(muleContext,
+//                               jobsToWaitFor,
+//                               throwUnderlyingException) {
+//            batchJob.execute(runner.getEvent())
+//        }
     }
 
     def mockRestHttpCall(MockingConfiguration mockingConfiguration,

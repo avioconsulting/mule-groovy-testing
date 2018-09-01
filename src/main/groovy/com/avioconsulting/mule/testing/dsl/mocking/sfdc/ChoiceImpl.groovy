@@ -6,7 +6,7 @@ import com.avioconsulting.mule.testing.mocks.StandardMock
 import com.avioconsulting.mule.testing.mulereplacements.MockProcess
 import com.avioconsulting.mule.testing.payloadvalidators.ListGenericPayloadValidator
 import com.avioconsulting.mule.testing.transformers.sfdc.UpsertTransformer
-import org.mule.api.MuleContext
+import org.mule.runtime.core.api.MuleContext
 
 class ChoiceImpl implements Choice {
     private final MuleContext muleContext

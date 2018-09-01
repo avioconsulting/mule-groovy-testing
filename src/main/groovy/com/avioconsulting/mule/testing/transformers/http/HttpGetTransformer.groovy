@@ -2,9 +2,8 @@ package com.avioconsulting.mule.testing.transformers.http
 
 import com.avioconsulting.mule.testing.EventFactory
 import com.avioconsulting.mule.testing.mulereplacements.MuleMessageTransformer
-import org.mule.api.MuleEvent
-import org.mule.api.processor.MessageProcessor
-import org.mule.module.http.internal.request.DefaultHttpRequester
+import org.mule.runtime.core.api.event.CoreEvent
+import org.mule.runtime.core.api.processor.Processor
 
 class HttpGetTransformer implements MuleMessageTransformer {
     private final EventFactory eventFactory
@@ -13,9 +12,10 @@ class HttpGetTransformer implements MuleMessageTransformer {
         this.eventFactory = eventFactory
     }
 
-    MuleEvent transform(MuleEvent muleEvent,
-                        MessageProcessor originalProcessor) {
-        assert originalProcessor instanceof DefaultHttpRequester
+    CoreEvent transform(CoreEvent muleEvent,
+                        Processor originalProcessor) {
+        assert false :'htttp requester class'
+        //assert originalProcessor instanceof DefaultHttpRequester
         // for GET requests, we don't want to pass on the payload
         originalProcessor.method == 'GET' ? eventFactory.getMuleEventWithPayload(null,
                                                                                  muleEvent) : muleEvent

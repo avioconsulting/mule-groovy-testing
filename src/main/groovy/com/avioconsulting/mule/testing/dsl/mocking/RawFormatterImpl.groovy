@@ -7,8 +7,8 @@ import com.avioconsulting.mule.testing.transformers.ClosureCurrier
 import com.avioconsulting.mule.testing.transformers.InputTransformer
 import com.avioconsulting.mule.testing.transformers.OutputTransformer
 import com.avioconsulting.mule.testing.transformers.StandardTransformer
-import org.mule.api.MuleEvent
-import org.mule.api.processor.MessageProcessor
+import org.mule.runtime.core.api.event.CoreEvent
+import org.mule.runtime.core.api.processor.Processor
 
 class RawFormatterImpl implements RawFormatter, IFormatter {
     private final IPayloadValidator payloadValidator
@@ -28,8 +28,8 @@ class RawFormatterImpl implements RawFormatter, IFormatter {
     def whenCalledWith(Closure closure) {
         def input = new InputTransformer() {
             @Override
-            def transformInput(MuleEvent input,
-                               MessageProcessor messageProcessor) {
+            def transformInput(CoreEvent input,
+                               Processor messageProcessor) {
                 input.message.payload
             }
 
@@ -40,8 +40,8 @@ class RawFormatterImpl implements RawFormatter, IFormatter {
         }
         def output = new OutputTransformer() {
             @Override
-            MuleEvent transformOutput(Object inputMessage,
-                                      MuleEvent originalMuleEvent) {
+            CoreEvent transformOutput(Object inputMessage,
+                                      CoreEvent originalMuleEvent) {
                 eventFactory.getMuleEventWithPayload(inputMessage,
                                                      originalMuleEvent)
             }

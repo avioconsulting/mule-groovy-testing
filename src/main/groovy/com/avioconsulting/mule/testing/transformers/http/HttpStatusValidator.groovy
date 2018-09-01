@@ -1,11 +1,6 @@
 package com.avioconsulting.mule.testing.transformers.http
 
-
-import org.mule.api.MessagingException
-import org.mule.api.MuleEvent
-import org.mule.module.http.internal.request.DefaultHttpRequester
-import org.mule.module.http.internal.request.ResponseValidatorException
-import org.mule.module.http.internal.request.SuccessStatusCodeValidator
+import org.mule.runtime.core.api.event.CoreEvent
 
 // MUnit (Java or likely graphical too) substitutes an interceptor message processor for connectors you mock
 // The processor does not have any annotations on it. When we simulate exceptions being thrown, Mule tries
@@ -14,21 +9,21 @@ import org.mule.module.http.internal.request.SuccessStatusCodeValidator
 // ResponseValidatorException inherits from MessagingException which needs to be instantiated with the
 // actual processor that's being mocked as the "failing message processor" rather than the MUnit interceptor
 // the easiest way to do that is to wrap the method call and then set the private field
-class HttpStatusValidator extends SuccessStatusCodeValidator {
-    private final DefaultHttpRequester httpRequester
+class HttpStatusValidator {//extends SuccessStatusCodeValidator {
+//    private final DefaultHttpRequester httpRequester
+//
+//    HttpStatusValidator(SuccessStatusCodeValidator wrapped,
+//                        DefaultHttpRequester httpRequester) {
+//        super(wrapped.values)
+//        this.httpRequester = httpRequester
+//    }
 
-    HttpStatusValidator(SuccessStatusCodeValidator wrapped,
-                        DefaultHttpRequester httpRequester) {
-        super(wrapped.values)
-        this.httpRequester = httpRequester
-    }
-
-    @Override
-    void validate(MuleEvent responseEvent) throws ResponseValidatorException {
+    //@Override
+    void validate(CoreEvent responseEvent) {// throws ResponseValidatorException {
         try {
             super.validate(responseEvent)
         }
-        catch (ResponseValidatorException e) {
+        catch (Exception e) {
             // in certain cases, we need this populated or Java/Munit tests choke (e.g. inside an enricher)
             // this is a private field and there's no way to set it after and we want
             // to preserve the same exception class

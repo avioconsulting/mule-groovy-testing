@@ -2,7 +2,7 @@ package com.avioconsulting.mule.testing.dsl.invokers
 
 import com.avioconsulting.mule.testing.EventFactory
 import groovy.util.logging.Log4j2
-import org.mule.api.MuleEvent
+import org.mule.runtime.core.api.event.CoreEvent
 
 @Log4j2
 class SoapOperationFlowInvokerImpl extends SoapInvokerBaseImpl {
@@ -14,7 +14,7 @@ class SoapOperationFlowInvokerImpl extends SoapInvokerBaseImpl {
         this.flowName = flowName
     }
 
-    MuleEvent getEvent() {
+    CoreEvent getEvent() {
         StringReader reader
         if (inputObject instanceof File) {
             def xml = inputObject.text

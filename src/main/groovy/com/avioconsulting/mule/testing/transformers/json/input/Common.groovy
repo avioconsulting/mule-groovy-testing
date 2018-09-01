@@ -3,9 +3,8 @@ package com.avioconsulting.mule.testing.transformers.json.input
 import com.avioconsulting.mule.testing.payloadvalidators.IPayloadValidator
 import com.avioconsulting.mule.testing.payloadvalidators.StreamingDisabledPayloadValidator
 import com.avioconsulting.mule.testing.transformers.InputTransformer
-import org.mule.api.MuleEvent
-import org.mule.api.processor.MessageProcessor
-import org.mule.transport.NullPayload
+import org.mule.runtime.core.api.event.CoreEvent
+import org.mule.runtime.core.api.processor.Processor
 
 abstract class Common implements InputTransformer {
     private IPayloadValidator payloadValidator
@@ -14,8 +13,8 @@ abstract class Common implements InputTransformer {
         this.payloadValidator = payloadValidator
     }
 
-    def validateContentType(MuleEvent event,
-                            MessageProcessor messageProcessor) {
+    def validateContentType(CoreEvent event,
+                            Processor messageProcessor) {
         // don't need content-type for VM or empty strings
         if (!payloadValidator.isPayloadTypeValidationRequired(messageProcessor) || event.messageAsString == '') {
             return
@@ -34,10 +33,10 @@ abstract class Common implements InputTransformer {
 
     abstract def transform(String jsonString)
 
-    def transformInput(MuleEvent muleEvent,
-                       MessageProcessor messageProcessor) {
+    def transformInput(CoreEvent muleEvent,
+                       Processor messageProcessor) {
         // comes back from some Mule connectors like JSON
-        if (muleEvent.message.payload instanceof NullPayload) {
+        if (muleEvent.message.payload == null) {
             return null
         }
         if (payloadValidator.isPayloadTypeValidationRequired(messageProcessor)) {
@@ -51,8 +50,8 @@ abstract class Common implements InputTransformer {
         return transform(jsonString)
     }
 
-    private void validatePayloadType(MuleEvent muleEvent,
-                                     MessageProcessor messageProcessor) {
+    private void validatePayloadType(CoreEvent muleEvent,
+                                     Processor messageProcessor) {
         if (!payloadValidator.isPayloadTypeValidationRequired(messageProcessor)) {
             println 'Skipping payload type validation'
             return

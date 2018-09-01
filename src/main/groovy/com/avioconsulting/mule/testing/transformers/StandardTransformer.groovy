@@ -1,8 +1,8 @@
 package com.avioconsulting.mule.testing.transformers
 
 import com.avioconsulting.mule.testing.mulereplacements.MuleMessageTransformer
-import org.mule.api.MuleEvent
-import org.mule.api.processor.MessageProcessor
+import org.mule.runtime.core.api.event.CoreEvent
+import org.mule.runtime.core.api.processor.Processor
 
 class StandardTransformer implements MuleMessageTransformer {
     private final OutputTransformer outputTransformer
@@ -20,8 +20,8 @@ class StandardTransformer implements MuleMessageTransformer {
         this.outputTransformer = outputTransformer
     }
 
-    MuleEvent transform(MuleEvent muleEvent,
-                        MessageProcessor messageProcessor) {
+    CoreEvent transform(CoreEvent muleEvent,
+                        Processor messageProcessor) {
         // if they're only requesting optional curried values (e.g. HTTP requestor params)
         // then we don't want to call their closure with an input value
         def onlyCurriedArgument = closureCurrier.isOnlyArgumentToBeCurried(closure)

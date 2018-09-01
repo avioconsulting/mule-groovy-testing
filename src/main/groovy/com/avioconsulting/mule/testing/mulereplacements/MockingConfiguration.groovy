@@ -1,7 +1,5 @@
 package com.avioconsulting.mule.testing.mulereplacements
 
-import org.mule.api.AnnotatedObject
-
 import javax.xml.namespace.QName
 
 class MockingConfiguration {
@@ -27,7 +25,7 @@ class MockingConfiguration {
         mocks[processorName]
     }
 
-    MockProcess getMockProcess(AnnotatedObject processor) {
+    MockProcess getMockProcess(Object processor) {
         def processorName = processor.annotations.get(processorName) as String
         mocks[processorName]
     }

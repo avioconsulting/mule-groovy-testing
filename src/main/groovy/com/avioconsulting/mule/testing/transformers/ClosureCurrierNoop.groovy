@@ -1,9 +1,9 @@
 package com.avioconsulting.mule.testing.transformers
 
-import org.mule.api.MuleEvent
-import org.mule.api.processor.MessageProcessor
+import org.mule.runtime.core.api.event.CoreEvent
+import org.mule.runtime.core.api.processor.Processor
 
-class ClosureCurrierNoop implements ClosureCurrier<MessageProcessor> {
+class ClosureCurrierNoop implements ClosureCurrier<Processor> {
     @Override
     boolean isOnlyArgumentToBeCurried(Closure closure) {
         return false
@@ -11,8 +11,8 @@ class ClosureCurrierNoop implements ClosureCurrier<MessageProcessor> {
 
     @Override
     Closure curryClosure(Closure closure,
-                         MuleEvent muleEvent,
-                         MessageProcessor messageProcessor) {
+                         CoreEvent muleEvent,
+                         Processor messageProcessor) {
         closure
     }
 }

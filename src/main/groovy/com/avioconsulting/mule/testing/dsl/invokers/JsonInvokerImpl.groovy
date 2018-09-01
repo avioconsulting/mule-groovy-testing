@@ -7,9 +7,8 @@ import com.avioconsulting.mule.testing.transformers.OutputTransformer
 import com.avioconsulting.mule.testing.transformers.StringInputTransformer
 import com.avioconsulting.mule.testing.transformers.json.input.JacksonInputTransformer
 import com.avioconsulting.mule.testing.transformers.json.output.JacksonOutputTransformer
-import org.mule.MessageExchangePattern
-import org.mule.api.MuleEvent
-import org.mule.construct.Flow
+import org.mule.runtime.core.api.construct.Flow
+import org.mule.runtime.core.api.event.CoreEvent
 
 class JsonInvokerImpl implements JsonInvoker, Invoker {
     private OutputTransformer transformBeforeCallingFlow
@@ -84,7 +83,7 @@ class JsonInvokerImpl implements JsonInvoker, Invoker {
         }
     }
 
-    MuleEvent getEvent() {
+    CoreEvent getEvent() {
         def input = outputOnly ? null : this.inputObject
         def event = eventFactory.getMuleEventWithPayload(input,
                                                          flow.name,
@@ -98,7 +97,7 @@ class JsonInvokerImpl implements JsonInvoker, Invoker {
         }
     }
 
-    def transformOutput(MuleEvent event) {
+    def transformOutput(CoreEvent event) {
         if (inputOnly) {
             return
         }

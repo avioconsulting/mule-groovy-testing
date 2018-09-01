@@ -5,8 +5,8 @@ import com.avioconsulting.mule.testing.mulereplacements.MuleMessageTransformer
 import com.avioconsulting.mule.testing.payloadvalidators.IPayloadValidator
 import com.avioconsulting.mule.testing.transformers.ClosureMuleMessageHandler
 import groovy.xml.XmlUtil
-import org.mule.api.MuleEvent
-import org.mule.api.processor.MessageProcessor
+import org.mule.runtime.core.api.event.CoreEvent
+import org.mule.runtime.core.api.processor.Processor
 
 class XMLGroovyParserTransformer extends XMLTransformer implements MuleMessageTransformer,
         ClosureMuleMessageHandler {
@@ -20,8 +20,8 @@ class XMLGroovyParserTransformer extends XMLTransformer implements MuleMessageTr
         this.closure = closure
     }
 
-    MuleEvent transform(MuleEvent muleEvent,
-                        MessageProcessor messageProcessor) {
+    CoreEvent transform(CoreEvent muleEvent,
+                        Processor messageProcessor) {
         validateContentType(muleEvent,
                             messageProcessor)
         def xmlString = muleEvent.messageAsString

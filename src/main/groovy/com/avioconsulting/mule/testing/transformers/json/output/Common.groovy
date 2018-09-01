@@ -2,7 +2,7 @@ package com.avioconsulting.mule.testing.transformers.json.output
 
 import com.avioconsulting.mule.testing.EventFactory
 import com.avioconsulting.mule.testing.transformers.OutputTransformer
-import org.mule.api.MuleEvent
+import org.mule.runtime.core.api.event.CoreEvent
 
 abstract class Common implements OutputTransformer {
     private boolean useStreaming
@@ -15,8 +15,8 @@ abstract class Common implements OutputTransformer {
 
     abstract String getJsonOutput(input)
 
-    MuleEvent transformOutput(Object input,
-                              MuleEvent originalMuleEvent) {
+    CoreEvent transformOutput(Object input,
+                              CoreEvent originalMuleEvent) {
         def jsonString = getJsonOutput(input)
         def messageProps = [
                 'content-type': 'application/json; charset=utf-8'

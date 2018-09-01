@@ -4,9 +4,9 @@ import com.avioconsulting.mule.testing.EventFactory
 import com.avioconsulting.mule.testing.EventFactoryImpl
 import com.avioconsulting.mule.testing.payloadvalidators.ContentTypeCheckDisabledValidator
 import com.avioconsulting.mule.testing.payloadvalidators.HttpListenerPayloadValidator
-import org.mule.api.MuleContext
-import org.mule.api.MuleEvent
-import org.mule.construct.Flow
+import org.mule.runtime.core.api.MuleContext
+import org.mule.runtime.core.api.construct.Flow
+import org.mule.runtime.core.api.event.CoreEvent
 
 class FlowRunnerImpl implements FlowRunner, BatchRunner {
     private final MuleContext muleContext
@@ -55,7 +55,7 @@ class FlowRunnerImpl implements FlowRunner, BatchRunner {
     }
 
     def withOutputHttpStatus(Closure closure) {
-        withOutputEvent { MuleEvent outputEvent ->
+        withOutputEvent { CoreEvent outputEvent ->
             if (outputEvent == null) {
                 throw new Exception(
                         'A null event was returned (filter?) so No HTTP status was returned from your flow. With the real flow, an HTTP status of 200 will usually be set by default so this test is usually not required.')
@@ -78,7 +78,7 @@ class FlowRunnerImpl implements FlowRunner, BatchRunner {
         invoker = invoker.withNewPayloadValidator(new ContentTypeCheckDisabledValidator(invoker.payloadValidator))
     }
 
-    MuleEvent getEvent() {
+    CoreEvent getEvent() {
         assert invoker: 'Need to specify a proper format! (e.g. json)'
         def code = closure.rehydrate(invoker, this, this)
         code.resolveStrategy = Closure.DELEGATE_ONLY
@@ -90,7 +90,7 @@ class FlowRunnerImpl implements FlowRunner, BatchRunner {
         event
     }
 
-    def transformOutput(MuleEvent event) {
+    def transformOutput(CoreEvent event) {
         def response = null
         // filters return null events
         if (event != null) {

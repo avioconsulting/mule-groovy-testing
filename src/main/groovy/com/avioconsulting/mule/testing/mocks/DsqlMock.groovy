@@ -3,9 +3,9 @@ package com.avioconsulting.mule.testing.mocks
 import com.avioconsulting.mule.testing.EventFactory
 import com.avioconsulting.mule.testing.mulereplacements.MockProcess
 import com.avioconsulting.mule.testing.payloadvalidators.IPayloadValidator
-import org.mule.api.MuleContext
-import org.mule.api.MuleEvent
-import org.mule.api.processor.MessageProcessor
+import org.mule.runtime.core.api.MuleContext
+import org.mule.runtime.core.api.event.CoreEvent
+import org.mule.runtime.core.api.processor.Processor
 
 class DsqlMock implements MockProcess {
     @Lazy
@@ -27,8 +27,8 @@ class DsqlMock implements MockProcess {
         this.closure = closure
     }
 
-    MuleEvent process(MuleEvent muleEvent,
-                      MessageProcessor processor) {
+    CoreEvent process(CoreEvent muleEvent,
+                      Processor processor) {
         assert processor.hasProperty(
                 'query'): "Tried to get DSQL 'query' field from class ${processor.class} but it was not found. Most DevKit based DSQL processors have a private field with a setter only. Check the class and examine what might have changed."
         def query = processor.query

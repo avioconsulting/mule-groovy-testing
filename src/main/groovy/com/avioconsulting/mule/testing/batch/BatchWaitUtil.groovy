@@ -2,7 +2,7 @@ package com.avioconsulting.mule.testing.batch
 
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
-import org.mule.api.MuleContext
+import org.mule.runtime.core.api.MuleContext
 
 class BatchWaitUtil {
     private final MuleContext muleContext

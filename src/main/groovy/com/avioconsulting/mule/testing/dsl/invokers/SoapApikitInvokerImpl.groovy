@@ -3,10 +3,9 @@ package com.avioconsulting.mule.testing.dsl.invokers
 import com.avioconsulting.mule.testing.EventFactory
 import groovy.util.logging.Log4j2
 import groovy.xml.XmlUtil
-import org.mule.api.MuleContext
-import org.mule.api.MuleEvent
-import org.mule.api.transport.PropertyScope
-import org.mule.construct.Flow
+import org.mule.runtime.core.api.MuleContext
+import org.mule.runtime.core.api.construct.Flow
+import org.mule.runtime.core.api.event.CoreEvent
 
 import javax.xml.namespace.QName
 import javax.xml.soap.MessageFactory
@@ -29,7 +28,7 @@ class SoapApikitInvokerImpl extends SoapInvokerBaseImpl {
     }
 
     @Override
-    MuleEvent getEvent() {
+    CoreEvent getEvent() {
         def doc = jaxbHelper.getMarshalledDocument(this.inputObject)
         def soapFactory = MessageFactory.newInstance()
         def msg = soapFactory.createMessage()

@@ -1,19 +1,19 @@
 package com.avioconsulting.mule.testing.payloadvalidators
 
-import org.mule.api.MuleEvent
-import org.mule.api.processor.MessageProcessor
+import org.mule.runtime.core.api.event.CoreEvent
+import org.mule.runtime.core.api.processor.Processor
 
 class VmPayloadValidator implements IPayloadValidator,
         PayloadHelper {
-    boolean isPayloadTypeValidationRequired(MessageProcessor vm) {
+    boolean isPayloadTypeValidationRequired(Processor vm) {
         true
     }
 
-    boolean isContentTypeValidationRequired(MessageProcessor vm) {
+    boolean isContentTypeValidationRequired(Processor vm) {
         return false
     }
 
-    void validateContentType(MuleEvent event, List<String> validContentTypes) {
+    void validateContentType(CoreEvent event, List<String> validContentTypes) {
     }
 
     void validatePayloadType(Object payload) {

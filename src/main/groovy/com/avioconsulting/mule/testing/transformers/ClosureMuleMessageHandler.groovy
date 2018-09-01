@@ -1,10 +1,10 @@
 package com.avioconsulting.mule.testing.transformers
 
-import org.mule.api.MuleEvent
+import org.mule.runtime.core.api.event.CoreEvent
 
 trait ClosureMuleMessageHandler {
     Closure withMuleEvent(Closure closure,
-                          MuleEvent event) {
-        closure.parameterTypes.last() == MuleEvent ? closure.rcurry(event) : closure
+                          CoreEvent event) {
+        closure.parameterTypes.last() == CoreEvent ? closure.rcurry(event) : closure
     }
 }

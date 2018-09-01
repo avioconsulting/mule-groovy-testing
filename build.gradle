@@ -90,12 +90,14 @@ artifacts {
 }
 
 dependencies {
-    def muleVersion = '3.9.1'
-    compile group: 'com.mulesoft.muleesb', name: 'mule-core-ee', version: muleVersion
-    ['devkit-support', 'client', 'json'].each { mod ->
-        compile "org.mule.modules:mule-module-${mod}:${muleVersion}"
+    def muleVersion = '4.1.2'
+    //compile "com.mulesoft.mule.distributions:mule-ee-bom:${muleVersion}"
+    compile "com.mulesoft.mule.runtime:mule-core-ee:${muleVersion}"
+    compile "com.mulesoft.mule.runtime.modules:mule-modules-all:${muleVersion}"
+    compile "com.mulesoft.mule.distributions:mule-services-all:${muleVersion}"
+    compile("org.mule.distributions:mule-module-embedded-impl:${muleVersion}") {
+        exclude module: 'mule-runtime-impl-bom'
     }
-    compile group: 'com.mulesoft.muleesb.modules', name: 'mule-module-batch-ee', version: muleVersion
     compile 'xalan:xalan:2.7.2'
     // 3.9.1 is bundled with this Groovy version
     compile 'org.codehaus.groovy:groovy-all:2.4.4'
@@ -120,5 +122,5 @@ dependencies {
     // if you try and run tests from Studio or another IDE where every Mule server lib is on
     // the classpath
     // see GroovyTestingArtifactContext for more details
-    testRuntime group: 'com.mulesoft.muleesb.transports', name: 'mule-transport-wmq-ee', version: muleVersion
+    //testRuntime group: 'com.mulesoft.muleesb.transports', name: 'mule-transport-wmq-ee', version: muleVersion
 }

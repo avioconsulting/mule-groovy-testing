@@ -1,11 +1,11 @@
 package com.avioconsulting.mule.testing.mulereplacements
 
 import com.avioconsulting.mule.testing.mulereplacements.namespacefix.AnnotatedNamespaceHandlerResolver
-import org.mule.api.MuleContext
-import org.mule.config.ConfigResource
-import org.mule.config.spring.MuleArtifactContext
-import org.mule.config.spring.OptionalObjectsController
-import org.mule.config.spring.util.LaxInstantiationStrategyWrapper
+import org.mule.runtime.config.internal.MuleArtifactContext
+import org.mule.runtime.config.internal.OptionalObjectsController
+import org.mule.runtime.config.internal.util.LaxInstantiationStrategyWrapper
+import org.mule.runtime.core.api.MuleContext
+import org.mule.runtime.core.api.config.ConfigResource
 import org.springframework.beans.BeansException
 import org.springframework.beans.factory.support.BeanDefinitionReader
 import org.springframework.beans.factory.support.CglibSubclassingInstantiationStrategy
@@ -40,7 +40,7 @@ class GroovyTestingArtifactContext extends MuleArtifactContext {
         factory
     }
 
-    @Override
+    //@Override
     protected BeanDefinitionReader createBeanDefinitionReader(DefaultListableBeanFactory beanFactory) {
         def reader = super.createBeanDefinitionReader(beanFactory)
         assert reader instanceof XmlBeanDefinitionReader

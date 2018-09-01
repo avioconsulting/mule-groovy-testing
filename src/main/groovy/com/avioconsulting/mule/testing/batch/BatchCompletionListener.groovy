@@ -1,11 +1,11 @@
 package com.avioconsulting.mule.testing.batch
 
-import com.mulesoft.module.batch.api.BatchJobResult
-import com.mulesoft.module.batch.api.notification.BatchNotification
-import com.mulesoft.module.batch.api.notification.BatchNotificationListener
+import com.mulesoft.mule.runtime.module.batch.api.BatchJobResult
+import com.mulesoft.mule.runtime.module.batch.api.notification.BatchNotification
+import com.mulesoft.mule.runtime.module.batch.api.notification.BatchNotificationListener
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
-import org.mule.api.context.notification.ServerNotification
+import org.mule.runtime.api.notification.CustomNotification
 
 class BatchCompletionListener implements BatchNotificationListener {
     protected static final Logger logger = LogManager.getLogger(BatchCompletionListener)
@@ -42,7 +42,7 @@ class BatchCompletionListener implements BatchNotificationListener {
     }
 
     @Override
-    void onNotification(ServerNotification serverNotification) {
+    void onNotification(CustomNotification serverNotification) {
         def batchNotification = serverNotification as BatchNotification
         if (throwUnderlyingException && recordFailedActions.contains(batchNotification.action)) {
             // batchNotification.exception is a BatchException containing the real cause

@@ -4,7 +4,7 @@ import com.avioconsulting.mule.testing.EventFactory
 import com.avioconsulting.mule.testing.payloadvalidators.IPayloadValidator
 import com.avioconsulting.mule.testing.transformers.xml.JAXBMarshalHelper
 import com.avioconsulting.mule.testing.transformers.xml.XMLMessageBuilder
-import org.mule.api.MuleEvent
+import org.mule.runtime.core.api.event.CoreEvent
 
 abstract class SoapInvokerBaseImpl implements Invoker, SoapInvoker {
     protected inputObject
@@ -26,7 +26,7 @@ abstract class SoapInvokerBaseImpl implements Invoker, SoapInvoker {
     }
 
     @Override
-    def transformOutput(MuleEvent event) {
+    def transformOutput(CoreEvent event) {
         def incomingMessage = event.message
         def payload = incomingMessage.payload
         jaxbHelper.unmarshal(payload)

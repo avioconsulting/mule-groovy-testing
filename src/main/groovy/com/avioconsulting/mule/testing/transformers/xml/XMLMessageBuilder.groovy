@@ -1,8 +1,7 @@
 package com.avioconsulting.mule.testing.transformers.xml
 
 import com.avioconsulting.mule.testing.EventFactory
-import org.mule.MessageExchangePattern
-import org.mule.api.MuleEvent
+import org.mule.runtime.core.api.event.CoreEvent
 
 import javax.xml.stream.XMLInputFactory
 
@@ -39,8 +38,8 @@ class XMLMessageBuilder {
         this.eventFactory = eventFactory
     }
 
-    MuleEvent build(Reader reader,
-                    MuleEvent rewriteEvent,
+    CoreEvent build(Reader reader,
+                    CoreEvent rewriteEvent,
                     Integer httpStatus = null) {
         def payload = getPayload(reader)
         constructXMLMessage(rewriteEvent,
@@ -48,7 +47,7 @@ class XMLMessageBuilder {
                             payload)
     }
 
-    MuleEvent build(Reader reader,
+    CoreEvent build(Reader reader,
                     String flowName,
                     Integer httpStatus = null) {
         def payload = getPayload(reader)
@@ -74,7 +73,7 @@ class XMLMessageBuilder {
         depthXmlStreamReaderKlass.newInstance(xmlReader)
     }
 
-    private MuleEvent constructXMLMessage(MuleEvent rewriteEvent,
+    private CoreEvent constructXMLMessage(CoreEvent rewriteEvent,
                                           Integer httpStatus,
                                           Object payload) {
         def messageProps = getXmlProperties(httpStatus)
@@ -83,7 +82,7 @@ class XMLMessageBuilder {
                                              messageProps)
     }
 
-    private MuleEvent constructXMLMessage(String flowName,
+    private CoreEvent constructXMLMessage(String flowName,
                                           Integer httpStatus,
                                           Object payload) {
         def messageProps = getXmlProperties(httpStatus)

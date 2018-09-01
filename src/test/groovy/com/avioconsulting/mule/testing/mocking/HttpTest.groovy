@@ -9,7 +9,6 @@ import groovy.json.JsonSlurper
 import groovy.util.logging.Log4j2
 import org.junit.Test
 import org.mule.api.MessagingException
-import org.mule.module.http.internal.request.DefaultHttpRequester
 
 import java.util.concurrent.TimeoutException
 

@@ -1,14 +1,10 @@
 package com.avioconsulting.mule.testing.mulereplacements
 
-import com.avioconsulting.mule.testing.mulereplacements.endpoints.OverrideEndpointFactory
 import com.avioconsulting.mule.testing.mulereplacements.namespacefix.WrappedNamespaceHandler
 import groovy.util.logging.Log4j2
 import net.sf.cglib.proxy.Enhancer
-import org.mule.api.AnnotatedObject
-import org.mule.api.endpoint.EndpointFactory
-import org.mule.api.processor.MessageProcessor
-import org.mule.construct.Flow
-import org.mule.processor.chain.InterceptingChainLifecycleWrapper
+import org.mule.runtime.core.api.construct.Flow
+import org.mule.runtime.core.api.processor.Processor
 import org.springframework.beans.BeanInstantiationException
 import org.springframework.beans.BeansException
 import org.springframework.beans.factory.BeanFactory
@@ -22,9 +18,7 @@ import java.lang.reflect.Method
 @Log4j2
 class MockProxyInstantiationStrategy implements InstantiationStrategy {
     private static final Map<String, Integer> noMocking = [
-            'com.mulesoft.weave.mule.WeaveMessageProcessor': 1,
-            (Flow.name)                                    : 1,
-            (InterceptingChainLifecycleWrapper.name)       : 1
+            (Flow.name): 1
     ]
     public static final String SPRING_PROPERTY_XML_FLOW_LISTENER = 'messageSource'
 
@@ -45,12 +39,15 @@ class MockProxyInstantiationStrategy implements InstantiationStrategy {
         // need to change the endpoint factory for VMs, etc.
         if (EndpointFactory.isAssignableFrom(beanKlass)) {
             def underlying = wrapped.instantiate(bd, beanName, owner)
-            assert underlying instanceof EndpointFactory
-            return new OverrideEndpointFactory(underlying,
-                                               mockingConfiguration)
+            assert false : 'deal with factory'
+//            assert underlying instanceof EndpointFactory
+//            return new OverrideEndpointFactory(underlying,
+//                                               mockingConfiguration)
         }
         try {
-            if (MessageProcessor.isAssignableFrom(beanKlass) && !noMocking.containsKey(beanKlass.name)) {
+            // need to change the endpoint factory for VMs, etc.
+            if (Processor.isAssignableFrom(beanKlass) && !noMocking.containsKey(beanKlass.name)) {
+                // TODO: Deal with annotated
                 def missingConnectorName = AnnotatedObject.isAssignableFrom(beanKlass) ? null :
                         bd.getAttribute(WrappedNamespaceHandler.ANNOTATION_NAME_ATTRIBUTE) as String
                 return Enhancer.create(beanKlass, new MockMethodInterceptor(this.mockingConfiguration,
@@ -90,7 +87,7 @@ class MockProxyInstantiationStrategy implements InstantiationStrategy {
                 props.removePropertyValue(SPRING_PROPERTY_XML_FLOW_LISTENER)
             }
         }
-        if (MessageProcessor.isAssignableFrom(beanKlass) && !noMocking.containsKey(beanKlass.name)) {
+        if (Processor.isAssignableFrom(beanKlass) && !noMocking.containsKey(beanKlass.name)) {
             def missingConnectorName = AnnotatedObject.isAssignableFrom(beanKlass) ? null :
                     bd.getAttribute(WrappedNamespaceHandler.ANNOTATION_NAME_ATTRIBUTE) as String
             try {

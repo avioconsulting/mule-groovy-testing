@@ -2,10 +2,10 @@ package com.avioconsulting.mule.testing.transformers.http
 
 import com.avioconsulting.mule.testing.mocks.HttpRequestInfo
 import com.avioconsulting.mule.testing.transformers.ClosureCurrier
-import org.mule.api.MuleEvent
-import org.mule.module.http.internal.request.DefaultHttpRequester
+import org.mule.runtime.core.api.event.CoreEvent
+import org.mule.runtime.core.api.processor.Processor
 
-class HttpClosureCurrier implements ClosureCurrier<DefaultHttpRequester> {
+class HttpClosureCurrier implements ClosureCurrier<Processor> {
     @Override
     boolean isOnlyArgumentToBeCurried(Closure closure) {
         closure.parameterTypes.size() == 1 && shouldCurry(closure)
@@ -13,8 +13,9 @@ class HttpClosureCurrier implements ClosureCurrier<DefaultHttpRequester> {
 
     @Override
     Closure curryClosure(Closure closure,
-                         MuleEvent muleEvent,
-                         DefaultHttpRequester messageProcessor) {
+                         CoreEvent muleEvent,
+                         Processor messageProcessor) {
+        assert false : ' http requester class??'
         if (shouldCurry(closure)) {
             def requestInfo = new HttpRequestInfo(messageProcessor.method,
                                                   getFullPath(muleEvent,
@@ -32,22 +33,22 @@ class HttpClosureCurrier implements ClosureCurrier<DefaultHttpRequester> {
         closure.parameterTypes.last() == HttpRequestInfo
     }
 
-    private static Map getQueryParams(MuleEvent muleEvent,
-                                      DefaultHttpRequester httpRequester) {
+    private static Map getQueryParams(CoreEvent muleEvent,
+                                      Object httpRequester) {
         def requestBuilder = httpRequester.requestBuilder
         // make it easier to compare
         new HashMap(requestBuilder.getQueryParams(muleEvent))
     }
 
-    private static Map getHeaders(MuleEvent muleEvent,
-                                  DefaultHttpRequester httpRequester) {
+    private static Map getHeaders(CoreEvent muleEvent,
+                                  Object httpRequester) {
         def requestBuilder = httpRequester.requestBuilder
         // make it easier to compare
         new HashMap(requestBuilder.getHeaders(muleEvent))
     }
 
-    private static String getFullPath(MuleEvent muleEvent,
-                                      DefaultHttpRequester httpRequester) {
+    private static String getFullPath(CoreEvent muleEvent,
+                                      Object httpRequester) {
         def requestBuilder = httpRequester.requestBuilder
         requestBuilder.replaceUriParams(httpRequester.path, muleEvent)
     }

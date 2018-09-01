@@ -3,9 +3,8 @@ package com.avioconsulting.mule.testing.junit
 import com.avioconsulting.mule.testing.OpenPortLocator
 import com.avioconsulting.mule.testing.dsl.invokers.FlowRunner
 import com.avioconsulting.mule.testing.dsl.invokers.FlowRunnerImpl
-import org.mule.api.MuleMessage
-import org.mule.api.transport.PropertyScope
-import org.mule.construct.Flow
+import org.mule.runtime.api.message.Message
+import org.mule.runtime.core.api.construct.Flow
 
 abstract class BaseApiKitTest extends BaseJunitTest {
     private static final String TEST_PORT_PROPERTY = 'avio.test.http.port'
@@ -87,7 +86,7 @@ abstract class BaseApiKitTest extends BaseJunitTest {
         runner.transformOutput(outputEvent)
     }
 
-    private def setHttpProps(MuleMessage message,
+    private def setHttpProps(Message message,
                              String method,
                              String path,
                              Map queryParams) {

@@ -1,10 +1,10 @@
 package com.avioconsulting.mule.testing.mulereplacements
 
-import org.mule.api.MuleContext
-import org.mule.api.config.ConfigurationException
-import org.mule.config.ConfigResource
-import org.mule.config.spring.OptionalObjectsController
-import org.mule.config.spring.SpringXmlConfigurationBuilder
+import org.mule.runtime.config.internal.OptionalObjectsController
+import org.mule.runtime.config.internal.SpringXmlConfigurationBuilder
+import org.mule.runtime.core.api.MuleContext
+import org.mule.runtime.core.api.config.ConfigResource
+import org.mule.runtime.core.api.config.ConfigurationException
 import org.springframework.context.ApplicationContext
 
 // main purpose of this class is to override the application context with one
@@ -18,7 +18,8 @@ class GroovyTestingSpringXmlConfigurationBuilder extends SpringXmlConfigurationB
         this.mockingConfiguration = mockingConfiguration
     }
 
-    @Override
+    // TODO: protected/private status has changed, will need to tweak this
+    //@Override
     protected ApplicationContext doCreateApplicationContext(MuleContext muleContext,
                                                             ConfigResource[] configResources,
                                                             OptionalObjectsController optionalObjectsController) {
