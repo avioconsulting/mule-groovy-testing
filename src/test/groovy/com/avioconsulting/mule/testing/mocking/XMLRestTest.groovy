@@ -4,8 +4,7 @@ import com.avioconsulting.mule.testing.OverrideConfigList
 import com.avioconsulting.mule.testing.junit.BaseJunitTest
 import groovy.json.JsonOutput
 import org.junit.Test
-import org.mule.api.MuleEvent
-import org.mule.api.transport.PropertyScope
+import org.mule.runtime.core.api.event.CoreEvent
 
 import static groovy.test.GroovyAssert.shouldFail
 import static org.hamcrest.Matchers.*
@@ -55,11 +54,11 @@ class XMLRestTest extends BaseJunitTest implements OverrideConfigList {
     @Test
     void mockViaMap_withMuleMsg() {
         // arrange
-        MuleEvent sentMessage = null
+        CoreEvent sentMessage = null
         mockRestHttpCall('SomeSystem Call') {
             xml {
                 whenCalledWithMapAsXml { Map input,
-                                         MuleEvent message ->
+                                         CoreEvent message ->
                     sentMessage = message
                     [
                             rootElementResponse: [
@@ -192,11 +191,11 @@ class XMLRestTest extends BaseJunitTest implements OverrideConfigList {
     @Test
     void mockGroovyXmlParser_withMuleMsg() {
         // arrange
-        MuleEvent sentMessage = null
+        CoreEvent sentMessage = null
         mockRestHttpCall('SomeSystem Call') {
             xml {
                 whenCalledWithGroovyXmlParser { Node input,
-                                                MuleEvent muleEvent ->
+                                                CoreEvent muleEvent ->
                     sentMessage = muleEvent
                     def node = new Node(null, 'rootElementResponse')
                     node.appendNode('reply', 22)

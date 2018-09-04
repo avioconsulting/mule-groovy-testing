@@ -3,7 +3,6 @@ package com.avioconsulting.mule.testing.mocking
 import com.avioconsulting.mule.testing.OverrideConfigList
 import com.avioconsulting.mule.testing.junit.BaseJunitTest
 import org.junit.Test
-import org.mule.modules.salesforce.bulk.EnrichedUpsertResult
 
 import static groovy.test.GroovyAssert.shouldFail
 import static org.hamcrest.Matchers.*
@@ -25,12 +24,14 @@ class SalesForceTest extends BaseJunitTest implements OverrideConfigList {
             }
         }
 
+        assert false: 'SFDC module/EnrichedUpsertResult'
+
         // act
         def results = runFlow('sfdcUpsert') {
             java {
                 inputPayload([howdy: 123])
             }
-        } as List<EnrichedUpsertResult>
+        } as List<Object>
 
         // assert
         assert input
@@ -82,13 +83,14 @@ class SalesForceTest extends BaseJunitTest implements OverrideConfigList {
                 successful(false)
             }
         }
+        assert false: 'SFDC module/EnrichedUpsertResult'
 
         // act
         def results = runFlow('sfdcUpsert') {
             java {
                 inputPayload([howdy: 123])
             }
-        } as List<EnrichedUpsertResult>
+        } as List<Object>
 
         // assert
         assertThat results.size(),
@@ -108,13 +110,15 @@ class SalesForceTest extends BaseJunitTest implements OverrideConfigList {
                 failed()
             }
         }
+        assert false: 'SFDC module/EnrichedUpsertResult'
+
 
         // act
         def results = runFlow('sfdcUpsert') {
             java {
                 inputPayload([howdy: 123])
             }
-        } as List<EnrichedUpsertResult>
+        } as List<Object>
 
         // assert
         assertThat results.size(),

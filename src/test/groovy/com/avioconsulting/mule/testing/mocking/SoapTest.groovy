@@ -9,9 +9,7 @@ import com.avioconsulting.schemas.soaptest.v1.SOAPTestRequestType
 import com.avioconsulting.schemas.soaptest.v1.SOAPTestResponseType
 import groovy.xml.DOMBuilder
 import org.junit.Test
-import org.mule.api.MessagingException
-import org.mule.api.MuleEvent
-import org.mule.api.transport.PropertyScope
+import org.mule.runtime.core.api.event.CoreEvent
 
 import javax.xml.namespace.QName
 import java.util.concurrent.TimeoutException
@@ -59,10 +57,10 @@ class SoapTest extends BaseJunitTest implements OverrideConfigList {
     @Test
     void with_mule_message() {
         // arrange
-        MuleEvent sentMessage = null
+        CoreEvent sentMessage = null
         mockSoapCall('A SOAP Call') {
             whenCalledWithJaxb(SOAPTestRequestType) { SOAPTestRequestType request,
-                                                      MuleEvent msg ->
+                                                      CoreEvent msg ->
                 sentMessage = msg
                 def response = new SOAPTestResponseType()
                 response.details = 'yes!'
@@ -244,7 +242,7 @@ class SoapTest extends BaseJunitTest implements OverrideConfigList {
         assertThat exception,
                    is(instanceOf(SoapFaultException))
         // for intellij
-        assert false : 'soapfaultexception??'
+        assert false: 'soapfaultexception??'
         //assert exception instanceof SoapFaultException
         assertThat exception.message,
                    is(equalTo('Error with one or more zip codes: .'))

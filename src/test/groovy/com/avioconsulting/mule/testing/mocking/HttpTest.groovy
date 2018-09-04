@@ -8,7 +8,6 @@ import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 import groovy.util.logging.Log4j2
 import org.junit.Test
-import org.mule.api.MessagingException
 
 import java.util.concurrent.TimeoutException
 
@@ -475,7 +474,7 @@ class HttpTest extends BaseJunitTest implements OverrideConfigList {
                     inputPayload([foo: 123])
                 }
             }
-        } as MessagingException
+        }
 
         // assert
         assertThat result.message,
@@ -682,7 +681,7 @@ class HttpTest extends BaseJunitTest implements OverrideConfigList {
                     inputPayload([foo: 123])
                 }
             }
-        } as MessagingException
+        }
 
         // assert
         assertThat result.cause,
@@ -709,7 +708,7 @@ class HttpTest extends BaseJunitTest implements OverrideConfigList {
                     inputPayload([foo: 123])
                 }
             }
-        } as MessagingException
+        }
 
         // assert
         assertThat result.cause,

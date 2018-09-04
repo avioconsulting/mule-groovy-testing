@@ -4,7 +4,7 @@ import com.avioconsulting.mule.testing.OverrideConfigList
 import com.avioconsulting.mule.testing.SampleJacksonInput
 import com.avioconsulting.mule.testing.junit.BaseJunitTest
 import org.junit.Test
-import org.mule.api.MuleEvent
+import org.mule.runtime.core.api.event.CoreEvent
 
 import static groovy.test.GroovyAssert.shouldFail
 import static org.hamcrest.Matchers.*
@@ -18,7 +18,7 @@ class OutputEventHttpStatusTest extends BaseJunitTest implements OverrideConfigL
     @Test
     void getAccessToEvent() {
         // arrange
-        MuleEvent saveOutput = null
+        CoreEvent saveOutput = null
         def input = new SampleJacksonInput()
         input.foobar = 123
 
@@ -28,7 +28,7 @@ class OutputEventHttpStatusTest extends BaseJunitTest implements OverrideConfigL
                 inputPayload(input)
             }
             disableContentTypeCheck()
-            withOutputEvent { MuleEvent output ->
+            withOutputEvent { CoreEvent output ->
                 saveOutput = output
             }
         }

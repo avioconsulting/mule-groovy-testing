@@ -5,7 +5,7 @@ import com.avioconsulting.mule.testing.SampleJacksonInput
 import com.avioconsulting.mule.testing.SampleJacksonOutput
 import com.avioconsulting.mule.testing.junit.BaseJunitTest
 import org.junit.Test
-import org.mule.api.MuleEvent
+import org.mule.runtime.core.api.event.CoreEvent
 
 import static org.hamcrest.Matchers.equalTo
 import static org.hamcrest.Matchers.is
@@ -28,7 +28,7 @@ class WithInputEventTest extends BaseJunitTest implements OverrideConfigList {
                 inputPayload(input, SampleJacksonOutput)
             }
 
-            withInputEvent { MuleEvent inputEvent ->
+            withInputEvent { CoreEvent inputEvent ->
                 inputEvent.setFlowVariable('foo', 123)
             }
         } as SampleJacksonOutput
