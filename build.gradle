@@ -115,4 +115,9 @@ dependencies {
     testCompile group: 'org.mule.modules', name: 'mule-module-ws', version: muleVersion
     testRuntime group: 'org.mule.modules', name: 'mule-module-apikit', version: muleVersion
     testRuntime group: 'org.mule.modules', name: 'mule-module-apikit-soap', version: '1.0.3'
+    // our tests do not actually depend on WMQ, but having a library here with an external dependency
+    // that's not in Maven/Gradle (and not in the classpath) exposes a problem that will occur
+    // if you try and run tests from Studio or another IDE where every Mule server lib is on
+    // the classpath
+    testRuntime group: 'com.mulesoft.muleesb.transports', name: 'mule-transport-wmq-ee', version: muleVersion
 }
