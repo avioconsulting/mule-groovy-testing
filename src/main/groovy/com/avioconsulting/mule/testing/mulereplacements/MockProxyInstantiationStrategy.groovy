@@ -20,7 +20,7 @@ import java.lang.reflect.Constructor
 import java.lang.reflect.Method
 
 @Log4j2
-class OurProxyInstantiator implements InstantiationStrategy {
+class MockProxyInstantiationStrategy implements InstantiationStrategy {
     private static final Map<String, Integer> noMocking = [
             'com.mulesoft.weave.mule.WeaveMessageProcessor': 1,
             (Flow.name)                                    : 1,
@@ -31,8 +31,8 @@ class OurProxyInstantiator implements InstantiationStrategy {
     private final InstantiationStrategy wrapped
     private final MockingConfiguration mockingConfiguration
 
-    OurProxyInstantiator(InstantiationStrategy wrapped,
-                         MockingConfiguration mockingConfiguration) {
+    MockProxyInstantiationStrategy(InstantiationStrategy wrapped,
+                                   MockingConfiguration mockingConfiguration) {
         this.wrapped = wrapped
         this.mockingConfiguration = mockingConfiguration
     }
