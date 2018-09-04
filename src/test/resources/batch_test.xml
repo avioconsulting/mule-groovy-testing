@@ -39,7 +39,8 @@ http://www.mulesoft.org/schema/mule/batch http://www.mulesoft.org/schema/mule/ba
             </dw:transform-message>
             <set-property propertyName="Content-Type" value="application/json"/>
             <logger message="Making HTTP call from onComplete" level="INFO"/>
-            <http:request config-ref="SomeSystem" path="/some_path" method="POST" doc:name="SomeSystem Call from Complete"/>
+            <http:request config-ref="SomeSystem" path="/some_path" method="POST"
+                          doc:name="SomeSystem Call from Complete"/>
             <logger message="we executed the onComplete HTTP request" level="INFO"/>
         </batch:on-complete>
     </batch:job>
@@ -53,7 +54,7 @@ http://www.mulesoft.org/schema/mule/batch http://www.mulesoft.org/schema/mule/ba
             </batch:step>
         </batch:process-records>
         <batch:on-complete>
-            <set-payload value="#[flowVars.originalPayload]" />
+            <set-payload value="#[flowVars.originalPayload]"/>
             <batch:execute name="theJob"/>
         </batch:on-complete>
     </batch:job>
@@ -67,7 +68,7 @@ http://www.mulesoft.org/schema/mule/batch http://www.mulesoft.org/schema/mule/ba
             </batch:step>
         </batch:process-records>
         <batch:on-complete>
-            <set-payload value="#[flowVars.originalPayload]" />
+            <set-payload value="#[flowVars.originalPayload]"/>
             <enricher target="#[flowVars.trash">
                 <batch:execute name="theJob"/>
             </enricher>

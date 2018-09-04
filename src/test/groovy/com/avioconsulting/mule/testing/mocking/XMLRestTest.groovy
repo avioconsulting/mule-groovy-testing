@@ -5,7 +5,6 @@ import com.avioconsulting.mule.testing.junit.BaseJunitTest
 import groovy.json.JsonOutput
 import org.junit.Test
 import org.mule.api.MuleEvent
-import org.mule.api.MuleMessage
 import org.mule.api.transport.PropertyScope
 
 import static groovy.test.GroovyAssert.shouldFail

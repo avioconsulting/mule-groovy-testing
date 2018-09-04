@@ -1,7 +1,7 @@
 package com.avioconsulting.mule.testing.invocation
 
-import com.avioconsulting.mule.testing.junit.BaseJunitTest
 import com.avioconsulting.mule.testing.OverrideConfigList
+import com.avioconsulting.mule.testing.junit.BaseJunitTest
 import groovy.util.logging.Log4j2
 import org.junit.Ignore
 import org.junit.Test

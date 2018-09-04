@@ -17,7 +17,11 @@ http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee
                         wsdlUrl="soap/test.wsdl"
                         serviceName="SOAPTestService"
                         portName="SOAPTestService" doc:name="APIkit SOAP: Configuration"/>
-    <ws:consumer-config name="Web_Service_Consumer_Weather" wsdlLocation="https://graphical.weather.gov/xml/DWMLgen/wsdl/ndfdXML.wsdl" service="ndfdXML" port="ndfdXMLPort" serviceAddress="https://graphical.weather.gov/xml/SOAP_server/ndfdXMLserver.php" doc:name="Web Service Consumer"/>
+    <ws:consumer-config name="Web_Service_Consumer_Weather"
+                        wsdlLocation="https://graphical.weather.gov/xml/DWMLgen/wsdl/ndfdXML.wsdl" service="ndfdXML"
+                        port="ndfdXMLPort"
+                        serviceAddress="https://graphical.weather.gov/xml/SOAP_server/ndfdXMLserver.php"
+                        doc:name="Web Service Consumer"/>
 
     <flow name="soaptestFlow">
         <dw:transform-message doc:name="Transform Message">

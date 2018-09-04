@@ -3,7 +3,7 @@ package com.avioconsulting.mule.testing.dsl.mocking.sfdc
 class UpsertResponseUtil {
     @Lazy
     private static Class upsertResultKlass = {
-       UpsertResponseUtil.classLoader.loadClass('com.sforce.soap.partner.UpsertResult')
+        UpsertResponseUtil.classLoader.loadClass('com.sforce.soap.partner.UpsertResult')
     }()
 
     @Lazy

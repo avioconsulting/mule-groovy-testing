@@ -1,7 +1,7 @@
 package com.avioconsulting.mule.testing.mocking
 
-import com.avioconsulting.mule.testing.junit.BaseJunitTest
 import com.avioconsulting.mule.testing.OverrideConfigList
+import com.avioconsulting.mule.testing.junit.BaseJunitTest
 import org.junit.Test
 import org.mule.modules.salesforce.bulk.EnrichedUpsertResult
 

@@ -1,7 +1,7 @@
 package com.avioconsulting.mule.testing.invocation
 
-import com.avioconsulting.mule.testing.junit.BaseJunitTest
 import com.avioconsulting.mule.testing.OverrideConfigList
+import com.avioconsulting.mule.testing.junit.BaseJunitTest
 import org.junit.Test
 
 import static groovy.test.GroovyAssert.shouldFail

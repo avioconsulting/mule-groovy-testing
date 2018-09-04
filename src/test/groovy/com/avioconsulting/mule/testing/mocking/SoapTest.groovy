@@ -8,11 +8,9 @@ import com.avioconsulting.schemas.soaptest.v1.ObjectFactory
 import com.avioconsulting.schemas.soaptest.v1.SOAPTestRequestType
 import com.avioconsulting.schemas.soaptest.v1.SOAPTestResponseType
 import groovy.xml.DOMBuilder
-import groovy.xml.MarkupBuilder
 import org.junit.Test
 import org.mule.api.MessagingException
 import org.mule.api.MuleEvent
-import org.mule.api.MuleMessage
 import org.mule.api.transport.PropertyScope
 import org.mule.module.ws.consumer.SoapFaultException
 

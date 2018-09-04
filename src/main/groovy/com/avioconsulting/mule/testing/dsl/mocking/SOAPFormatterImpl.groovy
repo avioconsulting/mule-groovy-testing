@@ -7,10 +7,8 @@ import com.avioconsulting.mule.testing.transformers.TransformerChain
 import com.avioconsulting.mule.testing.transformers.http.HttpConnectorErrorTransformer
 import com.avioconsulting.mule.testing.transformers.xml.SoapFaultTransformer
 import groovy.xml.DOMBuilder
-import groovy.xml.MarkupBuilder
 
 import javax.xml.namespace.QName
-import javax.xml.parsers.DocumentBuilderFactory
 
 class SOAPFormatterImpl extends XMLFormatterImpl implements SOAPFormatter {
     // don't want to tie ourselves to a given version of CXF/ws by expressing a compile dependency

@@ -24,7 +24,7 @@ http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/jso
         <set-property propertyName="Content-Type" value="application/json"/>
         <http:request config-ref="SomeSystem" path="/some_path" method="POST" doc:name="SomeSystem Call"/>
         <dw:transform-message doc:name="Transform Message">
-            <dw:input-payload mimeType="application/json" />
+            <dw:input-payload mimeType="application/json"/>
             <dw:set-payload><![CDATA[%dw 1.0
 %output application/json
 ---
@@ -253,7 +253,7 @@ http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/jso
                 <http:request-builder>
                     <http:query-param paramName="stuff" value="#[123]"/>
                     <http:uri-param paramName="howdy" value="there"/>
-                    <http:header headerName="theHeaderName" value="theHeaderValue" />
+                    <http:header headerName="theHeaderName" value="theHeaderValue"/>
                 </http:request-builder>
             </http:request>
         </enricher>

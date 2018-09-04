@@ -1,6 +1,6 @@
 package com.avioconsulting.mule.testing.mulereplacements.namespacefix
 
-import com.avioconsulting.mule.testing.mulereplacements.MockMethodInterceptor
+
 import com.avioconsulting.mule.testing.mulereplacements.MockingConfiguration
 import org.springframework.beans.factory.config.BeanDefinition
 import org.springframework.beans.factory.xml.NamespaceHandler

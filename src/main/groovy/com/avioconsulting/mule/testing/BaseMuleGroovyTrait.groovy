@@ -222,9 +222,9 @@ trait BaseMuleGroovyTrait {
     }
 
     def mockGeneric(MockingConfiguration mockingConfiguration,
-                      MuleContext muleContext,
-                      String connectorName,
-                      @DelegatesTo(StandardRequestResponse) Closure closure) {
+                    MuleContext muleContext,
+                    String connectorName,
+                    @DelegatesTo(StandardRequestResponse) Closure closure) {
         def eventFactory = new EventFactoryImpl(muleContext)
         def formatterChoice = new GenericRequestResponseChoiceImpl(eventFactory)
         def code = closure.rehydrate(formatterChoice, this, this)
