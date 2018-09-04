@@ -119,5 +119,6 @@ dependencies {
     // that's not in Maven/Gradle (and not in the classpath) exposes a problem that will occur
     // if you try and run tests from Studio or another IDE where every Mule server lib is on
     // the classpath
+    // see GroovyTestingArtifactContext for more details
     testRuntime group: 'com.mulesoft.muleesb.transports', name: 'mule-transport-wmq-ee', version: muleVersion
 }

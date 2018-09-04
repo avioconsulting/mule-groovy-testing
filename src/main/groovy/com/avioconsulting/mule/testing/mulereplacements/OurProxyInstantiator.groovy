@@ -9,6 +9,7 @@ import org.mule.api.endpoint.EndpointFactory
 import org.mule.api.processor.MessageProcessor
 import org.mule.construct.Flow
 import org.mule.processor.chain.InterceptingChainLifecycleWrapper
+import org.springframework.beans.BeanInstantiationException
 import org.springframework.beans.BeansException
 import org.springframework.beans.factory.BeanFactory
 import org.springframework.beans.factory.FactoryBean
@@ -41,14 +42,14 @@ class OurProxyInstantiator implements InstantiationStrategy {
                        String beanName,
                        BeanFactory owner) throws BeansException {
         def beanKlass = bd.beanClass
+        // need to change the endpoint factory for VMs, etc.
+        if (EndpointFactory.isAssignableFrom(beanKlass)) {
+            def underlying = wrapped.instantiate(bd, beanName, owner)
+            assert underlying instanceof EndpointFactory
+            return new OverrideEndpointFactory(underlying,
+                                               mockingConfiguration)
+        }
         try {
-            // need to change the endpoint factory for VMs, etc.
-            if (EndpointFactory.isAssignableFrom(beanKlass)) {
-                def underlying = wrapped.instantiate(bd, beanName, owner)
-                assert underlying instanceof EndpointFactory
-                return new OverrideEndpointFactory(underlying,
-                                                   mockingConfiguration)
-            }
             if (MessageProcessor.isAssignableFrom(beanKlass) && !noMocking.containsKey(beanKlass.name)) {
                 def missingConnectorName = AnnotatedObject.isAssignableFrom(beanKlass) ? null :
                         bd.getAttribute(WrappedNamespaceHandler.ANNOTATION_NAME_ATTRIBUTE) as String
@@ -61,15 +62,17 @@ class OurProxyInstantiator implements InstantiationStrategy {
                 return Enhancer.create(beanKlass,
                                        new MockFactoryBeanInterceptor(this.mockingConfiguration))
             }
-            return wrapped.instantiate(bd,
-                                       beanName,
-                                       owner)
         }
         catch (e) {
-            log.error("While intercepting bean class ${beanKlass.name}/bean ${beanName}",
-                      e)
-            throw e
+            // throwing a class that inherits BeansException is important because the optional objects controller,
+            // which is 1 layer above us, will look for that and ignore the exception if the object is optional
+            throw new BeanInstantiationException(beanKlass,
+                                                 'Unable to instantiate',
+                                                 e)
         }
+        return wrapped.instantiate(bd,
+                                   beanName,
+                                   owner)
     }
 
     @Override
@@ -90,12 +93,21 @@ class OurProxyInstantiator implements InstantiationStrategy {
         if (MessageProcessor.isAssignableFrom(beanKlass) && !noMocking.containsKey(beanKlass.name)) {
             def missingConnectorName = AnnotatedObject.isAssignableFrom(beanKlass) ? null :
                     bd.getAttribute(WrappedNamespaceHandler.ANNOTATION_NAME_ATTRIBUTE) as String
-            return new Enhancer().with {
-                superclass = beanKlass
-                callback = new MockMethodInterceptor(this.mockingConfiguration,
-                                                     missingConnectorName)
-                create(ctor.parameterTypes,
-                       args)
+            try {
+                return new Enhancer().with {
+                    superclass = beanKlass
+                    callback = new MockMethodInterceptor(this.mockingConfiguration,
+                                                         missingConnectorName)
+                    create(ctor.parameterTypes,
+                           args)
+                }
+            }
+            catch (e) {
+                // throwing a class that inherits BeansException is important because the optional objects controller,
+                // which is 1 layer above us, will look for that and ignore the exception if the object is optional
+                throw new BeanInstantiationException(beanKlass,
+                                                     'Unable to instantiate',
+                                                     e)
             }
         }
         return wrapped.instantiate(bd,

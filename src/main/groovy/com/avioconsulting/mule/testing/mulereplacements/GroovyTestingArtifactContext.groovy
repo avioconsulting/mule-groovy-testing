@@ -29,11 +29,14 @@ class GroovyTestingArtifactContext extends MuleArtifactContext {
     @Override
     protected DefaultListableBeanFactory createBeanFactory() {
         def factory = super.createBeanFactory()
+        def ourStrategy = new OurProxyInstantiator(new CglibSubclassingInstantiationStrategy(),
+                                                   this.mockingConfiguration)
         // allows us to change implementations w/ proxy objects that we can use for mocking
-        def existInstantiationStrategy = new LaxInstantiationStrategyWrapper(new CglibSubclassingInstantiationStrategy(),
-                                                                             optionalObjectsController)
-        factory.instantiationStrategy = new OurProxyInstantiator(existInstantiationStrategy,
-                                                                 this.mockingConfiguration)
+        // it's important to have LaxInstantiationStrategyWrapper sit outside our wrapper because
+        // it facilitates the optional objects process if necessary. See the catch statements in
+        // OurProxyInstantiator for more details
+        factory.instantiationStrategy = new LaxInstantiationStrategyWrapper(ourStrategy,
+                                                                            optionalObjectsController)
         factory
     }
 
