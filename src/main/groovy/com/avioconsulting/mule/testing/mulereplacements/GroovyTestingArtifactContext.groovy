@@ -59,12 +59,12 @@ class GroovyTestingArtifactContext extends LazyMuleArtifactContext {
     }
 
     //@Override
-    protected BeanDefinitionReader createBeanDefinitionReader(DefaultListableBeanFactory beanFactory) {
-        def reader = super.createBeanDefinitionReader(beanFactory)
-        assert reader instanceof XmlBeanDefinitionReader
-        // need to fix annotations for mocking purposes because annotations on the connectors (e.g. doc:name from
-        // xml) is the only way to uniquely identify the instance of the connector to mock
-        reader.namespaceHandlerResolver = new AnnotatedNamespaceHandlerResolver(reader.namespaceHandlerResolver)
-        reader
-    }
+//    protected BeanDefinitionReader createBeanDefinitionReader(DefaultListableBeanFactory beanFactory) {
+//        def reader = super.createBeanDefinitionReader(beanFactory)
+//        assert reader instanceof XmlBeanDefinitionReader
+//        // need to fix annotations for mocking purposes because annotations on the connectors (e.g. doc:name from
+//        // xml) is the only way to uniquely identify the instance of the connector to mock
+//        reader.namespaceHandlerResolver = new AnnotatedNamespaceHandlerResolver(reader.namespaceHandlerResolver)
+//        reader
+//    }
 }

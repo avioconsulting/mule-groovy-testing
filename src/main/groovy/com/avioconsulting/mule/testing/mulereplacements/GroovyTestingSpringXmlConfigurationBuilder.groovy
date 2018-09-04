@@ -7,6 +7,7 @@ import org.mule.runtime.core.api.config.ConfigurationException
 import org.mule.runtime.core.api.config.bootstrap.ArtifactType
 import org.mule.runtime.core.internal.context.DefaultMuleContext
 import org.mule.runtime.core.internal.context.MuleContextWithRegistries
+import org.mule.runtime.module.extension.api.manager.DefaultExtensionManagerFactory
 
 import static org.mule.runtime.deployment.model.internal.application.MuleApplicationClassLoader.resolveContextArtifactPluginClassLoaders
 
@@ -23,6 +24,7 @@ class GroovyTestingSpringXmlConfigurationBuilder extends SpringXmlConfigurationB
 
     @Override
     protected void doConfigure(MuleContext muleContext) throws Exception {
+        new DefaultExtensionManagerFactory().create(muleContext)
         def muleArtifactContext = createApplicationContext(muleContext)
         def registry = new SpringRegistry(muleArtifactContext,
                                           muleContext,
