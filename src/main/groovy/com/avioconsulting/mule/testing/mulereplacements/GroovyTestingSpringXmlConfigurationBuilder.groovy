@@ -20,13 +20,13 @@ class GroovyTestingSpringXmlConfigurationBuilder extends SpringXmlConfigurationB
 
     // TODO: protected/private status has changed, will need to tweak this
     //@Override
-    protected ApplicationContext doCreateApplicationContext(MuleContext muleContext,
-                                                            ConfigResource[] configResources,
-                                                            OptionalObjectsController optionalObjectsController) {
-        // we have to override MuleArtifactContext (that's the only difference)
-        new GroovyTestingArtifactContext(muleContext,
-                                         configResources,
-                                         optionalObjectsController,
-                                         mockingConfiguration)
-    }
+//    protected ApplicationContext doCreateApplicationContext(MuleContext muleContext,
+//                                                            ConfigResource[] configResources,
+//                                                            OptionalObjectsController optionalObjectsController) {
+//        // we have to override MuleArtifactContext (that's the only difference)
+//        new GroovyTestingArtifactContext(muleContext,
+//                                         configResources,
+//                                         optionalObjectsController,
+//                                         mockingConfiguration)
+//    }
 }
