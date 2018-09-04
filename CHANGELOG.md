@@ -1,3 +1,6 @@
+# 1.0.25
+* Fix issue with optional Spring objects when running tests from Studio, which results in the engine's total classpath being available during an Eclipse run
+
 # 1.0.24
 * Support mocking flow refs and other factory bean instantiated stuff
 
