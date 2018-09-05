@@ -6,18 +6,15 @@ import com.avioconsulting.mule.testing.dsl.mocking.*
 import com.avioconsulting.mule.testing.dsl.mocking.sfdc.Choice
 import com.avioconsulting.mule.testing.dsl.mocking.sfdc.ChoiceImpl
 import com.avioconsulting.mule.testing.mocks.StandardMock
-import com.avioconsulting.mule.testing.mulereplacements.GroovyTestingSpringXmlConfigurationBuilder
 import com.avioconsulting.mule.testing.mulereplacements.MockingConfiguration
 import com.avioconsulting.mule.testing.payloadvalidators.SOAPPayloadValidator
+import org.apache.commons.io.FileUtils
 import org.apache.commons.lang.NotImplementedException
 import org.apache.logging.log4j.Logger
 import org.mule.runtime.core.api.MuleContext
-import org.mule.runtime.core.api.config.ConfigurationBuilder
-import org.mule.runtime.core.api.config.builders.SimpleConfigurationBuilder
 import org.mule.runtime.core.api.construct.Flow
-import org.mule.runtime.core.api.context.DefaultMuleContextFactory
 import org.mule.runtime.core.api.event.CoreEvent
-import org.mule.runtime.core.internal.context.DefaultMuleContextBuilder
+import org.mule.runtime.module.launcher.MuleContainer
 
 // basic idea here is to have a trait that could be mixed in to any type of testing framework situation
 // this trait should be stateless
@@ -26,22 +23,38 @@ trait BaseMuleGroovyTrait {
 
     MuleContext createMuleContext(MockingConfiguration mockingConfiguration) {
         def directory = new File('.mule')
+        System.setProperty('mule.home',
+                           directory.absolutePath)
         logger.info "Checking for .mule directory at ${directory.absolutePath}"
-        if (directory.exists()) {
-            logger.info "Removing ${directory.absolutePath}"
-
-            directory.deleteDir()
+//        if (directory.exists()) {
+//            logger.info "Removing ${directory.absolutePath}"
+//            directory.deleteDir()
+//        }
+        // TODO: copy log4j in and re-enable removal
+        def domainsDir = new File(directory, 'domains')
+        domainsDir.mkdirs()
+        def appsDir = new File(directory, 'apps')
+        if (appsDir.exists()) {
+            appsDir.deleteDir()
         }
-        def contextFactory = new DefaultMuleContextFactory()
-        def muleContextBuilder = new DefaultMuleContextBuilder()
-        def configBuilders = [
-                new SimpleConfigurationBuilder(startUpProperties),
-                // certain processors like validation require this
-                new GroovyTestingSpringXmlConfigurationBuilder(configResources,
-                                                               mockingConfiguration)
-        ] as List<ConfigurationBuilder>
-        contextFactory.createMuleContext(configBuilders,
-                                         muleContextBuilder)
+        appsDir.mkdirs()
+        // TODO: Have to do this from maven deps (without api gateway since it seems to have a missing class and we do not need it anyways)
+//        FileUtils.copyDirectory(new File('/Applications/AnypointStudio_7.app/Contents/Eclipse/plugins/org.mule.tooling.server.4.1.2.ee_7.1.3.201805211611/mule/services'),
+//                                new File(directory,
+//                                         'services'))
+        def container = new MuleContainer()
+        container.start(false)
+        container.deploymentService.deployDomain(new File('src/test/resources/default').toURI())
+        container.deploymentService.deploy(new File('src/test/resources/41test').toURI())
+//        def contextFactory = new DefaultMuleContextFactory()
+//        def muleContextBuilder = new DefaultMuleContextBuilder()
+//        def configBuilders = [
+//                new SimpleConfigurationBuilder(startUpProperties),
+//                // certain processors like validation require this
+//                new SpringXmlConfigurationBuilder(configResources)
+//        ] as List<ConfigurationBuilder>
+//        contextFactory.createMuleContext(configBuilders,
+//                                         muleContextBuilder)
     }
 
     Properties getStartUpProperties() {

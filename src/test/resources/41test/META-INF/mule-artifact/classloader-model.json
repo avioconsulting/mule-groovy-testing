@@ -1,0 +1,21 @@
+{
+  "version": "1.0.0",
+  "artifactCoordinates": {
+    "groupId": "com.mycompany",
+    "artifactId": "testproject412",
+    "version": "1.0.0-SNAPSHOT",
+    "type": "jar",
+    "classifier": "mule-application"
+  },
+  "dependencies": [
+    {
+      "artifactCoordinates": {
+        "groupId": "org.codehaus.groovy",
+        "artifactId": "groovy-all",
+        "version": "2.4.4",
+        "type": "jar"
+      },
+      "uri": "repository/org/codehaus/groovy/groovy-all/2.4.4/groovy-all-2.4.4.jar"
+    }
+  ]
+}
