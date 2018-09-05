@@ -25,6 +25,9 @@ class GroovyTestingSpringXmlConfigurationBuilder extends SpringXmlConfigurationB
     @Override
     protected void doConfigure(MuleContext muleContext) throws Exception {
         new DefaultExtensionManagerFactory().create(muleContext)
+        super.doConfigure(muleContext)
+        return
+        // TODO: Re-enable this (for mocking, etc.) after we get the basics working
         def muleArtifactContext = createApplicationContext(muleContext)
         def registry = new SpringRegistry(muleArtifactContext,
                                           muleContext,
@@ -32,33 +35,33 @@ class GroovyTestingSpringXmlConfigurationBuilder extends SpringXmlConfigurationB
                                           ((DefaultMuleContext) muleContext).getLifecycleInterceptor())
         ((MuleContextWithRegistries) muleContext).addRegistry(registry)
     }
-
-    private MuleArtifactContext createApplicationContext(MuleContext muleContext) throws Exception {
-        def applicationObjectcontroller = new DefaultOptionalObjectsController()
-        def muleArtifactContext = doCreateApplicationContext(muleContext,
-                                                             new ArtifactDeclaration(),
-                                                             applicationObjectcontroller)
-        serviceConfigurators.each { c ->
-            c.configure(muleContext.customizationService)
-        }
-        muleArtifactContext
-    }
-
-
-    private MuleArtifactContext doCreateApplicationContext(MuleContext muleContext,
-                                                           ArtifactDeclaration artifactDeclaration,
-                                                           OptionalObjectsController optionalObjectsController) {
-        // we have to override MuleArtifactContext (that's the only difference)
-        new GroovyTestingArtifactContext(muleContext,
-                                         artifactConfigResources,
-                                         artifactDeclaration,
-                                         optionalObjectsController,
-                                         getArtifactProperties(),
-                                         ArtifactType.APP,
-                                         resolveContextArtifactPluginClassLoaders(),
-                                         Optional.empty(),
-                                         Optional.empty(),
-                                         false,
-                                         this.mockingConfiguration)
-    }
+//
+//    private MuleArtifactContext createApplicationContext(MuleContext muleContext) throws Exception {
+//        def applicationObjectcontroller = new DefaultOptionalObjectsController()
+//        def muleArtifactContext = doCreateApplicationContext(muleContext,
+//                                                             new ArtifactDeclaration(),
+//                                                             applicationObjectcontroller)
+//        serviceConfigurators.each { c ->
+//            c.configure(muleContext.customizationService)
+//        }
+//        muleArtifactContext
+//    }
+//
+//
+//    private MuleArtifactContext doCreateApplicationContext(MuleContext muleContext,
+//                                                           ArtifactDeclaration artifactDeclaration,
+//                                                           OptionalObjectsController optionalObjectsController) {
+//        // we have to override MuleArtifactContext (that's the only difference)
+//        new GroovyTestingArtifactContext(muleContext,
+//                                         artifactConfigResources,
+//                                         artifactDeclaration,
+//                                         optionalObjectsController,
+//                                         getArtifactProperties(),
+//                                         ArtifactType.APP,
+//                                         resolveContextArtifactPluginClassLoaders(),
+//                                         Optional.empty(),
+//                                         Optional.empty(),
+//                                         false,
+//                                         this.mockingConfiguration)
+//    }
 }
