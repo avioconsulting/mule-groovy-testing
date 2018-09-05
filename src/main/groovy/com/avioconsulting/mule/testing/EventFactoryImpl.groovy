@@ -1,61 +1,62 @@
 package com.avioconsulting.mule.testing
 
+import com.avioconsulting.mule.testing.mulereplacements.ContainerContainer
+import org.mule.runtime.api.component.location.ComponentLocation
 import org.mule.runtime.api.message.Message
-import org.mule.runtime.core.api.MuleContext
+import org.mule.runtime.core.api.construct.Flow
+import org.mule.runtime.core.api.construct.FlowConstruct
 import org.mule.runtime.core.api.event.CoreEvent
+import org.mule.runtime.core.internal.event.DefaultEventContext
 
 class EventFactoryImpl implements EventFactory {
-    private final MuleContext muleContext
+    private final ContainerContainer muleContext
 
-    EventFactoryImpl(MuleContext muleContext) {
+    EventFactoryImpl(ContainerContainer muleContext) {
         this.muleContext = muleContext
     }
 
     CoreEvent getMuleEvent(Message muleMessage,
-                           String flowName,
-                           Object messageExchangePattern) {
-        def flowConstruct = muleContext.registry.lookupFlowConstruct(flowName)
-        assert flowConstruct: "Flow with name '${flowName}' was not found. Are you using the right flow name?"
-//        new DefaultMuleEvent(muleMessage,
-//                             messageExchangePattern,
-//                             flowConstruct)
+                           String flowName) {
+        def flowOpt = muleContext.registry.lookupByName(flowName) as Optional<Flow>
+        assert flowOpt.present: "Flow with name '${flowName}' was not found. Are you using the right flow name?"
+        def flowConstruct = flowOpt.get() as FlowConstruct
+        def context = new DefaultEventContext(flowConstruct,
+                                              (ComponentLocation) null,
+                                              null,
+                                              Optional.empty())
+        CoreEvent.builder(context)
+                .message(muleMessage)
+                .build()
     }
 
     @Override
     CoreEvent getMuleEvent(Message muleMessage,
                            CoreEvent rewriteEvent) {
-//        new DefaultMuleEvent(muleMessage,
-//                             rewriteEvent)
+        CoreEvent.builder(rewriteEvent)
+                .message(muleMessage)
+                .build()
+    }
+
+    @Override
+    CoreEvent getMuleEventWithPayload(Object payload,
+                                      String flowName) {
+        def message = Message.builder()
+                .value(payload)
+                .build()
+        getMuleEvent(message,
+                     flowName)
     }
 
     @Override
     CoreEvent getMuleEventWithPayload(Object payload,
                                       String flowName,
-                                      Object messageExchangePattern) {
-//        def message = new DefaultMuleMessage(payload,
-//                                             null,
-//                                             null,
-//                                             null,
-//                                             muleContext)
-//        getMuleEvent(message,
-//                     flowName,
-//                     messageExchangePattern)
-    }
-
-    @Override
-    CoreEvent getMuleEventWithPayload(Object payload,
-                                      String flowName,
-                                      Object messageExchangePattern,
                                       Map properties) {
-
-//        def message = new DefaultMuleMessage(payload,
-//                                             properties,
-//                                             null,
-//                                             null,
-//                                             muleContext)
-//        getMuleEvent(message,
-//                     flowName,
-//                     messageExchangePattern)
+        def message = Message.builder()
+                .value(payload)
+                .attributes(properties)
+                .build()
+        getMuleEvent(message,
+                     flowName)
     }
 
     @Override
@@ -70,11 +71,11 @@ class EventFactoryImpl implements EventFactory {
     CoreEvent getMuleEventWithPayload(Object payload,
                                       CoreEvent rewriteEvent,
                                       Map messageProps) {
-//        def message = new DefaultMuleMessage(payload,
-//                                             messageProps,
-//                                             null,
-//                                             null,
-//                                             muleContext)
-//        getMuleEvent(message, rewriteEvent)
+        def message = Message.builder()
+                .value(payload)
+                .attributes(properties)
+                .build()
+        getMuleEvent(message,
+                     rewriteEvent)
     }
 }

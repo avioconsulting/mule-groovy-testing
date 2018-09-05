@@ -8,6 +8,7 @@ import com.avioconsulting.mule.testing.dsl.mocking.HttpRequestResponseChoice
 import com.avioconsulting.mule.testing.dsl.mocking.SOAPFormatter
 import com.avioconsulting.mule.testing.dsl.mocking.StandardRequestResponse
 import com.avioconsulting.mule.testing.dsl.mocking.sfdc.Choice
+import com.avioconsulting.mule.testing.mulereplacements.ContainerContainer
 import com.avioconsulting.mule.testing.mulereplacements.MockingConfiguration
 import groovy.util.logging.Log4j2
 import org.apache.logging.log4j.Logger
@@ -15,13 +16,15 @@ import org.junit.Before
 import org.junit.runner.RunWith
 import org.mule.runtime.core.api.MuleContext
 import org.mule.runtime.core.api.event.CoreEvent
+import org.mule.runtime.module.launcher.MuleContainer
 
 // takes BaseMuleGroovyTrait and adds JUnit lifecycle/state
 // TODO: Use annotations to supply all the config stuff in startMule. That way Mule can be started before the test runs, which should make things more clear
 @Log4j2
 @RunWith(MuleGroovyJunitRunner)
 class BaseJunitTest implements BaseMuleGroovyTrait {
-    protected static MuleContext muleContext
+    protected static ContainerContainer muleContext
+    protected static boolean isStarted
     protected static TestingConfiguration currentTestingConfig
     private static MockingConfiguration mockingConfiguration
 
@@ -48,18 +51,14 @@ class BaseJunitTest implements BaseMuleGroovyTrait {
         if (newContextNeeded) {
             mockingConfiguration = new MockingConfiguration(this.keepListenersOnForTheseFlows())
             muleContext = createMuleContext(mockingConfiguration)
-            muleContext.start()
             currentTestingConfig = proposedTestingConfig
         }
         mockingConfiguration.clearMocks()
     }
 
     static void shutdownMule() {
-        if (muleContext && muleContext.started) {
-            muleContext.stop()
-            assert muleContext.stopped
-            muleContext.dispose()
-            assert muleContext.disposed
+        if (muleContext && isStarted) {
+            muleContext.muleContainer.stop()
         }
         muleContext = null
     }

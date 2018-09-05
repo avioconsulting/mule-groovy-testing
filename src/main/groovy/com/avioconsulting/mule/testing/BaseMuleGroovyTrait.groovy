@@ -6,12 +6,12 @@ import com.avioconsulting.mule.testing.dsl.mocking.*
 import com.avioconsulting.mule.testing.dsl.mocking.sfdc.Choice
 import com.avioconsulting.mule.testing.dsl.mocking.sfdc.ChoiceImpl
 import com.avioconsulting.mule.testing.mocks.StandardMock
+import com.avioconsulting.mule.testing.mulereplacements.ContainerContainer
 import com.avioconsulting.mule.testing.mulereplacements.MockingConfiguration
+import com.avioconsulting.mule.testing.mulereplacements.MuleRegistryListener
 import com.avioconsulting.mule.testing.payloadvalidators.SOAPPayloadValidator
-import org.apache.commons.io.FileUtils
 import org.apache.commons.lang.NotImplementedException
 import org.apache.logging.log4j.Logger
-import org.mule.runtime.core.api.MuleContext
 import org.mule.runtime.core.api.construct.Flow
 import org.mule.runtime.core.api.event.CoreEvent
 import org.mule.runtime.module.launcher.MuleContainer
@@ -21,7 +21,7 @@ import org.mule.runtime.module.launcher.MuleContainer
 trait BaseMuleGroovyTrait {
     abstract Logger getLogger()
 
-    MuleContext createMuleContext(MockingConfiguration mockingConfiguration) {
+    ContainerContainer createMuleContext(MockingConfiguration mockingConfiguration) {
         def directory = new File('.mule')
         System.setProperty('mule.home',
                            directory.absolutePath)
@@ -44,8 +44,12 @@ trait BaseMuleGroovyTrait {
 //                                         'services'))
         def container = new MuleContainer()
         container.start(false)
+        def registryListener = new MuleRegistryListener()
+        container.deploymentService.addDeploymentListener(registryListener)
         container.deploymentService.deployDomain(new File('src/test/resources/default').toURI())
         container.deploymentService.deploy(new File('src/test/resources/41test').toURI())
+        new ContainerContainer(registryListener.registry,
+                               container)
 //        def contextFactory = new DefaultMuleContextFactory()
 //        def muleContextBuilder = new DefaultMuleContextBuilder()
 //        def configBuilders = [
@@ -108,12 +112,13 @@ trait BaseMuleGroovyTrait {
         list.join(',')
     }
 
-    def runFlow(MuleContext muleContext,
+    def runFlow(ContainerContainer muleContext,
                 String flowName,
                 @DelegatesTo(FlowRunner) Closure closure) {
-        def flow = muleContext.registry.lookupFlowConstruct(flowName) as Flow
+        def flow = muleContext.registry.lookupByName(flowName) as Optional<Flow>
+        assert flow.present
         def runner = new FlowRunnerImpl(muleContext,
-                                        flow,
+                                        flow.get(),
                                         flowName)
         def code = closure.rehydrate(runner, this, this)
         code.resolveStrategy = Closure.DELEGATE_ONLY
@@ -124,7 +129,7 @@ trait BaseMuleGroovyTrait {
         runner.transformOutput(outputEvent)
     }
 
-    CoreEvent runSoapApikitFlow(MuleContext muleContext,
+    CoreEvent runSoapApikitFlow(ContainerContainer muleContext,
                                 String operation,
                                 String apiKitFlowName = 'api-main',
                                 @DelegatesTo(SoapInvoker) Closure closure) {
@@ -142,15 +147,15 @@ trait BaseMuleGroovyTrait {
                 event)
     }
 
-    CoreEvent runFlow(MuleContext muleContext,
+    CoreEvent runFlow(ContainerContainer muleContext,
                       String flowName,
                       CoreEvent event) {
-        def flow = muleContext.registry.lookupFlowConstruct(flowName)
-        assert flow instanceof Flow
-        flow.process(event)
+        def flowOpt = muleContext.registry.lookupByName(flowName) as Optional<Flow>
+        assert flowOpt.present: "Flow with name '${flowName}' was not found. Are you using the right flow name?"
+        flowOpt.get().process(event)
     }
 
-    def waitForBatchCompletion(MuleContext muleContext,
+    def waitForBatchCompletion(ContainerContainer muleContext,
                                List<String> jobsToWaitFor = null,
                                boolean throwUnderlyingException = false,
                                Closure closure) {
@@ -158,7 +163,7 @@ trait BaseMuleGroovyTrait {
         batchWaitUtil.waitFor(jobsToWaitFor, throwUnderlyingException, closure)
     }
 
-    def runBatch(MuleContext muleContext,
+    def runBatch(ContainerContainer muleContext,
                  String batchName,
                  List<String> jobsToWaitFor = null,
                  boolean throwUnderlyingException = false,
@@ -179,7 +184,7 @@ trait BaseMuleGroovyTrait {
     }
 
     def mockRestHttpCall(MockingConfiguration mockingConfiguration,
-                         MuleContext muleContext,
+                         ContainerContainer muleContext,
                          String connectorName,
                          @DelegatesTo(HttpRequestResponseChoice) Closure closure) {
         def eventFactory = new EventFactoryImpl(muleContext)
@@ -192,7 +197,7 @@ trait BaseMuleGroovyTrait {
     }
 
     def mockVmReceive(MockingConfiguration mockingConfiguration,
-                      MuleContext muleContext,
+                      ContainerContainer muleContext,
                       String connectorName,
                       @DelegatesTo(StandardRequestResponse) Closure closure) {
         def eventFactory = new EventFactoryImpl(muleContext)
@@ -206,7 +211,7 @@ trait BaseMuleGroovyTrait {
     }
 
     def mockGeneric(MockingConfiguration mockingConfiguration,
-                    MuleContext muleContext,
+                    ContainerContainer muleContext,
                     String connectorName,
                     @DelegatesTo(StandardRequestResponse) Closure closure) {
         def eventFactory = new EventFactoryImpl(muleContext)
@@ -220,7 +225,7 @@ trait BaseMuleGroovyTrait {
     }
 
     def mockSalesForceCall(MockingConfiguration mockingConfiguration,
-                           MuleContext muleContext,
+                           ContainerContainer muleContext,
                            String connectorName,
                            @DelegatesTo(Choice) Closure closure) {
         def eventFactory = new EventFactoryImpl(muleContext)
@@ -234,7 +239,7 @@ trait BaseMuleGroovyTrait {
     }
 
     def mockSoapCall(MockingConfiguration mockingConfiguration,
-                     MuleContext muleContext,
+                     ContainerContainer muleContext,
                      String connectorName,
                      @DelegatesTo(SOAPFormatter) Closure closure) {
         def eventFactory = new EventFactoryImpl(muleContext)

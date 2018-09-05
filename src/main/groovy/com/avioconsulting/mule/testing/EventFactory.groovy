@@ -7,8 +7,7 @@ interface EventFactory {
     // TODO: Try and avoid building messages everywhere too
     @Deprecated
     CoreEvent getMuleEvent(Message muleMessage,
-                           String flowName,
-                           Object messageExchangePattern)
+                           String flowName)
 
     // TODO: Try and avoid building messages everywhere too
     @Deprecated
@@ -16,12 +15,10 @@ interface EventFactory {
                            CoreEvent rewriteEvent)
 
     CoreEvent getMuleEventWithPayload(Object payload,
-                                      String flowName,
-                                      Object messageExchangePattern)
+                                      String flowName)
 
     CoreEvent getMuleEventWithPayload(Object payload,
                                       String flowName,
-                                      Object messageExchangePattern,
                                       Map properties)
 
     CoreEvent getMuleEventWithPayload(Object payload,
