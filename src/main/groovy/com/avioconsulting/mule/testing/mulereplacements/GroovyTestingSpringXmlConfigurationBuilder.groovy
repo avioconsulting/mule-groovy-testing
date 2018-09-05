@@ -16,6 +16,10 @@ import static org.mule.runtime.deployment.model.internal.application.MuleApplica
 class GroovyTestingSpringXmlConfigurationBuilder extends SpringXmlConfigurationBuilder {
     private final MockingConfiguration mockingConfiguration
 
+
+
+    // TODO: http://mule-4-architecture-documentation.us-e2.cloudhub.io/
+    
     GroovyTestingSpringXmlConfigurationBuilder(String configResources,
                                                MockingConfiguration mockingConfiguration) throws ConfigurationException {
         super(configResources)
