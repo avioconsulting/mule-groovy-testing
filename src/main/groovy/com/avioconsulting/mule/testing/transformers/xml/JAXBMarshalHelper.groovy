@@ -1,5 +1,6 @@
 package com.avioconsulting.mule.testing.transformers.xml
 
+import com.sun.org.apache.xalan.internal.xsltc.trax.TransformerFactoryImpl
 import groovy.util.logging.Log4j2
 import groovy.xml.XmlUtil
 import org.w3c.dom.Document
@@ -7,6 +8,11 @@ import org.w3c.dom.Document
 import javax.xml.bind.JAXBContext
 import javax.xml.bind.JAXBElement
 import javax.xml.parsers.DocumentBuilderFactory
+import javax.xml.stream.XMLStreamReader
+import javax.xml.transform.OutputKeys
+import javax.xml.transform.TransformerFactory
+import javax.xml.transform.stax.StAXSource
+import javax.xml.transform.stream.StreamResult
 
 @Log4j2
 class JAXBMarshalHelper {
@@ -52,7 +58,7 @@ class JAXBMarshalHelper {
 
     def unmarshal(Object payload) {
         def unmarshaller = this.jaxbContext.createUnmarshaller()
-        String payloadAsStr = null
+        String payloadAsStr
         switch (payload) {
         // until successful/alternate path is a string
             case String:
@@ -60,6 +66,19 @@ class JAXBMarshalHelper {
                 break
             case InputStream:
                 payloadAsStr = payload.text
+                break
+            case XMLStreamReader:
+                assert payload instanceof XMLStreamReader
+                // the default TransformerFactory.newInstance() method returned a transformer
+                // that does not work properly with StAXSource, so using one that is compatible
+                def transformer = TransformerFactory.newInstance(TransformerFactoryImpl.name,
+                                                                 Thread.currentThread().contextClassLoader)
+                        .newTransformer()
+                transformer.setOutputProperty(OutputKeys.INDENT, 'yes')
+                def writer = new StringWriter()
+                transformer.transform(new StAXSource(payload),
+                                      new StreamResult(writer))
+                payloadAsStr = writer.toString()
                 break
             default:
                 throw new Exception("do not know how to handle XML payload of ${payload.getClass().name}")

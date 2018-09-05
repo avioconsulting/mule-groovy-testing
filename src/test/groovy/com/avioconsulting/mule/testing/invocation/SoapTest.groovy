@@ -38,6 +38,27 @@ class SoapTest extends BaseJunitTest implements OverrideConfigList,
     }
 
     @Test
+    void no_payload_change() {
+        // arrange
+        def input = new SOAPTestRequest().with {
+            title = 'hello there'
+            approvalDate = getXmlDate(2018, 8, 07)
+            it
+        }
+
+        // act
+        def response = runFlow('soaptestFlowNoPayloadChange') {
+            soap {
+                inputJaxbPayload(input)
+            }
+        } as SOAPTestRequest
+
+        // assert
+        assertThat response.title,
+                   is(equalTo('hello there'))
+    }
+
+    @Test
     void input_output_messagepayloadasstring() {
         // arrange
         def input = new SOAPTestRequest().with {

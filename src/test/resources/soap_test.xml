@@ -50,6 +50,9 @@ http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee
         </dw:transform-message>
         <set-property propertyName="Content-Type" value="application/json"/>
     </flow>
+    <flow name="soaptestFlowNoPayloadChange">
+        <logger message="howdy"/>
+    </flow>
     <flow name="/some/soap/flow">
         <logger message="invoked" level="INFO"/>
         <dw:transform-message doc:name="Transform Message">

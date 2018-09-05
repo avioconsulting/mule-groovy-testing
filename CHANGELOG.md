@@ -1,3 +1,6 @@
+# 1.0.26
+* Tolerate an unaltered SOAP request payload (which is javax.xml.stream.XMLStreamReader, was preventing a test from executing successfully)
+
 # 1.0.25
 * Fix issue with optional Spring objects when running tests from Studio, which results in the engine's total classpath being available during an Eclipse run
 
