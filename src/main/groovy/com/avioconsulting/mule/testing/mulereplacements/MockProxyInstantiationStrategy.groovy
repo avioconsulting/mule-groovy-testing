@@ -37,13 +37,13 @@ class MockProxyInstantiationStrategy implements InstantiationStrategy {
                        BeanFactory owner) throws BeansException {
         def beanKlass = bd.beanClass
         // need to change the endpoint factory for VMs, etc.
-        if (EndpointFactory.isAssignableFrom(beanKlass)) {
-            def underlying = wrapped.instantiate(bd, beanName, owner)
-            assert false : 'deal with factory'
+//        if (EndpointFactory.isAssignableFrom(beanKlass)) {
+//            def underlying = wrapped.instantiate(bd, beanName, owner)
+//            assert false : 'deal with factory'
 //            assert underlying instanceof EndpointFactory
 //            return new OverrideEndpointFactory(underlying,
 //                                               mockingConfiguration)
-        }
+//        }
         try {
             // need to change the endpoint factory for VMs, etc.
             if (Processor.isAssignableFrom(beanKlass) && !noMocking.containsKey(beanKlass.name)) {
