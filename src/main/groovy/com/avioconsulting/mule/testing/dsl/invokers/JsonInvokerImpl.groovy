@@ -7,7 +7,6 @@ import com.avioconsulting.mule.testing.transformers.OutputTransformer
 import com.avioconsulting.mule.testing.transformers.StringInputTransformer
 import com.avioconsulting.mule.testing.transformers.json.input.JacksonInputTransformer
 import com.avioconsulting.mule.testing.transformers.json.output.JacksonOutputTransformer
-import org.mule.runtime.core.api.construct.Flow
 import org.mule.runtime.core.api.event.CoreEvent
 
 class JsonInvokerImpl implements JsonInvoker, Invoker {
@@ -18,11 +17,11 @@ class JsonInvokerImpl implements JsonInvoker, Invoker {
     private boolean inputOnly
     private final IPayloadValidator initialPayloadValidator
     private final EventFactory eventFactory
-    private final Flow flow
+    private final Object flow
 
     JsonInvokerImpl(IPayloadValidator initialPayloadValidator,
                     EventFactory eventFactory,
-                    Flow flow) {
+                    Object flow) {
         this.flow = flow
         this.eventFactory = eventFactory
         this.initialPayloadValidator = initialPayloadValidator

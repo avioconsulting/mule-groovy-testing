@@ -5,8 +5,6 @@ import com.avioconsulting.mule.testing.EventFactoryImpl
 import com.avioconsulting.mule.testing.mulereplacements.ContainerContainer
 import com.avioconsulting.mule.testing.payloadvalidators.ContentTypeCheckDisabledValidator
 import com.avioconsulting.mule.testing.payloadvalidators.HttpListenerPayloadValidator
-import org.mule.runtime.core.api.MuleContext
-import org.mule.runtime.core.api.construct.Flow
 import org.mule.runtime.core.api.event.CoreEvent
 
 class FlowRunnerImpl implements FlowRunner, BatchRunner {
@@ -16,11 +14,11 @@ class FlowRunnerImpl implements FlowRunner, BatchRunner {
     private Closure muleOutputEventHook = null
     private Closure withInputEvent = null
     private final EventFactory eventFactory
-    private final Flow flow
+    private final Object flow
     private final String flowName
 
     FlowRunnerImpl(ContainerContainer muleContext,
-                   Flow flowMessageProcessor,
+                   Object flowMessageProcessor,
                    String flowName) {
         this.flowName = flowName
         this.flow = flowMessageProcessor

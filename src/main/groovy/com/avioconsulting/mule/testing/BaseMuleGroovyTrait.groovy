@@ -20,14 +20,12 @@ import org.mule.maven.client.api.model.BundleScope
 import org.mule.maven.client.api.model.MavenConfiguration
 import org.mule.runtime.core.api.construct.Flow
 import org.mule.runtime.core.api.event.CoreEvent
-import org.mule.runtime.module.embedded.api.ContainerConfiguration
 import org.mule.runtime.module.embedded.api.Product
 import org.mule.runtime.module.embedded.internal.DefaultEmbeddedContainerBuilder
 import org.mule.runtime.module.embedded.internal.MavenContainerClassLoaderFactory
 import org.mule.runtime.module.embedded.internal.classloading.JdkOnlyClassLoaderFactory
-import org.mule.runtime.module.launcher.MuleContainer
-import org.mule.runtime.module.reboot.internal.DefaultMuleClassPathConfig
-import org.mule.runtime.module.reboot.internal.MuleContainerSystemClassLoader
+
+import static java.lang.System.setProperty
 
 // basic idea here is to have a trait that could be mixed in to any type of testing framework situation
 // this trait should be stateless
@@ -43,9 +41,7 @@ trait BaseMuleGroovyTrait {
             logger.info "Removing ${directory.absolutePath}"
             directory.deleteDir()
         }
-        def containerConfig = ContainerConfiguration.builder()
-                .containerFolder(directory)
-                .build()
+        setProperty("mule.mode.embedded", "true");
         // mule won't start without a log4j2 config
         def log4jResource = BaseMuleGroovyTrait.getResource('/log4j2-for-mule-home.xml')
         assert log4jResource
@@ -97,8 +93,6 @@ trait BaseMuleGroovyTrait {
             def containerKlass = containerClassLoader.loadClass("org.mule.runtime.module.launcher.MuleContainer")
             container = containerKlass.newInstance()
             container.start(false)
-            // TODO: We can't instantiate this ourselves because we'll end up inheriting from DeploymentService
-            // from the wrong classloader. THis isn't working though because it can't find the class
             def registryListenerKlass = containerClassLoader.loadClass(MuleRegistryListener.name)
             registryListener = registryListenerKlass.newInstance()
             container.deploymentService.addDeploymentListener(registryListener)
@@ -140,6 +134,7 @@ trait BaseMuleGroovyTrait {
             dep.bundleUri.toURL()
         }
         embeddedUrls.add(embeddedBundleImplDescriptor.bundleUri.toURL())
+        embeddedUrls.add(MuleRegistryListener.protectionDomain.codeSource.location)
         new URLClassLoader(embeddedUrls.toArray(new URL[0]),
                            parentClassLoader)
     }
