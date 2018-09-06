@@ -90,20 +90,25 @@ trait BaseMuleGroovyTrait {
         // work around this - https://jira.apache.org/jira/browse/LOG4J2-2152
         def preserve = Thread.currentThread().contextClassLoader
         Object container = null
+        Object registryListener = null
         try {
             Thread.currentThread().contextClassLoader = containerClassLoader
             // TODO: Hard coded name?
-            def containerKlass =containerClassLoader.loadClass("org.mule.runtime.module.launcher.MuleContainer")
+            def containerKlass = containerClassLoader.loadClass("org.mule.runtime.module.launcher.MuleContainer")
             container = containerKlass.newInstance()
+            container.start(false)
+            // TODO: We can't instantiate this ourselves because we'll end up inheriting from DeploymentService
+            // from the wrong classloader. THis isn't working though because it can't find the class
+            def registryListenerKlass = containerClassLoader.loadClass(MuleRegistryListener.name)
+            registryListener = registryListenerKlass.newInstance()
+            container.deploymentService.addDeploymentListener(registryListener)
         }
         finally {
             Thread.currentThread().contextClassLoader = preserve
         }
         Thread.currentThread().setContextClassLoader(containerClassLoader)
         assert container
-        container.start(false)
-        def registryListener = new MuleRegistryListener()
-        container.deploymentService.addDeploymentListener(registryListener)
+        assert registryListener
         // won't start apps without this domain there but it can be empty
         container.deploymentService.deployDomain(new File('src/test/resources/default').toURI())
         container.deploymentService.deploy(new File('src/test/resources/41test').toURI())
