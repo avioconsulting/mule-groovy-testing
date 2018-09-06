@@ -44,8 +44,11 @@ trait BaseMuleGroovyTrait {
 //                                         'services'))
         def container = new MuleContainer()
         container.start(false)
+        // one of the few ways to capture the registry (MuleContext is hidden now) in order to get flows
+        // to execute
         def registryListener = new MuleRegistryListener()
         container.deploymentService.addDeploymentListener(registryListener)
+        // won't start apps without this domain there but it can be empty
         container.deploymentService.deployDomain(new File('src/test/resources/default').toURI())
         container.deploymentService.deploy(new File('src/test/resources/41test').toURI())
         new ContainerContainer(registryListener.registry,
