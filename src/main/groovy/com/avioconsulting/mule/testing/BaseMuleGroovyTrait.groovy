@@ -13,7 +13,10 @@ import com.avioconsulting.mule.testing.payloadvalidators.SOAPPayloadValidator
 import org.apache.commons.io.FileUtils
 import org.apache.commons.lang.NotImplementedException
 import org.apache.logging.log4j.Logger
+import org.mule.maven.client.api.MavenClient
 import org.mule.maven.client.api.MavenClientProvider
+import org.mule.maven.client.api.model.BundleDescriptor
+import org.mule.maven.client.api.model.BundleScope
 import org.mule.maven.client.api.model.MavenConfiguration
 import org.mule.runtime.core.api.construct.Flow
 import org.mule.runtime.core.api.event.CoreEvent
@@ -21,6 +24,7 @@ import org.mule.runtime.module.embedded.api.ContainerConfiguration
 import org.mule.runtime.module.embedded.api.Product
 import org.mule.runtime.module.embedded.internal.DefaultEmbeddedContainerBuilder
 import org.mule.runtime.module.embedded.internal.MavenContainerClassLoaderFactory
+import org.mule.runtime.module.embedded.internal.classloading.JdkOnlyClassLoaderFactory
 import org.mule.runtime.module.launcher.MuleContainer
 
 // basic idea here is to have a trait that could be mixed in to any type of testing framework situation
@@ -55,7 +59,6 @@ trait BaseMuleGroovyTrait {
             appsDir.deleteDir()
         }
         appsDir.mkdirs()
-        def container = new MuleContainer()
         def mavenClientProvider = MavenClientProvider.discoverProvider(DefaultEmbeddedContainerBuilder.classLoader)
         // TODO: No hard coding, use Maven settings file??
         def repo = new File('/Users/brady/.m2/repository')
@@ -70,12 +73,29 @@ trait BaseMuleGroovyTrait {
         def services = classLoaderFactory.getServices('4.1.2',
                                                       Product.MULE_EE)
         def servicesDir = new File(directory, 'services')
-        services.findAll { svcUrl ->
-            !svcUrl.text.contains('api-gateway-contract-service')
-        }.each { svcUrl ->
+        services.each { svcUrl ->
             FileUtils.copyFileToDirectory(new File(svcUrl.toURI()),
                                           servicesDir)
         }
+        def containerModulesClassLoader = classLoaderFactory.create('4.1.2',
+                                                                    Product.MULE_EE,
+                                                                    JdkOnlyClassLoaderFactory.create(),
+                                                                    directory.toURI().toURL())
+        def containerClassLoader = createEmbeddedImplClassLoader(containerModulesClassLoader,
+                                                                 mavenClient,
+                                                                 '4.1.2')
+        def containerKlass = containerClassLoader.loadClass(MuleContainer.name)
+        // work around this - https://jira.apache.org/jira/browse/LOG4J2-2152
+        def preserve = Thread.currentThread().contextClassLoader
+        Object container = null
+        try {
+            Thread.currentThread().contextClassLoader = containerClassLoader
+            container = containerKlass.newInstance()
+        }
+        finally {
+            Thread.currentThread().contextClassLoader = preserve
+        }
+        assert container
         container.start(false)
         def registryListener = new MuleRegistryListener()
         container.deploymentService.addDeploymentListener(registryListener)
@@ -84,6 +104,34 @@ trait BaseMuleGroovyTrait {
         container.deploymentService.deploy(new File('src/test/resources/41test').toURI())
         new ContainerContainer(registryListener.registry,
                                null)
+    }
+
+    private ClassLoader createEmbeddedImplClassLoader(ClassLoader parentClassLoader,
+                                                      MavenClient mavenClient,
+                                                      String muleVersion) throws MalformedURLException {
+        def embeddedBomDescriptor = new BundleDescriptor.Builder()
+                .setGroupId('org.mule.distributions')
+                .setArtifactId('mule-module-embedded-impl-bom')
+                .setVersion(muleVersion)
+                .setType('pom')
+                .build()
+        def embeddedImplDescriptor = new BundleDescriptor.Builder()
+                .setGroupId('org.mule.distributions')
+                .setArtifactId('mule-module-embedded-impl')
+                .setVersion(muleVersion)
+                .setType('jar')
+                .build()
+        def embeddedBundleImplDescriptor = mavenClient.resolveBundleDescriptor(embeddedImplDescriptor)
+        def embeddedImplDependencies = mavenClient.resolveBundleDescriptorDependencies(false,
+                                                                                       embeddedBomDescriptor)
+        def embeddedUrls = embeddedImplDependencies.findAll { dep ->
+            dep.scope != BundleScope.PROVIDED
+        }.collect { dep ->
+            dep.bundleUri.toURL()
+        }
+        embeddedUrls.add(embeddedBundleImplDescriptor.bundleUri.toURL())
+        new URLClassLoader(embeddedUrls.toArray(new URL[0]),
+                           parentClassLoader)
     }
 
     Properties getStartUpProperties() {
