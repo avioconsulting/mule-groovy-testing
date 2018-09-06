@@ -26,6 +26,8 @@ import org.mule.runtime.module.embedded.internal.DefaultEmbeddedContainerBuilder
 import org.mule.runtime.module.embedded.internal.MavenContainerClassLoaderFactory
 import org.mule.runtime.module.embedded.internal.classloading.JdkOnlyClassLoaderFactory
 import org.mule.runtime.module.launcher.MuleContainer
+import org.mule.runtime.module.reboot.internal.DefaultMuleClassPathConfig
+import org.mule.runtime.module.reboot.internal.MuleContainerSystemClassLoader
 
 // basic idea here is to have a trait that could be mixed in to any type of testing framework situation
 // this trait should be stateless
@@ -84,17 +86,9 @@ trait BaseMuleGroovyTrait {
         def containerClassLoader = createEmbeddedImplClassLoader(containerModulesClassLoader,
                                                                  mavenClient,
                                                                  '4.1.2')
-        def containerKlass = containerClassLoader.loadClass(MuleContainer.name)
-        // work around this - https://jira.apache.org/jira/browse/LOG4J2-2152
-        def preserve = Thread.currentThread().contextClassLoader
-        Object container = null
-        try {
-            Thread.currentThread().contextClassLoader = containerClassLoader
-            container = containerKlass.newInstance()
-        }
-        finally {
-            Thread.currentThread().contextClassLoader = preserve
-        }
+        Thread.currentThread().setContextClassLoader(containerClassLoader)
+        def containerKlass =containerClassLoader.loadClass("org.mule.runtime.module.launcher.MuleContainer")
+        def container = containerKlass.newInstance()
         assert container
         container.start(false)
         def registryListener = new MuleRegistryListener()
