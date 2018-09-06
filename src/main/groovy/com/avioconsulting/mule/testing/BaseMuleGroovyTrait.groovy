@@ -6,9 +6,10 @@ import com.avioconsulting.mule.testing.dsl.mocking.*
 import com.avioconsulting.mule.testing.dsl.mocking.sfdc.Choice
 import com.avioconsulting.mule.testing.dsl.mocking.sfdc.ChoiceImpl
 import com.avioconsulting.mule.testing.mocks.StandardMock
-import com.avioconsulting.mule.testing.mulereplacements.ContainerContainer
+
 import com.avioconsulting.mule.testing.mulereplacements.MockingConfiguration
 import com.avioconsulting.mule.testing.mulereplacements.MuleRegistryListener
+import com.avioconsulting.mule.testing.mulereplacements.RuntimeBridge
 import com.avioconsulting.mule.testing.payloadvalidators.SOAPPayloadValidator
 import org.apache.commons.io.FileUtils
 import org.apache.commons.lang.NotImplementedException
@@ -32,7 +33,7 @@ import static java.lang.System.setProperty
 trait BaseMuleGroovyTrait {
     abstract Logger getLogger()
 
-    ContainerContainer createMuleContext(MockingConfiguration mockingConfiguration) {
+    Object createMuleContext(MockingConfiguration mockingConfiguration) {
         def directory = new File('.mule')
         System.setProperty('mule.home',
                            directory.absolutePath)
@@ -106,8 +107,7 @@ trait BaseMuleGroovyTrait {
         // won't start apps without this domain there but it can be empty
         container.deploymentService.deployDomain(new File('src/test/resources/default').toURI())
         container.deploymentService.deploy(new File('src/test/resources/41test').toURI())
-        new ContainerContainer(registryListener.registry,
-                               null)
+        containerClassLoader.loadClass('com.avioconsulting.mule.testing.mulereplacements.RuntimeBridge').newInstance(registryListener.registry)
     }
 
     private ClassLoader createEmbeddedImplClassLoader(ClassLoader parentClassLoader,
@@ -190,7 +190,7 @@ trait BaseMuleGroovyTrait {
         list.join(',')
     }
 
-    def runFlow(ContainerContainer muleContext,
+    def runFlow(Object muleContext,
                 String flowName,
                 @DelegatesTo(FlowRunner) Closure closure) {
         def flow = muleContext.registry.lookupByName(flowName) as Optional<Flow>
@@ -207,7 +207,7 @@ trait BaseMuleGroovyTrait {
         runner.transformOutput(outputEvent)
     }
 
-    CoreEvent runSoapApikitFlow(ContainerContainer muleContext,
+    CoreEvent runSoapApikitFlow(RuntimeBridge muleContext,
                                 String operation,
                                 String apiKitFlowName = 'api-main',
                                 @DelegatesTo(SoapInvoker) Closure closure) {
@@ -225,7 +225,7 @@ trait BaseMuleGroovyTrait {
                 event)
     }
 
-    CoreEvent runFlow(ContainerContainer muleContext,
+    CoreEvent runFlow(RuntimeBridge muleContext,
                       String flowName,
                       CoreEvent event) {
         def flowOpt = muleContext.registry.lookupByName(flowName) as Optional<Flow>
@@ -233,7 +233,7 @@ trait BaseMuleGroovyTrait {
         flowOpt.get().process(event)
     }
 
-    def waitForBatchCompletion(ContainerContainer muleContext,
+    def waitForBatchCompletion(RuntimeBridge muleContext,
                                List<String> jobsToWaitFor = null,
                                boolean throwUnderlyingException = false,
                                Closure closure) {
@@ -241,7 +241,7 @@ trait BaseMuleGroovyTrait {
         batchWaitUtil.waitFor(jobsToWaitFor, throwUnderlyingException, closure)
     }
 
-    def runBatch(ContainerContainer muleContext,
+    def runBatch(RuntimeBridge muleContext,
                  String batchName,
                  List<String> jobsToWaitFor = null,
                  boolean throwUnderlyingException = false,
@@ -262,7 +262,7 @@ trait BaseMuleGroovyTrait {
     }
 
     def mockRestHttpCall(MockingConfiguration mockingConfiguration,
-                         ContainerContainer muleContext,
+                         RuntimeBridge muleContext,
                          String connectorName,
                          @DelegatesTo(HttpRequestResponseChoice) Closure closure) {
         def eventFactory = new EventFactoryImpl(muleContext)
@@ -275,7 +275,7 @@ trait BaseMuleGroovyTrait {
     }
 
     def mockVmReceive(MockingConfiguration mockingConfiguration,
-                      ContainerContainer muleContext,
+                      RuntimeBridge muleContext,
                       String connectorName,
                       @DelegatesTo(StandardRequestResponse) Closure closure) {
         def eventFactory = new EventFactoryImpl(muleContext)
@@ -289,7 +289,7 @@ trait BaseMuleGroovyTrait {
     }
 
     def mockGeneric(MockingConfiguration mockingConfiguration,
-                    ContainerContainer muleContext,
+                    RuntimeBridge muleContext,
                     String connectorName,
                     @DelegatesTo(StandardRequestResponse) Closure closure) {
         def eventFactory = new EventFactoryImpl(muleContext)
@@ -303,7 +303,7 @@ trait BaseMuleGroovyTrait {
     }
 
     def mockSalesForceCall(MockingConfiguration mockingConfiguration,
-                           ContainerContainer muleContext,
+                           RuntimeBridge muleContext,
                            String connectorName,
                            @DelegatesTo(Choice) Closure closure) {
         def eventFactory = new EventFactoryImpl(muleContext)
@@ -317,7 +317,7 @@ trait BaseMuleGroovyTrait {
     }
 
     def mockSoapCall(MockingConfiguration mockingConfiguration,
-                     ContainerContainer muleContext,
+                     RuntimeBridge muleContext,
                      String connectorName,
                      @DelegatesTo(SOAPFormatter) Closure closure) {
         def eventFactory = new EventFactoryImpl(muleContext)

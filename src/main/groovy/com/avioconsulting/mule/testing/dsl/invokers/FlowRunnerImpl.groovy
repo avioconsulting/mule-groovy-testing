@@ -2,13 +2,13 @@ package com.avioconsulting.mule.testing.dsl.invokers
 
 import com.avioconsulting.mule.testing.EventFactory
 import com.avioconsulting.mule.testing.EventFactoryImpl
-import com.avioconsulting.mule.testing.mulereplacements.ContainerContainer
+import com.avioconsulting.mule.testing.mulereplacements.RuntimeBridge
 import com.avioconsulting.mule.testing.payloadvalidators.ContentTypeCheckDisabledValidator
 import com.avioconsulting.mule.testing.payloadvalidators.HttpListenerPayloadValidator
 import org.mule.runtime.core.api.event.CoreEvent
 
 class FlowRunnerImpl implements FlowRunner, BatchRunner {
-    private final ContainerContainer muleContext
+    private final Object muleContext
     private Invoker invoker
     private Closure closure
     private Closure muleOutputEventHook = null
@@ -17,7 +17,7 @@ class FlowRunnerImpl implements FlowRunner, BatchRunner {
     private final Object flow
     private final String flowName
 
-    FlowRunnerImpl(ContainerContainer muleContext,
+    FlowRunnerImpl(Object muleContext,
                    Object flowMessageProcessor,
                    String flowName) {
         this.flowName = flowName
