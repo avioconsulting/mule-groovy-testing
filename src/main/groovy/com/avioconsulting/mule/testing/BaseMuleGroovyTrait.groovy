@@ -54,6 +54,7 @@ trait BaseMuleGroovyTrait {
                 .containerConfiguration(containerConfig)
                 .build()
         container.start()
+        // TODO: Need to get this dynamically
         def artifactConfig = ArtifactConfiguration.builder()
                 .artifactLocation(new File('src/test/resources/41test'))
                 .build()
