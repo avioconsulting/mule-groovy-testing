@@ -10,6 +10,7 @@ import com.avioconsulting.mule.testing.mulereplacements.ContainerContainer
 import com.avioconsulting.mule.testing.mulereplacements.MockingConfiguration
 import com.avioconsulting.mule.testing.mulereplacements.MuleRegistryListener
 import com.avioconsulting.mule.testing.payloadvalidators.SOAPPayloadValidator
+import org.apache.commons.io.FileUtils
 import org.apache.commons.lang.NotImplementedException
 import org.apache.logging.log4j.Logger
 import org.mule.runtime.core.api.construct.Flow
@@ -25,12 +26,19 @@ trait BaseMuleGroovyTrait {
         def directory = new File('.mule')
         System.setProperty('mule.home',
                            directory.absolutePath)
-        logger.info "Checking for .mule directory at ${directory.absolutePath}"
-//        if (directory.exists()) {
-//            logger.info "Removing ${directory.absolutePath}"
-//            directory.deleteDir()
-//        }
-        // TODO: copy log4j in and re-enable removal
+        logger.info "Checking for tempporary .mule directory at ${directory.absolutePath}"
+        if (directory.exists()) {
+            logger.info "Removing ${directory.absolutePath}"
+            directory.deleteDir()
+        }
+        // mule won't start without a log4j2 config
+        def log4jResource = BaseMuleGroovyTrait.getResource('/log4j2-for-mule-home.xml')
+        assert log4jResource
+        def confDirectory = new File(directory, 'conf')
+        confDirectory.mkdirs()
+        def targetFile = new File(confDirectory, 'log4j2.xml')
+        FileUtils.copyFile(new File(log4jResource.toURI()),
+                           targetFile)
         def domainsDir = new File(directory, 'domains')
         domainsDir.mkdirs()
         def appsDir = new File(directory, 'apps')
