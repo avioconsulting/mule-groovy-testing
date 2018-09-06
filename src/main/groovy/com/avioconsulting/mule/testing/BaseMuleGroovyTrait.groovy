@@ -10,15 +10,18 @@ import com.avioconsulting.mule.testing.mulereplacements.ContainerContainer
 import com.avioconsulting.mule.testing.mulereplacements.MockingConfiguration
 import com.avioconsulting.mule.testing.mulereplacements.MuleRegistryListener
 import com.avioconsulting.mule.testing.payloadvalidators.SOAPPayloadValidator
+import org.apache.commons.io.FileUtils
 import org.apache.commons.lang.NotImplementedException
 import org.apache.logging.log4j.Logger
+import org.mule.maven.client.api.MavenClientProvider
 import org.mule.maven.client.api.model.MavenConfiguration
 import org.mule.runtime.core.api.construct.Flow
 import org.mule.runtime.core.api.event.CoreEvent
-import org.mule.runtime.module.embedded.api.ArtifactConfiguration
 import org.mule.runtime.module.embedded.api.ContainerConfiguration
-import org.mule.runtime.module.embedded.api.EmbeddedContainer
 import org.mule.runtime.module.embedded.api.Product
+import org.mule.runtime.module.embedded.internal.DefaultEmbeddedContainerBuilder
+import org.mule.runtime.module.embedded.internal.MavenContainerClassLoaderFactory
+import org.mule.runtime.module.launcher.MuleContainer
 
 // basic idea here is to have a trait that could be mixed in to any type of testing framework situation
 // this trait should be stateless
@@ -37,30 +40,48 @@ trait BaseMuleGroovyTrait {
         def containerConfig = ContainerConfiguration.builder()
                 .containerFolder(directory)
                 .build()
+        // mule won't start without a log4j2 config
+        def log4jResource = BaseMuleGroovyTrait.getResource('/log4j2-for-mule-home.xml')
+        assert log4jResource
+        def confDirectory = new File(directory, 'conf')
+        confDirectory.mkdirs()
+        def targetFile = new File(confDirectory, 'log4j2.xml')
+        FileUtils.copyFile(new File(log4jResource.toURI()),
+                           targetFile)
+        def domainsDir = new File(directory, 'domains')
+        domainsDir.mkdirs()
+        def appsDir = new File(directory, 'apps')
+        if (appsDir.exists()) {
+            appsDir.deleteDir()
+        }
+        appsDir.mkdirs()
+        def container = new MuleContainer()
+        def mavenClientProvider = MavenClientProvider.discoverProvider(DefaultEmbeddedContainerBuilder.classLoader)
         // TODO: No hard coding, use Maven settings file??
         def repo = new File('/Users/brady/.m2/repository')
         assert repo.exists()
-        def mavenConfiguration = MavenConfiguration.newMavenConfigurationBuilder()
+        def mavenConfig = MavenConfiguration.newMavenConfigurationBuilder()
                 .localMavenRepositoryLocation(repo)
         // TODO: hard coding
                 .userSettingsLocation(new File('/Users/brady/.m2/settings.xml'))
                 .build()
-        def container = EmbeddedContainer.builder()
-        // TODO: Where to get this version? Project POM somehow??
-                .muleVersion('4.1.2')
-                .product(Product.MULE_EE)
-                .log4jConfigurationFile(BaseMuleGroovyTrait.getResource('/log4j2-for-mule-home.xml').toURI())
-                .mavenConfiguration(mavenConfiguration)
-                .containerConfiguration(containerConfig)
-                .build()
-        container.start()
-        // TODO: Need to get this dynamically
-        def artifactConfig = ArtifactConfiguration.builder()
-                .artifactLocation(new File('src/test/resources/41test'))
-                .build()
+        def mavenClient = mavenClientProvider.createMavenClient(mavenConfig)
+        def classLoaderFactory = new MavenContainerClassLoaderFactory(mavenClient)
+        def services = classLoaderFactory.getServices('4.1.2',
+                                                      Product.MULE_EE)
+        def servicesDir = new File(directory, 'services')
+        services.findAll { svcUrl ->
+            !svcUrl.text.contains('api-gateway-contract-service')
+        }.each { svcUrl ->
+            FileUtils.copyFileToDirectory(new File(svcUrl.toURI()),
+                                          servicesDir)
+        }
+        container.start(false)
         def registryListener = new MuleRegistryListener()
-//        container.deploymentService.addDeploymentListener(registryListener)
-        container.deploymentService.deployApplication(artifactConfig)
+        container.deploymentService.addDeploymentListener(registryListener)
+        // won't start apps without this domain there but it can be empty
+        container.deploymentService.deployDomain(new File('src/test/resources/default').toURI())
+        container.deploymentService.deploy(new File('src/test/resources/41test').toURI())
         new ContainerContainer(registryListener.registry,
                                null)
     }
