@@ -79,6 +79,7 @@ trait BaseMuleGroovyTrait {
             FileUtils.copyFileToDirectory(new File(svcUrl.toURI()),
                                           servicesDir)
         }
+        // TODO: mule version hard coded?
         def containerModulesClassLoader = classLoaderFactory.create('4.1.2',
                                                                     Product.MULE_EE,
                                                                     JdkOnlyClassLoaderFactory.create(),
@@ -86,9 +87,19 @@ trait BaseMuleGroovyTrait {
         def containerClassLoader = createEmbeddedImplClassLoader(containerModulesClassLoader,
                                                                  mavenClient,
                                                                  '4.1.2')
+        // work around this - https://jira.apache.org/jira/browse/LOG4J2-2152
+        def preserve = Thread.currentThread().contextClassLoader
+        Object container = null
+        try {
+            Thread.currentThread().contextClassLoader = containerClassLoader
+            // TODO: Hard coded name?
+            def containerKlass =containerClassLoader.loadClass("org.mule.runtime.module.launcher.MuleContainer")
+            container = containerKlass.newInstance()
+        }
+        finally {
+            Thread.currentThread().contextClassLoader = preserve
+        }
         Thread.currentThread().setContextClassLoader(containerClassLoader)
-        def containerKlass =containerClassLoader.loadClass("org.mule.runtime.module.launcher.MuleContainer")
-        def container = containerKlass.newInstance()
         assert container
         container.start(false)
         def registryListener = new MuleRegistryListener()
