@@ -63,15 +63,6 @@ trait BaseMuleGroovyTrait {
         container.deploymentService.deployApplication(artifactConfig)
         new ContainerContainer(registryListener.registry,
                                null)
-//        def contextFactory = new DefaultMuleContextFactory()
-//        def muleContextBuilder = new DefaultMuleContextBuilder()
-//        def configBuilders = [
-//                new SimpleConfigurationBuilder(startUpProperties),
-//                // certain processors like validation require this
-//                new SpringXmlConfigurationBuilder(configResources)
-//        ] as List<ConfigurationBuilder>
-//        contextFactory.createMuleContext(configBuilders,
-//                                         muleContextBuilder)
     }
 
     Properties getStartUpProperties() {
