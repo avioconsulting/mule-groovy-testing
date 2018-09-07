@@ -1,24 +1,25 @@
 package com.avioconsulting.mule.testing.batch
 
-import com.mulesoft.mule.runtime.module.batch.api.BatchJobResult
-import com.mulesoft.mule.runtime.module.batch.api.notification.BatchNotification
-import com.mulesoft.mule.runtime.module.batch.api.notification.BatchNotificationListener
+//import com.mulesoft.mule.runtime.module.batch.api.BatchJobResult
+//import com.mulesoft.mule.runtime.module.batch.api.notification.BatchNotification
+//import com.mulesoft.mule.runtime.module.batch.api.notification.BatchNotificationListener
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import org.mule.runtime.api.notification.CustomNotification
 
-class BatchCompletionListener implements BatchNotificationListener {
+// TODO: BatchNotificationListener
+class BatchCompletionListener {
     protected static final Logger logger = LogManager.getLogger(BatchCompletionListener)
     private final boolean waitForAllStartedJobs
     private final List<String> jobsToWaitFor
-    private final Map<String, BatchJobResult> batchJobResults = [:]
+//    private final Map<String, BatchJobResult> batchJobResults = [:]
     private final boolean throwUnderlyingException
     private final List<Throwable> exceptions = []
-    private static final List<Integer> recordFailedActions = [BatchNotification.STEP_RECORD_FAILED,
-                                                              BatchNotification.STEP_COMMIT_FAILED]
-    private static final List<Integer> jobCompletedActions = [BatchNotification.ON_COMPLETE_END,
-                                                              BatchNotification.ON_COMPLETE_FAILED]
-    private final Map<String, Map<String, String>> idMap = [:]
+//    private static final List<Integer> recordFailedActions = [BatchNotification.STEP_RECORD_FAILED,
+//                                                              BatchNotification.STEP_COMMIT_FAILED]
+//    private static final List<Integer> jobCompletedActions = [BatchNotification.ON_COMPLETE_END,
+//                                                              BatchNotification.ON_COMPLETE_FAILED]
+//    private final Map<String, Map<String, String>> idMap = [:]
 
     BatchCompletionListener(List<String> jobsToWaitFor,
                             boolean throwUnderlyingException) {
@@ -29,7 +30,8 @@ class BatchCompletionListener implements BatchNotificationListener {
         this.jobsToWaitFor = jobsToWaitFor ?: []
     }
 
-    Map<String, BatchJobResult> getResults() {
+    //Map<String, BatchJobResult> getResults() {
+    Map getResults() {
         batchJobResults
     }
 
@@ -41,9 +43,9 @@ class BatchCompletionListener implements BatchNotificationListener {
         this.exceptions
     }
 
-    @Override
+    //@Override
     void onNotification(CustomNotification serverNotification) {
-        def batchNotification = serverNotification as BatchNotification
+        def batchNotification = serverNotification //as BatchNotification
         if (throwUnderlyingException && recordFailedActions.contains(batchNotification.action)) {
             // batchNotification.exception is a BatchException containing the real cause
             this.exceptions << batchNotification.exception.cause
