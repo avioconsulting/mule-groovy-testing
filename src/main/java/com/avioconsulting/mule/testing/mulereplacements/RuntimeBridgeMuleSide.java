@@ -27,7 +27,11 @@ public class RuntimeBridgeMuleSide {
 
     public Object getNewEvent(Object muleMessage,
                               String flowName) {
-        Flow flow = (Flow) lookupByName(flowName);
+        Optional<Flow> flowOpt = (Optional<Flow>) lookupByName(flowName);
+        if (!flowOpt.isPresent()) {
+            throw new RuntimeException("Flow not present! "+flowName);
+        }
+        Flow flow = flowOpt.get();
         EventContext context = new DefaultEventContext(flow,
                                                        (ComponentLocation) null,
                                                        null,
