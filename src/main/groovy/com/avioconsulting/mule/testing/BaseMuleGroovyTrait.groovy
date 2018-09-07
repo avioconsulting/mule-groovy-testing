@@ -62,6 +62,7 @@ trait BaseMuleGroovyTrait {
         assert repo.exists()
         def mavenConfig = MavenConfiguration.newMavenConfigurationBuilder()
                 .localMavenRepositoryLocation(repo)
+                .offlineMode(true)
         // TODO: hard coding
                 .userSettingsLocation(new File('/Users/brady/.m2/settings.xml'))
                 .build()
