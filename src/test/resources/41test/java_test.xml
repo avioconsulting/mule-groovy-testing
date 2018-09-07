@@ -1,13 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <mule xmlns="http://www.mulesoft.org/schema/mule/core"
+      xmlns:http="http://www.mulesoft.org/schema/mule/http"
       xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
       xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+      http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+    <http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="0b50bd46-d16c-481e-b115-be445bbcc186" >
+        <http:request-connection host="localhost" port="8080" />
+    </http:request-config>
     <flow name="javaFlow">
         <logger message="Hello there we executed" level="INFO" />
+        <http:request method="GET" doc:name="Request" doc:id="65fab704-cf69-4ad3-a40c-84bbae68ab8e" config-ref="HTTP_Request_configuration" path="/foobar"/>
         <set-variable variableName="theClass" value="#[payload.class]"/>
         <ee:transform doc:name="Transform Message">
             <ee:message>

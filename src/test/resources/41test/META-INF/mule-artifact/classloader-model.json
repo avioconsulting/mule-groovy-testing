@@ -10,12 +10,24 @@
   "dependencies": [
     {
       "artifactCoordinates": {
-        "groupId": "org.codehaus.groovy",
-        "artifactId": "groovy-all",
-        "version": "2.4.4",
-        "type": "jar"
+        "groupId": "org.mule.connectors",
+        "artifactId": "mule-http-connector",
+        "version": "1.2.1",
+        "type": "jar",
+        "classifier": "mule-plugin"
       },
-      "uri": "repository/org/codehaus/groovy/groovy-all/2.4.4/groovy-all-2.4.4.jar"
+      "uri": "repository/org/mule/connectors/mule-http-connector/1.2.1/mule-http-connector-1.2.1-mule-plugin.jar"
+    },
+    {
+      "artifactCoordinates": {
+        "groupId": "org.mule.connectors",
+        "artifactId": "mule-sockets-connector",
+        "version": "1.1.1",
+        "type": "jar",
+        "classifier": "mule-plugin"
+      },
+      "uri": "repository/org/mule/connectors/mule-sockets-connector/1.1.1/mule-sockets-connector-1.1.1-mule-plugin.jar"
     }
+
   ]
 }
