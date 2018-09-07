@@ -1,27 +1,30 @@
 package com.avioconsulting.mule.testing
 
+import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
+import com.avioconsulting.mule.testing.mulereplacements.wrappers.MessageWrapper
+
 interface EventFactory {
     // TODO: Try and avoid building messages everywhere too
     @Deprecated
-    Object getMuleEvent(Object muleMessage,
-                        String flowName)
+    EventWrapper getMuleEvent(MessageWrapper muleMessage,
+                              String flowName)
 
     // TODO: Try and avoid building messages everywhere too
     @Deprecated
-    Object getMuleEvent(Object muleMessage,
-                        Object rewriteEvent)
+    EventWrapper getMuleEvent(MessageWrapper muleMessage,
+                              Object rewriteEvent)
 
-    Object getMuleEventWithPayload(Object payload,
-                                   String flowName)
+    EventWrapper getMuleEventWithPayload(Object payload,
+                                         String flowName)
 
-    Object getMuleEventWithPayload(Object payload,
-                                   String flowName,
-                                   Map properties)
+    EventWrapper getMuleEventWithPayload(Object payload,
+                                         String flowName,
+                                         Map properties)
 
-    Object getMuleEventWithPayload(Object payload,
-                                   Object rewriteEvent)
+    EventWrapper getMuleEventWithPayload(Object payload,
+                                         EventWrapper rewriteEvent)
 
-    Object getMuleEventWithPayload(Object payload,
-                                   Object rewriteEvent,
-                                   Map properties)
+    EventWrapper getMuleEventWithPayload(Object payload,
+                                         EventWrapper rewriteEvent,
+                                         Map properties)
 }

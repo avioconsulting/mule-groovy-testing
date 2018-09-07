@@ -1,15 +1,15 @@
 package com.avioconsulting.mule.testing.mulereplacements
 
-import org.mule.runtime.core.api.event.CoreEvent
-import org.mule.runtime.core.api.processor.Processor
+import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
+import com.avioconsulting.mule.testing.mulereplacements.wrappers.ProcessorWrapper
 
 // TODO: Collapse this and MockProcess??
-trait MuleMessageTransformer implements MockProcess<Processor> {
-    abstract CoreEvent transform(CoreEvent var1,
-                                 Processor originalProcessor)
+trait MuleMessageTransformer implements MockProcess<ProcessorWrapper> {
+    abstract EventWrapper transform(EventWrapper var1,
+                                    ProcessorWrapper originalProcessor)
 
-    CoreEvent process(CoreEvent event,
-                      Processor originalProcessor) {
+    EventWrapper process(EventWrapper event,
+                         ProcessorWrapper originalProcessor) {
         transform(event, originalProcessor)
     }
 }

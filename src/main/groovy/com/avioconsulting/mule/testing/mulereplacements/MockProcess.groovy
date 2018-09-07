@@ -1,9 +1,9 @@
 package com.avioconsulting.mule.testing.mulereplacements
 
-import org.mule.runtime.core.api.event.CoreEvent
-import org.mule.runtime.core.api.processor.Processor
+import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
+import com.avioconsulting.mule.testing.mulereplacements.wrappers.ProcessorWrapper
 
-interface MockProcess<T extends Processor> {
-    CoreEvent process(CoreEvent event,
-                      T originalProcessor)
+interface MockProcess<T extends ProcessorWrapper> {
+    EventWrapper process(EventWrapper event,
+                         T originalProcessor)
 }

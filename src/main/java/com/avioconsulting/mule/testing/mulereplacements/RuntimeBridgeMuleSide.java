@@ -10,10 +10,10 @@ import org.mule.runtime.core.internal.event.DefaultEventContext;
 
 import java.util.Optional;
 
-public class RuntimeBridge {
+public class RuntimeBridgeMuleSide {
     private final Registry registry;
 
-    public RuntimeBridge(Registry registry) {
+    public RuntimeBridgeMuleSide(Registry registry) {
         this.registry = registry;
     }
 

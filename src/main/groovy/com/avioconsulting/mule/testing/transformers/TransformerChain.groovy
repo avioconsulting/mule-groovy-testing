@@ -1,8 +1,8 @@
 package com.avioconsulting.mule.testing.transformers
 
 import com.avioconsulting.mule.testing.mulereplacements.MuleMessageTransformer
-import org.mule.runtime.core.api.event.CoreEvent
-import org.mule.runtime.core.api.processor.Processor
+import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
+import com.avioconsulting.mule.testing.mulereplacements.wrappers.ProcessorWrapper
 
 class TransformerChain implements MuleMessageTransformer {
     private final List<MuleMessageTransformer> transformers
@@ -23,15 +23,15 @@ class TransformerChain implements MuleMessageTransformer {
         transformers.add(transformer)
     }
 
-    CoreEvent transform(CoreEvent muleMessage,
-                        Processor originalProcessor) {
+    EventWrapper transform(EventWrapper muleMessage,
+                           ProcessorWrapper originalProcessor) {
         // needs to happen before inject because at that point transformers are actually running
         transformers.each { transformer ->
             if (transformer instanceof IHaveStateToReset) {
                 transformer.reset()
             }
         }
-        transformers.inject(muleMessage) { CoreEvent output, transformer ->
+        transformers.inject(muleMessage) { EventWrapper output, transformer ->
             transformer.transform(output,
                                   originalProcessor)
         }

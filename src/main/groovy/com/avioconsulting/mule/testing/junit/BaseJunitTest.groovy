@@ -10,7 +10,6 @@ import com.avioconsulting.mule.testing.dsl.mocking.StandardRequestResponse
 import com.avioconsulting.mule.testing.dsl.mocking.sfdc.Choice
 
 import com.avioconsulting.mule.testing.mulereplacements.MockingConfiguration
-import com.avioconsulting.mule.testing.mulereplacements.RuntimeBridge
 import groovy.util.logging.Log4j2
 import org.apache.logging.log4j.Logger
 import org.junit.Before

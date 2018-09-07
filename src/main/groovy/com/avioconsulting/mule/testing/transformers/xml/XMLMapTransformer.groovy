@@ -2,12 +2,12 @@ package com.avioconsulting.mule.testing.transformers.xml
 
 import com.avioconsulting.mule.testing.EventFactory
 import com.avioconsulting.mule.testing.mulereplacements.MuleMessageTransformer
+import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
+import com.avioconsulting.mule.testing.mulereplacements.wrappers.ProcessorWrapper
 import com.avioconsulting.mule.testing.payloadvalidators.IPayloadValidator
 import com.avioconsulting.mule.testing.transformers.ClosureMuleMessageHandler
 import groovy.util.slurpersupport.GPathResult
 import groovy.xml.MarkupBuilder
-import org.mule.runtime.core.api.event.CoreEvent
-import org.mule.runtime.core.api.processor.Processor
 
 class XMLMapTransformer extends XMLTransformer implements MuleMessageTransformer,
         ClosureMuleMessageHandler {
@@ -20,8 +20,8 @@ class XMLMapTransformer extends XMLTransformer implements MuleMessageTransformer
         this.closure = closure
     }
 
-    CoreEvent transform(CoreEvent incomingEvent,
-                        Processor messageProcessor) {
+    EventWrapper transform(EventWrapper incomingEvent,
+                           ProcessorWrapper messageProcessor) {
         validateContentType(incomingEvent,
                             messageProcessor)
         def xmlString = incomingEvent.messageAsString

@@ -1,9 +1,9 @@
 package com.avioconsulting.mule.testing.transformers.http
 
 import com.avioconsulting.mule.testing.mulereplacements.MuleMessageTransformer
+import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
+import com.avioconsulting.mule.testing.mulereplacements.wrappers.ProcessorWrapper
 import com.avioconsulting.mule.testing.transformers.IHaveStateToReset
-import org.mule.runtime.core.api.event.CoreEvent
-import org.mule.runtime.core.api.processor.Processor
 
 import java.util.concurrent.TimeoutException
 
@@ -23,8 +23,8 @@ class HttpConnectorErrorTransformer implements IHaveStateToReset, MuleMessageTra
         this.triggerTimeoutException = true
     }
 
-    CoreEvent transform(CoreEvent muleEvent,
-                        Processor messageProcessor) {
+    EventWrapper transform(EventWrapper muleEvent,
+                           ProcessorWrapper messageProcessor) {
         if (!triggerConnectException && !triggerTimeoutException) {
             return muleEvent
         }

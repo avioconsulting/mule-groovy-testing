@@ -3,10 +3,10 @@ package com.avioconsulting.mule.testing.transformers.sfdc
 import com.avioconsulting.mule.testing.EventFactory
 import com.avioconsulting.mule.testing.dsl.mocking.sfdc.UpsertResponseUtil
 import com.avioconsulting.mule.testing.mulereplacements.MuleMessageTransformer
+import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
+import com.avioconsulting.mule.testing.mulereplacements.wrappers.ProcessorWrapper
 import com.avioconsulting.mule.testing.payloadvalidators.IPayloadValidator
 import com.avioconsulting.mule.testing.payloadvalidators.ListGenericPayloadValidator
-import org.mule.runtime.core.api.event.CoreEvent
-import org.mule.runtime.core.api.processor.Processor
 
 class UpsertTransformer implements MuleMessageTransformer {
     private final Closure closure
@@ -36,8 +36,8 @@ class UpsertTransformer implements MuleMessageTransformer {
                 "Must return a SalesForce result from your mock. Options include ${options}. See ${responseUtilClass} class for options.")
     }
 
-    CoreEvent transform(CoreEvent muleEvent,
-                        Processor messageProcessor) {
+    EventWrapper transform(EventWrapper muleEvent,
+                           ProcessorWrapper messageProcessor) {
         def payload = muleEvent.message.payload as List<Map>
         this.payloadValidator.validatePayloadType(payload)
         if (payload.size() > 200) {

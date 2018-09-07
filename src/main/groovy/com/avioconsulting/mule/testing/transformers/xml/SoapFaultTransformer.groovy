@@ -1,8 +1,8 @@
 package com.avioconsulting.mule.testing.transformers.xml
 
 import com.avioconsulting.mule.testing.mulereplacements.MuleMessageTransformer
-import org.mule.runtime.core.api.event.CoreEvent
-import org.mule.runtime.core.api.processor.Processor
+import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
+import com.avioconsulting.mule.testing.mulereplacements.wrappers.ProcessorWrapper
 
 // TODO: Find a better way to do this
 class SoapFaultTransformer implements MuleMessageTransformer {
@@ -17,8 +17,8 @@ class SoapFaultTransformer implements MuleMessageTransformer {
         }
     }()
 
-    private CoreEvent muleEvent
-    private Processor originalProcessor
+    private EventWrapper muleEvent
+    private ProcessorWrapper originalProcessor
 
     Throwable createSoapFaultException(soapFault) {
         soapFaultExceptionClass.newInstance(muleEvent,
@@ -27,8 +27,8 @@ class SoapFaultTransformer implements MuleMessageTransformer {
     }
 
     @Override
-    CoreEvent transform(CoreEvent muleEvent,
-                        Processor originalProcessor) {
+    EventWrapper transform(EventWrapper muleEvent,
+                           ProcessorWrapper originalProcessor) {
         // TODO: thread safe
         // we need to capture these so we can create an exception inside the closure
         this.muleEvent = muleEvent

@@ -1,12 +1,12 @@
 package com.avioconsulting.mule.testing.dsl.invokers
 
+import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
 import com.avioconsulting.mule.testing.payloadvalidators.IPayloadValidator
-import org.mule.runtime.core.api.event.CoreEvent
 
 interface Invoker {
-    CoreEvent getEvent()
+    EventWrapper getEvent()
 
-    def transformOutput(CoreEvent event)
+    def transformOutput(EventWrapper event)
 
     Invoker withNewPayloadValidator(IPayloadValidator validator)
 

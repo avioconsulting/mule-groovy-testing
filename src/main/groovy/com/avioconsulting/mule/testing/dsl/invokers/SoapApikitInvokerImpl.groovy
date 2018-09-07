@@ -1,11 +1,9 @@
 package com.avioconsulting.mule.testing.dsl.invokers
 
 import com.avioconsulting.mule.testing.EventFactory
+import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
 import groovy.util.logging.Log4j2
 import groovy.xml.XmlUtil
-import org.mule.runtime.core.api.MuleContext
-import org.mule.runtime.core.api.construct.Flow
-import org.mule.runtime.core.api.event.CoreEvent
 
 import javax.xml.namespace.QName
 import javax.xml.soap.MessageFactory
@@ -15,20 +13,18 @@ class SoapApikitInvokerImpl extends SoapInvokerBaseImpl {
     private final String soapAction
     private final String flowName
 
-    SoapApikitInvokerImpl(MuleContext muleContext,
-                          EventFactory eventFactory,
+    SoapApikitInvokerImpl(EventFactory eventFactory,
                           String flowName,
                           String operation) {
         super(eventFactory)
         this.flowName = flowName
-        def flow = muleContext.registry.lookupFlowConstruct(flowName) as Flow
         assert flow: "Could not find flow ${flowName}!"
         soapAction = deriveSoapAction(flow,
                                       operation)
     }
 
     @Override
-    CoreEvent getEvent() {
+    EventWrapper getEvent() {
         def doc = jaxbHelper.getMarshalledDocument(this.inputObject)
         def soapFactory = MessageFactory.newInstance()
         def msg = soapFactory.createMessage()
@@ -60,7 +56,7 @@ class SoapApikitInvokerImpl extends SoapInvokerBaseImpl {
         muleEvent
     }
 
-    private static String deriveSoapAction(Flow flow,
+    private static String deriveSoapAction(Object flow,
                                            String soapOperationName) {
         def apiKitRouter = flow.messageProcessors.find { p ->
             // startsWith == avoid proxy class name stuff from cglib

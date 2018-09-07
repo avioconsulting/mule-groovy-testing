@@ -1,8 +1,8 @@
 package com.avioconsulting.mule.testing.dsl.invokers
 
 import com.avioconsulting.mule.testing.EventFactory
+import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
 import com.avioconsulting.mule.testing.payloadvalidators.IPayloadValidator
-import org.mule.runtime.core.api.event.CoreEvent
 
 class JavaInvokerImpl implements JavaInvoker, Invoker {
     private inputObject
@@ -19,12 +19,12 @@ class JavaInvokerImpl implements JavaInvoker, Invoker {
         this.inputObject = inputObject
     }
 
-    CoreEvent getEvent() {
+    EventWrapper getEvent() {
         eventFactory.getMuleEventWithPayload(inputObject,
                                              flowName)
     }
 
-    def transformOutput(CoreEvent event) {
+    def transformOutput(EventWrapper event) {
         event.message.payload
     }
 

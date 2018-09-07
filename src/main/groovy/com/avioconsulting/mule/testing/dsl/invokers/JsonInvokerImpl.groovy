@@ -1,13 +1,13 @@
 package com.avioconsulting.mule.testing.dsl.invokers
 
 import com.avioconsulting.mule.testing.EventFactory
+import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
 import com.avioconsulting.mule.testing.payloadvalidators.IPayloadValidator
 import com.avioconsulting.mule.testing.transformers.InputTransformer
 import com.avioconsulting.mule.testing.transformers.OutputTransformer
 import com.avioconsulting.mule.testing.transformers.StringInputTransformer
 import com.avioconsulting.mule.testing.transformers.json.input.JacksonInputTransformer
 import com.avioconsulting.mule.testing.transformers.json.output.JacksonOutputTransformer
-import org.mule.runtime.core.api.event.CoreEvent
 
 class JsonInvokerImpl implements JsonInvoker, Invoker {
     private OutputTransformer transformBeforeCallingFlow
@@ -82,7 +82,7 @@ class JsonInvokerImpl implements JsonInvoker, Invoker {
         }
     }
 
-    CoreEvent getEvent() {
+    EventWrapper getEvent() {
         def input = outputOnly ? null : this.inputObject
         def event = eventFactory.getMuleEventWithPayload(input,
                                                          flow.name,
@@ -96,7 +96,7 @@ class JsonInvokerImpl implements JsonInvoker, Invoker {
         }
     }
 
-    def transformOutput(CoreEvent event) {
+    def transformOutput(EventWrapper event) {
         if (inputOnly) {
             return
         }

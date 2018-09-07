@@ -1,12 +1,12 @@
 package com.avioconsulting.mule.testing.transformers
 
-import org.mule.runtime.core.api.event.CoreEvent
-import org.mule.runtime.core.api.processor.Processor
+import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
+import com.avioconsulting.mule.testing.mulereplacements.wrappers.ProcessorWrapper
 
-interface ClosureCurrier<T extends Processor> {
+interface ClosureCurrier<T extends ProcessorWrapper> {
     boolean isOnlyArgumentToBeCurried(Closure closure)
 
     Closure curryClosure(Closure closure,
-                         CoreEvent muleEvent,
+                         EventWrapper muleEvent,
                          T messageProcessor)
 }
