@@ -102,6 +102,7 @@ trait BaseMuleGroovyTrait {
             // TODO: Hard coded app (also can domain be created as a dir beforehand so we don't have to deploy it?). see embedded controller
             // won't start apps without this domain there but it can be empty
             container.deploymentService.deployDomain(new File('src/test/resources/default').toURI())
+            // TODO: How do we pass in our properties??
             container.deploymentService.deploy(new File('src/test/resources/41test').toURI())
             // TODO: Hard code
             muleSide = containerClassLoader.loadClass('com.avioconsulting.mule.testing.mulereplacements.RuntimeBridgeMuleSide').newInstance(registryListener.registry)
