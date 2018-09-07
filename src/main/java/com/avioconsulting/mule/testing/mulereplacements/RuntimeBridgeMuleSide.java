@@ -18,11 +18,7 @@ public class RuntimeBridgeMuleSide {
     }
 
     public Object lookupByName(String flowName) {
-        Optional<Object> optional = this.registry.lookupByName(flowName);
-        if (!optional.isPresent()) {
-            throw new RuntimeException("name " + flowName + " not found!");
-        }
-        return optional.get();
+        return this.registry.lookupByName(flowName);
     }
 
     public Object getMessageBuilder() {

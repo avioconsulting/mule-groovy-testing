@@ -3,6 +3,7 @@ package com.avioconsulting.mule.testing.dsl.invokers
 import com.avioconsulting.mule.testing.EventFactory
 import com.avioconsulting.mule.testing.mulereplacements.RuntimeBridgeTestSide
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
+import com.avioconsulting.mule.testing.mulereplacements.wrappers.FlowWrapper
 import com.avioconsulting.mule.testing.payloadvalidators.ContentTypeCheckDisabledValidator
 import com.avioconsulting.mule.testing.payloadvalidators.HttpListenerPayloadValidator
 
@@ -13,11 +14,11 @@ class FlowRunnerImpl implements FlowRunner, BatchRunner {
     private Closure muleOutputEventHook = null
     private Closure withInputEvent = null
     private final EventFactory eventFactory
-    private final Object flow
+    private final FlowWrapper flow
     private final String flowName
 
     FlowRunnerImpl(RuntimeBridgeTestSide runtimeBridge,
-                   Object flowMessageProcessor,
+                   FlowWrapper flowMessageProcessor,
                    String flowName) {
         this.flowName = flowName
         this.flow = flowMessageProcessor

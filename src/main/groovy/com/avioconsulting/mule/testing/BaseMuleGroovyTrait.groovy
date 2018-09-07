@@ -6,11 +6,10 @@ import com.avioconsulting.mule.testing.dsl.mocking.*
 import com.avioconsulting.mule.testing.dsl.mocking.sfdc.Choice
 import com.avioconsulting.mule.testing.dsl.mocking.sfdc.ChoiceImpl
 import com.avioconsulting.mule.testing.mocks.StandardMock
-
 import com.avioconsulting.mule.testing.mulereplacements.MockingConfiguration
 import com.avioconsulting.mule.testing.mulereplacements.MuleRegistryListener
-import com.avioconsulting.mule.testing.mulereplacements.RuntimeBridgeMuleSide
 import com.avioconsulting.mule.testing.mulereplacements.RuntimeBridgeTestSide
+import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
 import com.avioconsulting.mule.testing.payloadvalidators.SOAPPayloadValidator
 import org.apache.commons.io.FileUtils
 import org.apache.commons.lang.NotImplementedException
@@ -20,8 +19,6 @@ import org.mule.maven.client.api.MavenClientProvider
 import org.mule.maven.client.api.model.BundleDescriptor
 import org.mule.maven.client.api.model.BundleScope
 import org.mule.maven.client.api.model.MavenConfiguration
-import org.mule.runtime.core.api.construct.Flow
-import org.mule.runtime.core.api.event.CoreEvent
 import org.mule.runtime.module.embedded.api.Product
 import org.mule.runtime.module.embedded.internal.DefaultEmbeddedContainerBuilder
 import org.mule.runtime.module.embedded.internal.MavenContainerClassLoaderFactory
@@ -89,6 +86,7 @@ trait BaseMuleGroovyTrait {
         def preserve = Thread.currentThread().contextClassLoader
         Object container = null
         Object registryListener = null
+        Object muleSide = null
         try {
             Thread.currentThread().contextClassLoader = containerClassLoader
             // TODO: Hard coded name?
@@ -98,19 +96,19 @@ trait BaseMuleGroovyTrait {
             def registryListenerKlass = containerClassLoader.loadClass(MuleRegistryListener.name)
             registryListener = registryListenerKlass.newInstance()
             container.deploymentService.addDeploymentListener(registryListener)
+            assert container
+            assert registryListener
+            // TODO: Hard coded app (also can domain be created as a dir beforehand so we don't have to deploy it?). see embedded controller
+            // won't start apps without this domain there but it can be empty
+            container.deploymentService.deployDomain(new File('src/test/resources/default').toURI())
+            container.deploymentService.deploy(new File('src/test/resources/41test').toURI())
+            // TODO: Hard code
+            muleSide = containerClassLoader.loadClass('com.avioconsulting.mule.testing.mulereplacements.RuntimeBridgeMuleSide').newInstance(registryListener.registry)
         }
         finally {
             Thread.currentThread().contextClassLoader = preserve
         }
-        Thread.currentThread().setContextClassLoader(containerClassLoader)
-        assert container
-        assert registryListener
-        // TODO: Hard coded app (also can domain be created as a dir beforehand so we don't have to deploy it?). see embedded controller
-        // won't start apps without this domain there but it can be empty
-        container.deploymentService.deployDomain(new File('src/test/resources/default').toURI())
-        container.deploymentService.deploy(new File('src/test/resources/41test').toURI())
-        // TODO: Hard code
-        containerClassLoader.loadClass('com.avioconsulting.mule.testing.mulereplacements.RuntimeBridgeMuleSide').newInstance(registryListener.registry)
+        new RuntimeBridgeTestSide(muleSide)
     }
 
     private ClassLoader createEmbeddedImplClassLoader(ClassLoader parentClassLoader,
@@ -193,13 +191,12 @@ trait BaseMuleGroovyTrait {
         list.join(',')
     }
 
-    def runFlow(Object muleContext,
+    def runFlow(RuntimeBridgeTestSide muleContext,
                 String flowName,
                 @DelegatesTo(FlowRunner) Closure closure) {
-        def flow = muleContext.registry.lookupByName(flowName) as Optional<Flow>
-        assert flow.present
+        def flow = muleContext.getFlow(flowName)
         def runner = new FlowRunnerImpl(muleContext,
-                                        flow.get(),
+                                        flow,
                                         flowName)
         def code = closure.rehydrate(runner, this, this)
         code.resolveStrategy = Closure.DELEGATE_ONLY
@@ -210,10 +207,10 @@ trait BaseMuleGroovyTrait {
         runner.transformOutput(outputEvent)
     }
 
-    CoreEvent runSoapApikitFlow(RuntimeBridgeTestSide muleContext,
-                                String operation,
-                                String apiKitFlowName = 'api-main',
-                                @DelegatesTo(SoapInvoker) Closure closure) {
+    EventWrapper runSoapApikitFlow(RuntimeBridgeTestSide muleContext,
+                                   String operation,
+                                   String apiKitFlowName = 'api-main',
+                                   @DelegatesTo(SoapInvoker) Closure closure) {
         def invoker = new SoapApikitInvokerImpl(muleContext,
                                                 muleContext,
                                                 apiKitFlowName,
@@ -227,12 +224,11 @@ trait BaseMuleGroovyTrait {
                 event)
     }
 
-    CoreEvent runFlow(RuntimeBridgeTestSide muleContext,
-                      String flowName,
-                      CoreEvent event) {
-        def flowOpt = muleContext.registry.lookupByName(flowName) as Optional<Flow>
-        assert flowOpt.present: "Flow with name '${flowName}' was not found. Are you using the right flow name?"
-        flowOpt.get().process(event)
+    EventWrapper runFlow(RuntimeBridgeTestSide muleContext,
+                         String flowName,
+                         EventWrapper event) {
+        def flow = muleContext.getFlow(flowName)
+        flow.process(event)
     }
 
     def waitForBatchCompletion(RuntimeBridgeTestSide muleContext,
