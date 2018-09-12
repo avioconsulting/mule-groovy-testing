@@ -107,7 +107,7 @@ class SoapTest extends BaseJunitTest implements OverrideConfigList {
         // assert
         assertThat result.message,
                    is(containsString(
-                           'Unmarshal problem. if com.avioconsulting.schemas.soaptest.v1.SOAPTestResponseType is not an XML Root element, you need to use ObjectFactory to wrap it in a JAXBElement object!'))
+                           'Marshal problem. if com.avioconsulting.schemas.soaptest.v1.SOAPTestResponseType is not an XML Root element, you need to use ObjectFactory to wrap it in a JAXBElement object!'))
     }
 
     @Test

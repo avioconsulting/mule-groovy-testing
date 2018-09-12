@@ -1,3 +1,6 @@
+# 1.0.27
+* Improve JAXB logging
+
 # 1.0.26
 * Tolerate an unaltered SOAP request payload (which is javax.xml.stream.XMLStreamReader, was preventing a test from executing successfully)
 
