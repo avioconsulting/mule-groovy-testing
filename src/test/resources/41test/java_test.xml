@@ -13,7 +13,7 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
     </http:request-config>
     <flow name="javaFlow">
         <logger message="Hello there we executed" level="INFO" />
-        <http:request method="GET" doc:name="Request" doc:id="65fab704-cf69-4ad3-a40c-84bbae68ab8e" config-ref="HTTP_Request_configuration" path="/foobar"/>
+        <http:request method="GET" doc:name="Our Request" doc:id="65fab704-cf69-4ad3-a40c-84bbae68ab8e" config-ref="HTTP_Request_configuration" path="/foobar"/>
         <set-variable variableName="theClass" value="#[payload.class]"/>
         <ee:transform doc:name="Transform Message">
             <ee:message>

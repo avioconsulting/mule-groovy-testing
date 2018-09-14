@@ -14,7 +14,8 @@ public class MuleRegistryListener implements DeploymentListener {
 
     @Override
     public void onArtifactCreated(String artifactName, CustomizationService customizationService) {
-        System.out.println("hi");
+        customizationService.registerCustomServiceClass("muleGroovyTestingProcessorIntFactory",
+                                                        ProcIntFact.class);
     }
 
     public Registry getRegistry() {
