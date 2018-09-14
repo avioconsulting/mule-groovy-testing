@@ -103,6 +103,7 @@ trait BaseMuleGroovyTrait {
             // won't start apps without this domain there but it can be empty
             container.deploymentService.deployDomain(new File('src/test/resources/default').toURI())
             // TODO: How do we pass in our properties??
+            // TODO: We need the repository directory. The Mule 4.0 build process puts it in target so we should be able to get it easily
             container.deploymentService.deploy(new File('src/test/resources/41test').toURI())
             // TODO: Hard code
             muleSide = containerClassLoader.loadClass('com.avioconsulting.mule.testing.mulereplacements.RuntimeBridgeMuleSide').newInstance(registryListener.registry)
