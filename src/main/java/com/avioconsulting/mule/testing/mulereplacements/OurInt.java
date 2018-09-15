@@ -13,7 +13,7 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 public class OurInt implements ProcessorInterceptor {
-    // TODO: Implement around, we can skip there and doc:name is in parameters. See what we can we do with manipulating InterceptionEvent
+    // TODO: See how to get our mocking config in here and call that instead
     @Override
     public CompletableFuture<InterceptionEvent> around(ComponentLocation location,
                                                        Map<String, ProcessorParameterValue> parameters,
