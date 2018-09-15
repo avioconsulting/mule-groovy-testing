@@ -15,6 +15,6 @@ class FlowWrapperImpl implements FlowWrapper {
     EventWrapper process(EventWrapper input) {
         assert input instanceof EventWrapperImpl
         def muleEvent = nativeMuleObject.process(input.nativeMuleEvent)
-        'hello there'
+        new EventWrapperImpl(muleEvent)
     }
 }

@@ -19,6 +19,13 @@ class JavaTest extends BaseJunitTest implements OverrideConfigList {
         // arrange
         def input = new SimpleJavaClass()
         input.howdy = '123'
+        mockRestHttpCall('Our Request') {
+            raw {
+                whenCalledWith { mockInput ->
+                    println "mock was called with ${mockInput}"
+                }
+            }
+        }
 
         // act
         def result = runFlow('javaFlow') {
@@ -28,11 +35,10 @@ class JavaTest extends BaseJunitTest implements OverrideConfigList {
         }
 
         // assert
-        assert result instanceof TypedValue
-        assertThat result.value,
+        assertThat result,
                    is(equalTo([
-                           key  : '123',
-                           value: SimpleJavaClass.name
+                           key  : 'nope',
+                           value: 'stuff'
                    ]))
     }
 }

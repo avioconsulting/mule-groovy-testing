@@ -22,8 +22,7 @@ class RuntimeBridgeTestSide implements EventFactory {
         assert message instanceof MessageWrapperImpl
         def muleEvent = runtimeBridgeMuleSide.getNewEvent(message.muleMessage,
                                                           flowName)
-        new EventWrapperImpl(message,
-                             muleEvent)
+        new EventWrapperImpl(muleEvent)
     }
 
     @Override

@@ -14,7 +14,7 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
     <flow name="javaFlow">
         <logger message="Hello there we executed" level="INFO" />
         <http:request method="GET" doc:name="Our Request" doc:id="65fab704-cf69-4ad3-a40c-84bbae68ab8e" config-ref="HTTP_Request_configuration" path="/foobar"/>
-        <set-variable variableName="theClass" value="#[payload.class]"/>
+        <logger message="after http #[payload]" level="INFO" />
         <ee:transform doc:name="Transform Message">
             <ee:message>
                 <ee:set-payload><![CDATA[%dw 2.0
@@ -22,7 +22,7 @@ output application/java
 ---
 {
     key: payload.howdy,
-    value: vars.theClass
+    value: 'stuff'
 }]]></ee:set-payload>
             </ee:message>
         </ee:transform>

@@ -4,8 +4,8 @@ class EventWrapperImpl implements EventWrapper {
     private final MessageWrapper message
     private final Object nativeEvent
 
-    EventWrapperImpl(MessageWrapper message, Object nativeEvent) {
-        this.message = message
+    EventWrapperImpl(Object nativeEvent) {
+        this.message = new MessageWrapperImpl(nativeEvent.message)
         this.nativeEvent = nativeEvent
     }
 

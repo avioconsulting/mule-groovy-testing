@@ -10,6 +10,11 @@ class MessageWrapperImpl implements MessageWrapper {
         this.payload = payload
     }
 
+    MessageWrapperImpl(Object nativeMuleMessage) {
+        this.muleMessage = nativeMuleMessage
+        this.payload = nativeMuleMessage.payload
+    }
+
     Object getMuleMessage() {
         this.muleMessage
     }
@@ -17,5 +22,12 @@ class MessageWrapperImpl implements MessageWrapper {
     @Override
     Object getPayload() {
         this.payload
+    }
+
+    @Override
+    Object getValueInsideTypedValue() {
+        assert payload != null
+        assert payload.getClass().name.contains('TypedValue')
+        payload.value
     }
 }

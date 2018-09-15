@@ -25,7 +25,7 @@ class JavaInvokerImpl implements JavaInvoker, Invoker {
     }
 
     def transformOutput(EventWrapper event) {
-        event.message.payload
+        event.message.valueInsideTypedValue
     }
 
     Invoker withNewPayloadValidator(IPayloadValidator validator) {
