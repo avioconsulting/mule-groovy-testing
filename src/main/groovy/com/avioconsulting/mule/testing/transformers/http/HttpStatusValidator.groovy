@@ -1,6 +1,6 @@
 package com.avioconsulting.mule.testing.transformers.http
 
-import org.mule.runtime.core.api.event.CoreEvent
+import org.mule.runtime.api.event.Event
 
 // MUnit (Java or likely graphical too) substitutes an interceptor message processor for connectors you mock
 // The processor does not have any annotations on it. When we simulate exceptions being thrown, Mule tries
@@ -19,7 +19,7 @@ class HttpStatusValidator {//extends SuccessStatusCodeValidator {
 //    }
 
     //@Override
-    void validate(CoreEvent responseEvent) {// throws ResponseValidatorException {
+    void validate(Event responseEvent) {// throws ResponseValidatorException {
         try {
             super.validate(responseEvent)
         }

@@ -1,6 +1,6 @@
 package com.avioconsulting.mule.testing.payloadvalidators
 
-import org.mule.runtime.core.api.event.CoreEvent
+import org.mule.runtime.api.event.Event
 import org.mule.runtime.core.api.processor.Processor
 
 class HttpListenerPayloadValidator implements IPayloadValidator,
@@ -20,7 +20,7 @@ class HttpListenerPayloadValidator implements IPayloadValidator,
         return true
     }
 
-    void validateContentType(CoreEvent event,
+    void validateContentType(Event event,
                              List<String> validContentTypes) {
         validateContentType(event,
                             validContentTypes,

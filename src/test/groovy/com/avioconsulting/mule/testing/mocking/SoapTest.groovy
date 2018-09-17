@@ -9,7 +9,7 @@ import com.avioconsulting.schemas.soaptest.v1.SOAPTestRequestType
 import com.avioconsulting.schemas.soaptest.v1.SOAPTestResponseType
 import groovy.xml.DOMBuilder
 import org.junit.Test
-import org.mule.runtime.core.api.event.CoreEvent
+import org.mule.runtime.api.event.Event
 
 import javax.xml.namespace.QName
 import java.util.concurrent.TimeoutException
@@ -57,10 +57,10 @@ class SoapTest extends BaseJunitTest implements OverrideConfigList {
     @Test
     void with_mule_message() {
         // arrange
-        CoreEvent sentMessage = null
+        Event sentMessage = null
         mockSoapCall('A SOAP Call') {
             whenCalledWithJaxb(SOAPTestRequestType) { SOAPTestRequestType request,
-                                                      CoreEvent msg ->
+                                                      Event msg ->
                 sentMessage = msg
                 def response = new SOAPTestResponseType()
                 response.details = 'yes!'

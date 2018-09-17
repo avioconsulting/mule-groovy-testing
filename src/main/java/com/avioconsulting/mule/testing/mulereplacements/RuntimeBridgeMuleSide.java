@@ -29,7 +29,7 @@ public class RuntimeBridgeMuleSide {
                               String flowName) {
         Optional<Flow> flowOpt = (Optional<Flow>) lookupByName(flowName);
         if (!flowOpt.isPresent()) {
-            throw new RuntimeException("Flow not present! "+flowName);
+            throw new RuntimeException("Flow not present! " + flowName);
         }
         Flow flow = flowOpt.get();
         EventContext context = new DefaultEventContext(flow,

@@ -1,6 +1,6 @@
 package com.avioconsulting.mule.testing.payloadvalidators
 
-import org.mule.runtime.core.api.event.CoreEvent
+import org.mule.runtime.api.event.Event
 import org.mule.runtime.core.api.processor.Processor
 
 class ContentTypeCheckDisabledValidator implements IPayloadValidator,
@@ -19,7 +19,7 @@ class ContentTypeCheckDisabledValidator implements IPayloadValidator,
         false
     }
 
-    void validateContentType(CoreEvent event, List<String> validContentTypes) {
+    void validateContentType(Event event, List<String> validContentTypes) {
         parentValidator.validateContentType(event,
                                             validContentTypes)
     }

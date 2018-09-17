@@ -1,6 +1,6 @@
 package com.avioconsulting.mule.testing.payloadvalidators
 
-import org.mule.runtime.core.api.event.CoreEvent
+import org.mule.runtime.api.event.Event
 import org.mule.runtime.core.api.processor.Processor
 
 class StreamingDisabledPayloadValidator implements IPayloadValidator, PayloadHelper {
@@ -18,7 +18,7 @@ class StreamingDisabledPayloadValidator implements IPayloadValidator, PayloadHel
         parentValidator.isContentTypeValidationRequired(messageProcessor)
     }
 
-    void validateContentType(CoreEvent muleEvent, List<String> validContentTypes) {
+    void validateContentType(Event muleEvent, List<String> validContentTypes) {
         parentValidator.validateContentType(muleEvent,
                                             validContentTypes)
     }

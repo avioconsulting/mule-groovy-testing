@@ -2,7 +2,7 @@ package com.avioconsulting.mule.testing.transformers.xml
 
 import com.avioconsulting.mule.testing.EventFactory
 import com.avioconsulting.mule.testing.payloadvalidators.IPayloadValidator
-import org.mule.runtime.core.api.event.CoreEvent
+import org.mule.runtime.api.event.Event
 import org.mule.runtime.core.api.processor.Processor
 
 class XMLTransformer {
@@ -16,7 +16,7 @@ class XMLTransformer {
                                                        false)
     }
 
-    def validateContentType(CoreEvent muleEvent,
+    def validateContentType(Event muleEvent,
                             Processor messageProcessor) {
         if (payloadValidator.isContentTypeValidationRequired(messageProcessor)) {
             payloadValidator.validateContentType(muleEvent,

@@ -4,7 +4,7 @@ import groovy.util.logging.Log4j2
 import net.sf.cglib.proxy.MethodInterceptor
 import net.sf.cglib.proxy.MethodProxy
 import org.mule.runtime.api.exception.MuleException
-import org.mule.runtime.core.api.event.CoreEvent
+import org.mule.runtime.api.event.Event
 import org.mule.runtime.core.api.processor.Processor
 
 import java.lang.reflect.Method
@@ -33,7 +33,7 @@ class MockFactoryBeanInterceptor implements MethodInterceptor {
             def actualMessageProcessor = proxy.invokeSuper(obj, args)
             return new Processor() {
                 @Override
-                CoreEvent process(CoreEvent event) throws MuleException {
+                Event process(Event event) throws MuleException {
                     def mockProcess = mockingConfiguration.getMockProcess(beanFactory)
                     if (mockProcess) {
                         return mockProcess.process(event,

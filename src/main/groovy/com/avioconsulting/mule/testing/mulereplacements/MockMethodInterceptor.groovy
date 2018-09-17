@@ -3,7 +3,7 @@ package com.avioconsulting.mule.testing.mulereplacements
 import groovy.util.logging.Log4j2
 import net.sf.cglib.proxy.MethodInterceptor
 import net.sf.cglib.proxy.MethodProxy
-import org.mule.runtime.core.api.event.CoreEvent
+import org.mule.runtime.api.event.Event
 
 import java.lang.reflect.Method
 
@@ -26,7 +26,7 @@ class MockMethodInterceptor implements MethodInterceptor {
         // TODO: More efficient comparison, also 'cache' the processor name
         if (method.name == 'process' &&
                 method.parameterTypes.size() == 1 &&
-                method.parameterTypes[0] == CoreEvent) {
+                method.parameterTypes[0] == Event) {
             MockProcess mockProcess = null
             assert false : 'AnnotatedObject'
             if (obj instanceof Object) {
@@ -38,7 +38,7 @@ class MockMethodInterceptor implements MethodInterceptor {
                          obj
             }
             if (mockProcess) {
-                def muleEvent = args[0] as CoreEvent
+                def muleEvent = args[0] as Event
                 return mockProcess.process(muleEvent,
                                            obj)
             }
