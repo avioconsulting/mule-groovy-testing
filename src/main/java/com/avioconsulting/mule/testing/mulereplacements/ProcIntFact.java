@@ -6,12 +6,6 @@ import org.mule.runtime.api.interception.ProcessorInterceptor;
 import org.mule.runtime.api.interception.ProcessorInterceptorFactory;
 
 public class ProcIntFact implements ProcessorInterceptorFactory {
-    private final MockingConfiguration mockingConfiguration;
-
-    public ProcIntFact(MockingConfiguration mockingConfiguration) {
-        this.mockingConfiguration = mockingConfiguration;
-    }
-
     @Override
     public ProcessorInterceptor get() {
         System.out.println("**************||||||||||||hi brady!");

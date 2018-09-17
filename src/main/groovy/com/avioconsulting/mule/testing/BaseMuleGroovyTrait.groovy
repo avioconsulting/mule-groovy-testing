@@ -96,7 +96,7 @@ trait BaseMuleGroovyTrait {
             container.start(false)
             def registryListenerKlass = containerClassLoader.loadClass(MuleRegistryListener.name)
             // TODO: Mule predictably does not like a Groovy based mocking config coming in here. Even if GroovyObject was taken care of, we will probably have a class/classpath mismatch. Groovy/dynamic might still be the easiest way to deal with this without completely rewriting the testing framework
-            registryListener = registryListenerKlass.newInstance(mockingConfiguration)
+            registryListener = registryListenerKlass.newInstance()
             container.deploymentService.addDeploymentListener(registryListener)
             assert container
             assert registryListener
@@ -163,6 +163,7 @@ trait BaseMuleGroovyTrait {
         [:]
     }
 
+    // TODO: Figure out how to do this w/ Mule 4
     List<String> keepListenersOnForTheseFlows() {
         []
     }

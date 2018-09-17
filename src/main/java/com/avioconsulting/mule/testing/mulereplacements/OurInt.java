@@ -13,12 +13,6 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 public class OurInt implements ProcessorInterceptor {
-    private final MockingConfiguration mockingConfiguration;
-
-    OurInt(MockingConfiguration mockingConfiguration) {
-        this.mockingConfiguration = mockingConfiguration;
-    }
-
     // TODO: See how to get our mocking config in here and call that instead
     @Override
     public CompletableFuture<InterceptionEvent> around(ComponentLocation location,
