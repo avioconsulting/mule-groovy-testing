@@ -6,6 +6,7 @@ import org.mule.runtime.module.deployment.api.DeploymentListener;
 
 public class MuleRegistryListener implements DeploymentListener {
     private RuntimeBridgeMuleSide runtimeBridge;
+    private Object mockingConfiguration;
 
     @Override
     public void onArtifactInitialised(String artifactName,
@@ -17,10 +18,18 @@ public class MuleRegistryListener implements DeploymentListener {
     public void onArtifactCreated(String artifactName,
                                   CustomizationService customizationService) {
         customizationService.registerCustomServiceImpl("muleGroovyTestingProcessorIntFactory",
-                                                       new ProcIntFact());
+                                                       new ProcIntFact(mockingConfiguration));
     }
 
     public RuntimeBridgeMuleSide getRuntimeBridge() {
         return runtimeBridge;
+    }
+
+    public Object getMockingConfiguration() {
+        return mockingConfiguration;
+    }
+
+    public void setMockingConfiguration(Object mockingConfiguration) {
+        this.mockingConfiguration = mockingConfiguration;
     }
 }

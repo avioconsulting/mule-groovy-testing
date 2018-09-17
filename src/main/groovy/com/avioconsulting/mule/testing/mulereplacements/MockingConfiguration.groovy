@@ -1,10 +1,6 @@
 package com.avioconsulting.mule.testing.mulereplacements
 
-import javax.xml.namespace.QName
-
 class MockingConfiguration {
-    static final QName processorName = new QName('http://www.mulesoft.org/schema/mule/documentation',
-                                                 'name')
     private final Map<String, MockProcess> mocks = [:]
     private final List<String> keepListenersOnForTheseFlows
 
@@ -21,13 +17,13 @@ class MockingConfiguration {
         mocks[processorName] = mockHandler
     }
 
-    MockProcess getMockProcess(String processorName) {
-        mocks[processorName]
+    boolean isMocked(String connectorName) {
+        mocks.containsKey(connectorName)
     }
 
-    MockProcess getMockProcess(Object processor) {
-        def processorName = processor.annotations.get(processorName) as String
-        mocks[processorName]
+    void executeMock(Object componentLocation,
+                     Object interceptionEvent) {
+        println 'our mock!'
     }
 
     boolean shouldFlowListenerBeEnabled(String flowName) {

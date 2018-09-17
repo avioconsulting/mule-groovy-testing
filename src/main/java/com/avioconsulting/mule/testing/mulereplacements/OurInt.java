@@ -5,29 +5,61 @@ import org.mule.runtime.api.interception.InterceptionAction;
 import org.mule.runtime.api.interception.InterceptionEvent;
 import org.mule.runtime.api.interception.ProcessorInterceptor;
 import org.mule.runtime.api.interception.ProcessorParameterValue;
-import org.mule.runtime.api.message.Message;
-import org.mule.runtime.api.metadata.TypedValue;
 
-import java.util.HashMap;
+import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
+// TODO: Better name
 public class OurInt implements ProcessorInterceptor {
-    // TODO: See how to get our mocking config in here and call that instead
+    private static final String CONNECTOR_NAME_PARAMETER = "doc:name";
+    private final Method isMockEnabledMethod;
+    private final Method doMockInvocationMethod;
+    private final Object mockingConfiguration;
+
+    OurInt(Object mockingConfiguration) {
+        this.mockingConfiguration = mockingConfiguration;
+        try {
+            this.isMockEnabledMethod = mockingConfiguration.getClass().getDeclaredMethod("isMocked",
+                                                                                         String.class);
+            this.doMockInvocationMethod = mockingConfiguration.getClass().getDeclaredMethod("executeMock",
+                                                                                            Object.class,
+                                                                                            Object.class);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private boolean isMockEnabled(String connectorName) {
+        try {
+            return (boolean) isMockEnabledMethod.invoke(mockingConfiguration,
+                                                        connectorName);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void executeMock(ComponentLocation location,
+                             InterceptionEvent event) {
+        try {
+            doMockInvocationMethod.invoke(mockingConfiguration,
+                                          location,
+                                          event);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     @Override
     public CompletableFuture<InterceptionEvent> around(ComponentLocation location,
                                                        Map<String, ProcessorParameterValue> parameters,
                                                        InterceptionEvent event,
                                                        InterceptionAction action) {
-        if (parameters.containsKey("doc:name") &&
-                parameters.get("doc:name").providedValue().equals("Our Request")) {
-            System.out.println("our mock ran!");
-            Map<String, String> result = new HashMap<>();
-            result.put("howdy", "nope");
-            Message newMessage = Message.builder()
-                    .payload(TypedValue.of(result))
-                    .build();
-            event.message(newMessage);
+        if (parameters.containsKey(CONNECTOR_NAME_PARAMETER) &&
+                isMockEnabled(parameters.get(CONNECTOR_NAME_PARAMETER).providedValue())) {
+            executeMock(location,
+                        event);
+            // TODO: Cover error cases w/ a catch
             return action.skip();
         }
         return action.proceed();
