@@ -1,6 +1,6 @@
 package com.avioconsulting.mule.testing.dsl.invokers
 
-import com.avioconsulting.mule.testing.EventFactory
+import com.avioconsulting.mule.testing.InvokerEventFactory
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
 import com.avioconsulting.mule.testing.payloadvalidators.IPayloadValidator
 import com.avioconsulting.mule.testing.transformers.xml.JAXBMarshalHelper
@@ -10,9 +10,9 @@ abstract class SoapInvokerBaseImpl implements Invoker, SoapInvoker {
     protected inputObject
     protected final XMLMessageBuilder xmlMessageBuilder
     protected JAXBMarshalHelper jaxbHelper
-    protected final EventFactory eventFactory
+    protected final InvokerEventFactory eventFactory
 
-    SoapInvokerBaseImpl(EventFactory eventFactory) {
+    SoapInvokerBaseImpl(InvokerEventFactory eventFactory) {
         this.xmlMessageBuilder = new XMLMessageBuilder(eventFactory,
                                                        true)
         this.eventFactory = eventFactory

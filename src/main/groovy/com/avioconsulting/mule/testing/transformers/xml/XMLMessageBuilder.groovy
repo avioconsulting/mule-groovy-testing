@@ -1,6 +1,6 @@
 package com.avioconsulting.mule.testing.transformers.xml
 
-import com.avioconsulting.mule.testing.EventFactory
+import com.avioconsulting.mule.testing.InvokerEventFactory
 import org.mule.runtime.api.event.Event
 
 import javax.xml.stream.XMLInputFactory
@@ -29,10 +29,10 @@ class XMLMessageBuilder {
         }
     }()
 
-    private final EventFactory eventFactory
+    private final InvokerEventFactory eventFactory
     private final boolean wrapWithApiKitStreamReader
 
-    XMLMessageBuilder(EventFactory eventFactory,
+    XMLMessageBuilder(InvokerEventFactory eventFactory,
                       boolean wrapWithApiKitStreamReader) {
         this.wrapWithApiKitStreamReader = wrapWithApiKitStreamReader
         this.eventFactory = eventFactory

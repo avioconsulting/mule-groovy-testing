@@ -1,6 +1,6 @@
 package com.avioconsulting.mule.testing.transformers.xml
 
-import com.avioconsulting.mule.testing.EventFactory
+import com.avioconsulting.mule.testing.InvokerEventFactory
 import com.avioconsulting.mule.testing.mulereplacements.MuleMessageTransformer
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.ProcessorWrapper
@@ -15,7 +15,7 @@ class XMLJAXBTransformer extends XMLTransformer implements MuleMessageTransforme
     private final JAXBMarshalHelper helper
 
     XMLJAXBTransformer(Closure closure,
-                       EventFactory eventFactory,
+                       InvokerEventFactory eventFactory,
                        Class inputJaxbClass,
                        IPayloadValidator payloadValidator,
                        String transformerUse) {

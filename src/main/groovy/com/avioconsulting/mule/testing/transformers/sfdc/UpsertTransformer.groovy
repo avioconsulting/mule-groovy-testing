@@ -1,6 +1,6 @@
 package com.avioconsulting.mule.testing.transformers.sfdc
 
-import com.avioconsulting.mule.testing.EventFactory
+import com.avioconsulting.mule.testing.InvokerEventFactory
 import com.avioconsulting.mule.testing.dsl.mocking.sfdc.UpsertResponseUtil
 import com.avioconsulting.mule.testing.mulereplacements.MuleMessageTransformer
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
@@ -11,10 +11,10 @@ import com.avioconsulting.mule.testing.payloadvalidators.ListGenericPayloadValid
 class UpsertTransformer implements MuleMessageTransformer {
     private final Closure closure
     private final IPayloadValidator payloadValidator
-    private final EventFactory eventFactory
+    private final InvokerEventFactory eventFactory
 
     UpsertTransformer(@DelegatesTo(UpsertResponseUtil) Closure closure,
-                      EventFactory eventFactory) {
+                      InvokerEventFactory eventFactory) {
         this.eventFactory = eventFactory
         this.closure = closure
         this.payloadValidator = new ListGenericPayloadValidator(Map)

@@ -1,6 +1,6 @@
 package com.avioconsulting.mule.testing.dsl.mocking
 
-import com.avioconsulting.mule.testing.EventFactory
+import com.avioconsulting.mule.testing.InvokerEventFactory
 import com.avioconsulting.mule.testing.payloadvalidators.IPayloadValidator
 import com.avioconsulting.mule.testing.transformers.ClosureCurrier
 import com.avioconsulting.mule.testing.transformers.TransformerChain
@@ -9,12 +9,12 @@ abstract class StandardRequestResponseImpl implements StandardRequestResponse {
     protected final IPayloadValidator initialPayloadValidator
     protected IFormatter formatter
     private Closure closure
-    private final EventFactory eventFactory
+    private final InvokerEventFactory eventFactory
     private final ClosureCurrier closureCurrier
     private final String requestResponseUse
 
     StandardRequestResponseImpl(IPayloadValidator initialPayloadValidator,
-                                EventFactory eventFactory,
+                                InvokerEventFactory eventFactory,
                                 ClosureCurrier closureCurrier,
                                 String requestResponseUse) {
         this.requestResponseUse = requestResponseUse

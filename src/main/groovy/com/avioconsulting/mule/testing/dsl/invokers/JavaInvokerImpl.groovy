@@ -1,15 +1,15 @@
 package com.avioconsulting.mule.testing.dsl.invokers
 
-import com.avioconsulting.mule.testing.EventFactory
+import com.avioconsulting.mule.testing.InvokerEventFactory
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
 import com.avioconsulting.mule.testing.payloadvalidators.IPayloadValidator
 
 class JavaInvokerImpl implements JavaInvoker, Invoker {
     private inputObject
-    private final EventFactory eventFactory
+    private final InvokerEventFactory eventFactory
     private final String flowName
 
-    JavaInvokerImpl(EventFactory eventFactory,
+    JavaInvokerImpl(InvokerEventFactory eventFactory,
                     String flowName) {
         this.flowName = flowName
         this.eventFactory = eventFactory

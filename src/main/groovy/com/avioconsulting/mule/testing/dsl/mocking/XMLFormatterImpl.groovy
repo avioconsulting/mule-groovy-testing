@@ -1,6 +1,6 @@
 package com.avioconsulting.mule.testing.dsl.mocking
 
-import com.avioconsulting.mule.testing.EventFactory
+import com.avioconsulting.mule.testing.InvokerEventFactory
 import com.avioconsulting.mule.testing.mulereplacements.MuleMessageTransformer
 import com.avioconsulting.mule.testing.payloadvalidators.IPayloadValidator
 import com.avioconsulting.mule.testing.transformers.xml.XMLGroovyParserTransformer
@@ -10,10 +10,10 @@ import com.avioconsulting.mule.testing.transformers.xml.XMLMapTransformer
 class XMLFormatterImpl implements XMLFormatter, IFormatter {
     protected MuleMessageTransformer transformer
     private final IPayloadValidator payloadValidator
-    protected final EventFactory eventFactory
+    protected final InvokerEventFactory eventFactory
     private final String transformerUse
 
-    XMLFormatterImpl(EventFactory eventFactory,
+    XMLFormatterImpl(InvokerEventFactory eventFactory,
                      IPayloadValidator payloadValidator,
                      String transformerUse) {
         this.transformerUse = transformerUse

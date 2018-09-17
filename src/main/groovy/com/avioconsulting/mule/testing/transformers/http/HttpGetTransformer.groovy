@@ -1,14 +1,14 @@
 package com.avioconsulting.mule.testing.transformers.http
 
-import com.avioconsulting.mule.testing.EventFactory
+import com.avioconsulting.mule.testing.InvokerEventFactory
 import com.avioconsulting.mule.testing.mulereplacements.MuleMessageTransformer
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.ProcessorWrapper
 
 class HttpGetTransformer implements MuleMessageTransformer {
-    private final EventFactory eventFactory
+    private final InvokerEventFactory eventFactory
 
-    HttpGetTransformer(EventFactory eventFactory) {
+    HttpGetTransformer(InvokerEventFactory eventFactory) {
         this.eventFactory = eventFactory
     }
 

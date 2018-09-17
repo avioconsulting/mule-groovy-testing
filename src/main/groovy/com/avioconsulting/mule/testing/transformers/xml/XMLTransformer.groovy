@@ -1,6 +1,6 @@
 package com.avioconsulting.mule.testing.transformers.xml
 
-import com.avioconsulting.mule.testing.EventFactory
+import com.avioconsulting.mule.testing.InvokerEventFactory
 import com.avioconsulting.mule.testing.payloadvalidators.IPayloadValidator
 import org.mule.runtime.api.event.Event
 import org.mule.runtime.core.api.processor.Processor
@@ -9,7 +9,7 @@ class XMLTransformer {
     protected final XMLMessageBuilder xmlMessageBuilder
     private final IPayloadValidator payloadValidator
 
-    XMLTransformer(EventFactory eventFactory,
+    XMLTransformer(InvokerEventFactory eventFactory,
                    IPayloadValidator payloadValidator) {
         this.payloadValidator = payloadValidator
         this.xmlMessageBuilder = new XMLMessageBuilder(eventFactory,

@@ -1,6 +1,6 @@
 package com.avioconsulting.mule.testing.dsl.mocking.sfdc
 
-import com.avioconsulting.mule.testing.EventFactory
+import com.avioconsulting.mule.testing.InvokerEventFactory
 import com.avioconsulting.mule.testing.mocks.DsqlMock
 import com.avioconsulting.mule.testing.mocks.StandardMock
 import com.avioconsulting.mule.testing.mulereplacements.MockProcess
@@ -11,10 +11,10 @@ import org.mule.runtime.core.api.MuleContext
 class ChoiceImpl implements Choice {
     private final MuleContext muleContext
     private MockProcess mock
-    private final EventFactory eventFactory
+    private final InvokerEventFactory eventFactory
 
     ChoiceImpl(MuleContext muleContext,
-               EventFactory eventFactory) {
+               InvokerEventFactory eventFactory) {
         this.eventFactory = eventFactory
         this.muleContext = muleContext
     }

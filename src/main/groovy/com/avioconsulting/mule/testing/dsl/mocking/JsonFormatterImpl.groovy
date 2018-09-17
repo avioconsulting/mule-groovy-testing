@@ -1,6 +1,6 @@
 package com.avioconsulting.mule.testing.dsl.mocking
 
-import com.avioconsulting.mule.testing.EventFactory
+import com.avioconsulting.mule.testing.InvokerEventFactory
 import com.avioconsulting.mule.testing.mulereplacements.MuleMessageTransformer
 import com.avioconsulting.mule.testing.payloadvalidators.IPayloadValidator
 import com.avioconsulting.mule.testing.transformers.ClosureCurrier
@@ -11,11 +11,11 @@ import com.avioconsulting.mule.testing.transformers.json.output.JacksonOutputTra
 class JsonFormatterImpl implements JsonFormatter, IFormatter {
     private MuleMessageTransformer transformer
     private final IPayloadValidator payloadValidator
-    private final EventFactory eventFactory
+    private final InvokerEventFactory eventFactory
     private final ClosureCurrier closureCurrier
 
     JsonFormatterImpl(IPayloadValidator payloadValidator,
-                      EventFactory eventFactory,
+                      InvokerEventFactory eventFactory,
                       ClosureCurrier closureCurrier) {
         this.closureCurrier = closureCurrier
         this.eventFactory = eventFactory

@@ -1,6 +1,6 @@
 package com.avioconsulting.mule.testing.dsl.invokers
 
-import com.avioconsulting.mule.testing.EventFactory
+import com.avioconsulting.mule.testing.InvokerEventFactory
 import com.avioconsulting.mule.testing.mulereplacements.RuntimeBridgeTestSide
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.FlowWrapper
@@ -13,7 +13,7 @@ class FlowRunnerImpl implements FlowRunner, BatchRunner {
     private Closure closure
     private Closure muleOutputEventHook = null
     private Closure withInputEvent = null
-    private final EventFactory eventFactory
+    private final InvokerEventFactory eventFactory
     private final FlowWrapper flow
     private final String flowName
 

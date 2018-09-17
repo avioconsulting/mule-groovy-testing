@@ -1,6 +1,6 @@
 package com.avioconsulting.mule.testing.dsl.mocking
 
-import com.avioconsulting.mule.testing.EventFactory
+import com.avioconsulting.mule.testing.InvokerEventFactory
 import com.avioconsulting.mule.testing.mulereplacements.MuleMessageTransformer
 import com.avioconsulting.mule.testing.payloadvalidators.IPayloadValidator
 import com.avioconsulting.mule.testing.transformers.ClosureCurrier
@@ -13,10 +13,10 @@ import org.mule.runtime.core.api.processor.Processor
 class RawFormatterImpl implements RawFormatter, IFormatter {
     private final IPayloadValidator payloadValidator
     private MuleMessageTransformer transformer
-    private final EventFactory eventFactory
+    private final InvokerEventFactory eventFactory
     private final ClosureCurrier closureCurrier
 
-    RawFormatterImpl(EventFactory eventFactory,
+    RawFormatterImpl(InvokerEventFactory eventFactory,
                      IPayloadValidator payloadValidator,
                      ClosureCurrier closureCurrier) {
         this.closureCurrier = closureCurrier

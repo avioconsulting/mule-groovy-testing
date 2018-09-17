@@ -1,6 +1,6 @@
 package com.avioconsulting.mule.testing.dsl.invokers
 
-import com.avioconsulting.mule.testing.EventFactory
+import com.avioconsulting.mule.testing.InvokerEventFactory
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
 import groovy.util.logging.Log4j2
 import groovy.xml.XmlUtil
@@ -13,7 +13,7 @@ class SoapApikitInvokerImpl extends SoapInvokerBaseImpl {
     private final String soapAction
     private final String flowName
 
-    SoapApikitInvokerImpl(EventFactory eventFactory,
+    SoapApikitInvokerImpl(InvokerEventFactory eventFactory,
                           String flowName,
                           String operation) {
         super(eventFactory)

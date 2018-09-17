@@ -1,9 +1,9 @@
 package com.avioconsulting.mule.testing.mulereplacements
 
-import com.avioconsulting.mule.testing.EventFactory
+import com.avioconsulting.mule.testing.InvokerEventFactory
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.*
 
-class RuntimeBridgeTestSide implements EventFactory {
+class RuntimeBridgeTestSide implements InvokerEventFactory {
     private final Object runtimeBridgeMuleSide
 
     RuntimeBridgeTestSide(Object runtimeBridgeMuleSide) {

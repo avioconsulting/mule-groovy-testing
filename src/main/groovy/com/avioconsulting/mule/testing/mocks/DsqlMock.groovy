@@ -1,6 +1,6 @@
 package com.avioconsulting.mule.testing.mocks
 
-import com.avioconsulting.mule.testing.EventFactory
+import com.avioconsulting.mule.testing.InvokerEventFactory
 import com.avioconsulting.mule.testing.mulereplacements.MockProcess
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.ProcessorWrapper
@@ -13,11 +13,11 @@ class DsqlMock implements MockProcess {
     }()
     private final Closure closure
     private final IPayloadValidator payloadValidator
-    private final EventFactory eventFactory
+    private final InvokerEventFactory eventFactory
 
     DsqlMock(Closure closure,
              IPayloadValidator payloadValidator,
-             EventFactory eventFactory) {
+             InvokerEventFactory eventFactory) {
         this.eventFactory = eventFactory
         this.payloadValidator = payloadValidator
         this.closure = closure
