@@ -27,9 +27,11 @@ class MockingConfiguration {
      *
      * @param componentLocation - org.mule.runtime.api.component.location.ComponentLocation
      * @param interceptionEvent - org.mule.runtime.api.interception.InterceptionEvent
+     * @param parameters - Map<String, org.mule.runtime.api.interception.ProcessorParameterValue>
      */
     void executeMock(Object componentLocation,
-                     Object interceptionEvent) {
+                     Object interceptionEvent,
+                     Object parameters) {
         println 'our mock!'
     }
 

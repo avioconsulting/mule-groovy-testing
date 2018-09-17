@@ -24,6 +24,7 @@ public class OurInt implements ProcessorInterceptor {
                                                                                          String.class);
             this.doMockInvocationMethod = mockingConfiguration.getClass().getDeclaredMethod("executeMock",
                                                                                             Object.class,
+                                                                                            Object.class,
                                                                                             Object.class);
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -40,11 +41,13 @@ public class OurInt implements ProcessorInterceptor {
     }
 
     private void executeMock(ComponentLocation location,
-                             InterceptionEvent event) {
+                             InterceptionEvent event,
+                             Map<String, ProcessorParameterValue> parameters) {
         try {
             doMockInvocationMethod.invoke(mockingConfiguration,
                                           location,
-                                          event);
+                                          event,
+                                          parameters);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -58,7 +61,8 @@ public class OurInt implements ProcessorInterceptor {
         if (parameters.containsKey(CONNECTOR_NAME_PARAMETER) &&
                 isMockEnabled(parameters.get(CONNECTOR_NAME_PARAMETER).providedValue())) {
             executeMock(location,
-                        event);
+                        event,
+                        parameters);
             // TODO: Cover error cases w/ a catch
             return action.skip();
         }
