@@ -2,10 +2,10 @@ package com.avioconsulting.mule.testing.transformers.http
 
 import com.avioconsulting.mule.testing.InvokerEventFactory
 import com.avioconsulting.mule.testing.mulereplacements.MuleMessageTransformer
-import com.avioconsulting.mule.testing.mulereplacements.wrappers.ConnectorInfo
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.MockEventWrapper
+import com.avioconsulting.mule.testing.mulereplacements.wrappers.connectors.HttpRequesterInfo
 
-class HttpGetTransformer implements MuleMessageTransformer {
+class HttpGetTransformer implements MuleMessageTransformer<HttpRequesterInfo> {
     private final InvokerEventFactory eventFactory
 
     HttpGetTransformer(InvokerEventFactory eventFactory) {
@@ -13,11 +13,9 @@ class HttpGetTransformer implements MuleMessageTransformer {
     }
 
     void transform(MockEventWrapper muleEvent,
-                   ConnectorInfo connectorInfo) {
-        assert false: 'htttp requester class'
-        //assert originalProcessor instanceof DefaultHttpRequester
+                   HttpRequesterInfo connectorInfo) {
         // for GET requests, we don't want to pass on the payload
-        originalProcessor.method == 'GET' ? eventFactory.getMuleEventWithPayload(null,
-                                                                                 muleEvent) : muleEvent
+        connectorInfo.method == 'GET' ? eventFactory.getMuleEventWithPayload(null,
+                                                                             muleEvent) : muleEvent
     }
 }

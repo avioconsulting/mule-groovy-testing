@@ -1,6 +1,7 @@
 package com.avioconsulting.mule.testing.dsl.mocking
 
 import com.avioconsulting.mule.testing.InvokerEventFactory
+import com.avioconsulting.mule.testing.mulereplacements.wrappers.connectors.HttpRequesterInfo
 import com.avioconsulting.mule.testing.payloadvalidators.ContentTypeCheckDisabledValidator
 import com.avioconsulting.mule.testing.payloadvalidators.HttpRequestPayloadValidator
 import com.avioconsulting.mule.testing.transformers.TransformerChain
@@ -9,7 +10,7 @@ import com.avioconsulting.mule.testing.transformers.http.HttpConnectorErrorTrans
 import com.avioconsulting.mule.testing.transformers.http.HttpGetTransformer
 import com.avioconsulting.mule.testing.transformers.http.HttpValidationTransformer
 
-class HttpRequestResponseChoiceImpl extends StandardRequestResponseImpl
+class HttpRequestResponseChoiceImpl extends StandardRequestResponseImpl<HttpRequesterInfo>
         implements HttpRequestResponseChoice {
     private final HttpValidationTransformer httpValidationTransformer
     private final HttpGetTransformer httpGetTransformer
@@ -27,7 +28,7 @@ class HttpRequestResponseChoiceImpl extends StandardRequestResponseImpl
         httpConnectorErrorTransformer = new HttpConnectorErrorTransformer()
     }
 
-    TransformerChain getTransformer() {
+    TransformerChain<HttpRequesterInfo> getTransformer() {
         // ensure this is done last to trigger 'validation' on the mock's reply
         def transformerChain = super.transformer
         // HTTP GET operations need to 'erase' payload before any attempts to deserialize the payload, etc.

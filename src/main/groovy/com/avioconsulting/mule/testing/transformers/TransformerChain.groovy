@@ -4,7 +4,7 @@ import com.avioconsulting.mule.testing.mulereplacements.MuleMessageTransformer
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.ConnectorInfo
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.MockEventWrapper
 
-class TransformerChain implements MuleMessageTransformer {
+class TransformerChain<T extends ConnectorInfo> implements MuleMessageTransformer<T> {
     private final List<MuleMessageTransformer> transformers
 
     TransformerChain() {
@@ -24,7 +24,7 @@ class TransformerChain implements MuleMessageTransformer {
     }
 
     void transform(MockEventWrapper muleMessage,
-                   ConnectorInfo connectorInfo) {
+                   T connectorInfo) {
         // needs to happen before inject because at that point transformers are actually running
         transformers.each { transformer ->
             if (transformer instanceof IHaveStateToReset) {

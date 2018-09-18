@@ -1,11 +1,12 @@
 package com.avioconsulting.mule.testing.dsl.mocking
 
 import com.avioconsulting.mule.testing.InvokerEventFactory
+import com.avioconsulting.mule.testing.mulereplacements.wrappers.ConnectorInfo
 import com.avioconsulting.mule.testing.payloadvalidators.IPayloadValidator
 import com.avioconsulting.mule.testing.transformers.ClosureCurrier
 import com.avioconsulting.mule.testing.transformers.TransformerChain
 
-abstract class StandardRequestResponseImpl implements StandardRequestResponse {
+abstract class StandardRequestResponseImpl<T extends ConnectorInfo> implements StandardRequestResponse {
     protected final IPayloadValidator initialPayloadValidator
     protected IFormatter formatter
     private Closure closure
@@ -23,8 +24,8 @@ abstract class StandardRequestResponseImpl implements StandardRequestResponse {
         this.initialPayloadValidator = initialPayloadValidator
     }
 
-    TransformerChain getTransformer() {
-        def transformerChain = new TransformerChain()
+    TransformerChain<T> getTransformer() {
+        def transformerChain = new TransformerChain<T>()
         def code = closure.rehydrate(formatter, this, this)
         code.resolveStrategy = Closure.DELEGATE_ONLY
         code()
