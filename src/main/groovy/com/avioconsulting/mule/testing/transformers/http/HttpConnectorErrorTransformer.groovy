@@ -1,13 +1,15 @@
 package com.avioconsulting.mule.testing.transformers.http
 
 import com.avioconsulting.mule.testing.mulereplacements.MuleMessageTransformer
-import com.avioconsulting.mule.testing.mulereplacements.wrappers.ConnectorInfo
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.MockEventWrapper
+import com.avioconsulting.mule.testing.mulereplacements.wrappers.connectors.HttpRequesterInfo
 import com.avioconsulting.mule.testing.transformers.IHaveStateToReset
 
 import java.util.concurrent.TimeoutException
 
-class HttpConnectorErrorTransformer implements IHaveStateToReset, MuleMessageTransformer {
+class HttpConnectorErrorTransformer implements
+        IHaveStateToReset,
+        MuleMessageTransformer<HttpRequesterInfo> {
     private boolean triggerConnectException
     private boolean triggerTimeoutException
 
@@ -24,7 +26,7 @@ class HttpConnectorErrorTransformer implements IHaveStateToReset, MuleMessageTra
     }
 
     void transform(MockEventWrapper muleEvent,
-                   ConnectorInfo connectorInfo) {
+                   HttpRequesterInfo connectorInfo) {
         if (!triggerConnectException && !triggerTimeoutException) {
             return
         }

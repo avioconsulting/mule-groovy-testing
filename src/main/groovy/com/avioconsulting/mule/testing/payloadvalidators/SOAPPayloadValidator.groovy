@@ -1,20 +1,21 @@
 package com.avioconsulting.mule.testing.payloadvalidators
 
-import org.mule.runtime.api.event.Event
-import org.mule.runtime.core.api.processor.Processor
+import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
+import com.avioconsulting.mule.testing.mulereplacements.wrappers.connectors.SoapConsumerInfo
 
-class SOAPPayloadValidator implements IPayloadValidator,
+class SOAPPayloadValidator implements
+        IPayloadValidator<SoapConsumerInfo>,
         PayloadHelper {
-    boolean isPayloadTypeValidationRequired(Processor messageProcessor) {
+    boolean isPayloadTypeValidationRequired(SoapConsumerInfo messageProcessor) {
         true
     }
 
-    boolean isContentTypeValidationRequired(Processor messageProcessor) {
+    boolean isContentTypeValidationRequired(SoapConsumerInfo messageProcessor) {
         // ws-consumer sets this on its own
         return false
     }
 
-    void validateContentType(Event event,
+    void validateContentType(EventWrapper event,
                              List<String> validContentTypes) {
     }
 

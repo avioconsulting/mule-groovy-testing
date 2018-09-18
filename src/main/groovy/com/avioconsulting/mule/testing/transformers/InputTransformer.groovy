@@ -1,11 +1,11 @@
 package com.avioconsulting.mule.testing.transformers
 
-import org.mule.runtime.api.event.Event
-import org.mule.runtime.core.api.processor.Processor
+import com.avioconsulting.mule.testing.mulereplacements.wrappers.ConnectorInfo
+import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
 
-interface InputTransformer {
-    def transformInput(Event input,
-                       Processor messageProcessor)
+interface InputTransformer<T extends ConnectorInfo> {
+    def transformInput(EventWrapper input,
+                       T connectorInfo)
 
     def disableStreaming()
 }

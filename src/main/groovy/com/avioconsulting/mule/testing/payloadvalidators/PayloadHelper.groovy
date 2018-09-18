@@ -1,6 +1,6 @@
 package com.avioconsulting.mule.testing.payloadvalidators
 
-import org.mule.runtime.api.event.Event
+import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
 
 trait PayloadHelper {
     void validatePayloadType(Object payload,
@@ -15,7 +15,7 @@ trait PayloadHelper {
         }
     }
 
-    void validateContentType(Event event,
+    void validateContentType(EventWrapper event,
                              List<String> validContentTypes,
                              String context) {
         def actualContentType = event.message.getOutboundProperty('Content-Type') as String

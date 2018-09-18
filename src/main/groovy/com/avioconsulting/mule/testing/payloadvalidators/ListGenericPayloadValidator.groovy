@@ -1,9 +1,10 @@
 package com.avioconsulting.mule.testing.payloadvalidators
 
-import org.mule.runtime.api.event.Event
-import org.mule.runtime.core.api.processor.Processor
+import com.avioconsulting.mule.testing.mulereplacements.wrappers.ConnectorInfo
+import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
 
-class ListGenericPayloadValidator implements IPayloadValidator {
+class ListGenericPayloadValidator<T extends ConnectorInfo> implements
+        IPayloadValidator<T> {
     private final Class listGenericType
     private final String expectedTypeLabel
 
@@ -12,15 +13,16 @@ class ListGenericPayloadValidator implements IPayloadValidator {
         this.expectedTypeLabel = "List<${listGenericType.name}>"
     }
 
-    boolean isPayloadTypeValidationRequired(Processor messageProcessor) {
+    boolean isPayloadTypeValidationRequired(T messageProcessor) {
         return true
     }
 
-    boolean isContentTypeValidationRequired(Processor messageProcessor) {
+    boolean isContentTypeValidationRequired(T messageProcessor) {
         return false
     }
 
-    void validateContentType(Event event, List<String> validContentTypes) {
+    void validateContentType(EventWrapper event,
+                             List<String> validContentTypes) {
     }
 
     void validatePayloadType(Object result) {

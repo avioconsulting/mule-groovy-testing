@@ -1,11 +1,13 @@
 package com.avioconsulting.mule.testing.transformers.http
 
 import com.avioconsulting.mule.testing.mulereplacements.MuleMessageTransformer
-import com.avioconsulting.mule.testing.mulereplacements.wrappers.ConnectorInfo
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.MockEventWrapper
+import com.avioconsulting.mule.testing.mulereplacements.wrappers.connectors.HttpRequesterInfo
 import com.avioconsulting.mule.testing.transformers.IHaveStateToReset
 
-class HttpValidationTransformer implements IHaveStateToReset, MuleMessageTransformer {
+class HttpValidationTransformer implements
+        IHaveStateToReset,
+        MuleMessageTransformer<HttpRequesterInfo> {
     private Integer httpReturnCode
 
     HttpValidationTransformer() {
@@ -13,7 +15,7 @@ class HttpValidationTransformer implements IHaveStateToReset, MuleMessageTransfo
     }
 
     void transform(MockEventWrapper muleEvent,
-                   ConnectorInfo connectorInfo) {
+                   HttpRequesterInfo connectorInfo) {
         assert false: 'http requester class stuff'
 //        assert messageProcessor instanceof DefaultHttpRequester
 //        setStatusCode(muleEvent.message)

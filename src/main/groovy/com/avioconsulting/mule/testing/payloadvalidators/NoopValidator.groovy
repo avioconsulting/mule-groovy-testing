@@ -1,21 +1,22 @@
 package com.avioconsulting.mule.testing.payloadvalidators
 
-import org.mule.runtime.api.event.Event
-import org.mule.runtime.core.api.processor.Processor
+import com.avioconsulting.mule.testing.mulereplacements.wrappers.ConnectorInfo
+import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
 
-class NoopValidator implements IPayloadValidator {
+class NoopValidator<T extends ConnectorInfo> implements
+        IPayloadValidator<T> {
     @Override
-    boolean isPayloadTypeValidationRequired(Processor messageProcessor) {
+    boolean isPayloadTypeValidationRequired(T messageProcessor) {
         return false
     }
 
     @Override
-    boolean isContentTypeValidationRequired(Processor messageProcessor) {
+    boolean isContentTypeValidationRequired(T messageProcessor) {
         return false
     }
 
     @Override
-    void validateContentType(Event event, List<String> validContentTypes) {
+    void validateContentType(EventWrapper event, List<String> validContentTypes) {
     }
 
     @Override

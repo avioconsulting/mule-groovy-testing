@@ -1,18 +1,20 @@
 package com.avioconsulting.mule.testing.transformers
 
+import com.avioconsulting.mule.testing.mulereplacements.wrappers.ConnectorInfo
+import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
+import com.avioconsulting.mule.testing.mulereplacements.wrappers.MockEventWrapper
 import com.avioconsulting.mule.testing.payloadvalidators.IPayloadValidator
-import org.mule.runtime.api.event.Event
-import org.mule.runtime.core.api.processor.Processor
 
-class StringInputTransformer implements InputTransformer {
-    private final IPayloadValidator payloadValidator
+class StringInputTransformer<T extends ConnectorInfo> implements
+        InputTransformer<T> {
+    private final IPayloadValidator<T> payloadValidator
 
-    StringInputTransformer(IPayloadValidator payloadValidator) {
+    StringInputTransformer(IPayloadValidator<T> payloadValidator) {
         this.payloadValidator = payloadValidator
     }
 
-    def transformInput(Event muleEvent,
-                       Processor messageProcessor) {
+    def transformInput(EventWrapper muleEvent,
+                       T connectorInfo) {
         def muleMessage = muleEvent.message
         // comes back from some Mule connectors like JSON
         if (muleMessage.payload == null) {
@@ -23,7 +25,7 @@ class StringInputTransformer implements InputTransformer {
                     "Expected payload to be of type String here but it actually was ${muleMessage.payload.class}. Check the connectors you're mocking and make sure you transformed the payload properly! (e.g. payload into VMs must be Strings)")
         }
         validateContentType(muleEvent,
-                            messageProcessor)
+                            connectorInfo)
         muleMessage.payload
     }
 
@@ -31,9 +33,9 @@ class StringInputTransformer implements InputTransformer {
         // we already expect a string
     }
 
-    private def validateContentType(Event muleEvent,
-                                    Processor messageProcessor) {
-        if (!payloadValidator.isContentTypeValidationRequired(messageProcessor)) {
+    private def validateContentType(MockEventWrapper muleEvent,
+                                    T connectorInfo) {
+        if (!payloadValidator.isContentTypeValidationRequired(connectorInfo)) {
             return
         }
         def validContentTypes = [

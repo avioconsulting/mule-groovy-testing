@@ -1,19 +1,20 @@
 package com.avioconsulting.mule.testing.transformers.json.input
 
+import com.avioconsulting.mule.testing.mulereplacements.wrappers.ConnectorInfo
 import com.avioconsulting.mule.testing.payloadvalidators.IPayloadValidator
 import com.fasterxml.jackson.databind.ObjectMapper
 
-class JacksonInputTransformer extends Common {
+class JacksonInputTransformer<T extends ConnectorInfo> extends Common<T> {
     def mapper = new ObjectMapper()
     private final List<Class> inputClasses
 
-    JacksonInputTransformer(IPayloadValidator payloadValidator,
+    JacksonInputTransformer(IPayloadValidator<T> payloadValidator,
                             List<Class> inputClasses) {
         super(payloadValidator)
         this.inputClasses = inputClasses
     }
 
-    JacksonInputTransformer(IPayloadValidator payloadValidator,
+    JacksonInputTransformer(IPayloadValidator<T> payloadValidator,
                             Class inputClass) {
         super(payloadValidator)
         this.inputClasses = [inputClass]

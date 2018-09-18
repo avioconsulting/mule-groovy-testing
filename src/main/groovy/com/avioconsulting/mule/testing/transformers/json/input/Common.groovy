@@ -1,20 +1,21 @@
 package com.avioconsulting.mule.testing.transformers.json.input
 
+import com.avioconsulting.mule.testing.mulereplacements.wrappers.ConnectorInfo
+import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
 import com.avioconsulting.mule.testing.payloadvalidators.IPayloadValidator
 import com.avioconsulting.mule.testing.payloadvalidators.StreamingDisabledPayloadValidator
 import com.avioconsulting.mule.testing.transformers.InputTransformer
-import org.mule.runtime.api.event.Event
-import org.mule.runtime.core.api.processor.Processor
 
-abstract class Common implements InputTransformer {
-    private IPayloadValidator payloadValidator
+abstract class Common<T extends ConnectorInfo> implements
+        InputTransformer<T> {
+    private IPayloadValidator<T> payloadValidator
 
-    Common(IPayloadValidator payloadValidator) {
+    Common(IPayloadValidator<T> payloadValidator) {
         this.payloadValidator = payloadValidator
     }
 
-    def validateContentType(Event event,
-                            Processor messageProcessor) {
+    def validateContentType(EventWrapper event,
+                            T messageProcessor) {
         // don't need content-type for VM or empty strings
         if (!payloadValidator.isPayloadTypeValidationRequired(messageProcessor) || event.messageAsString == '') {
             return
@@ -33,8 +34,8 @@ abstract class Common implements InputTransformer {
 
     abstract def transform(String jsonString)
 
-    def transformInput(Event muleEvent,
-                       Processor messageProcessor) {
+    def transformInput(EventWrapper muleEvent,
+                       T messageProcessor) {
         // comes back from some Mule connectors like JSON
         if (muleEvent.message.payload == null) {
             return null
@@ -50,8 +51,8 @@ abstract class Common implements InputTransformer {
         return transform(jsonString)
     }
 
-    private void validatePayloadType(Event muleEvent,
-                                     Processor messageProcessor) {
+    private void validatePayloadType(EventWrapper muleEvent,
+                                     T messageProcessor) {
         if (!payloadValidator.isPayloadTypeValidationRequired(messageProcessor)) {
             println 'Skipping payload type validation'
             return

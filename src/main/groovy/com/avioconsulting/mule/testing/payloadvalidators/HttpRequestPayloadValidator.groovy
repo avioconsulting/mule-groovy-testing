@@ -1,23 +1,24 @@
 package com.avioconsulting.mule.testing.payloadvalidators
 
-import org.mule.runtime.api.event.Event
-import org.mule.runtime.core.api.processor.Processor
+import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
+import com.avioconsulting.mule.testing.mulereplacements.wrappers.connectors.HttpRequesterInfo
 
-class HttpRequestPayloadValidator implements IPayloadValidator,
+class HttpRequestPayloadValidator implements
+        IPayloadValidator<HttpRequesterInfo>,
         PayloadHelper {
 
-    boolean isPayloadTypeValidationRequired(Processor messageProcessor) {
-        assert false : 'nie'
+    boolean isPayloadTypeValidationRequired(HttpRequesterInfo messageProcessor) {
+        assert false: 'nie'
         //assert messageProcessor instanceof DefaultHttpRequester
         // GET should not require a payload at all
         messageProcessor.method != 'GET'
     }
 
-    boolean isContentTypeValidationRequired(Processor messageProcessor) {
+    boolean isContentTypeValidationRequired(HttpRequesterInfo messageProcessor) {
         return true
     }
 
-    void validateContentType(Event event,
+    void validateContentType(EventWrapper event,
                              List<String> validContentTypes) {
         validateContentType(event,
                             validContentTypes,
