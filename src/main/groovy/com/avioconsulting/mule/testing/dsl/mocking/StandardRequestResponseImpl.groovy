@@ -1,6 +1,6 @@
 package com.avioconsulting.mule.testing.dsl.mocking
 
-
+import com.avioconsulting.mule.testing.MessageFactory
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.ConnectorInfo
 import com.avioconsulting.mule.testing.payloadvalidators.IPayloadValidator
 import com.avioconsulting.mule.testing.transformers.ClosureCurrier
@@ -13,10 +13,13 @@ abstract class StandardRequestResponseImpl<T extends ConnectorInfo> implements
     private Closure closure
     private final ClosureCurrier closureCurrier
     private final String requestResponseUse
+    private final MessageFactory messageFactory
 
-    StandardRequestResponseImpl(IPayloadValidator initialPayloadValidator,
+    StandardRequestResponseImpl(MessageFactory messageFactory,
+                                IPayloadValidator initialPayloadValidator,
                                 ClosureCurrier closureCurrier,
                                 String requestResponseUse) {
+        this.messageFactory = messageFactory
         this.requestResponseUse = requestResponseUse
         this.closureCurrier = closureCurrier
         this.initialPayloadValidator = initialPayloadValidator
@@ -45,7 +48,8 @@ abstract class StandardRequestResponseImpl<T extends ConnectorInfo> implements
 
     @Override
     def raw(@DelegatesTo(RawFormatter) Closure closure) {
-        formatter = new RawFormatterImpl<T>(initialPayloadValidator,
+        formatter = new RawFormatterImpl<T>(messageFactory,
+                                            initialPayloadValidator,
                                             closureCurrier)
         this.closure = closure
     }

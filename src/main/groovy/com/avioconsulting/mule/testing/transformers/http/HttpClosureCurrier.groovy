@@ -15,7 +15,6 @@ class HttpClosureCurrier implements
     Closure curryClosure(Closure closure,
                          MockEventWrapper muleEvent,
                          HttpRequesterInfo connectorInfo) {
-        assert false: ' http requester class??'
         if (shouldCurry(closure)) {
             return closure.rcurry(connectorInfo)
         }

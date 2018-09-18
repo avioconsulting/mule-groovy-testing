@@ -1,6 +1,6 @@
 package com.avioconsulting.mule.testing.dsl.mocking
 
-
+import com.avioconsulting.mule.testing.MessageFactory
 import com.avioconsulting.mule.testing.mulereplacements.MuleMessageTransformer
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.ConnectorInfo
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
@@ -17,9 +17,12 @@ class RawFormatterImpl<T extends ConnectorInfo> implements
     private final IPayloadValidator payloadValidator
     private MuleMessageTransformer transformer
     private final ClosureCurrier closureCurrier
+    private final MessageFactory messageFactory
 
-    RawFormatterImpl(IPayloadValidator payloadValidator,
+    RawFormatterImpl(MessageFactory messageFactory,
+                     IPayloadValidator payloadValidator,
                      ClosureCurrier closureCurrier) {
+        this.messageFactory = messageFactory
         this.closureCurrier = closureCurrier
         this.payloadValidator = payloadValidator
     }
@@ -41,9 +44,8 @@ class RawFormatterImpl<T extends ConnectorInfo> implements
             @Override
             void transformOutput(Object inputMessage,
                                  MockEventWrapper originalMuleEvent) {
-                assert false: 'mutate the existing event/message as appropriate'
-                eventFactory.getMuleEventWithPayload(inputMessage,
-                                                     originalMuleEvent)
+                def newMessage = messageFactory.buildMessage(inputMessage)
+                originalMuleEvent.changeMessage(newMessage)
             }
 
             @Override
@@ -64,7 +66,8 @@ class RawFormatterImpl<T extends ConnectorInfo> implements
 
     @Override
     IFormatter withNewPayloadValidator(IPayloadValidator validator) {
-        new RawFormatterImpl(validator,
+        new RawFormatterImpl(messageFactory,
+                             validator,
                              closureCurrier)
     }
 

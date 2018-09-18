@@ -1,9 +1,12 @@
 package com.avioconsulting.mule.testing.mulereplacements
 
 import com.avioconsulting.mule.testing.InvokerEventFactory
+import com.avioconsulting.mule.testing.MessageFactory
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.*
 
-class RuntimeBridgeTestSide implements InvokerEventFactory {
+class RuntimeBridgeTestSide implements
+        InvokerEventFactory,
+        MessageFactory {
     private final Object runtimeBridgeMuleSide
 
     RuntimeBridgeTestSide(Object runtimeBridgeMuleSide) {
@@ -52,5 +55,11 @@ class RuntimeBridgeTestSide implements InvokerEventFactory {
     @Override
     EventWrapper getMuleEventWithPayload(Object payload, EventWrapper rewriteEvent, Map properties) {
         assert false: 'NIE'
+    }
+
+    @Override
+    MessageWrapper buildMessage(Object payload) {
+        new MessageWrapperImpl(payload,
+                               runtimeBridgeMuleSide.messageBuilder)
     }
 }
