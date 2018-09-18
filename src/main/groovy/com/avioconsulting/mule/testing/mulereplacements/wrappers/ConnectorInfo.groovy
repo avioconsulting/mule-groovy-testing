@@ -1,5 +1,6 @@
 package com.avioconsulting.mule.testing.mulereplacements.wrappers
 
+// TODO: Possibly subclass this for different connectors?
 class ConnectorInfo {
     private final Map<String, Object> parameters
 
