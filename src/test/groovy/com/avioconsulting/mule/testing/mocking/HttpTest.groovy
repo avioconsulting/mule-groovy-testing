@@ -3,7 +3,7 @@ package com.avioconsulting.mule.testing.mocking
 import com.avioconsulting.mule.testing.OverrideConfigList
 import com.avioconsulting.mule.testing.SampleJacksonInput
 import com.avioconsulting.mule.testing.junit.BaseJunitTest
-import com.avioconsulting.mule.testing.mocks.HttpRequestInfo
+import com.avioconsulting.mule.testing.mulereplacements.wrappers.connectors.HttpRequesterInfo
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 import groovy.util.logging.Log4j2
@@ -16,7 +16,9 @@ import static org.hamcrest.Matchers.*
 import static org.junit.Assert.assertThat
 
 @Log4j2
-class HttpTest extends BaseJunitTest implements OverrideConfigList {
+class HttpTest extends
+        BaseJunitTest implements
+        OverrideConfigList {
     List<String> getConfigResourcesList() {
         ['http_test.xml']
     }
@@ -243,7 +245,7 @@ class HttpTest extends BaseJunitTest implements OverrideConfigList {
         String actualHttpVerb = null
         mockRestHttpCall('SomeSystem Call') {
             json {
-                whenCalledWith { HttpRequestInfo requestInfo ->
+                whenCalledWith { HttpRequesterInfo requestInfo ->
                     actualParams = requestInfo.queryParams
                     actualUri = requestInfo.uri
                     actualHttpVerb = requestInfo.httpVerb
@@ -280,7 +282,7 @@ class HttpTest extends BaseJunitTest implements OverrideConfigList {
         mockRestHttpCall('SomeSystem Call') {
             json {
                 whenCalledWith { Map incoming,
-                                 HttpRequestInfo requestInfo ->
+                                 HttpRequesterInfo requestInfo ->
                     actualVerb = requestInfo.httpVerb
                     [reply: 456]
 
@@ -308,7 +310,7 @@ class HttpTest extends BaseJunitTest implements OverrideConfigList {
         mockRestHttpCall('SomeSystem Call') {
             json {
                 whenCalledWith { Map incoming,
-                                 HttpRequestInfo requestInfo ->
+                                 HttpRequesterInfo requestInfo ->
                     actualIncoming = incoming
                     [reply: 456]
 
@@ -537,7 +539,7 @@ class HttpTest extends BaseJunitTest implements OverrideConfigList {
 
         mockRestHttpCall('SomeSystem Call') {
             json {
-                whenCalledWith { HttpRequestInfo requestInfo ->
+                whenCalledWith { HttpRequesterInfo requestInfo ->
                     actualParams = requestInfo.queryParams
                     actualUri = requestInfo.uri
                     actualHttpVerb = requestInfo.httpVerb
@@ -574,7 +576,7 @@ class HttpTest extends BaseJunitTest implements OverrideConfigList {
         def actualHeaders = null
         mockRestHttpCall('SomeSystem Call') {
             json {
-                whenCalledWith { HttpRequestInfo requestInfo ->
+                whenCalledWith { HttpRequesterInfo requestInfo ->
                     actualHeaders = requestInfo.headers
                     [reply: 456]
                 }
@@ -606,7 +608,7 @@ class HttpTest extends BaseJunitTest implements OverrideConfigList {
 
         mockRestHttpCall('SomeSystem Call') {
             json {
-                whenCalledWith { HttpRequestInfo requestInfo ->
+                whenCalledWith { HttpRequesterInfo requestInfo ->
                     actualParams = requestInfo.queryParams
                     actualUri = requestInfo.uri
                     actualHttpVerb = requestInfo.httpVerb

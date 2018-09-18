@@ -1,6 +1,6 @@
 package com.avioconsulting.mule.testing.mulereplacements
 
-import com.avioconsulting.mule.testing.mulereplacements.wrappers.ConnectorInfo
+
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.MockEventWrapperImpl
 
 class MockingConfiguration {
@@ -41,9 +41,10 @@ class MockingConfiguration {
             [key, value.resolveValue()]
         }
         def event = new MockEventWrapperImpl(interceptionEvent)
-        def connectorInfo = new ConnectorInfo(componentLocation.fileName.get() as String,
-                                              componentLocation.lineInFile.get() as Integer,
-                                              params)
+        def factory = new ConnectorInfoFactory()
+        def connectorInfo = factory.getConnectorInfo(componentLocation.fileName.get() as String,
+                                                     componentLocation.lineInFile.get() as Integer,
+                                                     params)
         mockProcess.process(event,
                             connectorInfo)
     }

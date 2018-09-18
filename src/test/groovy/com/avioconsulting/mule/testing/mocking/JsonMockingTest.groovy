@@ -3,14 +3,16 @@ package com.avioconsulting.mule.testing.mocking
 import com.avioconsulting.mule.testing.OverrideConfigList
 import com.avioconsulting.mule.testing.SampleJacksonInput
 import com.avioconsulting.mule.testing.junit.BaseJunitTest
-import com.avioconsulting.mule.testing.mocks.HttpRequestInfo
+import com.avioconsulting.mule.testing.mulereplacements.wrappers.connectors.HttpRequesterInfo
 import org.junit.Test
 
 import static org.hamcrest.Matchers.equalTo
 import static org.hamcrest.Matchers.is
 import static org.junit.Assert.assertThat
 
-class JsonMockingTest extends BaseJunitTest implements OverrideConfigList {
+class JsonMockingTest extends
+        BaseJunitTest implements
+        OverrideConfigList {
     List<String> getConfigResourcesList() {
         ['http_test.xml']
     }
@@ -49,7 +51,7 @@ class JsonMockingTest extends BaseJunitTest implements OverrideConfigList {
         String actualUri = null
         mockRestHttpCall('SomeSystem Call') {
             json {
-                whenCalledWith { HttpRequestInfo requestInfo ->
+                whenCalledWith { HttpRequesterInfo requestInfo ->
                     actualParams = requestInfo.queryParams
                     actualUri = requestInfo.uri
                     [reply: 456]
@@ -83,7 +85,7 @@ class JsonMockingTest extends BaseJunitTest implements OverrideConfigList {
 
         mockRestHttpCall('SomeSystem Call') {
             json {
-                whenCalledWith { HttpRequestInfo requestInfo ->
+                whenCalledWith { HttpRequesterInfo requestInfo ->
                     actualParams = requestInfo.queryParams
                     actualUri = requestInfo.uri
                     def reply = new SampleMockedJacksonOutput()
