@@ -1,8 +1,8 @@
 package com.avioconsulting.mule.testing.transformers.http
 
 import com.avioconsulting.mule.testing.mulereplacements.MuleMessageTransformer
-import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
-
+import com.avioconsulting.mule.testing.mulereplacements.wrappers.ConnectorInfo
+import com.avioconsulting.mule.testing.mulereplacements.wrappers.MockEventWrapper
 import com.avioconsulting.mule.testing.transformers.IHaveStateToReset
 
 class HttpValidationTransformer implements IHaveStateToReset, MuleMessageTransformer {
@@ -12,9 +12,9 @@ class HttpValidationTransformer implements IHaveStateToReset, MuleMessageTransfo
         reset()
     }
 
-    EventWrapper transform(EventWrapper muleEvent,
-                           ProcessorWrapper messageProcessor) {
-        assert false : 'http requester class stuff'
+    void transform(MockEventWrapper muleEvent,
+                   ConnectorInfo connectorInfo) {
+        assert false: 'http requester class stuff'
 //        assert messageProcessor instanceof DefaultHttpRequester
 //        setStatusCode(muleEvent.message)
 //        def wrappedValidator = messageProcessor.responseValidator as SuccessStatusCodeValidator

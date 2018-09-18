@@ -1,8 +1,9 @@
 package com.avioconsulting.mule.testing.transformers
 
-import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
+import com.avioconsulting.mule.testing.mulereplacements.wrappers.ConnectorInfo
+import com.avioconsulting.mule.testing.mulereplacements.wrappers.MockEventWrapper
 
-class ClosureCurrierNoop implements ClosureCurrier<ProcessorWrapper> {
+class ClosureCurrierNoop implements ClosureCurrier<ConnectorInfo> {
     @Override
     boolean isOnlyArgumentToBeCurried(Closure closure) {
         return false
@@ -10,8 +11,8 @@ class ClosureCurrierNoop implements ClosureCurrier<ProcessorWrapper> {
 
     @Override
     Closure curryClosure(Closure closure,
-                         EventWrapper muleEvent,
-                         ProcessorWrapper messageProcessor) {
+                         MockEventWrapper muleEvent,
+                         ConnectorInfo connectorInfo) {
         closure
     }
 }

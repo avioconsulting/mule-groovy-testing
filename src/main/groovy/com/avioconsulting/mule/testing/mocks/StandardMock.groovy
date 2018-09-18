@@ -2,9 +2,10 @@ package com.avioconsulting.mule.testing.mocks
 
 import com.avioconsulting.mule.testing.mulereplacements.MockProcess
 import com.avioconsulting.mule.testing.mulereplacements.MuleMessageTransformer
-import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
+import com.avioconsulting.mule.testing.mulereplacements.wrappers.ConnectorInfo
+import com.avioconsulting.mule.testing.mulereplacements.wrappers.MockEventWrapper
 
-class StandardMock implements MockProcess<ProcessorWrapper> {
+class StandardMock implements MockProcess<ConnectorInfo> {
     private final MuleMessageTransformer mockTransformer
 
     StandardMock(MuleMessageTransformer mockTransformer) {
@@ -12,9 +13,9 @@ class StandardMock implements MockProcess<ProcessorWrapper> {
     }
 
     @Override
-    EventWrapper process(EventWrapper event,
-                         ProcessorWrapper originalProcessor) {
+    void process(MockEventWrapper event,
+                 ConnectorInfo connectorInfo) {
         mockTransformer.transform(event,
-                                  originalProcessor)
+                                  connectorInfo)
     }
 }

@@ -1,11 +1,12 @@
 package com.avioconsulting.mule.testing.transformers
 
-import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
+import com.avioconsulting.mule.testing.mulereplacements.wrappers.ConnectorInfo
+import com.avioconsulting.mule.testing.mulereplacements.wrappers.MockEventWrapper
 
-interface ClosureCurrier<T extends ProcessorWrapper> {
+interface ClosureCurrier<T extends ConnectorInfo> {
     boolean isOnlyArgumentToBeCurried(Closure closure)
 
     Closure curryClosure(Closure closure,
-                         EventWrapper muleEvent,
+                         MockEventWrapper muleEvent,
                          T messageProcessor)
 }

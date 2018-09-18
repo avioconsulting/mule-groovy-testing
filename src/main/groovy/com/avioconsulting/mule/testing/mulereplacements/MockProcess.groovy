@@ -5,5 +5,5 @@ import com.avioconsulting.mule.testing.mulereplacements.wrappers.MockEventWrappe
 
 interface MockProcess<T extends ConnectorInfo> {
     void process(MockEventWrapper event,
-                 T processor)
+                 T connectorInfo)
 }

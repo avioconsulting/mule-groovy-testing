@@ -1,11 +1,12 @@
 package com.avioconsulting.mule.testing.transformers.http
 
 import com.avioconsulting.mule.testing.mocks.HttpRequestInfo
+import com.avioconsulting.mule.testing.mulereplacements.wrappers.ConnectorInfo
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
-
+import com.avioconsulting.mule.testing.mulereplacements.wrappers.MockEventWrapper
 import com.avioconsulting.mule.testing.transformers.ClosureCurrier
 
-class HttpClosureCurrier implements ClosureCurrier<ProcessorWrapper> {
+class HttpClosureCurrier implements ClosureCurrier<ConnectorInfo> {
     @Override
     boolean isOnlyArgumentToBeCurried(Closure closure) {
         closure.parameterTypes.size() == 1 && shouldCurry(closure)
@@ -13,8 +14,8 @@ class HttpClosureCurrier implements ClosureCurrier<ProcessorWrapper> {
 
     @Override
     Closure curryClosure(Closure closure,
-                         EventWrapper muleEvent,
-                         ProcessorWrapper messageProcessor) {
+                         MockEventWrapper muleEvent,
+                         ConnectorInfo connectorInfo) {
         assert false : ' http requester class??'
         if (shouldCurry(closure)) {
             def requestInfo = new HttpRequestInfo(messageProcessor.method,
