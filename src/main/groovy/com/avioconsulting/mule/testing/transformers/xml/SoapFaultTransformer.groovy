@@ -2,7 +2,6 @@ package com.avioconsulting.mule.testing.transformers.xml
 
 import com.avioconsulting.mule.testing.mulereplacements.MuleMessageTransformer
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
-import com.avioconsulting.mule.testing.mulereplacements.wrappers.ProcessorWrapper
 
 // TODO: Find a better way to do this
 class SoapFaultTransformer implements MuleMessageTransformer {

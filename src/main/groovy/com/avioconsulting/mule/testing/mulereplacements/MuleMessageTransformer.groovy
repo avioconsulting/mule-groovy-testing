@@ -1,7 +1,6 @@
 package com.avioconsulting.mule.testing.mulereplacements
 
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
-import com.avioconsulting.mule.testing.mulereplacements.wrappers.ProcessorWrapper
 
 // TODO: Collapse this and MockProcess??
 trait MuleMessageTransformer implements MockProcess<ProcessorWrapper> {

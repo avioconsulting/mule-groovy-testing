@@ -2,7 +2,7 @@ package com.avioconsulting.mule.testing.transformers.http
 
 import com.avioconsulting.mule.testing.mulereplacements.MuleMessageTransformer
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
-import com.avioconsulting.mule.testing.mulereplacements.wrappers.ProcessorWrapper
+
 import com.avioconsulting.mule.testing.transformers.IHaveStateToReset
 
 import java.util.concurrent.TimeoutException

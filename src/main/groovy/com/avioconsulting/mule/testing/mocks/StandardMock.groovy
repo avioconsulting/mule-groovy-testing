@@ -3,7 +3,6 @@ package com.avioconsulting.mule.testing.mocks
 import com.avioconsulting.mule.testing.mulereplacements.MockProcess
 import com.avioconsulting.mule.testing.mulereplacements.MuleMessageTransformer
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
-import com.avioconsulting.mule.testing.mulereplacements.wrappers.ProcessorWrapper
 
 class StandardMock implements MockProcess<ProcessorWrapper> {
     private final MuleMessageTransformer mockTransformer

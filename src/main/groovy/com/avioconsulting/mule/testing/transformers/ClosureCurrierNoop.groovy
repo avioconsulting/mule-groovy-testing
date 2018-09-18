@@ -1,7 +1,6 @@
 package com.avioconsulting.mule.testing.transformers
 
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
-import com.avioconsulting.mule.testing.mulereplacements.wrappers.ProcessorWrapper
 
 class ClosureCurrierNoop implements ClosureCurrier<ProcessorWrapper> {
     @Override

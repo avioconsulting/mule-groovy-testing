@@ -1,5 +1,8 @@
 package com.avioconsulting.mule.testing.mulereplacements
 
+import com.avioconsulting.mule.testing.mulereplacements.wrappers.ConnectorInfo
+import com.avioconsulting.mule.testing.mulereplacements.wrappers.MockEventWrapperImpl
+
 class MockingConfiguration {
     private final Map<String, MockProcess> mocks = [:]
     private final List<String> keepListenersOnForTheseFlows
@@ -32,7 +35,17 @@ class MockingConfiguration {
     void executeMock(Object componentLocation,
                      Object interceptionEvent,
                      Object parameters) {
-        println 'our mock!'
+        def connectorName = parameters.get('doc:name').providedValue() as String
+        def mockProcess = mocks[connectorName]
+        def params = (parameters as Map).collectEntries { key, value ->
+            [key, value.resolveValue()]
+        }
+        def event = new MockEventWrapperImpl(interceptionEvent)
+        def connectorInfo = new ConnectorInfo(componentLocation.fileName.get() as String,
+                                              componentLocation.lineInFile.get() as Integer,
+                                              params)
+        mockProcess.process(event,
+                            connectorInfo)
     }
 
     boolean shouldFlowListenerBeEnabled(String flowName) {
