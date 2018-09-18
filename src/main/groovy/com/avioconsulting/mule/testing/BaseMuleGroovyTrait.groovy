@@ -269,7 +269,7 @@ trait BaseMuleGroovyTrait {
                          RuntimeBridgeTestSide muleContext,
                          String connectorName,
                          @DelegatesTo(HttpRequestResponseChoice) Closure closure) {
-        def formatterChoice = new HttpRequestResponseChoiceImpl(muleContext)
+        def formatterChoice = new HttpRequestResponseChoiceImpl()
         def code = closure.rehydrate(formatterChoice, this, this)
         code.resolveStrategy = Closure.DELEGATE_ONLY
         code()

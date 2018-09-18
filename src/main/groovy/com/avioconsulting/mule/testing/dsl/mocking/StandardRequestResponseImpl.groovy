@@ -1,26 +1,24 @@
 package com.avioconsulting.mule.testing.dsl.mocking
 
-import com.avioconsulting.mule.testing.InvokerEventFactory
+
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.ConnectorInfo
 import com.avioconsulting.mule.testing.payloadvalidators.IPayloadValidator
 import com.avioconsulting.mule.testing.transformers.ClosureCurrier
 import com.avioconsulting.mule.testing.transformers.TransformerChain
 
-abstract class StandardRequestResponseImpl<T extends ConnectorInfo> implements StandardRequestResponse {
+abstract class StandardRequestResponseImpl<T extends ConnectorInfo> implements
+        StandardRequestResponse {
     protected final IPayloadValidator initialPayloadValidator
     protected IFormatter formatter
     private Closure closure
-    private final InvokerEventFactory eventFactory
     private final ClosureCurrier closureCurrier
     private final String requestResponseUse
 
     StandardRequestResponseImpl(IPayloadValidator initialPayloadValidator,
-                                InvokerEventFactory eventFactory,
                                 ClosureCurrier closureCurrier,
                                 String requestResponseUse) {
         this.requestResponseUse = requestResponseUse
         this.closureCurrier = closureCurrier
-        this.eventFactory = eventFactory
         this.initialPayloadValidator = initialPayloadValidator
     }
 
@@ -35,23 +33,20 @@ abstract class StandardRequestResponseImpl<T extends ConnectorInfo> implements S
 
     def json(@DelegatesTo(JsonFormatter) Closure closure) {
         formatter = new JsonFormatterImpl(initialPayloadValidator,
-                                          eventFactory,
                                           closureCurrier)
         this.closure = closure
     }
 
     def xml(@DelegatesTo(XMLFormatter) Closure closure) {
-        formatter = new XMLFormatterImpl(eventFactory,
-                                         initialPayloadValidator,
+        formatter = new XMLFormatterImpl(initialPayloadValidator,
                                          requestResponseUse)
         this.closure = closure
     }
 
     @Override
     def raw(@DelegatesTo(RawFormatter) Closure closure) {
-        formatter = new RawFormatterImpl(eventFactory,
-                                         initialPayloadValidator,
-                                         closureCurrier)
+        formatter = new RawFormatterImpl<T>(initialPayloadValidator,
+                                            closureCurrier)
         this.closure = closure
     }
 }
