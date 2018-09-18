@@ -1,16 +1,12 @@
 package com.avioconsulting.mule.testing.transformers.json.output
 
-import com.avioconsulting.mule.testing.InvokerEventFactory
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.MockEventWrapper
 import com.avioconsulting.mule.testing.transformers.OutputTransformer
 
-abstract class Common implements
-        OutputTransformer {
+abstract class Common implements OutputTransformer {
     private boolean useStreaming
-    protected final InvokerEventFactory eventFactory
 
-    Common(InvokerEventFactory eventFactory) {
-        this.eventFactory = eventFactory
+    Common() {
         this.useStreaming = true
     }
 

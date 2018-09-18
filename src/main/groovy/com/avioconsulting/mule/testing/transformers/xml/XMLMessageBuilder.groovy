@@ -1,6 +1,6 @@
 package com.avioconsulting.mule.testing.transformers.xml
 
-import com.avioconsulting.mule.testing.InvokerEventFactory
+
 import org.mule.runtime.api.event.Event
 
 import javax.xml.stream.XMLInputFactory
@@ -29,18 +29,15 @@ class XMLMessageBuilder {
         }
     }()
 
-    private final InvokerEventFactory eventFactory
     private final boolean wrapWithApiKitStreamReader
 
-    XMLMessageBuilder(InvokerEventFactory eventFactory,
-                      boolean wrapWithApiKitStreamReader) {
+    XMLMessageBuilder(boolean wrapWithApiKitStreamReader) {
         this.wrapWithApiKitStreamReader = wrapWithApiKitStreamReader
-        this.eventFactory = eventFactory
     }
 
     Event build(Reader reader,
-                    Event rewriteEvent,
-                    Integer httpStatus = null) {
+                Event rewriteEvent,
+                Integer httpStatus = null) {
         def payload = getPayload(reader)
         constructXMLMessage(rewriteEvent,
                             httpStatus,
@@ -48,8 +45,8 @@ class XMLMessageBuilder {
     }
 
     Event build(Reader reader,
-                    String flowName,
-                    Integer httpStatus = null) {
+                String flowName,
+                Integer httpStatus = null) {
         def payload = getPayload(reader)
         constructXMLMessage(flowName,
                             httpStatus,
@@ -74,8 +71,8 @@ class XMLMessageBuilder {
     }
 
     private Event constructXMLMessage(Event rewriteEvent,
-                                          Integer httpStatus,
-                                          Object payload) {
+                                      Integer httpStatus,
+                                      Object payload) {
         def messageProps = getXmlProperties(httpStatus)
         eventFactory.getMuleEventWithPayload(payload,
                                              rewriteEvent,
@@ -83,8 +80,8 @@ class XMLMessageBuilder {
     }
 
     private Event constructXMLMessage(String flowName,
-                                          Integer httpStatus,
-                                          Object payload) {
+                                      Integer httpStatus,
+                                      Object payload) {
         def messageProps = getXmlProperties(httpStatus)
         eventFactory.getMuleEventWithPayload(payload,
                                              flowName,

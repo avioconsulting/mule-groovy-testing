@@ -1,23 +1,20 @@
 package com.avioconsulting.mule.testing.transformers.xml
 
-import com.avioconsulting.mule.testing.InvokerEventFactory
+import com.avioconsulting.mule.testing.mulereplacements.wrappers.ConnectorInfo
+import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
 import com.avioconsulting.mule.testing.payloadvalidators.IPayloadValidator
-import org.mule.runtime.api.event.Event
-import org.mule.runtime.core.api.processor.Processor
 
-class XMLTransformer {
+class XMLTransformer<T extends ConnectorInfo> {
     protected final XMLMessageBuilder xmlMessageBuilder
-    private final IPayloadValidator payloadValidator
+    private final IPayloadValidator<T> payloadValidator
 
-    XMLTransformer(InvokerEventFactory eventFactory,
-                   IPayloadValidator payloadValidator) {
+    XMLTransformer(IPayloadValidator<T> payloadValidator) {
         this.payloadValidator = payloadValidator
-        this.xmlMessageBuilder = new XMLMessageBuilder(eventFactory,
-                                                       false)
+        this.xmlMessageBuilder = new XMLMessageBuilder(false)
     }
 
-    def validateContentType(Event muleEvent,
-                            Processor messageProcessor) {
+    def validateContentType(EventWrapper muleEvent,
+                            T messageProcessor) {
         if (payloadValidator.isContentTypeValidationRequired(messageProcessor)) {
             payloadValidator.validateContentType(muleEvent,
                                                  ['application/xml'])

@@ -1,6 +1,5 @@
 package com.avioconsulting.mule.testing.transformers.xml
 
-import com.avioconsulting.mule.testing.InvokerEventFactory
 import com.avioconsulting.mule.testing.mulereplacements.MuleMessageTransformer
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.ConnectorInfo
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.MockEventWrapper
@@ -9,17 +8,18 @@ import com.avioconsulting.mule.testing.transformers.ClosureMuleMessageHandler
 import groovy.util.logging.Log4j2
 
 @Log4j2
-class XMLJAXBTransformer extends XMLTransformer implements MuleMessageTransformer,
+class XMLJAXBTransformer<T extends ConnectorInfo> extends
+        XMLTransformer implements
+        MuleMessageTransformer,
         ClosureMuleMessageHandler {
     private final Closure closure
     private final JAXBMarshalHelper helper
 
     XMLJAXBTransformer(Closure closure,
-                       InvokerEventFactory eventFactory,
                        Class inputJaxbClass,
-                       IPayloadValidator payloadValidator,
+                       IPayloadValidator<T> payloadValidator,
                        String transformerUse) {
-        super(eventFactory, payloadValidator)
+        super(payloadValidator)
         this.closure = closure
         this.helper = new JAXBMarshalHelper(inputJaxbClass,
                                             transformerUse)
@@ -28,7 +28,7 @@ class XMLJAXBTransformer extends XMLTransformer implements MuleMessageTransforme
     void transform(MockEventWrapper event,
                    ConnectorInfo connectorInfo) {
         validateContentType(event,
-                            messageProcessor)
+                            connectorInfo)
         def payload = event.message.payload
         def nullPayload = payload instanceof byte[] && payload.length == 0
         def strongTypedPayload

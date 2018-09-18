@@ -1,6 +1,6 @@
 package com.avioconsulting.mule.testing.dsl.mocking
 
-import com.avioconsulting.mule.testing.InvokerEventFactory
+
 import com.avioconsulting.mule.testing.mulereplacements.MuleMessageTransformer
 import com.avioconsulting.mule.testing.payloadvalidators.IPayloadValidator
 import com.avioconsulting.mule.testing.transformers.TransformerChain
@@ -10,7 +10,9 @@ import groovy.xml.DOMBuilder
 
 import javax.xml.namespace.QName
 
-class SOAPFormatterImpl extends XMLFormatterImpl implements SOAPFormatter {
+class SOAPFormatterImpl extends
+        XMLFormatterImpl implements
+        SOAPFormatter {
     // don't want to tie ourselves to a given version of CXF/ws by expressing a compile dependency
     @Lazy
     private static Class soapFaultClass = {
@@ -26,10 +28,8 @@ class SOAPFormatterImpl extends XMLFormatterImpl implements SOAPFormatter {
     private HttpConnectorErrorTransformer httpConnectorErrorTransformer
     private SoapFaultTransformer soapFaultTransformer
 
-    SOAPFormatterImpl(InvokerEventFactory eventFactory,
-                      IPayloadValidator payloadValidator) {
-        super(eventFactory,
-              payloadValidator,
+    SOAPFormatterImpl(IPayloadValidator payloadValidator) {
+        super(payloadValidator,
               'SOAP/WS Consumer Mock')
         this.soapFaultTransformer = new SoapFaultTransformer()
     }
