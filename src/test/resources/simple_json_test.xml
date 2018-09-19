@@ -1,61 +1,59 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:http="http://www.mulesoft.org/schema/mule/http"
-      xmlns:json="http://www.mulesoft.org/schema/mule/json"
+<mule       xmlns:json="http://www.mulesoft.org/schema/mule/json"
       xmlns="http://www.mulesoft.org/schema/mule/core"
-      xmlns:dw="http://www.mulesoft.org/schema/mule/ee/dw"
+            xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
       xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
-http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
-http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee/dw/current/dw.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
 http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/json/current/mule-json.xsd">
     <flow name="jsonTest">
-        <dw:transform-message doc:name="Transform Message">
-            <dw:set-payload><![CDATA[%dw 1.0
+        <ee:transform doc:name="Transform Message">
+            <ee:message><ee:set-payload><![CDATA[%dw 1.0
 %output application/json
 ---
 {
     key: payload.foo
-}]]></dw:set-payload>
-        </dw:transform-message>
+}]]></ee:set-payload></ee:message>
+        </ee:transform>
         <set-property propertyName="Content-Type" value="application/json"/>
     </flow>
 
     <flow name="noInputTest">
-        <dw:transform-message doc:name="Transform Message">
-            <dw:set-payload><![CDATA[%dw 1.0
+        <ee:transform doc:name="Transform Message">
+            <ee:message><ee:set-payload><![CDATA[%dw 1.0
 %output application/json
 ---
 {
     key: 123
-}]]></dw:set-payload>
-        </dw:transform-message>
+}]]></ee:set-payload></ee:message>
+        </ee:transform>
         <set-property propertyName="Content-Type" value="application/json"/>
     </flow>
 
     <flow name="noInputTestNoStream">
-        <dw:transform-message doc:name="Transform Message">
-            <dw:set-payload><![CDATA[%dw 1.0
+        <ee:transform doc:name="Transform Message">
+            <ee:message><ee:set-payload><![CDATA[%dw 1.0
 %output application/json
 ---
 {
     key: 123
-}]]></dw:set-payload>
-        </dw:transform-message>
+}]]></ee:set-payload></ee:message>
+        </ee:transform>
         <byte-array-to-string-transformer/>
         <set-property propertyName="Content-Type" value="application/json"/>
     </flow>
 
     <flow name="jsonListTest">
-        <dw:transform-message doc:name="Transform Message">
-            <dw:set-payload><![CDATA[%dw 1.0
+        <ee:transform doc:name="Transform Message">
+            <ee:message><ee:set-payload><![CDATA[%dw 1.0
 %output application/json
 ---
 payload map {
     key: $.foo
-}]]></dw:set-payload>
-        </dw:transform-message>
+}]]></ee:set-payload></ee:message>
+        </ee:transform>
         <set-property propertyName="Content-Type" value="application/json"/>
     </flow>
 
@@ -63,14 +61,14 @@ payload map {
         <byte-array-to-string-transformer/>
         <json:json-to-object-transformer/>
         <idempotent-message-filter idExpression="#[payload.get('foo').asText()]"/>
-        <dw:transform-message doc:name="Transform Message">
-            <dw:set-payload><![CDATA[%dw 1.0
+        <ee:transform doc:name="Transform Message">
+            <ee:message><ee:set-payload><![CDATA[%dw 1.0
 %output application/json
 ---
 {
     key: payload.foo
-}]]></dw:set-payload>
-        </dw:transform-message>
+}]]></ee:set-payload></ee:message>
+        </ee:transform>
         <set-property propertyName="Content-Type" value="application/json"/>
     </flow>
 
@@ -89,14 +87,14 @@ payload map {
     </flow>
 
     <flow name="jsonTestNoContentType">
-        <dw:transform-message doc:name="Transform Message">
-            <dw:set-payload><![CDATA[%dw 1.0
+        <ee:transform doc:name="Transform Message">
+            <ee:message><ee:set-payload><![CDATA[%dw 1.0
 %output application/json
 ---
 {
     key: payload.foo
-}]]></dw:set-payload>
-        </dw:transform-message>
+}]]></ee:set-payload></ee:message>
+        </ee:transform>
     </flow>
 
     <flow name="noStreamingTest">
