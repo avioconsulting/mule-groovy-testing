@@ -1,30 +1,19 @@
 package com.avioconsulting.mule.testing
 
 import com.avioconsulting.mule.testing.batch.BatchWaitUtil
+import com.avioconsulting.mule.testing.containers.BaseEngineConfig
+import com.avioconsulting.mule.testing.containers.MuleEngineContainer
 import com.avioconsulting.mule.testing.dsl.invokers.*
 import com.avioconsulting.mule.testing.dsl.mocking.*
 import com.avioconsulting.mule.testing.dsl.mocking.sfdc.Choice
 import com.avioconsulting.mule.testing.dsl.mocking.sfdc.ChoiceImpl
 import com.avioconsulting.mule.testing.mocks.StandardMock
 import com.avioconsulting.mule.testing.mulereplacements.MockingConfiguration
-import com.avioconsulting.mule.testing.mulereplacements.MuleRegistryListener
 import com.avioconsulting.mule.testing.mulereplacements.RuntimeBridgeTestSide
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
 import com.avioconsulting.mule.testing.payloadvalidators.SOAPPayloadValidator
-import org.apache.commons.io.FileUtils
 import org.apache.commons.lang.NotImplementedException
 import org.apache.logging.log4j.Logger
-import org.mule.maven.client.api.MavenClient
-import org.mule.maven.client.api.MavenClientProvider
-import org.mule.maven.client.api.model.BundleDescriptor
-import org.mule.maven.client.api.model.BundleScope
-import org.mule.maven.client.api.model.MavenConfiguration
-import org.mule.runtime.module.embedded.api.Product
-import org.mule.runtime.module.embedded.internal.DefaultEmbeddedContainerBuilder
-import org.mule.runtime.module.embedded.internal.MavenContainerClassLoaderFactory
-import org.mule.runtime.module.embedded.internal.classloading.JdkOnlyClassLoaderFactory
-
-import static java.lang.System.setProperty
 
 // basic idea here is to have a trait that could be mixed in to any type of testing framework situation
 // this trait should be stateless
@@ -32,135 +21,21 @@ trait BaseMuleGroovyTrait {
     abstract Logger getLogger()
 
     RuntimeBridgeTestSide createMuleContext(MockingConfiguration mockingConfiguration) {
-        def directory = new File('.mule')
-        System.setProperty('mule.home',
-                           directory.absolutePath)
-        logger.info "Checking for tempporary .mule directory at ${directory.absolutePath}"
-        if (directory.exists()) {
-            logger.info "Removing ${directory.absolutePath}"
-            directory.deleteDir()
-        }
-        // TODO: Do we need this still?
-        setProperty("mule.mode.embedded", "true");
-        // mule won't start without a log4j2 config
-        def log4jResource = BaseMuleGroovyTrait.getResource('/log4j2-for-mule-home.xml')
-        assert log4jResource
-        def confDirectory = new File(directory, 'conf')
-        confDirectory.mkdirs()
-        def targetFile = new File(confDirectory, 'log4j2.xml')
-        FileUtils.copyFile(new File(log4jResource.toURI()),
-                           targetFile)
-        def domainsDir = new File(directory, 'domains')
-        domainsDir.mkdirs()
-        def appsDir = new File(directory, 'apps')
-        if (appsDir.exists()) {
-            appsDir.deleteDir()
-        }
-        appsDir.mkdirs()
-        def mavenClientProvider = MavenClientProvider.discoverProvider(DefaultEmbeddedContainerBuilder.classLoader)
-        // TODO: No hard coding, use Maven settings file??
-        def repo = new File('/Users/brady/.m2/repository')
-        assert repo.exists()
-        def mavenConfig = MavenConfiguration.newMavenConfigurationBuilder()
-                .localMavenRepositoryLocation(repo)
-                .offlineMode(true)
-        // TODO: hard coding
-                .userSettingsLocation(new File('/Users/brady/.m2/settings.xml'))
-                .build()
-        def mavenClient = mavenClientProvider.createMavenClient(mavenConfig)
-        def classLoaderFactory = new MavenContainerClassLoaderFactory(mavenClient)
-        def services = classLoaderFactory.getServices('4.1.2',
-                                                      Product.MULE_EE)
-        def servicesDir = new File(directory, 'services')
-        services.each { svcUrl ->
-            FileUtils.copyFileToDirectory(new File(svcUrl.toURI()),
-                                          servicesDir)
-        }
-        // TODO: mule version hard coded?
-        def containerModulesClassLoader = classLoaderFactory.create('4.1.2',
-                                                                    Product.MULE_EE,
-                                                                    JdkOnlyClassLoaderFactory.create(),
-                                                                    directory.toURI().toURL())
-        def containerClassLoader = createEmbeddedImplClassLoader(containerModulesClassLoader,
-                                                                 mavenClient,
-                                                                 '4.1.2')
-        // work around this - https://jira.apache.org/jira/browse/LOG4J2-2152
-        def preserve = Thread.currentThread().contextClassLoader
-        Object container = null
-        Object registryListener = null
-        Object muleSide = null
-        try {
-            Thread.currentThread().contextClassLoader = containerClassLoader
-            // TODO: Hard coded name?
-            def containerKlass = containerClassLoader.loadClass("org.mule.runtime.module.launcher.MuleContainer")
-            container = containerKlass.newInstance()
-            container.start(false)
-            def registryListenerKlass = containerClassLoader.loadClass(MuleRegistryListener.name)
-            registryListener = registryListenerKlass.newInstance()
-            registryListener.mockingConfiguration = mockingConfiguration
-            container.deploymentService.addDeploymentListener(registryListener)
-            assert container
-            assert registryListener
-            // TODO: Hard coded app (also can domain be created as a dir beforehand so we don't have to deploy it?). see embedded controller
-            // won't start apps without this domain there but it can be empty
-            container.deploymentService.deployDomain(new File('src/test/resources/default').toURI())
-            // TODO: How do we pass in our properties??
-            // TODO: We need the repository directory. The Mule 4.0 build process puts it in target so we should be able to get it easily
-            container.deploymentService.deploy(new File('src/test/resources/41test').toURI())
-            muleSide = registryListener.runtimeBridge
-        }
-        finally {
-            Thread.currentThread().contextClassLoader = preserve
-        }
-        new RuntimeBridgeTestSide(muleSide)
-    }
+        // TODO: Create MuleEngineContainer first. have junit hold on to that. Can use it to re-deploy as many configs as necessary. THen each app can behave like today where we see if we need a new context or not
 
-    private ClassLoader createEmbeddedImplClassLoader(ClassLoader parentClassLoader,
-                                                      MavenClient mavenClient,
-                                                      String muleVersion) throws MalformedURLException {
-        def embeddedBomDescriptor = new BundleDescriptor.Builder()
-                .setGroupId('org.mule.distributions')
-                .setArtifactId('mule-module-embedded-impl-bom')
-                .setVersion(muleVersion)
-                .setType('pom')
-                .build()
-        def embeddedImplDescriptor = new BundleDescriptor.Builder()
-                .setGroupId('org.mule.distributions')
-                .setArtifactId('mule-module-embedded-impl')
-                .setVersion(muleVersion)
-                .setType('jar')
-                .build()
-        def embeddedBundleImplDescriptor = mavenClient.resolveBundleDescriptor(embeddedImplDescriptor)
-        def embeddedImplDependencies = mavenClient.resolveBundleDescriptorDependencies(false,
-                                                                                       embeddedBomDescriptor)
-        def embeddedUrls = embeddedImplDependencies.findAll { dep ->
-            dep.scope != BundleScope.PROVIDED
-        }.collect { dep ->
-            dep.bundleUri.toURL()
-        }
-        embeddedUrls.add(embeddedBundleImplDescriptor.bundleUri.toURL())
-        embeddedUrls.add(MuleRegistryListener.protectionDomain.codeSource.location)
-        new URLClassLoader(embeddedUrls.toArray(new URL[0]),
-                           parentClassLoader)
+        def container = new MuleEngineContainer(baseEngineConfig)
+        // TODO: Deploy app
     }
 
     Properties getStartUpProperties() {
-        // MUnit Maven plugin uses this technique to avoid a license just to run unit tests
-        System.setProperty('mule.testingMode',
-                           'true')
-        def properties = new Properties()
-        // in case a Groovy/GStringImpl is in here
-        def onlyJavaStrings = propertyMap.collectEntries { key, value ->
-            [(key.toString()): value.toString()]
-        }
-        properties.putAll onlyJavaStrings
-        // verbose in testing is good
-        properties.put('mule.verbose.exceptions', true)
-        properties
     }
 
     def getPropertyMap() {
         [:]
+    }
+
+    BaseEngineConfig getBaseEngineConfig() {
+        new BaseEngineConfig('4.1.2')
     }
 
     // TODO: Figure out how to do this w/ Mule 4
