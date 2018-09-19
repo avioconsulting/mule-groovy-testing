@@ -4,7 +4,7 @@ package com.avioconsulting.mule.testing.mulereplacements
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.MockEventWrapperImpl
 
 class MockingConfiguration {
-    private final Map<String, MockProcess> mocks = [:]
+    private final Map<String, MuleMessageTransformer> mocks = [:]
     private final List<String> keepListenersOnForTheseFlows
 
     MockingConfiguration(List<String> keepListenersOnForTheseFlows) {
@@ -16,7 +16,7 @@ class MockingConfiguration {
     }
 
     def addMock(String processorName,
-                MockProcess mockHandler) {
+                MuleMessageTransformer mockHandler) {
         mocks[processorName] = mockHandler
     }
 
@@ -45,8 +45,8 @@ class MockingConfiguration {
         def connectorInfo = factory.getConnectorInfo(componentLocation.fileName.get() as String,
                                                      componentLocation.lineInFile.get() as Integer,
                                                      params)
-        mockProcess.process(event,
-                            connectorInfo)
+        mockProcess.transform(event,
+                              connectorInfo)
     }
 
     boolean shouldFlowListenerBeEnabled(String flowName) {

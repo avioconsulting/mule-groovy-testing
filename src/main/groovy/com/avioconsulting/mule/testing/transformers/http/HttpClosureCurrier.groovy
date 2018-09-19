@@ -1,6 +1,6 @@
 package com.avioconsulting.mule.testing.transformers.http
 
-import com.avioconsulting.mule.testing.mulereplacements.wrappers.MockEventWrapper
+import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.connectors.HttpRequesterInfo
 import com.avioconsulting.mule.testing.transformers.ClosureCurrier
 
@@ -13,7 +13,7 @@ class HttpClosureCurrier implements
 
     @Override
     Closure curryClosure(Closure closure,
-                         MockEventWrapper muleEvent,
+                         EventWrapper muleEvent,
                          HttpRequesterInfo connectorInfo) {
         if (shouldCurry(closure)) {
             return closure.rcurry(connectorInfo)

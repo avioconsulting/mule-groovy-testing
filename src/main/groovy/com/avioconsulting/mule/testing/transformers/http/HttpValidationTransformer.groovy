@@ -1,7 +1,7 @@
 package com.avioconsulting.mule.testing.transformers.http
 
 import com.avioconsulting.mule.testing.mulereplacements.MuleMessageTransformer
-import com.avioconsulting.mule.testing.mulereplacements.wrappers.MockEventWrapper
+import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.connectors.HttpRequesterInfo
 import com.avioconsulting.mule.testing.transformers.IHaveStateToReset
 
@@ -14,8 +14,8 @@ class HttpValidationTransformer implements
         reset()
     }
 
-    void transform(MockEventWrapper muleEvent,
-                   HttpRequesterInfo connectorInfo) {
+    EventWrapper transform(EventWrapper muleEvent,
+                           HttpRequesterInfo connectorInfo) {
         assert !connectorInfo.validationEnabled: 'Figure out what to do now that this is enabled!'
 //        assert messageProcessor instanceof DefaultHttpRequester
 //        setStatusCode(muleEvent.message)

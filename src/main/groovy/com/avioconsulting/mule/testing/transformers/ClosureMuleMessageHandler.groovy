@@ -1,10 +1,10 @@
 package com.avioconsulting.mule.testing.transformers
 
-import org.mule.runtime.api.event.Event
+import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
 
 trait ClosureMuleMessageHandler {
     Closure withMuleEvent(Closure closure,
-                          Event event) {
-        closure.parameterTypes.last() == Event ? closure.rcurry(event) : closure
+                          EventWrapper event) {
+        closure.parameterTypes.last() == EventWrapper ? closure.rcurry(event) : closure
     }
 }

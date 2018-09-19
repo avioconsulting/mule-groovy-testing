@@ -68,7 +68,7 @@ class JsonInvokerImpl implements JsonInvoker, Invoker {
     private setInputTransformer(inputObject) {
         assert !(inputObject instanceof Class): 'Use outputOnly if a only an output class is being supplied!'
         this.inputObject = inputObject
-        transformBeforeCallingFlow = new JacksonOutputTransformer(eventFactory)
+        transformBeforeCallingFlow = new JacksonOutputTransformer()
     }
 
     def noStreaming() {
@@ -85,8 +85,7 @@ class JsonInvokerImpl implements JsonInvoker, Invoker {
     EventWrapper getEvent() {
         def input = outputOnly ? null : this.inputObject
         def event = eventFactory.getMuleEventWithPayload(input,
-                                                         flow.name,
-                                                         MessageExchangePattern.REQUEST_RESPONSE)
+                                                         flow.name)
         if (outputOnly) {
             return event
         } else {

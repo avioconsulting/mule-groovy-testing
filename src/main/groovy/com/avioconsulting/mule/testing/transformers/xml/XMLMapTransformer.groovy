@@ -2,7 +2,7 @@ package com.avioconsulting.mule.testing.transformers.xml
 
 import com.avioconsulting.mule.testing.mulereplacements.MuleMessageTransformer
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.ConnectorInfo
-import com.avioconsulting.mule.testing.mulereplacements.wrappers.MockEventWrapper
+import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
 import com.avioconsulting.mule.testing.payloadvalidators.IPayloadValidator
 import com.avioconsulting.mule.testing.transformers.ClosureMuleMessageHandler
 import groovy.util.slurpersupport.GPathResult
@@ -20,8 +20,8 @@ class XMLMapTransformer<T extends ConnectorInfo> extends
         this.closure = closure
     }
 
-    void transform(MockEventWrapper incomingEvent,
-                   ConnectorInfo connectorInfo) {
+    EventWrapper transform(EventWrapper incomingEvent,
+                           T connectorInfo) {
         validateContentType(incomingEvent,
                             connectorInfo)
         def xmlString = incomingEvent.messageAsString

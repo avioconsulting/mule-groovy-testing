@@ -7,7 +7,7 @@ import com.avioconsulting.mule.testing.dsl.invokers.*
 import com.avioconsulting.mule.testing.dsl.mocking.*
 import com.avioconsulting.mule.testing.dsl.mocking.sfdc.Choice
 import com.avioconsulting.mule.testing.dsl.mocking.sfdc.ChoiceImpl
-import com.avioconsulting.mule.testing.mocks.StandardMock
+
 import com.avioconsulting.mule.testing.mulereplacements.MockingConfiguration
 import com.avioconsulting.mule.testing.mulereplacements.RuntimeBridgeTestSide
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
@@ -235,9 +235,8 @@ trait BaseMuleGroovyTrait {
         def code = closure.rehydrate(formatterChoice, this, this)
         code.resolveStrategy = Closure.DELEGATE_ONLY
         code()
-        def mock = new StandardMock(formatterChoice.transformer)
         mockingConfiguration.addMock(connectorName,
-                                     mock)
+                                     formatterChoice.transformer)
     }
 
     def mockGeneric(MockingConfiguration mockingConfiguration,
@@ -248,9 +247,8 @@ trait BaseMuleGroovyTrait {
         def code = closure.rehydrate(formatterChoice, this, this)
         code.resolveStrategy = Closure.DELEGATE_ONLY
         code()
-        def mock = new StandardMock(formatterChoice.transformer)
         mockingConfiguration.addMock(connectorName,
-                                     mock)
+                                     formatterChoice.transformer)
     }
 
     def mockSalesForceCall(MockingConfiguration mockingConfiguration,
@@ -276,8 +274,7 @@ trait BaseMuleGroovyTrait {
         def code = closure.rehydrate(soapFormatter, this, this)
         code.resolveStrategy = Closure.DELEGATE_ONLY
         code()
-        def mock = new StandardMock(soapFormatter.transformer)
         mockingConfiguration.addMock(connectorName,
-                                     mock)
+                                     soapFormatter.transformer)
     }
 }

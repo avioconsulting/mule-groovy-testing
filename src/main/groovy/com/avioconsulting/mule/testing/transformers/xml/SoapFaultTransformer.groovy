@@ -1,11 +1,13 @@
 package com.avioconsulting.mule.testing.transformers.xml
 
 import com.avioconsulting.mule.testing.mulereplacements.MuleMessageTransformer
+import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.MockEventWrapper
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.connectors.SoapConsumerInfo
 
 // TODO: Find a better way to do this
-class SoapFaultTransformer implements MuleMessageTransformer<SoapConsumerInfo> {
+class SoapFaultTransformer implements
+        MuleMessageTransformer<SoapConsumerInfo> {
     @Lazy
     private static Class soapFaultExceptionClass = {
         try {
@@ -27,8 +29,8 @@ class SoapFaultTransformer implements MuleMessageTransformer<SoapConsumerInfo> {
     }
 
     @Override
-    void transform(MockEventWrapper muleEvent,
-                   SoapConsumerInfo originalProcessor) {
+    EventWrapper transform(EventWrapper muleEvent,
+                           SoapConsumerInfo originalProcessor) {
         // TODO: thread safe
         // we need to capture these so we can create an exception inside the closure
         this.muleEvent = muleEvent

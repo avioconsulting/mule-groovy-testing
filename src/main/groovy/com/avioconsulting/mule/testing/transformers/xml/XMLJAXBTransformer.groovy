@@ -2,7 +2,7 @@ package com.avioconsulting.mule.testing.transformers.xml
 
 import com.avioconsulting.mule.testing.mulereplacements.MuleMessageTransformer
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.ConnectorInfo
-import com.avioconsulting.mule.testing.mulereplacements.wrappers.MockEventWrapper
+import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
 import com.avioconsulting.mule.testing.payloadvalidators.IPayloadValidator
 import com.avioconsulting.mule.testing.transformers.ClosureMuleMessageHandler
 import groovy.util.logging.Log4j2
@@ -25,8 +25,8 @@ class XMLJAXBTransformer<T extends ConnectorInfo> extends
                                             transformerUse)
     }
 
-    void transform(MockEventWrapper event,
-                   ConnectorInfo connectorInfo) {
+    EventWrapper transform(EventWrapper event,
+                           ConnectorInfo connectorInfo) {
         validateContentType(event,
                             connectorInfo)
         def payload = event.message.payload

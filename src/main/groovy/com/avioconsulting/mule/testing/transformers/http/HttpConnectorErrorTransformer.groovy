@@ -1,7 +1,7 @@
 package com.avioconsulting.mule.testing.transformers.http
 
 import com.avioconsulting.mule.testing.mulereplacements.MuleMessageTransformer
-import com.avioconsulting.mule.testing.mulereplacements.wrappers.MockEventWrapper
+import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.connectors.HttpRequesterInfo
 import com.avioconsulting.mule.testing.transformers.IHaveStateToReset
 
@@ -25,8 +25,8 @@ class HttpConnectorErrorTransformer implements
         this.triggerTimeoutException = true
     }
 
-    void transform(MockEventWrapper muleEvent,
-                   HttpRequesterInfo connectorInfo) {
+    EventWrapper transform(EventWrapper muleEvent,
+                           HttpRequesterInfo connectorInfo) {
         if (!triggerConnectException && !triggerTimeoutException) {
             return
         }

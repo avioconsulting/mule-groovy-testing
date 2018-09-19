@@ -1,11 +1,10 @@
 package com.avioconsulting.mule.testing.transformers
 
-
-import com.avioconsulting.mule.testing.mulereplacements.wrappers.MockEventWrapper
+import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
 
 interface OutputTransformer {
-    void transformOutput(input,
-                         MockEventWrapper originalMuleEvent)
+    EventWrapper transformOutput(input,
+                                 EventWrapper originalMuleEvent)
 
     def disableStreaming()
 }

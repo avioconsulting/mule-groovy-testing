@@ -1,15 +1,9 @@
 package com.avioconsulting.mule.testing.mulereplacements
 
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.ConnectorInfo
-import com.avioconsulting.mule.testing.mulereplacements.wrappers.MockEventWrapper
+import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
 
-// TODO: Collapse this and MockProcess??
-trait MuleMessageTransformer<T extends ConnectorInfo> implements MockProcess<T> {
-    abstract void transform(MockEventWrapper var1,
-                            T connectorInfo)
-
-    void process(MockEventWrapper event,
-                 T connectorInfo) {
-        transform(event, connectorInfo)
-    }
+interface MuleMessageTransformer<T extends ConnectorInfo> {
+    EventWrapper transform(EventWrapper var1,
+                           T connectorInfo)
 }

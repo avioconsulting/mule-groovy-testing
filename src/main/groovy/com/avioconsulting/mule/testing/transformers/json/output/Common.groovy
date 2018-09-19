@@ -1,9 +1,10 @@
 package com.avioconsulting.mule.testing.transformers.json.output
 
-import com.avioconsulting.mule.testing.mulereplacements.wrappers.MockEventWrapper
+import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
 import com.avioconsulting.mule.testing.transformers.OutputTransformer
 
-abstract class Common implements OutputTransformer {
+abstract class Common implements
+        OutputTransformer {
     private boolean useStreaming
 
     Common() {
@@ -12,8 +13,8 @@ abstract class Common implements OutputTransformer {
 
     abstract String getJsonOutput(input)
 
-    void transformOutput(Object input,
-                         MockEventWrapper originalMuleEvent) {
+    EventWrapper transformOutput(Object input,
+                                 EventWrapper originalMuleEvent) {
         def jsonString = getJsonOutput(input)
         def messageProps = [
                 'content-type': 'application/json; charset=utf-8'

@@ -2,7 +2,7 @@ package com.avioconsulting.mule.testing.transformers
 
 import com.avioconsulting.mule.testing.mulereplacements.MuleMessageTransformer
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.ConnectorInfo
-import com.avioconsulting.mule.testing.mulereplacements.wrappers.MockEventWrapper
+import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
 
 class StandardTransformer<T extends ConnectorInfo> implements
         MuleMessageTransformer<T> {
@@ -21,8 +21,8 @@ class StandardTransformer<T extends ConnectorInfo> implements
         this.outputTransformer = outputTransformer
     }
 
-    void transform(MockEventWrapper muleEvent,
-                   T connectorInfo) {
+    EventWrapper transform(EventWrapper muleEvent,
+                           T connectorInfo) {
         // if they're only requesting optional curried values (e.g. HTTP requestor params)
         // then we don't want to call their closure with an input value
         def onlyCurriedArgument = closureCurrier.isOnlyArgumentToBeCurried(closure)

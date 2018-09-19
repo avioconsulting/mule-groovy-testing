@@ -4,7 +4,6 @@ import com.avioconsulting.mule.testing.MessageFactory
 import com.avioconsulting.mule.testing.mulereplacements.MuleMessageTransformer
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.ConnectorInfo
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
-import com.avioconsulting.mule.testing.mulereplacements.wrappers.MockEventWrapper
 import com.avioconsulting.mule.testing.payloadvalidators.IPayloadValidator
 import com.avioconsulting.mule.testing.transformers.ClosureCurrier
 import com.avioconsulting.mule.testing.transformers.InputTransformer
@@ -15,7 +14,7 @@ class RawFormatterImpl<T extends ConnectorInfo> implements
         RawFormatter,
         IFormatter {
     private final IPayloadValidator payloadValidator
-    private MuleMessageTransformer transformer
+    private MuleMessageTransformer<T> transformer
     private final ClosureCurrier closureCurrier
     private final MessageFactory messageFactory
 
@@ -42,8 +41,8 @@ class RawFormatterImpl<T extends ConnectorInfo> implements
         }
         def output = new OutputTransformer() {
             @Override
-            void transformOutput(Object inputMessage,
-                                 MockEventWrapper originalMuleEvent) {
+            EventWrapper transformOutput(Object inputMessage,
+                                         EventWrapper originalMuleEvent) {
                 def newMessage = messageFactory.buildMessage(inputMessage)
                 originalMuleEvent.changeMessage(newMessage)
             }
