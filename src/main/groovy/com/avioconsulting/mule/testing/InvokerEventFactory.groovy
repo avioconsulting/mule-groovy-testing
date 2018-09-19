@@ -4,12 +4,10 @@ import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.MessageWrapper
 
 interface InvokerEventFactory {
-    // TODO: Try and avoid building messages everywhere too
     @Deprecated
     EventWrapper getMuleEvent(MessageWrapper muleMessage,
                               String flowName)
 
-    // TODO: Try and avoid building messages everywhere too
     @Deprecated
     EventWrapper getMuleEvent(MessageWrapper muleMessage,
                               Object rewriteEvent)
