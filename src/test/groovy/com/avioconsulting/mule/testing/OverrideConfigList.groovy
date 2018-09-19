@@ -2,13 +2,23 @@ package com.avioconsulting.mule.testing
 
 // allow us to avoid the overhead of setting up mule-deploy.properties for each test
 trait OverrideConfigList {
+    File getMavenPomPath() {
+        new File('src/test/resources/pom.xml')
+    }
+
+    List<File> getFlowDirectories() {
+        [
+                new File('src/test/resources')
+        ]
+    }
+
     Map getClassLoaderModel() {
         [
                 version            : '1.0',
                 artifactCoordinates: [
                         groupId   : 'com.avioconsulting.mule',
-                        artifactId: 'testingframework',
-                        version   : '1.0',
+                        artifactId: 'tests_for_the_testingframework',
+                        version   : '1.0.0',
                         type      : 'jar',
                         classifier: 'mule-application'
                 ],

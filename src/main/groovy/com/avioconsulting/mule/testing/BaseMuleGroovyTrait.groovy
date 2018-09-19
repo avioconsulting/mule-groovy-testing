@@ -14,6 +14,7 @@ import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
 import com.avioconsulting.mule.testing.payloadvalidators.SOAPPayloadValidator
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
+import org.apache.commons.io.FileUtils
 import org.apache.commons.lang.NotImplementedException
 import org.apache.logging.log4j.Logger
 
@@ -28,7 +29,7 @@ trait BaseMuleGroovyTrait {
 
     static File join(Object... paths) {
         assert paths[0] instanceof File
-        paths.inject{ acc, file ->
+        paths.inject { acc, file ->
             new File(acc, file)
         }
     }
@@ -38,12 +39,36 @@ trait BaseMuleGroovyTrait {
         def appSourceDir = new File(muleEngineContainer.muleHomeDirectory, 'tmpDeployment')
         appSourceDir.mkdirs()
         try {
-            def muleArtifactDir = join(appSourceDir, 'META-INF', 'mule-artifact')
+            def metaInfDir = join(appSourceDir, 'META-INF')
+            def muleArtifactDir = join(metaInfDir, 'mule-artifact')
             muleArtifactDir.mkdirs()
             def classLoaderFile = join(muleArtifactDir, 'classloader-model.json')
-            classLoaderFile.text = JsonOutput.toJson(getClassLoaderModel())
+            def classLoaderModel = getClassLoaderModel()
+            classLoaderFile.text = JsonOutput.toJson(classLoaderModel)
             def artifactJson = join(muleArtifactDir, 'mule-artifact.json')
-            artifactJson.text = JsonOutput.toJson(getMuleArtifactJson())
+            def muleArtifact = getMuleArtifactJson()
+            artifactJson.text = JsonOutput.toJson(muleArtifact)
+            def srcMavenPath = getMavenPomPath()
+            assert srcMavenPath.exists(): "Expected Maven pom @ ${srcMavenPath}."
+            def artifactCoordinates = classLoaderModel.artifactCoordinates
+            def destMavenPath = join(metaInfDir,
+                                     'maven',
+                                     artifactCoordinates.groupId,
+                                     artifactCoordinates.artifactId)
+            destMavenPath.mkdirs()
+            FileUtils.copyFileToDirectory(srcMavenPath,
+                                          destMavenPath)
+            def flowDirs = getFlowDirectories()
+            muleArtifact.configs.each { config ->
+                def candidate = flowDirs.collect { flowDir ->
+                    new File(flowDir, config)
+                }.find { file ->
+                    file.exists()
+                }
+                assert candidate : "Expected to find ${config} in ${flowDirs} but did not!"
+                FileUtils.copyFileToDirectory(candidate,
+                                              appSourceDir)
+            }
             muleEngineContainer.deployApplication(getArtifactName(),
                                                   appSourceDir.toURI(),
                                                   mockingConfiguration)
@@ -77,6 +102,13 @@ trait BaseMuleGroovyTrait {
         new File('target')
     }
 
+    List<File> getFlowDirectories() {
+        [
+                new File(buildOutputDirectory, 'test-classes'),
+                new File(buildOutputDirectory, 'classes')
+        ]
+    }
+
     File getMetaInfDirectory() {
         new File(buildOutputDirectory, 'META-INF')
     }
@@ -85,19 +117,23 @@ trait BaseMuleGroovyTrait {
         new File(metaInfDirectory, 'mule-artifact')
     }
 
+    File getMavenPomPath() {
+        new File('pom.xml')
+    }
+
     /**
      * Default implementation
-      * @return
+     * @return
      */
     Map getClassLoaderModel() {
         def file = new File(muleArtifactDirectory, 'classloader-model.json')
-        assert file.exists() : "Could not find ${file}. Has the Mule Maven plugin built your project yet. If you are not going to create this file, override getClassLoaderModel"
+        assert file.exists(): "Could not find ${file}. Has the Mule Maven plugin built your project yet. If you are not going to create this file, override getClassLoaderModel"
         new JsonSlurper().parse(file) as Map
     }
 
     Map getMuleArtifactJson() {
         def file = new File(muleArtifactDirectory, 'mule-artifact.json')
-        assert file.exists() : "Could not find ${file}. Has the Mule Maven plugin built your project yet. If you are not going to create this file, override getMuleArtifactJson"
+        assert file.exists(): "Could not find ${file}. Has the Mule Maven plugin built your project yet. If you are not going to create this file, override getMuleArtifactJson"
         new JsonSlurper().parse(file) as Map
     }
 
