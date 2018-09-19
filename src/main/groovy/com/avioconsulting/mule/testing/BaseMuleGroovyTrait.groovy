@@ -42,7 +42,11 @@ trait BaseMuleGroovyTrait {
             muleArtifactDir.mkdirs()
             def classLoaderFile = join(muleArtifactDir, 'classloader-model.json')
             classLoaderFile.text = JsonOutput.toJson(getClassLoaderModel())
-            println 'foo'
+            def artifactJson = join(muleArtifactDir, 'mule-artifact.json')
+            artifactJson.text = JsonOutput.toJson(getMuleArtifactJson())
+            muleEngineContainer.deployApplication(getArtifactName(),
+                                                  appSourceDir.toURI(),
+                                                  mockingConfiguration)
         }
         finally {
             assert appSourceDir.deleteDir()
@@ -102,7 +106,7 @@ trait BaseMuleGroovyTrait {
     }
 
     List<String> getConfigResources() {
-        assert false : 'implement this, get from mule-artifact.json??'
+        muleArtifactJson.configs
     }
 
     def runFlow(RuntimeBridgeTestSide muleContext,

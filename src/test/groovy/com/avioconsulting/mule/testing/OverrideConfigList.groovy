@@ -12,7 +12,26 @@ trait OverrideConfigList {
                         type      : 'jar',
                         classifier: 'mule-application'
                 ],
-                dependencies: []
+                dependencies       : []
+        ]
+    }
+
+    Map getMuleArtifactJson() {
+        [
+                configs                         : getConfigResources(),
+                secureProperties                : [],
+                redeploymentEnabled             : true,
+                name                            : 'tests_for_the_test',
+                minMuleVersion                  : '4.1.2',
+                requiredProduct                 : 'MULE_EE',
+                classLoaderModelLoaderDescriptor: [
+                        id        : 'mule',
+                        attributes: [:]
+                ],
+                bundleDescriptorLoader          : [
+                        id        : 'mule',
+                        attributes: [:]
+                ]
         ]
     }
 }
