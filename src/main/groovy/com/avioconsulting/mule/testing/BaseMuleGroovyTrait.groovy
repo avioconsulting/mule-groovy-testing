@@ -40,6 +40,7 @@ trait BaseMuleGroovyTrait {
             logger.info "Removing ${directory.absolutePath}"
             directory.deleteDir()
         }
+        // TODO: Do we need this still?
         setProperty("mule.mode.embedded", "true");
         // mule won't start without a log4j2 config
         def log4jResource = BaseMuleGroovyTrait.getResource('/log4j2-for-mule-home.xml')
@@ -106,7 +107,6 @@ trait BaseMuleGroovyTrait {
             // TODO: How do we pass in our properties??
             // TODO: We need the repository directory. The Mule 4.0 build process puts it in target so we should be able to get it easily
             container.deploymentService.deploy(new File('src/test/resources/41test').toURI())
-            // TODO: Hard code
             muleSide = registryListener.runtimeBridge
         }
         finally {
