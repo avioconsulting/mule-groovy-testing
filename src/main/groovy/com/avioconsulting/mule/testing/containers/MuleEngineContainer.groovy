@@ -29,7 +29,7 @@ class MuleEngineContainer {
                            muleHomeDirectory.absolutePath)
         System.setProperty('mule.testingMode',
                            'true')
-        log.info "Checking for tempporary .mule directory at ${muleHomeDirectory.absolutePath}"
+        log.info "Checking for temporary .mule directory at ${muleHomeDirectory.absolutePath}"
         if (muleHomeDirectory.exists()) {
             log.info "Removing ${muleHomeDirectory.absolutePath}"
             muleHomeDirectory.deleteDir()
