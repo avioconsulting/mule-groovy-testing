@@ -83,14 +83,14 @@ class BaseJunitTest implements
 
     def runFlow(String flowName,
                 @DelegatesTo(FlowRunner) Closure closure) {
-        runFlow(muleEngineContainer,
+        runFlow(runtimeBridge,
                 flowName,
                 closure)
     }
 
     def runFlow(String flowName,
                 Event event) {
-        runFlow(muleEngineContainer,
+        runFlow(runtimeBridge,
                 flowName,
                 event)
     }
@@ -98,7 +98,7 @@ class BaseJunitTest implements
     def mockRestHttpCall(String connectorName,
                          @DelegatesTo(HttpRequestResponseChoice) Closure closure) {
         mockRestHttpCall(mockingConfiguration,
-                         muleEngineContainer,
+                         runtimeBridge,
                          connectorName,
                          closure)
     }
@@ -106,7 +106,7 @@ class BaseJunitTest implements
     def mockSoapCall(String connectorName,
                      @DelegatesTo(SOAPFormatter) Closure closure) {
         mockSoapCall(mockingConfiguration,
-                     muleEngineContainer,
+                     runtimeBridge,
                      connectorName,
                      closure)
     }
@@ -114,7 +114,7 @@ class BaseJunitTest implements
     def mockVmReceive(String connectorName,
                       @DelegatesTo(StandardRequestResponse) Closure closure) {
         mockVmReceive(mockingConfiguration,
-                      muleEngineContainer,
+                      runtimeBridge,
                       connectorName,
                       closure)
     }
@@ -122,7 +122,7 @@ class BaseJunitTest implements
     def mockGeneric(String connectorName,
                     @DelegatesTo(StandardRequestResponse) Closure closure) {
         mockGeneric(mockingConfiguration,
-                    muleEngineContainer,
+                    runtimeBridge,
                     connectorName,
                     closure)
     }
@@ -130,7 +130,7 @@ class BaseJunitTest implements
     def mockSalesForceCall(String connectorName,
                            @DelegatesTo(Choice) Closure closure) {
         mockSalesForceCall(mockingConfiguration,
-                           muleEngineContainer,
+                           runtimeBridge,
                            connectorName,
                            closure)
     }
@@ -139,7 +139,7 @@ class BaseJunitTest implements
                  List<String> jobsToWaitFor = null,
                  boolean throwUnderlyingException = false,
                  @DelegatesTo(BatchRunner) Closure closure) {
-        runBatch(muleEngineContainer,
+        runBatch(runtimeBridge,
                  batchName,
                  jobsToWaitFor,
                  throwUnderlyingException,
@@ -149,7 +149,7 @@ class BaseJunitTest implements
     def runSoapApikitFlow(String operation,
                           String apiKitFlowName = 'api-main',
                           @DelegatesTo(SoapInvoker) Closure closure) {
-        runSoapApikitFlow(muleEngineContainer,
+        runSoapApikitFlow(runtimeBridge,
                           operation,
                           apiKitFlowName,
                           closure)

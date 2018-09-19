@@ -10,12 +10,12 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
         <set-variable variableName="theClass" value="#[payload.class]"/>
         <ee:transform doc:name="Transform Message">
             <ee:message>
-                <ee:set-payload><![CDATA[%dw 1.0
-%output application/java
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/java
 ---
 {
     key: payload.howdy,
-    value: flowVars.theClass
+    value: 'stuff'
 }]]></ee:set-payload>
             </ee:message>
         </ee:transform>

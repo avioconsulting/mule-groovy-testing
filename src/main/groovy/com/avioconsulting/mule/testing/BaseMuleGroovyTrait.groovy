@@ -36,7 +36,9 @@ trait BaseMuleGroovyTrait {
 
     RuntimeBridgeTestSide deployApplication(MuleEngineContainer muleEngineContainer,
                                             MockingConfiguration mockingConfiguration) {
-        def appSourceDir = new File(muleEngineContainer.muleHomeDirectory, 'tmpDeployment')
+        def artifactName = getArtifactName()
+        def appSourceDir = new File(muleEngineContainer.muleHomeDirectory,
+                                    artifactName)
         appSourceDir.mkdirs()
         try {
             def metaInfDir = join(appSourceDir, 'META-INF')
@@ -65,11 +67,11 @@ trait BaseMuleGroovyTrait {
                 }.find { file ->
                     file.exists()
                 }
-                assert candidate : "Expected to find ${config} in ${flowDirs} but did not!"
+                assert candidate: "Expected to find ${config} in ${flowDirs} but did not!"
                 FileUtils.copyFileToDirectory(candidate,
                                               appSourceDir)
             }
-            muleEngineContainer.deployApplication(getArtifactName(),
+            muleEngineContainer.deployApplication(artifactName,
                                                   appSourceDir.toURI(),
                                                   mockingConfiguration)
         }
