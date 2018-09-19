@@ -20,11 +20,8 @@ import org.apache.logging.log4j.Logger
 trait BaseMuleGroovyTrait {
     abstract Logger getLogger()
 
-    RuntimeBridgeTestSide createMuleContext(MockingConfiguration mockingConfiguration) {
-        // TODO: Create MuleEngineContainer first. have junit hold on to that. Can use it to re-deploy as many configs as necessary. THen each app can behave like today where we see if we need a new context or not
-
-        def container = new MuleEngineContainer(baseEngineConfig)
-        // TODO: Deploy app
+    MuleEngineContainer createMuleEngineContainer() {
+        new MuleEngineContainer(baseEngineConfig)
     }
 
     Properties getStartUpProperties() {

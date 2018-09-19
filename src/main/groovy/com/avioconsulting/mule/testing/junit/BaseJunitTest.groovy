@@ -1,6 +1,7 @@
 package com.avioconsulting.mule.testing.junit
 
 import com.avioconsulting.mule.testing.BaseMuleGroovyTrait
+import com.avioconsulting.mule.testing.containers.MuleEngineContainer
 import com.avioconsulting.mule.testing.dsl.invokers.BatchRunner
 import com.avioconsulting.mule.testing.dsl.invokers.FlowRunner
 import com.avioconsulting.mule.testing.dsl.invokers.SoapInvoker
@@ -8,7 +9,6 @@ import com.avioconsulting.mule.testing.dsl.mocking.HttpRequestResponseChoice
 import com.avioconsulting.mule.testing.dsl.mocking.SOAPFormatter
 import com.avioconsulting.mule.testing.dsl.mocking.StandardRequestResponse
 import com.avioconsulting.mule.testing.dsl.mocking.sfdc.Choice
-
 import com.avioconsulting.mule.testing.mulereplacements.MockingConfiguration
 import com.avioconsulting.mule.testing.mulereplacements.RuntimeBridgeTestSide
 import groovy.util.logging.Log4j2
@@ -21,9 +21,10 @@ import org.mule.runtime.api.event.Event
 // TODO: Use annotations to supply all the config stuff in startMule. That way Mule can be started before the test runs, which should make things more clear
 @Log4j2
 @RunWith(MuleGroovyJunitRunner)
-class BaseJunitTest implements BaseMuleGroovyTrait {
-    protected static RuntimeBridgeTestSide muleContext
-    protected static boolean isStarted
+class BaseJunitTest implements
+        BaseMuleGroovyTrait {
+    protected static MuleEngineContainer muleEngineContainer
+    protected static RuntimeBridgeTestSide runtimeBridge
     protected static TestingConfiguration currentTestingConfig
     private static MockingConfiguration mockingConfiguration
 
@@ -32,46 +33,65 @@ class BaseJunitTest implements BaseMuleGroovyTrait {
         this.log
     }
 
+    void startEngine() {
+        if (!muleEngineContainer) {
+            log.info 'Starting up Mule engine for the first time for {}...',
+                     baseEngineConfig
+            muleEngineContainer = createMuleEngineContainer()
+        } else {
+            if (muleEngineContainer.engineConfig != baseEngineConfig) {
+                log.info 'Restarting Mule engine due to base engine config difference. Existing {}, New {}',
+                         muleEngineContainer.engineConfig,
+                         baseEngineConfig
+                muleEngineContainer.shutdown()
+                muleEngineContainer = createMuleEngineContainer()
+            }
+        }
+    }
+
     @Before
     void startMule() {
+        startEngine()
         def proposedTestingConfig = new TestingConfiguration(startUpProperties,
                                                              configResources,
                                                              this.keepListenersOnForTheseFlows())
-        def newContextNeeded = proposedTestingConfig != currentTestingConfig || !muleContext
-        if (!muleContext) {
-            log.info 'Starting up Mule test context for the first time'
+        def newBridgeNeeded = proposedTestingConfig != currentTestingConfig || !runtimeBridge
+        if (!runtimeBridge) {
+            log.info 'Deploying Mule app for the first time'
         } else if (proposedTestingConfig != currentTestingConfig) {
-            log.info 'Existing Mule context will not work because config has changed, killing existing context'
-            shutdownMule()
-            log.info 'Starting fresh Mule context...'
+            log.info 'Existing Mule app will not work because config has changed, undeploying'
+            muleEngineContainer.undeployApplication(runtimeBridge)
+            log.info 'Starting fresh Mule app...'
         } else {
-            log.info 'Using existing Mule context'
+            log.info 'Using existing Mule app...'
         }
-        if (newContextNeeded) {
+        if (newBridgeNeeded) {
             mockingConfiguration = new MockingConfiguration(this.keepListenersOnForTheseFlows())
-            muleContext = createMuleContext(mockingConfiguration)
+            runtimeBridge = muleEngineContainer.deployApplication('some artifact name???',
+                                                                  null,
+                                                                  mockingConfiguration)
             currentTestingConfig = proposedTestingConfig
         }
         mockingConfiguration.clearMocks()
     }
 
     static void shutdownMule() {
-        if (muleContext && isStarted) {
-            muleContext.muleContainer.stop()
+        if (muleEngineContainer) {
+            muleEngineContainer.shutdown()
+            muleEngineContainer = null
         }
-        muleContext = null
     }
 
     def runFlow(String flowName,
                 @DelegatesTo(FlowRunner) Closure closure) {
-        runFlow(muleContext,
+        runFlow(muleEngineContainer,
                 flowName,
                 closure)
     }
 
     def runFlow(String flowName,
                 Event event) {
-        runFlow(muleContext,
+        runFlow(muleEngineContainer,
                 flowName,
                 event)
     }
@@ -79,7 +99,7 @@ class BaseJunitTest implements BaseMuleGroovyTrait {
     def mockRestHttpCall(String connectorName,
                          @DelegatesTo(HttpRequestResponseChoice) Closure closure) {
         mockRestHttpCall(mockingConfiguration,
-                         muleContext,
+                         muleEngineContainer,
                          connectorName,
                          closure)
     }
@@ -87,7 +107,7 @@ class BaseJunitTest implements BaseMuleGroovyTrait {
     def mockSoapCall(String connectorName,
                      @DelegatesTo(SOAPFormatter) Closure closure) {
         mockSoapCall(mockingConfiguration,
-                     muleContext,
+                     muleEngineContainer,
                      connectorName,
                      closure)
     }
@@ -95,7 +115,7 @@ class BaseJunitTest implements BaseMuleGroovyTrait {
     def mockVmReceive(String connectorName,
                       @DelegatesTo(StandardRequestResponse) Closure closure) {
         mockVmReceive(mockingConfiguration,
-                      muleContext,
+                      muleEngineContainer,
                       connectorName,
                       closure)
     }
@@ -103,7 +123,7 @@ class BaseJunitTest implements BaseMuleGroovyTrait {
     def mockGeneric(String connectorName,
                     @DelegatesTo(StandardRequestResponse) Closure closure) {
         mockGeneric(mockingConfiguration,
-                    muleContext,
+                    muleEngineContainer,
                     connectorName,
                     closure)
     }
@@ -111,7 +131,7 @@ class BaseJunitTest implements BaseMuleGroovyTrait {
     def mockSalesForceCall(String connectorName,
                            @DelegatesTo(Choice) Closure closure) {
         mockSalesForceCall(mockingConfiguration,
-                           muleContext,
+                           muleEngineContainer,
                            connectorName,
                            closure)
     }
@@ -120,7 +140,7 @@ class BaseJunitTest implements BaseMuleGroovyTrait {
                  List<String> jobsToWaitFor = null,
                  boolean throwUnderlyingException = false,
                  @DelegatesTo(BatchRunner) Closure closure) {
-        runBatch(muleContext,
+        runBatch(muleEngineContainer,
                  batchName,
                  jobsToWaitFor,
                  throwUnderlyingException,
@@ -130,7 +150,7 @@ class BaseJunitTest implements BaseMuleGroovyTrait {
     def runSoapApikitFlow(String operation,
                           String apiKitFlowName = 'api-main',
                           @DelegatesTo(SoapInvoker) Closure closure) {
-        runSoapApikitFlow(muleContext,
+        runSoapApikitFlow(muleEngineContainer,
                           operation,
                           apiKitFlowName,
                           closure)

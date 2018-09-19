@@ -9,8 +9,14 @@ class RuntimeBridgeTestSide implements
         MessageFactory {
     private final Object runtimeBridgeMuleSide
 
-    RuntimeBridgeTestSide(Object runtimeBridgeMuleSide) {
+    String getArtifactName() {
+        return artifactName
+    }
+    private final String artifactName
+
+    RuntimeBridgeTestSide(Object runtimeBridgeMuleSide, String artifactName) {
         this.runtimeBridgeMuleSide = runtimeBridgeMuleSide
+        this.artifactName = artifactName
     }
 
     FlowWrapper getFlow(String flowName) {

@@ -17,6 +17,9 @@ import org.mule.runtime.module.embedded.internal.classloading.JdkOnlyClassLoader
 
 @Log4j2
 class MuleEngineContainer {
+    BaseEngineConfig getEngineConfig() {
+        return engineConfig
+    }
     private final BaseEngineConfig engineConfig
     private final Object container
     private final Object registryListener
@@ -100,6 +103,14 @@ class MuleEngineContainer {
         }
     }
 
+    def shutdown() {
+        container.shutdown()
+    }
+
+    def undeployApplication(RuntimeBridgeTestSide app) {
+        container.deploymentService.undeploy(app.artifactName)
+    }
+
     // TODO: Derive artifactName?
     RuntimeBridgeTestSide deployApplication(String artifactName,
                                             URI application,
@@ -112,7 +123,7 @@ class MuleEngineContainer {
         container.deploymentService.deploy(application)
         // this we have to do after the deployment
         def muleSide = registryListener.getRuntimeBridge(artifactName)
-        new RuntimeBridgeTestSide(muleSide)
+        new RuntimeBridgeTestSide(muleSide, null)
     }
 
     private static ClassLoader createEmbeddedImplClassLoader(ClassLoader parentClassLoader,
