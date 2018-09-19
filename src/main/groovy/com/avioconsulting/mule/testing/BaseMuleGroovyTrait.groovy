@@ -76,7 +76,7 @@ trait BaseMuleGroovyTrait {
                                                   mockingConfiguration)
         }
         finally {
-            assert appSourceDir.deleteDir()
+            FileUtils.deleteDirectory(appSourceDir)
         }
     }
 
