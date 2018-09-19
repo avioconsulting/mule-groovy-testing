@@ -15,7 +15,7 @@ output application/java
 ---
 {
     key: payload.howdy,
-    value: 'stuff'
+    value: vars.theClass
 }]]></ee:set-payload>
             </ee:message>
         </ee:transform>
