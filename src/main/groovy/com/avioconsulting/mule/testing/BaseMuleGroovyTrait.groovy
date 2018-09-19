@@ -12,6 +12,7 @@ import com.avioconsulting.mule.testing.mulereplacements.MockingConfiguration
 import com.avioconsulting.mule.testing.mulereplacements.RuntimeBridgeTestSide
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
 import com.avioconsulting.mule.testing.payloadvalidators.SOAPPayloadValidator
+import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 import org.apache.commons.lang.NotImplementedException
 import org.apache.logging.log4j.Logger
@@ -25,9 +26,27 @@ trait BaseMuleGroovyTrait {
         new MuleEngineContainer(baseEngineConfig)
     }
 
+    static File join(Object... paths) {
+        assert paths[0] instanceof File
+        paths.inject{ acc, file ->
+            new File(acc, file)
+        }
+    }
+
     RuntimeBridgeTestSide deployApplication(MuleEngineContainer muleEngineContainer,
                                             MockingConfiguration mockingConfiguration) {
-        def classLoaderModel = getClassLoaderModel()
+        def appSourceDir = new File(muleEngineContainer.muleHomeDirectory, 'tmpDeployment')
+        appSourceDir.mkdirs()
+        try {
+            def muleArtifactDir = join(appSourceDir, 'META-INF', 'mule-artifact')
+            muleArtifactDir.mkdirs()
+            def classLoaderFile = join(muleArtifactDir, 'classloader-model.json')
+            classLoaderFile.text = JsonOutput.toJson(getClassLoaderModel())
+            println 'foo'
+        }
+        finally {
+            assert appSourceDir.deleteDir()
+        }
     }
 
     Properties getStartUpProperties() {
@@ -70,6 +89,16 @@ trait BaseMuleGroovyTrait {
         def file = new File(muleArtifactDirectory, 'classloader-model.json')
         assert file.exists() : "Could not find ${file}. Has the Mule Maven plugin built your project yet. If you are not going to create this file, override getClassLoaderModel"
         new JsonSlurper().parse(file) as Map
+    }
+
+    Map getMuleArtifactJson() {
+        def file = new File(muleArtifactDirectory, 'mule-artifact.json')
+        assert file.exists() : "Could not find ${file}. Has the Mule Maven plugin built your project yet. If you are not going to create this file, override getMuleArtifactJson"
+        new JsonSlurper().parse(file) as Map
+    }
+
+    String getArtifactName() {
+        muleArtifactJson.name
     }
 
     List<String> getConfigResources() {

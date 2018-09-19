@@ -17,24 +17,22 @@ import org.mule.runtime.module.embedded.internal.classloading.JdkOnlyClassLoader
 
 @Log4j2
 class MuleEngineContainer {
-    BaseEngineConfig getEngineConfig() {
-        return engineConfig
-    }
     private final BaseEngineConfig engineConfig
     private final Object container
     private final Object registryListener
+    private final File muleHomeDirectory
 
     MuleEngineContainer(BaseEngineConfig engineConfig) {
         this.engineConfig = engineConfig
-        def directory = new File('.mule')
+        muleHomeDirectory = new File('.mule')
         System.setProperty('mule.home',
-                           directory.absolutePath)
+                           muleHomeDirectory.absolutePath)
         System.setProperty('mule.testingMode',
                            'true')
-        log.info "Checking for tempporary .mule directory at ${directory.absolutePath}"
-        if (directory.exists()) {
-            log.info "Removing ${directory.absolutePath}"
-            directory.deleteDir()
+        log.info "Checking for tempporary .mule directory at ${muleHomeDirectory.absolutePath}"
+        if (muleHomeDirectory.exists()) {
+            log.info "Removing ${muleHomeDirectory.absolutePath}"
+            muleHomeDirectory.deleteDir()
         }
         // TODO: Do we need this still?
         System.setProperty('mule.mode.embedded',
@@ -42,17 +40,17 @@ class MuleEngineContainer {
         // mule won't start without a log4j2 config
         def log4jResource = MuleEngineContainer.getResource('/log4j2-for-mule-home.xml')
         assert log4jResource
-        def confDirectory = new File(directory, 'conf')
+        def confDirectory = new File(muleHomeDirectory, 'conf')
         confDirectory.mkdirs()
         def targetFile = new File(confDirectory, 'log4j2.xml')
         FileUtils.copyFile(new File(log4jResource.toURI()),
                            targetFile)
-        def domainsDir = new File(directory, 'domains')
+        def domainsDir = new File(muleHomeDirectory, 'domains')
         domainsDir.mkdirs()
         // won't start apps without this domain there but it can be empty
         def defaultDomainDir = new File(domainsDir, 'default')
         defaultDomainDir.mkdirs()
-        def appsDir = new File(directory, 'apps')
+        def appsDir = new File(muleHomeDirectory, 'apps')
         if (appsDir.exists()) {
             appsDir.deleteDir()
         }
@@ -71,7 +69,7 @@ class MuleEngineContainer {
         def classLoaderFactory = new MavenContainerClassLoaderFactory(mavenClient)
         def services = classLoaderFactory.getServices(engineConfig.muleVersion,
                                                       Product.MULE_EE)
-        def servicesDir = new File(directory, 'services')
+        def servicesDir = new File(muleHomeDirectory, 'services')
         services.each { svcUrl ->
             FileUtils.copyFileToDirectory(new File(svcUrl.toURI()),
                                           servicesDir)
@@ -79,7 +77,7 @@ class MuleEngineContainer {
         def containerModulesClassLoader = classLoaderFactory.create(engineConfig.muleVersion,
                                                                     Product.MULE_EE,
                                                                     JdkOnlyClassLoaderFactory.create(),
-                                                                    directory.toURI().toURL())
+                                                                    muleHomeDirectory.toURI().toURL())
         def containerClassLoader = createEmbeddedImplClassLoader(containerModulesClassLoader,
                                                                  mavenClient,
                                                                  engineConfig.muleVersion)
@@ -153,5 +151,12 @@ class MuleEngineContainer {
         embeddedUrls.add(MuleRegistryListener.protectionDomain.codeSource.location)
         new URLClassLoader(embeddedUrls.toArray(new URL[0]),
                            parentClassLoader)
+    }
+
+    BaseEngineConfig getEngineConfig() {
+        return engineConfig
+    }
+    File getMuleHomeDirectory() {
+        return muleHomeDirectory
     }
 }
