@@ -21,7 +21,7 @@ class CustomRunnerTest extends BaseJunitTest implements OverrideConfigList {
     CustomRunnerTest(String ignored) {
     }
 
-    List<String> getConfigResourcesList() {
+    List<String> getConfigResources() {
         ['java_test.xml']
     }
 

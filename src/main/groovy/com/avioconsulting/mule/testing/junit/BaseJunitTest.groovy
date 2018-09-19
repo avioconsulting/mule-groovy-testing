@@ -67,9 +67,8 @@ class BaseJunitTest implements
         }
         if (newBridgeNeeded) {
             mockingConfiguration = new MockingConfiguration(this.keepListenersOnForTheseFlows())
-            runtimeBridge = muleEngineContainer.deployApplication('some artifact name???',
-                                                                  null,
-                                                                  mockingConfiguration)
+            runtimeBridge = deployApplication(muleEngineContainer,
+                                              mockingConfiguration)
             currentTestingConfig = proposedTestingConfig
         }
         mockingConfiguration.clearMocks()

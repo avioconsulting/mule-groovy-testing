@@ -11,7 +11,7 @@ import static org.junit.Assert.assertThat
 
 class BatchInvokeTest extends BaseJunitTest implements OverrideConfigList {
     @Override
-    List<String> getConfigResourcesList() {
+    List<String> getConfigResources() {
         ['batch_test.xml']
     }
 

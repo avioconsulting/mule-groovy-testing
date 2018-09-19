@@ -117,7 +117,7 @@ class ApikitFlowInvokeTest extends BaseApiKitTest implements OverrideConfigList 
         'v1'
     }
 
-    List<String> getConfigResourcesList() {
+    List<String> getConfigResources() {
         [
                 'global-test.xml',
                 "${fullApiName}.xml".toString()

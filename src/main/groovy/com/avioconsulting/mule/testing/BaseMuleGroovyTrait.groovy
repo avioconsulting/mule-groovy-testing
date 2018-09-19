@@ -12,6 +12,7 @@ import com.avioconsulting.mule.testing.mulereplacements.MockingConfiguration
 import com.avioconsulting.mule.testing.mulereplacements.RuntimeBridgeTestSide
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
 import com.avioconsulting.mule.testing.payloadvalidators.SOAPPayloadValidator
+import groovy.json.JsonSlurper
 import org.apache.commons.lang.NotImplementedException
 import org.apache.logging.log4j.Logger
 
@@ -22,6 +23,11 @@ trait BaseMuleGroovyTrait {
 
     MuleEngineContainer createMuleEngineContainer() {
         new MuleEngineContainer(baseEngineConfig)
+    }
+
+    RuntimeBridgeTestSide deployApplication(MuleEngineContainer muleEngineContainer,
+                                            MockingConfiguration mockingConfiguration) {
+        def classLoaderModel = getClassLoaderModel()
     }
 
     Properties getStartUpProperties() {
@@ -44,28 +50,30 @@ trait BaseMuleGroovyTrait {
         [:]
     }
 
-    String getMuleDeployPropertiesResources() {
-        def muleDeployProperties = new Properties()
-        def url = BaseMuleGroovyTrait.getResource('/mule-deploy.properties')
-        assert url: 'Expected mule-deploy.properties to exist!'
-        def propsFile = new File(url.toURI())
-        def inputStream = propsFile.newInputStream()
-        muleDeployProperties.load(inputStream)
-        inputStream.close()
-        muleDeployProperties.getProperty('config.resources')
+    File getBuildOutputDirectory() {
+        new File('target')
     }
 
-    String getConfigResources() {
-        def mapping = configResourceSubstitutes
-        def list = muleDeployPropertiesResources.split(',').collect { p ->
-            def xmlEntry = p.trim()
-            if (!mapping.containsKey(xmlEntry)) {
-                return xmlEntry
-            }
-            def value = mapping[xmlEntry]
-            value ?: null
-        } - null
-        list.join(',')
+    File getMetaInfDirectory() {
+        new File(buildOutputDirectory, 'META-INF')
+    }
+
+    File getMuleArtifactDirectory() {
+        new File(metaInfDirectory, 'mule-artifact')
+    }
+
+    /**
+     * Default implementation
+      * @return
+     */
+    Map getClassLoaderModel() {
+        def file = new File(muleArtifactDirectory, 'classloader-model.json')
+        assert file.exists() : "Could not find ${file}. Has the Mule Maven plugin built your project yet. If you are not going to create this file, override getClassLoaderModel"
+        new JsonSlurper().parse(file) as Map
+    }
+
+    List<String> getConfigResources() {
+        assert false : 'implement this, get from mule-artifact.json??'
     }
 
     def runFlow(RuntimeBridgeTestSide muleContext,

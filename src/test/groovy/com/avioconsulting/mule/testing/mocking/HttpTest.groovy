@@ -19,7 +19,7 @@ import static org.junit.Assert.assertThat
 class HttpTest extends
         BaseJunitTest implements
         OverrideConfigList {
-    List<String> getConfigResourcesList() {
+    List<String> getConfigResources() {
         ['http_test.xml']
     }
 

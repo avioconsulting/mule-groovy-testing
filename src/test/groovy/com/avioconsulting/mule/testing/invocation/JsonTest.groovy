@@ -11,7 +11,7 @@ import static org.hamcrest.Matchers.*
 import static org.junit.Assert.assertThat
 
 class JsonTest extends BaseJunitTest implements OverrideConfigList {
-    List<String> getConfigResourcesList() {
+    List<String> getConfigResources() {
         ['simple_json_test.xml']
     }
 

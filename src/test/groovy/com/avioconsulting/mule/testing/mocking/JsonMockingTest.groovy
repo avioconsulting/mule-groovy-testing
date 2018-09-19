@@ -13,7 +13,7 @@ import static org.junit.Assert.assertThat
 class JsonMockingTest extends
         BaseJunitTest implements
         OverrideConfigList {
-    List<String> getConfigResourcesList() {
+    List<String> getConfigResources() {
         ['http_test.xml']
     }
 

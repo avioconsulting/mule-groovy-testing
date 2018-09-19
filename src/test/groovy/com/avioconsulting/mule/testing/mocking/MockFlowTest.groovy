@@ -8,9 +8,11 @@ import static org.hamcrest.Matchers.equalTo
 import static org.hamcrest.Matchers.is
 import static org.junit.Assert.assertThat
 
-class MockFlowTest extends BaseJunitTest implements OverrideConfigList {
+class MockFlowTest extends
+        BaseJunitTest implements
+        OverrideConfigList {
     @Override
-    List<String> getConfigResourcesList() {
+    List<String> getConfigResources() {
         ['flow_mock.xml']
     }
 

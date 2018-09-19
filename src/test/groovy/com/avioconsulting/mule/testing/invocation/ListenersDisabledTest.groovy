@@ -102,7 +102,7 @@ class ListenersDisabledTest extends BaseJunitTest implements OverrideConfigList 
 
 
     @Override
-    List<String> getConfigResourcesList() {
+    List<String> getConfigResources() {
         [
                 'global-test.xml',
                 'listener-disabled-test.xml'

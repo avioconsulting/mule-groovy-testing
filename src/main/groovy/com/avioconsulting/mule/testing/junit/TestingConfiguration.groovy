@@ -6,6 +6,6 @@ import groovy.transform.Immutable
 @Immutable
 class TestingConfiguration {
     Map startupProperties
-    String configResources
+    List<String> configResources
     List<String> keepListenersOnForTheseFlows
 }

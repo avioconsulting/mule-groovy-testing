@@ -12,7 +12,7 @@ import static org.hamcrest.Matchers.is
 import static org.junit.Assert.assertThat
 
 class WithInputEventTest extends BaseJunitTest implements OverrideConfigList {
-    List<String> getConfigResourcesList() {
+    List<String> getConfigResources() {
         ['input_message_test.xml']
     }
 

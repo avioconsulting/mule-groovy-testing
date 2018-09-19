@@ -12,7 +12,7 @@ import static org.junit.Assert.assertThat
 
 class SoapTest extends BaseJunitTest implements OverrideConfigList,
         XmlDateHelp {
-    List<String> getConfigResourcesList() {
+    List<String> getConfigResources() {
         ['soap_test.xml']
     }
 

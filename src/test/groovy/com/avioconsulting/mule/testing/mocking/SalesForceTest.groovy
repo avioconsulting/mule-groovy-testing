@@ -9,7 +9,7 @@ import static org.hamcrest.Matchers.*
 import static org.junit.Assert.assertThat
 
 class SalesForceTest extends BaseJunitTest implements OverrideConfigList {
-    List<String> getConfigResourcesList() {
+    List<String> getConfigResources() {
         ['sfdc_test.xml']
     }
 
