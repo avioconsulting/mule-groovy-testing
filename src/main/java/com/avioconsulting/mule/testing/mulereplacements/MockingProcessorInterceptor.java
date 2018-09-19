@@ -10,7 +10,6 @@ import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
-// TODO: Better name
 public class MockingProcessorInterceptor implements ProcessorInterceptor {
     private static final String CONNECTOR_NAME_PARAMETER = "doc:name";
     private final Method isMockEnabledMethod;

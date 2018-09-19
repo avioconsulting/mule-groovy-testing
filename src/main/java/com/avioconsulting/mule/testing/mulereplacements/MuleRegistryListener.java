@@ -18,7 +18,7 @@ public class MuleRegistryListener implements DeploymentListener {
     public void onArtifactCreated(String artifactName,
                                   CustomizationService customizationService) {
         customizationService.registerCustomServiceImpl("muleGroovyTestingProcessorIntFactory",
-                                                       new ProcIntFact(mockingConfiguration));
+                                                       new MockingProcessorInterceptorFactory(mockingConfiguration));
     }
 
     public RuntimeBridgeMuleSide getRuntimeBridge() {

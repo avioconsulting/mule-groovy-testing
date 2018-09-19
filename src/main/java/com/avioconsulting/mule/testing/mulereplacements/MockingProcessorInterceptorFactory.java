@@ -4,11 +4,10 @@ import org.mule.runtime.api.component.location.ComponentLocation;
 import org.mule.runtime.api.interception.ProcessorInterceptor;
 import org.mule.runtime.api.interception.ProcessorInterceptorFactory;
 
-// TODO: Better name
-public class ProcIntFact implements ProcessorInterceptorFactory {
+public class MockingProcessorInterceptorFactory implements ProcessorInterceptorFactory {
     private final Object mockingConfiguration;
 
-    ProcIntFact(Object mockingConfiguration) {
+    MockingProcessorInterceptorFactory(Object mockingConfiguration) {
         this.mockingConfiguration = mockingConfiguration;
     }
 
