@@ -2,10 +2,12 @@ package com.avioconsulting.mule.testing.mulereplacements
 
 import com.avioconsulting.mule.testing.InvokerEventFactory
 import com.avioconsulting.mule.testing.MessageFactory
+import com.avioconsulting.mule.testing.TransformingEventFactory
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.*
 
 class RuntimeBridgeTestSide implements
         InvokerEventFactory,
+        TransformingEventFactory,
         MessageFactory {
     private final Object runtimeBridgeMuleSide
 
@@ -26,17 +28,11 @@ class RuntimeBridgeTestSide implements
         new FlowWrapperImpl(muleFlow.name, muleFlow)
     }
 
-    @Override
-    EventWrapper getMuleEvent(MessageWrapper message, String flowName) {
+    private EventWrapper getMuleEvent(MessageWrapper message, String flowName) {
         assert message instanceof MessageWrapperImpl
         def muleEvent = runtimeBridgeMuleSide.getNewEvent(message.muleMessage,
                                                           flowName)
         new EventWrapperImpl(muleEvent)
-    }
-
-    @Override
-    EventWrapper getMuleEvent(MessageWrapper muleMessage, Object rewriteEvent) {
-        assert false: 'NIE'
     }
 
     @Override
@@ -49,18 +45,32 @@ class RuntimeBridgeTestSide implements
     }
 
     @Override
-    EventWrapper getMuleEventWithPayload(Object payload, String flowName, Map properties) {
+    EventWrapper getMuleEventWithPayload(Object payload,
+                                         String flowName,
+                                         Map properties) {
         assert false: 'NIE'
     }
 
     @Override
-    EventWrapper getMuleEventWithPayload(Object payload, EventWrapper rewriteEvent) {
+    EventWrapper getMuleEventWithPayload(Object payload,
+                                         EventWrapper rewriteEvent) {
         assert false: 'NIE'
     }
 
     @Override
-    EventWrapper getMuleEventWithPayload(Object payload, EventWrapper rewriteEvent, Map properties) {
-        assert false: 'NIE'
+    EventWrapper getMuleEventWithPayload(Object payload,
+                                         EventWrapper rewriteEvent,
+                                         Map properties) {
+        assert false : 'Need to figure out the proper data type for properties (attributes)'
+        // TODO: Might be able to more strongly type this at some point and avoid the if
+        if (rewriteEvent instanceof MockEventWrapper) {
+            assert false: 'Implement this path'
+        }
+        def message = new MessageWrapperImpl(payload,
+                                             runtimeBridgeMuleSide.messageBuilder)
+        def muleEvent = runtimeBridgeMuleSide.getEventFromOldEvent(message.getMuleMessage(),
+                                                                   rewriteEvent.getNativeMuleEvent())
+        new EventWrapperImpl(muleEvent)
     }
 
     @Override

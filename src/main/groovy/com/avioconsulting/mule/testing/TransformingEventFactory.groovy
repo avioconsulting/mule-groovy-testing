@@ -2,11 +2,11 @@ package com.avioconsulting.mule.testing
 
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
 
-interface InvokerEventFactory {
+interface TransformingEventFactory {
     EventWrapper getMuleEventWithPayload(Object payload,
-                                         String flowName)
+                                         EventWrapper rewriteEvent)
 
     EventWrapper getMuleEventWithPayload(Object payload,
-                                         String flowName,
+                                         EventWrapper rewriteEvent,
                                          Map properties)
 }

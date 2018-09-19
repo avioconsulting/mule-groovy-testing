@@ -1,6 +1,7 @@
 package com.avioconsulting.mule.testing.dsl.invokers
 
 import com.avioconsulting.mule.testing.InvokerEventFactory
+import com.avioconsulting.mule.testing.TransformingEventFactory
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
 import com.avioconsulting.mule.testing.payloadvalidators.IPayloadValidator
 import com.avioconsulting.mule.testing.transformers.InputTransformer
@@ -16,14 +17,17 @@ class JsonInvokerImpl implements JsonInvoker, Invoker {
     private boolean outputOnly
     private boolean inputOnly
     private final IPayloadValidator initialPayloadValidator
-    private final InvokerEventFactory eventFactory
+    private final InvokerEventFactory invokerEventFactory
     private final Object flow
+    private final TransformingEventFactory transformingEventFactory
 
     JsonInvokerImpl(IPayloadValidator initialPayloadValidator,
-                    InvokerEventFactory eventFactory,
+                    InvokerEventFactory invokerEventFactory,
+                    TransformingEventFactory transformingEventFactory,
                     Object flow) {
+        this.transformingEventFactory = transformingEventFactory
         this.flow = flow
-        this.eventFactory = eventFactory
+        this.invokerEventFactory = invokerEventFactory
         this.initialPayloadValidator = initialPayloadValidator
         this.outputOnly = false
         this.inputOnly = false
@@ -68,7 +72,7 @@ class JsonInvokerImpl implements JsonInvoker, Invoker {
     private setInputTransformer(inputObject) {
         assert !(inputObject instanceof Class): 'Use outputOnly if a only an output class is being supplied!'
         this.inputObject = inputObject
-        transformBeforeCallingFlow = new JacksonOutputTransformer()
+        transformBeforeCallingFlow = new JacksonOutputTransformer(transformingEventFactory)
     }
 
     def noStreaming() {
@@ -84,8 +88,8 @@ class JsonInvokerImpl implements JsonInvoker, Invoker {
 
     EventWrapper getEvent() {
         def input = outputOnly ? null : this.inputObject
-        def event = eventFactory.getMuleEventWithPayload(input,
-                                                         flow.name)
+        def event = invokerEventFactory.getMuleEventWithPayload(input,
+                                                                flow.name)
         if (outputOnly) {
             return event
         } else {
@@ -106,7 +110,7 @@ class JsonInvokerImpl implements JsonInvoker, Invoker {
 
     Invoker withNewPayloadValidator(IPayloadValidator validator) {
         new JsonInvokerImpl(validator,
-                            eventFactory,
+                            invokerEventFactory,
                             flow)
     }
 }

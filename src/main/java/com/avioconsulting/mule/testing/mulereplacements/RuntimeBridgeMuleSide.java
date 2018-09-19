@@ -25,6 +25,13 @@ public class RuntimeBridgeMuleSide {
         return Message.builder();
     }
 
+    public Object getEventFromOldEvent(Object muleMessage,
+                                       Object oldEvent) {
+        return CoreEvent.builder((CoreEvent) oldEvent)
+                .message((Message) muleMessage)
+                .build();
+    }
+
     public Object getNewEvent(Object muleMessage,
                               String flowName) {
         Optional<Flow> flowOpt = (Optional<Flow>) lookupByName(flowName);

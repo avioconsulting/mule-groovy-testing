@@ -4,6 +4,11 @@ class MessageWrapperImpl implements MessageWrapper {
     private final Object muleMessage
     private final Object payload
 
+    /**
+     *
+     * @param payload
+     * @param messageBuilder - org.mule.runtime.api.message.Message.Builder
+     */
     MessageWrapperImpl(Object payload,
                        Object messageBuilder) {
         this.muleMessage = messageBuilder.value(payload).build()

@@ -1,19 +1,23 @@
 package com.avioconsulting.mule.testing.dsl.invokers
 
 import com.avioconsulting.mule.testing.InvokerEventFactory
+import com.avioconsulting.mule.testing.TransformingEventFactory
 import com.avioconsulting.mule.testing.mulereplacements.RuntimeBridgeTestSide
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.FlowWrapper
 import com.avioconsulting.mule.testing.payloadvalidators.ContentTypeCheckDisabledValidator
 import com.avioconsulting.mule.testing.payloadvalidators.HttpListenerPayloadValidator
 
-class FlowRunnerImpl implements FlowRunner, BatchRunner {
+class FlowRunnerImpl implements
+        FlowRunner,
+        BatchRunner {
     private final RuntimeBridgeTestSide runtimeBridge
     private Invoker invoker
     private Closure closure
     private Closure muleOutputEventHook = null
     private Closure withInputEvent = null
-    private final InvokerEventFactory eventFactory
+    private final InvokerEventFactory invokerEventFactory
+    private final TransformingEventFactory transformingEventFactory
     private final FlowWrapper flow
     private final String flowName
 
@@ -23,19 +27,21 @@ class FlowRunnerImpl implements FlowRunner, BatchRunner {
         this.flowName = flowName
         this.flow = flowMessageProcessor
         this.runtimeBridge = runtimeBridge
-        this.eventFactory = runtimeBridge
+        this.invokerEventFactory = runtimeBridge
+        this.transformingEventFactory = runtimeBridge
     }
 
     def json(@DelegatesTo(JsonInvoker) Closure closure) {
         def jsonInvoker = new JsonInvokerImpl(new HttpListenerPayloadValidator(),
-                                              eventFactory,
+                                              invokerEventFactory,
+                                              transformingEventFactory,
                                               flow)
         invoker = jsonInvoker
         this.closure = closure
     }
 
     def java(@DelegatesTo(JavaInvoker) Closure closure) {
-        def javaInvoker = new JavaInvokerImpl(eventFactory,
+        def javaInvoker = new JavaInvokerImpl(invokerEventFactory,
                                               flowName)
         invoker = javaInvoker
         this.closure = closure
@@ -43,7 +49,7 @@ class FlowRunnerImpl implements FlowRunner, BatchRunner {
 
     @Override
     def soap(@DelegatesTo(SoapInvoker) Closure closure) {
-        def soapInvoker = new SoapOperationFlowInvokerImpl(eventFactory,
+        def soapInvoker = new SoapOperationFlowInvokerImpl(invokerEventFactory,
                                                            flowName)
         invoker = soapInvoker
         this.closure = closure
