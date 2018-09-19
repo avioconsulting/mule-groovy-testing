@@ -1,15 +1,15 @@
 package com.avioconsulting.mule.testing.payloadvalidators
 
+import com.avioconsulting.mule.testing.mulereplacements.wrappers.ConnectorInfo
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.connectors.HttpRequesterInfo
 
-class HttpListenerPayloadValidator implements
-        IPayloadValidator<HttpRequesterInfo>,
+class ListenerPayloadValidator implements
+        IPayloadValidator<ConnectorInfo>,
         PayloadHelper {
 
-    boolean isPayloadTypeValidationRequired(HttpRequesterInfo messageProcessor) {
-        assert false: 'DefaultHttpRequester'
-        if (messageProcessor instanceof Object) {
+    boolean isPayloadTypeValidationRequired(ConnectorInfo messageProcessor) {
+        if (messageProcessor instanceof HttpRequesterInfo) {
             // GET should not require a payload at all
             messageProcessor.method != 'GET'
         } else {
@@ -17,7 +17,7 @@ class HttpListenerPayloadValidator implements
         }
     }
 
-    boolean isContentTypeValidationRequired(HttpRequesterInfo messageProcessor) {
+    boolean isContentTypeValidationRequired(ConnectorInfo messageProcessor) {
         return true
     }
 
@@ -29,8 +29,10 @@ class HttpListenerPayloadValidator implements
     }
 
     void validatePayloadType(Object payload) {
-        validatePayloadType(payload,
-                            [InputStream],
-                            "This happened while calling your flow. Check your input payload.")
+        assert payload.class.name == 'org.mule.runtime.api.metadata.TypedValue'
+        def dataType = payload.dataType
+        if (dataType.isStreamType()) {
+            throw new Exception("Expected a stream type for ${dataType}!")
+        }
     }
 }

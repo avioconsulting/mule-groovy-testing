@@ -23,6 +23,7 @@ abstract class Common implements
         def messageProps = [
                 'http.status': '200'
         ]
+        // TODO: What type is the payload when a real Mule 4 app gets an incoming HTTP listener call??
         def payload = useStreaming ? new ByteArrayInputStream(jsonString.bytes) : jsonString
         eventFactory.getMuleEventWithPayload(payload,
                                              originalMuleEvent,

@@ -25,7 +25,7 @@ class RuntimeBridgeTestSide implements
         def muleFlowOptional = runtimeBridgeMuleSide.lookupByName(flowName)
         assert muleFlowOptional.isPresent(): "Flow with name '${flowName}' was not found. Are you using the right flow name?"
         def muleFlow = muleFlowOptional.get()
-        new FlowWrapperImpl(muleFlow.name, muleFlow)
+        new FlowWrapper(muleFlow.name, muleFlow)
     }
 
     private EventWrapper getMuleEvent(MessageWrapper message, String flowName) {

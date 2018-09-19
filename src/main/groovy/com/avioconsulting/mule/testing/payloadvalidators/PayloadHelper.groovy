@@ -6,12 +6,14 @@ trait PayloadHelper {
     void validatePayloadType(Object payload,
                              List<Class> allowedPayloadTypes,
                              String context) {
+        assert payload.class.name == 'org.mule.runtime.api.metadata.TypedValue'
+        def actualPayload = payload.value
         def validType = allowedPayloadTypes.find { type ->
-            type.isInstance(payload)
+            type.isInstance(actualPayload)
         }
         if (!validType) {
             throw new Exception(
-                    "Expected payload to be of type ${allowedPayloadTypes} here but it actually was ${payload.class}. ${context}")
+                    "Expected payload to be of type ${allowedPayloadTypes} here but it actually was ${actualPayload.class}. ${context}")
         }
     }
 

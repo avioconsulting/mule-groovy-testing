@@ -3,6 +3,7 @@ package com.avioconsulting.mule.testing.dsl.invokers
 import com.avioconsulting.mule.testing.InvokerEventFactory
 import com.avioconsulting.mule.testing.TransformingEventFactory
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
+import com.avioconsulting.mule.testing.mulereplacements.wrappers.FlowWrapper
 import com.avioconsulting.mule.testing.payloadvalidators.IPayloadValidator
 import com.avioconsulting.mule.testing.transformers.InputTransformer
 import com.avioconsulting.mule.testing.transformers.OutputTransformer
@@ -18,13 +19,13 @@ class JsonInvokerImpl implements JsonInvoker, Invoker {
     private boolean inputOnly
     private final IPayloadValidator initialPayloadValidator
     private final InvokerEventFactory invokerEventFactory
-    private final Object flow
+    private final FlowWrapper flow
     private final TransformingEventFactory transformingEventFactory
 
     JsonInvokerImpl(IPayloadValidator initialPayloadValidator,
                     InvokerEventFactory invokerEventFactory,
                     TransformingEventFactory transformingEventFactory,
-                    Object flow) {
+                    FlowWrapper flow) {
         this.transformingEventFactory = transformingEventFactory
         this.flow = flow
         this.invokerEventFactory = invokerEventFactory
