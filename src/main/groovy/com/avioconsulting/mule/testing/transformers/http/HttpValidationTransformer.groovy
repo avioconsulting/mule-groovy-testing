@@ -16,7 +16,7 @@ class HttpValidationTransformer implements
 
     void transform(MockEventWrapper muleEvent,
                    HttpRequesterInfo connectorInfo) {
-        assert false: 'http requester class stuff'
+        assert !connectorInfo.validationEnabled: 'Figure out what to do now that this is enabled!'
 //        assert messageProcessor instanceof DefaultHttpRequester
 //        setStatusCode(muleEvent.message)
 //        def wrappedValidator = messageProcessor.responseValidator as SuccessStatusCodeValidator

@@ -11,8 +11,7 @@ class ConnectorInfoFactory {
         if (params['requestBuilder']?.class?.name?.endsWith('HttpRequesterRequestBuilder')) {
             return new HttpRequesterInfo(fileName,
                                          lineInFile,
-                                         params,
-                                         params['method'] as String)
+                                         params)
         }
         new ConnectorInfo(fileName,
                           lineInFile,
