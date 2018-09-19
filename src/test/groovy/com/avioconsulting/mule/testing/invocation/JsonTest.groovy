@@ -229,28 +229,6 @@ class JsonTest extends BaseJunitTest implements OverrideConfigList {
     }
 
     @Test
-    void filterPayload() {
-        // arrange
-        def input = new SampleJacksonInput()
-        input.foobar = 123
-
-        // act
-        def runIt = {
-            runFlow('filterJsonTest') {
-                json {
-                    inputPayload(input)
-                }
-            }
-        }
-        runIt()
-        def result = runIt()
-
-        // assert
-        assertThat result,
-                   is(nullValue())
-    }
-
-    @Test
     void emptyPayload_StringTest() {
         // arrange
 
