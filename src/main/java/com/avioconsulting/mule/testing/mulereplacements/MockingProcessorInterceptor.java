@@ -11,13 +11,13 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 // TODO: Better name
-public class OurInt implements ProcessorInterceptor {
+public class MockingProcessorInterceptor implements ProcessorInterceptor {
     private static final String CONNECTOR_NAME_PARAMETER = "doc:name";
     private final Method isMockEnabledMethod;
     private final Method doMockInvocationMethod;
     private final Object mockingConfiguration;
 
-    OurInt(Object mockingConfiguration) {
+    MockingProcessorInterceptor(Object mockingConfiguration) {
         this.mockingConfiguration = mockingConfiguration;
         try {
             this.isMockEnabledMethod = mockingConfiguration.getClass().getDeclaredMethod("isMocked",

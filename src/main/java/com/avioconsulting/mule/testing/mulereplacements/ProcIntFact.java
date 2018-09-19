@@ -14,7 +14,7 @@ public class ProcIntFact implements ProcessorInterceptorFactory {
 
     @Override
     public ProcessorInterceptor get() {
-        return new OurInt(mockingConfiguration);
+        return new MockingProcessorInterceptor(mockingConfiguration);
     }
 
     @Override
