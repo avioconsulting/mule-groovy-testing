@@ -8,5 +8,5 @@ interface InvokerEventFactory {
 
     EventWrapper getMuleEventWithPayload(Object payload,
                                          String flowName,
-                                         Map properties)
+                                         Map attributes)
 }

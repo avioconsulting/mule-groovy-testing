@@ -4,6 +4,7 @@ import org.mule.runtime.api.artifact.Registry;
 import org.mule.runtime.api.component.location.ComponentLocation;
 import org.mule.runtime.api.event.EventContext;
 import org.mule.runtime.api.message.Message;
+import org.mule.runtime.api.metadata.MediaType;
 import org.mule.runtime.core.api.construct.Flow;
 import org.mule.runtime.core.api.event.CoreEvent;
 import org.mule.runtime.core.internal.event.DefaultEventContext;
@@ -23,6 +24,10 @@ public class RuntimeBridgeMuleSide {
 
     public Object getMessageBuilder() {
         return Message.builder();
+    }
+
+    public Object getMediaType(String mediaType) {
+        return MediaType.parse(mediaType);
     }
 
     public Object getEventFromOldEvent(Object muleMessage,

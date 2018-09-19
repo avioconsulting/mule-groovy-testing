@@ -39,7 +39,7 @@ class RuntimeBridgeTestSide implements
     EventWrapper getMuleEventWithPayload(Object payload,
                                          String flowName) {
         def message = new MessageWrapperImpl(payload,
-                                             runtimeBridgeMuleSide.messageBuilder)
+                                             runtimeBridgeMuleSide)
         getMuleEvent(message,
                      flowName)
     }
@@ -60,14 +60,26 @@ class RuntimeBridgeTestSide implements
     @Override
     EventWrapper getMuleEventWithPayload(Object payload,
                                          EventWrapper rewriteEvent,
-                                         Map properties) {
-        assert false : 'Need to figure out the proper data type for properties (attributes)'
+                                         Map attributes) {
+        getMuleEventWithPayload(payload,
+                                rewriteEvent,
+                                null,
+                                attributes)
+    }
+
+    @Override
+    EventWrapper getMuleEventWithPayload(Object payload,
+                                         EventWrapper rewriteEvent,
+                                         String mediaType,
+                                         Map attributes) {
         // TODO: Might be able to more strongly type this at some point and avoid the if
         if (rewriteEvent instanceof MockEventWrapper) {
             assert false: 'Implement this path'
         }
         def message = new MessageWrapperImpl(payload,
-                                             runtimeBridgeMuleSide.messageBuilder)
+                                             runtimeBridgeMuleSide,
+                                             mediaType,
+                                             attributes)
         def muleEvent = runtimeBridgeMuleSide.getEventFromOldEvent(message.getMuleMessage(),
                                                                    rewriteEvent.getNativeMuleEvent())
         new EventWrapperImpl(muleEvent)
@@ -76,6 +88,6 @@ class RuntimeBridgeTestSide implements
     @Override
     MessageWrapper buildMessage(Object payload) {
         new MessageWrapperImpl(payload,
-                               runtimeBridgeMuleSide.messageBuilder)
+                               runtimeBridgeMuleSide)
     }
 }

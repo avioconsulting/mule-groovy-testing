@@ -1,6 +1,7 @@
 package com.avioconsulting.mule.testing.mulereplacements.wrappers
 
-class MessageWrapperImpl implements MessageWrapper {
+class MessageWrapperImpl implements
+        MessageWrapper {
     private final Object muleMessage
     private final Object payload
 
@@ -10,8 +11,18 @@ class MessageWrapperImpl implements MessageWrapper {
      * @param messageBuilder - org.mule.runtime.api.message.Message.Builder
      */
     MessageWrapperImpl(Object payload,
-                       Object messageBuilder) {
-        this.muleMessage = messageBuilder.value(payload).build()
+                       Object runtimeBridgeMuleSide,
+                       String mediaType = null,
+                       Object attributes = null) {
+        def messageBuilder = runtimeBridgeMuleSide.messageBuilder
+        messageBuilder = messageBuilder.value(payload)
+        if (mediaType) {
+            messageBuilder = messageBuilder.mediaType(runtimeBridgeMuleSide.getMediaType(mediaType))
+        }
+        if (attributes) {
+            messageBuilder = messageBuilder.attributesValue(attributes)
+        }
+        this.muleMessage = messageBuilder.build()
         this.payload = payload
     }
 

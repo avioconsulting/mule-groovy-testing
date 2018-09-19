@@ -8,5 +8,10 @@ interface TransformingEventFactory {
 
     EventWrapper getMuleEventWithPayload(Object payload,
                                          EventWrapper rewriteEvent,
-                                         Map properties)
+                                         Map attributes)
+
+    EventWrapper getMuleEventWithPayload(Object payload,
+                                         EventWrapper rewriteEvent,
+                                         String mediaType,
+                                         Map attributes)
 }
