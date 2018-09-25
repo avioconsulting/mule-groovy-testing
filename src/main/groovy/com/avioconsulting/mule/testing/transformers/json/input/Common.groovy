@@ -44,9 +44,8 @@ abstract class Common<T extends ConnectorInfo> implements
             validatePayloadType(muleEvent,
                                 messageProcessor)
         }
-        // TODO: Need to figure out what to do here. If it's a repeatable stream, we could ke
-        // want to wait to do this after if the payload type check above since it consumes the string
-        def jsonString = muleEvent.messageAsString
+
+        def jsonString = muleEvent.message.messageAsString
         validateContentType(muleEvent,
                             messageProcessor)
         return transform(jsonString)
