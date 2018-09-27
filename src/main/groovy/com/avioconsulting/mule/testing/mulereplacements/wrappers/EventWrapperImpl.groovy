@@ -14,6 +14,11 @@ class EventWrapperImpl implements EventWrapper {
         message
     }
 
+    @Override
+    String getMessageAsString() {
+        message.messageAsString
+    }
+
     Object getNativeMuleEvent() {
         nativeEvent
     }
