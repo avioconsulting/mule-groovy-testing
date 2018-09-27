@@ -76,17 +76,6 @@ class JsonInvokerImpl implements JsonInvoker, Invoker {
         transformBeforeCallingFlow = new JacksonOutputTransformer(transformingEventFactory)
     }
 
-    def noStreaming() {
-        if (!inputOnly) {
-            assert transformAfterCallingFlow: 'Need to specify a type of JSON serialization (jackson, map) first!'
-            transformAfterCallingFlow.disableStreaming()
-        }
-        if (!outputOnly) {
-            assert transformBeforeCallingFlow: 'Need to specify a type of JSON serialization (jackson, map) first!'
-            transformBeforeCallingFlow.disableStreaming()
-        }
-    }
-
     EventWrapper getEvent() {
         def input = outputOnly ? null : this.inputObject
         def event = invokerEventFactory.getMuleEventWithPayload(input,

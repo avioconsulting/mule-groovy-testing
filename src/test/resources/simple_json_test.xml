@@ -34,19 +34,6 @@ output application/json
         </ee:transform>
     </flow>
 
-    <flow name="noInputTestNoStream">
-        <ee:transform doc:name="Transform Message">
-            <ee:message>
-                <ee:set-payload><![CDATA[%dw 2.0
-output application/json
----
-{
-    key: 123
-}]]></ee:set-payload>
-            </ee:message>
-        </ee:transform>
-    </flow>
-
     <flow name="jsonListTest">
         <ee:transform doc:name="Transform Message">
             <ee:message>
@@ -71,10 +58,6 @@ payload map {
     <!-- some Mule transports return this -->
     <flow name="nullPayloadTest">
         <set-payload value="#[org.mule.transport.NullPayload.getInstance()]"/>
-    </flow>
-
-    <flow name="noStreamingTest">
-        <set-payload value="{ &quot;key&quot;: &quot;#[payload.class.getName()]&quot; }"/>
     </flow>
 
     <flow name="stringResponseTest">

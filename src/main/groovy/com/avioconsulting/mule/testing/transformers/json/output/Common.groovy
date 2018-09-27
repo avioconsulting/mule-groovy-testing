@@ -6,12 +6,10 @@ import com.avioconsulting.mule.testing.transformers.OutputTransformer
 
 abstract class Common implements
         OutputTransformer {
-    private boolean useStreaming
     private final TransformingEventFactory eventFactory
 
     Common(TransformingEventFactory eventFactory) {
         this.eventFactory = eventFactory
-        this.useStreaming = true
     }
 
     abstract String getJsonOutput(input)
@@ -23,19 +21,9 @@ abstract class Common implements
         def messageProps = [
                 'http.status': '200'
         ]
-        if (useStreaming) {
-            return eventFactory.getStreamedMuleEventWithPayload(jsonString,
-                                                                originalMuleEvent,
-                                                                'application/json',
-                                                                messageProps)
-        }
-        return eventFactory.getMuleEventWithPayload(jsonString,
-                                                    originalMuleEvent,
-                                                    'application/json',
-                                                    messageProps)
-    }
-
-    def disableStreaming() {
-        useStreaming = false
+        return eventFactory.getStreamedMuleEventWithPayload(jsonString,
+                                                            originalMuleEvent,
+                                                            'application/json',
+                                                            messageProps)
     }
 }

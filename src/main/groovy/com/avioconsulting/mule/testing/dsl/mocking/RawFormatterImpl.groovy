@@ -33,11 +33,6 @@ class RawFormatterImpl<T extends ConnectorInfo> implements
                                T connectorInfo) {
                 input.message.payload
             }
-
-            @Override
-            def disableStreaming() {
-                // don't need to do anything for raw
-            }
         }
         def output = new OutputTransformer() {
             @Override
@@ -45,11 +40,6 @@ class RawFormatterImpl<T extends ConnectorInfo> implements
                                          EventWrapper originalMuleEvent) {
                 def newMessage = messageFactory.buildMessage(inputMessage)
                 originalMuleEvent.changeMessage(newMessage)
-            }
-
-            @Override
-            def disableStreaming() {
-                // don't need to do anything for raw
             }
         }
         this.transformer = new StandardTransformer(closure,

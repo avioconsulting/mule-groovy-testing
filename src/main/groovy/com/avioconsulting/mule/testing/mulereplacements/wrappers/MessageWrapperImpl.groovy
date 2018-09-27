@@ -66,7 +66,6 @@ class MessageWrapperImpl implements
         def value = valueInsideTypedValue
         def klass = value.getClass().name
         if (klass.contains('ManagedCursorStreamProvider')) {
-            // TODO: java.lang.IllegalStateException: Cannot open a new cursor on a closed stream
             def cursor = value.openCursor()
             try {
                 def result = cursor.text
@@ -75,8 +74,9 @@ class MessageWrapperImpl implements
             finally {
                 cursor.close()
             }
-        }
-        else {
+        } else if (klass == String.name) {
+            return value
+        } else {
             throw new Exception("Do not know how to handle payload of type ${klass}")
         }
     }

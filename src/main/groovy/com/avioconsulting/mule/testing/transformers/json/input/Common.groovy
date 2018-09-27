@@ -3,7 +3,6 @@ package com.avioconsulting.mule.testing.transformers.json.input
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.ConnectorInfo
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
 import com.avioconsulting.mule.testing.payloadvalidators.IPayloadValidator
-import com.avioconsulting.mule.testing.payloadvalidators.StreamingDisabledPayloadValidator
 import com.avioconsulting.mule.testing.transformers.InputTransformer
 
 abstract class Common<T extends ConnectorInfo> implements
@@ -59,9 +58,5 @@ abstract class Common<T extends ConnectorInfo> implements
             return
         }
         payloadValidator.validatePayloadType(muleEvent.message.payload)
-    }
-
-    def disableStreaming() {
-        this.payloadValidator = new StreamingDisabledPayloadValidator(payloadValidator)
     }
 }

@@ -10,10 +10,14 @@ import static groovy.test.GroovyAssert.shouldFail
 import static org.hamcrest.Matchers.*
 import static org.junit.Assert.assertThat
 
-class JsonTest extends BaseJunitTest implements OverrideConfigList {
+class JsonTest extends
+        BaseJunitTest implements
+        OverrideConfigList {
     List<String> getConfigResources() {
         ['simple_json_test.xml']
     }
+
+    // TODO: Should we add a non-repeatable stream test??
 
     @Test
     void jackson() {
@@ -49,61 +53,6 @@ class JsonTest extends BaseJunitTest implements OverrideConfigList {
         // assert
         assertThat result,
                    is(equalTo('stringResponse'))
-    }
-
-    @Test
-    void streaming_disabled() {
-        // arrange
-
-        // act
-        def input = new SampleJacksonInput()
-        input.foobar = 123
-        def result = runFlow('noStreamingTest') {
-            json {
-                inputPayload(input, NoStreamingResponse)
-                noStreaming()
-            }
-        } as NoStreamingResponse
-
-        // assert
-        assertThat result.key,
-                   is(equalTo('java.lang.String'))
-    }
-
-    @Test
-    void streaming_disabled_input_only() {
-        // arrange
-
-        // act
-        def input = new SampleJacksonInput()
-        input.foobar = 123
-        def result = runFlow('noStreamingTest') {
-            json {
-                inputOnly(input)
-                noStreaming()
-            }
-        }
-
-        // assert
-        assertThat result,
-                   is(nullValue())
-    }
-
-    @Test
-    void streaming_disabled_output_only() {
-        // arrange
-
-        // act
-        def result = runFlow('noInputTestNoStream') {
-            json {
-                outputOnly(Map)
-                noStreaming()
-            }
-        }
-
-        // assert
-        assertThat result,
-                   is(equalTo([key: 123]))
     }
 
     @Test
@@ -233,7 +182,6 @@ class JsonTest extends BaseJunitTest implements OverrideConfigList {
         def result = runFlow('emptyPayloadTest') {
             json {
                 outputOnly(Map)
-                noStreaming()
             }
         }
 
