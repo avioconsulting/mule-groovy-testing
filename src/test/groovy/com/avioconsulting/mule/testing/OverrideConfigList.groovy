@@ -50,13 +50,11 @@ trait OverrideConfigList {
                 assert process.waitFor() == 0
                 digestFile.write(sha256)
             } else {
-                logger.info 'Already up to date classLoader model'
+                logger.info "${OverrideConfigList.name} already up to date classLoader model on filesystem"
             }
             def classLoaderModelFile = new File(testMavenDir, 'target/META-INF/mule-artifact/classloader-model.json')
             assert classLoaderModelFile.exists()
             cachedClassLoaderModel = new JsonSlurper().parse(classLoaderModelFile)
-            logger.info 'Parsed classloader model {}',
-                        cachedClassLoaderModel
         } else {
             logger.info 'Using cached/static classloader model'
         }

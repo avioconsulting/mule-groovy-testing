@@ -45,10 +45,17 @@ trait BaseMuleGroovyTrait {
             muleArtifactDir.mkdirs()
             def classLoaderFile = join(muleArtifactDir, 'classloader-model.json')
             def classLoaderModel = getClassLoaderModel()
-            classLoaderFile.text = JsonOutput.toJson(classLoaderModel)
+            def logger = getLogger()
+            def classLoaderModelJson = JsonOutput.prettyPrint(JsonOutput.toJson(classLoaderModel))
+            logger.info 'Using classloader model {}',
+                        classLoaderModelJson
+            classLoaderFile.text = classLoaderModelJson
             def artifactJson = join(muleArtifactDir, 'mule-artifact.json')
             def muleArtifact = getMuleArtifactJson()
-            artifactJson.text = JsonOutput.toJson(muleArtifact)
+            def muleArtifactJson = JsonOutput.prettyPrint(JsonOutput.toJson(muleArtifact))
+            logger.info 'Using Mule artifact descriptor {}',
+                        muleArtifactJson
+            artifactJson.text = muleArtifactJson
             def srcMavenPath = getMavenPomPath()
             assert srcMavenPath.exists(): "Expected Maven pom @ ${srcMavenPath}."
             def artifactCoordinates = classLoaderModel.artifactCoordinates
@@ -65,7 +72,6 @@ trait BaseMuleGroovyTrait {
                 FileUtils.copyDirectory(sourceRepositoryDirectory,
                                         targetRepositoryDirectory)
             }
-            def logger = getLogger()
 
             def configFiles = muleArtifact.configs.collect { config ->
                 def candidateUrl = BaseMuleGroovyTrait.getResource("/${config}")
