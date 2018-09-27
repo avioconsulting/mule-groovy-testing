@@ -241,14 +241,10 @@ class HttpTest extends
     void queryParameters() {
         // arrange
         Map actualParams = null
-        String actualUri = null
-        String actualHttpVerb = null
         mockRestHttpCall('SomeSystem Call') {
             json {
                 whenCalledWith { HttpRequesterInfo requestInfo ->
                     actualParams = requestInfo.queryParams
-                    actualUri = requestInfo.uri
-                    actualHttpVerb = requestInfo.httpVerb
                     [reply: 456]
                 }
             }
@@ -265,14 +261,8 @@ class HttpTest extends
         assert actualParams
         assertThat actualParams,
                    is(equalTo([stuff: '123']))
-        assert actualUri
-        assertThat actualUri,
-                   is(equalTo('/some_path/there'))
         assertThat result,
                    is(equalTo([reply_key: 457]))
-        assert actualHttpVerb
-        assertThat actualHttpVerb,
-                   is(equalTo('GET'))
     }
 
     @Test
