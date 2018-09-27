@@ -297,7 +297,7 @@ output application/json
         </ee:transform>
     </flow>
 
-    <flow name="queryParametersEnricher">
+    <flow name="headerTest">
         <ee:transform doc:name="Transform Message">
             <ee:message>
                 <ee:set-payload><![CDATA[%dw 2.0
@@ -310,7 +310,6 @@ output application/json
         </ee:transform>
         <http:request config-ref="SomeSystem"
                       path="/some_path/{howdy}"
-                      target="somePlace"
                       method="GET"
                       doc:name="SomeSystem Call">
             <http:headers>
@@ -335,7 +334,6 @@ output application/json
                 }]]]>
             </http:query-params>
         </http:request>
-        <set-payload value="#[vars.somePlace]"/>
         <ee:transform doc:name="Transform Message">
             <ee:message>
                 <ee:set-payload><![CDATA[%dw 2.0

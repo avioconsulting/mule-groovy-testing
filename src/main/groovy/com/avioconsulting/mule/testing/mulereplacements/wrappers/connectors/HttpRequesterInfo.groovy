@@ -7,6 +7,7 @@ class HttpRequesterInfo extends
     private final String method
     private final boolean validationEnabled
     private final Map<String, String> queryParams
+    private final Map<String, String> headers
 
     HttpRequesterInfo(String fileName,
                       Integer lineNumber,
@@ -17,7 +18,9 @@ class HttpRequesterInfo extends
         this.method = parameters['method'] as String
         this.validationEnabled = parameters['responseValidationSettings'].responseValidator != null
         // it's a MultiMap, keep Mule runtime classes away from our tests
-        this.queryParams = convertMultiMap(parameters['requestBuilder'].queryParams) as Map<String, String>
+        def requestBuilder = parameters['requestBuilder']
+        this.queryParams = convertMultiMap(requestBuilder.queryParams) as Map<String, String>
+        this.headers = convertMultiMap(requestBuilder.headers) as Map<String, String>
     }
 
     private static Map convertMultiMap(Map map) {
@@ -37,5 +40,9 @@ class HttpRequesterInfo extends
 
     Map<String, String> getQueryParams() {
         return queryParams
+    }
+
+    Map<String, String> getHeaders() {
+        return headers
     }
 }
