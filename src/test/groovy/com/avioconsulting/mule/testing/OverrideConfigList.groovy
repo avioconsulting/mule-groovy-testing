@@ -27,20 +27,28 @@ trait OverrideConfigList {
     }
 
     Map getClassLoaderModel() {
+        def logger = getLogger()
         if (!cachedClassLoaderModel) {
             def mvnExecutable = SystemUtils.IS_OS_WINDOWS ? 'mvn.cmd' : 'mvn'
+            logger.info 'ClassLoader model has not been built yet, running {} against POM {} to generate one for testing the testing framework',
+            mvnExecutable,
+            mavenPomPath
             def processBuilder = new ProcessBuilder(mvnExecutable,
                                                     '-f',
                                                     mavenPomPath.absolutePath,
                                                     'clean',
                                                     'compile')
-            println "Fetching dependencies that would normally be in project lib using command: ${processBuilder.command()}"
             def process = processBuilder.start()
             process.inputStream.eachLine { println it }
             assert process.waitFor() == 0
             def classLoaderModelFile = new File(testMavenDir, 'target/META-INF/mule-artifact/classloader-model.json')
             assert classLoaderModelFile.exists()
             cachedClassLoaderModel = new JsonSlurper().parse(classLoaderModelFile)
+            logger.info 'Parsed classloader model {}',
+            cachedClassLoaderModel
+        }
+        else {
+            logger.info 'Using cached/static classloader model'
         }
         cachedClassLoaderModel
     }
