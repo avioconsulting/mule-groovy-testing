@@ -229,7 +229,6 @@ output application/json
                 ---
                 {
                     howdy: 'there'
-                }
                 }]]]>
             </http:uri-params>
             <http:query-params>
@@ -237,7 +236,6 @@ output application/json
                 ---
                 {
                     stuff: 123
-                }
                 }]]]>
             </http:query-params>
         </http:request>
@@ -273,7 +271,6 @@ output application/json
                 ---
                 {
                     howdy: 'there'
-                }
                 }]]]>
             </http:uri-params>
             <http:query-params>
@@ -281,7 +278,6 @@ output application/json
                 ---
                 {
                     stuff: 123
-                }
                 }]]]>
             </http:query-params>
             <http:response-validator>
@@ -322,7 +318,6 @@ output application/json
                 ---
                 {
                     theHeaderName: 'theHeaderValue'
-                }
                 }]]]>
             </http:headers>
             <http:uri-params>
@@ -330,7 +325,6 @@ output application/json
                 ---
                 {
                     howdy: 'there'
-                }
                 }]]]>
             </http:uri-params>
             <http:query-params>
@@ -338,7 +332,6 @@ output application/json
                 ---
                 {
                     stuff: 123
-                }
                 }]]]>
             </http:query-params>
         </http:request>
