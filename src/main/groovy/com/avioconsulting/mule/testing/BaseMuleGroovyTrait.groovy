@@ -60,6 +60,7 @@ trait BaseMuleGroovyTrait {
             destMavenPath.mkdirs()
             FileUtils.copyFileToDirectory(srcMavenPath,
                                           destMavenPath)
+            // TODO: Copy the repository directory over
             def flowDirs = getFlowDirectories()
             muleArtifact.configs.each { config ->
                 def candidate = flowDirs.collect { flowDir ->
@@ -109,6 +110,10 @@ trait BaseMuleGroovyTrait {
                 new File(buildOutputDirectory, 'test-classes'),
                 new File(buildOutputDirectory, 'classes')
         ]
+    }
+
+    File getRepositoryDirectory() {
+        new File(buildOutputDirectory, 'repository')
     }
 
     File getMetaInfDirectory() {

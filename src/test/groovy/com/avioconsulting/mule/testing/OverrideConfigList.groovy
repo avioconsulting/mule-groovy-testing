@@ -2,8 +2,12 @@ package com.avioconsulting.mule.testing
 
 // allow us to avoid the overhead of setting up mule-deploy.properties for each test
 trait OverrideConfigList {
+    File getTestMavenDir() {
+        new File('src/test/resources/maven')
+    }
+
     File getMavenPomPath() {
-        new File('src/test/resources/pom.xml')
+        new File(testMavenDir, 'pom.xml')
     }
 
     List<File> getFlowDirectories() {
@@ -12,7 +16,12 @@ trait OverrideConfigList {
         ]
     }
 
+    File getRepositoryDirectory() {
+        new File(testMavenDir, 'repository')
+    }
+
     Map getClassLoaderModel() {
+        // TODO: Run 'mvn clean compile' to generate this from the src/test/resources/maven directory
         [
                 version            : '1.0',
                 artifactCoordinates: [
