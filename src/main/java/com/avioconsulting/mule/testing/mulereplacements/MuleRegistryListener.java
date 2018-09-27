@@ -2,6 +2,7 @@ package com.avioconsulting.mule.testing.mulereplacements;
 
 import org.mule.runtime.api.artifact.Registry;
 import org.mule.runtime.api.config.custom.CustomizationService;
+import org.mule.runtime.api.deployment.management.ComponentInitialStateManager;
 import org.mule.runtime.module.deployment.api.DeploymentListener;
 
 import java.util.HashMap;
@@ -28,8 +29,8 @@ public class MuleRegistryListener implements DeploymentListener {
         Object mockingConfiguration = mockingConfigurations.get(artifactName);
         custSvc.registerCustomServiceImpl("muleGroovyTestingProcessorIntFactory",
                                           new MockingProcessorInterceptorFactory(mockingConfiguration));
-        custSvc.registerCustomServiceImpl("muleGroovySourceDisableManager",
-                                          new SourceDisableManager());
+        custSvc.overrideDefaultServiceImpl(ComponentInitialStateManager.SERVICE_ID,
+                                           new SourceDisableManager());
     }
 
     public RuntimeBridgeMuleSide getRuntimeBridge(String artifactName) {

@@ -61,8 +61,8 @@ class ListenersDisabledTest extends BaseJunitTest implements OverrideConfigList 
         }
 
         // assert
-        assertThat exception,
-                   is(instanceOf(FileNotFoundException))
+        assertThat exception.message,
+                   is(equalTo('Server returned HTTP response code: 503 for URL: http://localhost:8088/the-app/api/v1/howdy'))
     }
 
     // TODO: Look into disabling actual HTTP listener/global elements later on
