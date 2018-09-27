@@ -193,25 +193,6 @@ class JsonTest extends BaseJunitTest implements OverrideConfigList {
     }
 
     @Test
-    void contentTypeNotSet() {
-        // arrange
-
-        // act
-        def result = shouldFail {
-            runFlow('jsonTestNoContentType') {
-                json {
-                    inputPayload([foo: 123])
-                }
-            }
-        }
-
-        // assert
-        assertThat result.message,
-                   is(containsString(
-                           "Expected Content-Type to be of type [application/json, application/json;charset=UTF-8, application/json;charset=utf-8, application/json;charset=windows-1252] but it actually was null. This happened while calling your flow. Add a set-property before the end of the flow."))
-    }
-
-    @Test
     void contentTypeNotSet_CheckDisabled() {
         // arrange
 

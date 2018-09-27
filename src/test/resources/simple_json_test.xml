@@ -73,19 +73,6 @@ payload map {
         <set-payload value="#[org.mule.transport.NullPayload.getInstance()]"/>
     </flow>
 
-    <flow name="jsonTestNoContentType">
-        <ee:transform doc:name="Transform Message">
-            <ee:message>
-                <ee:set-payload><![CDATA[%dw 2.0
-output application/json
----
-{
-    key: payload.foo
-}]]></ee:set-payload>
-            </ee:message>
-        </ee:transform>
-    </flow>
-
     <flow name="noStreamingTest">
         <set-payload value="{ &quot;key&quot;: &quot;#[payload.class.getName()]&quot; }"/>
     </flow>
