@@ -76,6 +76,10 @@ class BaseJunitTest implements
 
     static void shutdownMule() {
         if (muleEngineContainer) {
+            if (runtimeBridge) {
+                muleEngineContainer.undeployApplication(runtimeBridge)
+                runtimeBridge = null
+            }
             muleEngineContainer.shutdown()
             muleEngineContainer = null
         }

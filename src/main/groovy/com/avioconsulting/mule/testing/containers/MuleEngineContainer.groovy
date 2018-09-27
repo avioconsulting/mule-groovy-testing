@@ -106,6 +106,7 @@ class MuleEngineContainer {
     }
 
     def undeployApplication(RuntimeBridgeTestSide app) {
+        app.dispose()
         container.deploymentService.undeploy(app.artifactName)
     }
 
@@ -121,7 +122,8 @@ class MuleEngineContainer {
         container.deploymentService.deploy(application)
         // this we have to do after the deployment
         def muleSide = registryListener.getRuntimeBridge(artifactName)
-        new RuntimeBridgeTestSide(muleSide, null)
+        new RuntimeBridgeTestSide(muleSide,
+                                  artifactName)
     }
 
     private static ClassLoader createEmbeddedImplClassLoader(ClassLoader parentClassLoader,
@@ -156,6 +158,7 @@ class MuleEngineContainer {
     BaseEngineConfig getEngineConfig() {
         return engineConfig
     }
+
     File getMuleHomeDirectory() {
         return muleHomeDirectory
     }

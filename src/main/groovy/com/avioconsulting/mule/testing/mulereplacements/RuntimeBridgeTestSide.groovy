@@ -16,7 +16,8 @@ class RuntimeBridgeTestSide implements
     }
     private final String artifactName
 
-    RuntimeBridgeTestSide(Object runtimeBridgeMuleSide, String artifactName) {
+    RuntimeBridgeTestSide(Object runtimeBridgeMuleSide,
+                          String artifactName) {
         this.runtimeBridgeMuleSide = runtimeBridgeMuleSide
         this.artifactName = artifactName
     }
@@ -104,5 +105,9 @@ class RuntimeBridgeTestSide implements
     MessageWrapper buildMessage(Object payload) {
         new MessageWrapperImpl(payload,
                                runtimeBridgeMuleSide)
+    }
+
+    def dispose() {
+        runtimeBridgeMuleSide.dispose()
     }
 }

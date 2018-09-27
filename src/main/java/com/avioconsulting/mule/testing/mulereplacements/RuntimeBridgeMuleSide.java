@@ -12,10 +12,15 @@ import org.mule.runtime.core.api.streaming.bytes.CursorStreamProviderFactory;
 import org.mule.runtime.core.internal.event.DefaultEventContext;
 
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 public class RuntimeBridgeMuleSide {
     private final Registry registry;
+
+    private final List<CompletableFuture<Void>> streamCompletionCallbacks = new ArrayList<>();
 
     public RuntimeBridgeMuleSide(Registry registry) {
         this.registry = registry;
@@ -55,6 +60,15 @@ public class RuntimeBridgeMuleSide {
         return factory.of((CoreEvent) muleEvent, stream);
     }
 
+    // called from RuntimeBridgeTestSide
+    public void dispose() {
+        // just to clean up after ourselves
+        for (CompletableFuture<Void> callback : streamCompletionCallbacks) {
+            callback.complete(null);
+        }
+        streamCompletionCallbacks.clear();
+    }
+
     public Object getNewEvent(Object muleMessage,
                               String flowName) {
         Optional<Flow> flowOpt = (Optional<Flow>) lookupByName(flowName);
@@ -62,10 +76,14 @@ public class RuntimeBridgeMuleSide {
             throw new RuntimeException("Flow not present! " + flowName);
         }
         Flow flow = flowOpt.get();
+        CompletableFuture<Void> externalCompletionCallback = new CompletableFuture<>();
+        this.streamCompletionCallbacks.add(externalCompletionCallback);
+        // without the completion callback, any streams in the payload will be closed when the flow under test 'completes'
+        // which will make it impossible to get at the payload
         EventContext context = new DefaultEventContext(flow,
                                                        (ComponentLocation) null,
                                                        null,
-                                                       Optional.empty());
+                                                       Optional.of(externalCompletionCallback));
         return CoreEvent.builder(context)
                 .message((Message) muleMessage)
                 .build();
