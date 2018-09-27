@@ -40,6 +40,7 @@ class RawFormatterImpl<T extends ConnectorInfo> implements
                                          EventWrapper originalMuleEvent) {
                 def newMessage = messageFactory.buildMessage(inputMessage)
                 originalMuleEvent.changeMessage(newMessage)
+                return originalMuleEvent
             }
         }
         this.transformer = new StandardTransformer(closure,

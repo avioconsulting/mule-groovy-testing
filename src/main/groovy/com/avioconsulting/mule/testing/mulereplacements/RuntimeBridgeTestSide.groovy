@@ -110,6 +110,13 @@ class RuntimeBridgeTestSide implements
                                runtimeBridgeMuleSide)
     }
 
+    @Override
+    MessageWrapper buildMessage(ReturnWrapper returnWrapper) {
+        new MessageWrapperImpl(returnWrapper.payload,
+                               runtimeBridgeMuleSide,
+                               returnWrapper.mediaType)
+    }
+
     def dispose() {
         runtimeBridgeMuleSide.dispose()
     }
