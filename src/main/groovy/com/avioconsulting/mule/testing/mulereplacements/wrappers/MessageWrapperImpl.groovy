@@ -67,8 +67,17 @@ class MessageWrapperImpl implements
         }
     }
 
+    private def getDataType() {
+        muleMessage.payload.dataType
+    }
+
     @Override
     String getMimeType() {
-        muleMessage.payload.dataType.mimeType.toString()
+        dataType.mimeType.toString()
+    }
+
+    @Override
+    Class getDataTypeClass() {
+        dataType.getType()
     }
 }

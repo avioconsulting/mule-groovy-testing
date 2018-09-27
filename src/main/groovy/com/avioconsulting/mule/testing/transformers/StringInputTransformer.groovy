@@ -2,7 +2,6 @@ package com.avioconsulting.mule.testing.transformers
 
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.ConnectorInfo
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
-import com.avioconsulting.mule.testing.mulereplacements.wrappers.MockEventWrapper
 import com.avioconsulting.mule.testing.payloadvalidators.IPayloadValidator
 
 class StringInputTransformer<T extends ConnectorInfo> implements
@@ -20,7 +19,7 @@ class StringInputTransformer<T extends ConnectorInfo> implements
         if (muleMessage.payload == null) {
             return null
         }
-        if (muleMessage.payload.class != String) {
+        if (muleMessage.dataTypeClass != String) {
             throw new Exception(
                     "Expected payload to be of type String here but it actually was ${muleMessage.payload.class}. Check the connectors you're mocking and make sure you transformed the payload properly! (e.g. payload into VMs must be Strings)")
         }
@@ -33,13 +32,14 @@ class StringInputTransformer<T extends ConnectorInfo> implements
         // we already expect a string
     }
 
-    private def validateContentType(MockEventWrapper muleEvent,
+    private def validateContentType(EventWrapper muleEvent,
                                     T connectorInfo) {
         if (!payloadValidator.isContentTypeValidationRequired(connectorInfo)) {
             return
         }
         def validContentTypes = [
                 'text/plain',
+                '*/*', // an unknown type in Mule 4.x, which is fine for a String
                 null // HTTP is text/plain by default
         ]
         payloadValidator.validateContentType(muleEvent,
