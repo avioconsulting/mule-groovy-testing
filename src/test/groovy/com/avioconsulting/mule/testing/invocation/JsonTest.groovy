@@ -293,7 +293,7 @@ class JsonTest extends BaseJunitTest implements OverrideConfigList {
         // assert
         assertThat result.message,
                    is(equalTo(
-                           "Expected Content-Type to be of type [text/plain, (not set)] but it actually was application/json. This happened while calling your flow. Add a set-property before the end of the flow."))
+                           "Expected Content-Type to be of type [text/plain, */*, (not set)] but it actually was application/json. This happened while calling your flow. Ensure your flow's DataWeaves or set-payloads set the mimeType you expect."))
     }
 
     @Test

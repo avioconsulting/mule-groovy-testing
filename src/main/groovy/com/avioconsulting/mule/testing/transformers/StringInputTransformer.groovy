@@ -21,7 +21,7 @@ class StringInputTransformer<T extends ConnectorInfo> implements
         }
         if (muleMessage.dataTypeClass != String) {
             throw new Exception(
-                    "Expected payload to be of type String here but it actually was ${muleMessage.payload.class}. Check the connectors you're mocking and make sure you transformed the payload properly! (e.g. payload into VMs must be Strings)")
+                    "Expected payload to be of type String here but it actually was ${muleMessage.dataTypeClass}. Check the connectors you're mocking and make sure you transformed the payload properly! (e.g. payload into VMs must be Strings)")
         }
         validateContentType(muleEvent,
                             connectorInfo)

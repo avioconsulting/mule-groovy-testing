@@ -25,7 +25,7 @@ class ListenerPayloadValidator implements
                              List<String> validContentTypes) {
         validateContentType(event,
                             validContentTypes,
-                            "This happened while calling your flow. Add a set-property before the end of the flow.")
+                            "This happened while calling your flow. Ensure your flow's DataWeaves or set-payloads set the mimeType you expect.")
     }
 
     void validatePayloadType(Object payload) {

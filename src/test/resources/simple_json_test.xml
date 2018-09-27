@@ -65,7 +65,7 @@ payload map {
     </flow>
 
     <flow name="wrongContentTypeTest">
-        <set-payload value="foo"/>
+        <set-payload value='{"wrong": 123}' mimeType="application/json"/>
     </flow>
 
     <!-- some Mule transports return this -->
