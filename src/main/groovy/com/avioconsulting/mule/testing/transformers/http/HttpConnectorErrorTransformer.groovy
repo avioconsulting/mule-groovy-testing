@@ -28,7 +28,7 @@ class HttpConnectorErrorTransformer implements
     EventWrapper transform(EventWrapper muleEvent,
                            HttpRequesterInfo connectorInfo) {
         if (!triggerConnectException && !triggerTimeoutException) {
-            return
+            return muleEvent
         }
         if (triggerConnectException) {
             throw new ConnectException('could not reach HTTP server')

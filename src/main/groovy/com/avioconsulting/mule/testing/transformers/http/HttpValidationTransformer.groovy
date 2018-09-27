@@ -17,6 +17,7 @@ class HttpValidationTransformer implements
     EventWrapper transform(EventWrapper muleEvent,
                            HttpRequesterInfo connectorInfo) {
         assert !connectorInfo.validationEnabled: 'Figure out what to do now that this is enabled!'
+        return muleEvent
 //        assert messageProcessor instanceof DefaultHttpRequester
 //        setStatusCode(muleEvent.message)
 //        def wrappedValidator = messageProcessor.responseValidator as SuccessStatusCodeValidator
