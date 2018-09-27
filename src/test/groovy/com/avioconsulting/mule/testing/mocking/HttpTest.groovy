@@ -3,6 +3,7 @@ package com.avioconsulting.mule.testing.mocking
 import com.avioconsulting.mule.testing.OverrideConfigList
 import com.avioconsulting.mule.testing.SampleJacksonInput
 import com.avioconsulting.mule.testing.junit.BaseJunitTest
+import com.avioconsulting.mule.testing.mulereplacements.wrappers.MessageWrapper
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.ReturnWrapper
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.connectors.HttpRequesterInfo
 import groovy.json.JsonOutput
@@ -54,10 +55,10 @@ class HttpTest extends
     @Test
     void mocksProperly_raw() {
         // arrange
-        def stuff = null
+        MessageWrapper stuff = null
         mockRestHttpCall('SomeSystem Call') {
             raw {
-                whenCalledWith { Object incoming ->
+                whenCalledWith { MessageWrapper incoming ->
                     stuff = incoming
                     new ReturnWrapper(JsonOutput.toJson([reply: 456]),
                                       'application/json')
@@ -75,9 +76,7 @@ class HttpTest extends
         // assert
         assertThat result,
                    is(equalTo([reply_key: 457]))
-        assertThat stuff,
-                   is(instanceOf(InputStream))
-        assertThat new JsonSlurper().parse(stuff),
+        assertThat new JsonSlurper().parseText(stuff.messageAsString),
                    is(equalTo([key: 123]))
     }
 
