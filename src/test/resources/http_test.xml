@@ -62,7 +62,10 @@ output application/json
         </ee:transform>
         <choice>
             <when expression="#[true]">
-                <http:request config-ref="SomeSystem" path="/some_path" method="POST" doc:name="SomeSystem Call"/>
+                <http:request config-ref="SomeSystem"
+                              path="/some_path"
+                              method="POST"
+                              doc:name="SomeSystem Call"/>
                 <ee:transform doc:name="Transform Message">
                     <ee:message><ee:set-payload><![CDATA[%dw 2.0
 %output application/json
@@ -79,7 +82,10 @@ output application/json
     </flow>
 
     <flow name="restRequestGet">
-        <http:request config-ref="SomeSystem" path="/some_path" method="GET" doc:name="SomeSystem Call"/>
+        <http:request config-ref="SomeSystem"
+                      path="/some_path"
+                      method="GET"
+                      doc:name="SomeSystem Call"/>
         <ee:transform doc:name="Transform Message">
             <ee:message><ee:set-payload><![CDATA[%dw 2.0
 %output application/json
@@ -100,7 +106,10 @@ output application/json
     key: payload.foo
 }]]></ee:set-payload></ee:message>
         </ee:transform>
-        <http:request config-ref="SomeSystem" path="/some_path" method="POST" doc:name="SomeSystem Call"/>
+        <http:request config-ref="SomeSystem"
+                      path="/some_path"
+                      method="POST"
+                      doc:name="SomeSystem Call"/>
         <ee:transform doc:name="Transform Message">
             <ee:message><ee:set-payload><![CDATA[%dw 2.0
 %output application/json
@@ -120,7 +129,10 @@ output application/json
     key: payload.foo
 }]]></ee:set-payload></ee:message>
         </ee:transform>
-        <http:request config-ref="SomeSystem" path="/some_path" method="POST" doc:name="SomeSystem Call"/>
+        <http:request config-ref="SomeSystem"
+                      path="/some_path"
+                      method="POST"
+                      doc:name="SomeSystem Call"/>
         <ee:transform doc:name="Transform Message">
             <ee:message><ee:set-payload><![CDATA[%dw 2.0
 %output application/json
@@ -175,11 +187,26 @@ output application/json
     key: payload.foo
 }]]></ee:set-payload></ee:message>
         </ee:transform>
-        <http:request config-ref="SomeSystem" path="/some_path/{howdy}" method="GET" doc:name="SomeSystem Call">
-            <http:request-builder>
-                <http:query-param paramName="stuff" value="#[123]"/>
-                <http:uri-param paramName="howdy" value="there"/>
-            </http:request-builder>
+        <http:request config-ref="SomeSystem"
+                      path="/some_path/{howdy}"
+                      method="GET"
+                      doc:name="SomeSystem Call">
+            <http:query-params>
+                <![CDATA[#[output application/java
+                ---
+                {
+                    stuff: 123
+                }
+                }]]]>
+            </http:query-params>
+            <http:uri-params>
+                <![CDATA[#[output application/java
+                ---
+                {
+                    howdy: 'there'
+                }
+                }]]]>
+            </http:uri-params>
         </http:request>
         <ee:transform doc:name="Transform Message">
             <ee:message><ee:set-payload><![CDATA[%dw 2.0
@@ -200,11 +227,26 @@ output application/json
     key: payload.foo
 }]]></ee:set-payload></ee:message>
         </ee:transform>
-        <http:request config-ref="SomeSystem" path="/some_path/{howdy}" method="GET" doc:name="SomeSystem Call">
-            <http:request-builder>
-                <http:query-param paramName="stuff" value="#[123]"/>
-                <http:uri-param paramName="howdy" value="there"/>
-            </http:request-builder>
+        <http:request config-ref="SomeSystem"
+                      path="/some_path/{howdy}"
+                      method="GET"
+                      doc:name="SomeSystem Call">
+            <http:query-params>
+                <![CDATA[#[output application/java
+                ---
+                {
+                    stuff: 123
+                }
+                }]]]>
+            </http:query-params>
+            <http:uri-params>
+                <![CDATA[#[output application/java
+                ---
+                {
+                    howdy: 'there'
+                }
+                }]]]>
+            </http:uri-params>
             <http:success-status-code-validator values="200,201"/>
         </http:request>
         <set-variable variableName="theStatus" value="#[message.inboundProperties.'http.status']"/>
@@ -232,11 +274,30 @@ output application/json
                       target="somePlace"
                       method="GET"
                       doc:name="SomeSystem Call">
-            <http:request-builder>
-                <http:query-param paramName="stuff" value="#[123]"/>
-                <http:uri-param paramName="howdy" value="there"/>
-                <http:header headerName="theHeaderName" value="theHeaderValue"/>
-            </http:request-builder>
+            <http:headers>
+                <![CDATA[#[output application/java
+                ---
+                {
+                    theHeaderName: 'theHeaderValue'
+                }
+                }]]]>
+            </http:headers>
+            <http:query-params>
+                <![CDATA[#[output application/java
+                ---
+                {
+                    stuff: 123
+                }
+                }]]]>
+            </http:query-params>
+            <http:uri-params>
+                <![CDATA[#[output application/java
+                ---
+                {
+                    howdy: 'there'
+                }
+                }]]]>
+            </http:uri-params>
         </http:request>
         <set-payload value="#[vars.somePlace]"/>
         <ee:transform doc:name="Transform Message">
