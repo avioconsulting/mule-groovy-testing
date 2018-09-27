@@ -25,7 +25,7 @@ class StringInputTransformer<T extends ConnectorInfo> implements
         }
         validateContentType(muleEvent,
                             connectorInfo)
-        muleMessage.payload
+        muleMessage.valueInsideTypedValue
     }
 
     def disableStreaming() {
