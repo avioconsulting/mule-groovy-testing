@@ -66,4 +66,9 @@ class MessageWrapperImpl implements
             throw new Exception("Do not know how to handle payload of type ${klass}")
         }
     }
+
+    @Override
+    String getMimeType() {
+        muleMessage.payload.dataType.mimeType.toString()
+    }
 }

@@ -4,4 +4,5 @@ interface MessageWrapper {
     Object getPayload()
     Object getValueInsideTypedValue()
     String getMessageAsString()
+    String getMimeType()
 }

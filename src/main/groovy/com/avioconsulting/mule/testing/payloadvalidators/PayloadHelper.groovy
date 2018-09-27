@@ -20,7 +20,8 @@ trait PayloadHelper {
     void validateContentType(EventWrapper event,
                              List<String> validContentTypes,
                              String context) {
-        def actualContentType = event.message.getOutboundProperty('Content-Type') as String
+        // in Mule 4.x, the dataType/mimeType on the payload seems to function as the content type
+        def actualContentType = event.message.mimeType
         if (!validContentTypes.contains(actualContentType)) {
             validContentTypes = validContentTypes.collect { type ->
                 // Clarify 'not set' case in the error message
