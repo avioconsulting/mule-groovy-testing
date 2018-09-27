@@ -283,7 +283,7 @@ class HttpTest extends
             json {
                 whenCalledWith { Map incoming,
                                  HttpRequesterInfo requestInfo ->
-                    actualVerb = requestInfo.httpVerb
+                    actualVerb = requestInfo.method
                     [reply: 456]
 
                 }
