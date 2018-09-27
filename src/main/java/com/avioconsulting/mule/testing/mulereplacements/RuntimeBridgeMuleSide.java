@@ -10,6 +10,7 @@ import org.mule.runtime.core.api.event.CoreEvent;
 import org.mule.runtime.core.api.streaming.StreamingManager;
 import org.mule.runtime.core.api.streaming.bytes.CursorStreamProviderFactory;
 import org.mule.runtime.core.internal.event.DefaultEventContext;
+import org.mule.runtime.core.internal.interception.DefaultInterceptionEvent;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -57,7 +58,18 @@ public class RuntimeBridgeMuleSide {
         if (!factory.accepts(stream)) {
             throw new RuntimeException("Factory won't accept it!");
         }
-        return factory.of((CoreEvent) muleEvent, stream);
+        return factory.of(getCoreEvent(muleEvent), stream);
+    }
+
+    private static CoreEvent getCoreEvent(Object muleEvent) {
+        if (muleEvent instanceof CoreEvent) {
+            return (CoreEvent) muleEvent;
+        }
+        if (muleEvent instanceof DefaultInterceptionEvent) {
+            // We have to find a way to bridge these 2 so that we can create streams from mocks
+            return new CoreInterceptionEvent((DefaultInterceptionEvent) muleEvent);
+        }
+        throw new RuntimeException("Do not know how to handle "+muleEvent.getClass().getName());
     }
 
     // called from RuntimeBridgeTestSide
