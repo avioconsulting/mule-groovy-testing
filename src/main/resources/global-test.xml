@@ -6,7 +6,7 @@
       xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
     <http:listener-config name="test-http-listener-config"
-                          host="localhost"
-                          port="${avio.test.http.port}"
-                          doc:name="HTTP Listener Configuration"/>
+                          doc:name="HTTP Listener Configuration">
+        <http:listener-connection host="localhost" port="${avio.test.http.port}"/>
+    </http:listener-config>
 </mule>
