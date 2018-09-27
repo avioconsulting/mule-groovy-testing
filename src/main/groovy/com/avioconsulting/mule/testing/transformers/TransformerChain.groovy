@@ -33,8 +33,11 @@ class TransformerChain<T extends ConnectorInfo> implements
             }
         }
         transformers.inject(muleMessage) { EventWrapper output, transformer ->
-            transformer.transform(output,
-                                  connectorInfo)
+            def transformerResult = transformer.transform(output,
+                                                          connectorInfo)
+            // TODO: Remove this once everything is working
+            assert transformerResult: "MockEventWrapper/EventWrapper in ${transformer} ??"
+            transformerResult
         }
     }
 }

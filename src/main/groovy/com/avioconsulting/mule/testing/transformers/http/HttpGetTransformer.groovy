@@ -20,5 +20,6 @@ class HttpGetTransformer implements
             def newMessage = messageFactory.buildMessage(null)
             muleEvent.changeMessage(newMessage)
         }
+        muleEvent
     }
 }
