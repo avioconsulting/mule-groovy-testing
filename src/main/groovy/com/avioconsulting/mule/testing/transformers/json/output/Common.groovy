@@ -23,8 +23,6 @@ abstract class Common implements
         def messageProps = [
                 'http.status': '200'
         ]
-        // TODO: This is not the same as the ManagedCursorStreamProvider stream an HTTP listener
-        // uses, but it might work fine
         if (useStreaming) {
             return eventFactory.getStreamedMuleEventWithPayload(jsonString,
                                                                 originalMuleEvent,
