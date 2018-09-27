@@ -284,7 +284,9 @@ output application/json
                 }
                 }]]]>
             </http:query-params>
-            <http:success-status-code-validator values="200,201"/>
+            <http:response-validator>
+                <http:success-status-code-validator values="200,201"/>
+            </http:response-validator>
         </http:request>
         <set-variable variableName="theStatus" value="#[message.inboundProperties.'http.status']"/>
         <ee:transform doc:name="Transform Message">
