@@ -112,6 +112,7 @@ class JsonInvokerImpl implements JsonInvoker, Invoker {
     Invoker withNewPayloadValidator(IPayloadValidator validator) {
         new JsonInvokerImpl(validator,
                             invokerEventFactory,
+                            transformingEventFactory,
                             flow)
     }
 }
