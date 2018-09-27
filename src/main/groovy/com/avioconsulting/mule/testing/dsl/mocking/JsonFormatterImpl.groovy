@@ -1,5 +1,6 @@
 package com.avioconsulting.mule.testing.dsl.mocking
 
+import com.avioconsulting.mule.testing.TransformingEventFactory
 import com.avioconsulting.mule.testing.mulereplacements.MuleMessageTransformer
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.ConnectorInfo
 import com.avioconsulting.mule.testing.payloadvalidators.IPayloadValidator
@@ -14,9 +15,12 @@ class JsonFormatterImpl<T extends ConnectorInfo> implements
     private MuleMessageTransformer<T> transformer
     private final IPayloadValidator<T> payloadValidator
     private final ClosureCurrier<T> closureCurrier
+    private final TransformingEventFactory eventFactory
 
     JsonFormatterImpl(IPayloadValidator<T> payloadValidator,
-                      ClosureCurrier<T> closureCurrier) {
+                      ClosureCurrier<T> closureCurrier,
+                      TransformingEventFactory eventFactory) {
+        this.eventFactory = eventFactory
         this.closureCurrier = closureCurrier
         this.payloadValidator = payloadValidator
     }
@@ -24,7 +28,7 @@ class JsonFormatterImpl<T extends ConnectorInfo> implements
     def whenCalledWith(Closure closure) {
         def input = new JacksonInputTransformer<T>(payloadValidator,
                                                    Map)
-        def output = new JacksonOutputTransformer()
+        def output = new JacksonOutputTransformer(eventFactory)
         this.transformer = new StandardTransformer<T>(closure,
                                                       closureCurrier,
                                                       input,
@@ -35,7 +39,7 @@ class JsonFormatterImpl<T extends ConnectorInfo> implements
                        Closure closure) {
         def input = new JacksonInputTransformer<T>(payloadValidator,
                                                    inputClass)
-        def output = new JacksonOutputTransformer()
+        def output = new JacksonOutputTransformer(eventFactory)
         this.transformer = new StandardTransformer<T>(closure,
                                                       closureCurrier,
                                                       input,
@@ -48,7 +52,8 @@ class JsonFormatterImpl<T extends ConnectorInfo> implements
 
     IFormatter<T> withNewPayloadValidator(IPayloadValidator validator) {
         new JsonFormatterImpl<T>(validator,
-                                 closureCurrier)
+                                 closureCurrier,
+                                 eventFactory)
     }
 
     IPayloadValidator<T> getPayloadValidator() {

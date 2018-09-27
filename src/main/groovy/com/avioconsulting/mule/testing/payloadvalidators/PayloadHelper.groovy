@@ -6,14 +6,28 @@ import com.avioconsulting.mule.testing.mulereplacements.wrappers.MessageWrapperI
 trait PayloadHelper {
     void validatePayloadType(Object payload,
                              List<Class> allowedPayloadTypes,
-                             String context) {
+                             String context,
+                             boolean streamIsAllowed = false) {
+        if (streamIsAllowed && MessageWrapperImpl.isPayloadStreaming(payload)) {
+            return
+        }
         def actualPayload = MessageWrapperImpl.unwrapTypedValue(payload)
+        if (streamIsAllowed && actualPayload.class.name.contains('ManagedCursorStreamProvider')) {
+            // for some reason, the flag isPayloadStreaming looks at returns false
+            return
+        }
         def validType = allowedPayloadTypes.find { type ->
             type.isInstance(actualPayload)
         }
         if (!validType) {
+            def payloadTypesText = allowedPayloadTypes.collect { klass ->
+                klass.name
+            }
+            if (streamIsAllowed) {
+                payloadTypesText << '(Stream)'
+            }
             throw new Exception(
-                    "Expected payload to be of type ${allowedPayloadTypes} here but it actually was ${actualPayload.class}. ${context}")
+                    "Expected payload to be of type ${payloadTypesText} here but it actually was ${actualPayload.class}. ${context}")
         }
     }
 

@@ -8,7 +8,6 @@ class HttpRequestPayloadValidator implements
         PayloadHelper {
 
     boolean isPayloadTypeValidationRequired(HttpRequesterInfo messageProcessor) {
-        assert false: 'nie'
         //assert messageProcessor instanceof DefaultHttpRequester
         // GET should not require a payload at all
         messageProcessor.method != 'GET'
@@ -27,7 +26,8 @@ class HttpRequestPayloadValidator implements
 
     void validatePayloadType(Object payload) {
         validatePayloadType(payload,
-                            [InputStream, String],
-                            'Check your mock endpoints.')
+                            [String],
+                            'Check your mock endpoints.',
+                            true)
     }
 }

@@ -1,6 +1,7 @@
 package com.avioconsulting.mule.testing.dsl.mocking
 
 import com.avioconsulting.mule.testing.MessageFactory
+import com.avioconsulting.mule.testing.TransformingEventFactory
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.ConnectorInfo
 import com.avioconsulting.mule.testing.payloadvalidators.IPayloadValidator
 import com.avioconsulting.mule.testing.transformers.ClosureCurrier
@@ -14,11 +15,14 @@ abstract class StandardRequestResponseImpl<T extends ConnectorInfo> implements
     private final ClosureCurrier closureCurrier
     private final String requestResponseUse
     private final MessageFactory messageFactory
+    private final TransformingEventFactory eventFactory
 
     StandardRequestResponseImpl(MessageFactory messageFactory,
                                 IPayloadValidator initialPayloadValidator,
                                 ClosureCurrier closureCurrier,
-                                String requestResponseUse) {
+                                String requestResponseUse,
+                                TransformingEventFactory eventFactory) {
+        this.eventFactory = eventFactory
         this.messageFactory = messageFactory
         this.requestResponseUse = requestResponseUse
         this.closureCurrier = closureCurrier
@@ -36,7 +40,8 @@ abstract class StandardRequestResponseImpl<T extends ConnectorInfo> implements
 
     def json(@DelegatesTo(JsonFormatter) Closure closure) {
         formatter = new JsonFormatterImpl(initialPayloadValidator,
-                                          closureCurrier)
+                                          closureCurrier,
+                                          eventFactory)
         this.closure = closure
     }
 

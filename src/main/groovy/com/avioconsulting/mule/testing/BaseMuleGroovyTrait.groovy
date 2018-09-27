@@ -229,7 +229,8 @@ trait BaseMuleGroovyTrait {
                          RuntimeBridgeTestSide muleContext,
                          String connectorName,
                          @DelegatesTo(HttpRequestResponseChoice) Closure closure) {
-        def formatterChoice = new HttpRequestResponseChoiceImpl(muleContext)
+        def formatterChoice = new HttpRequestResponseChoiceImpl(muleContext,
+                                                                muleContext)
         def code = closure.rehydrate(formatterChoice, this, this)
         code.resolveStrategy = Closure.DELEGATE_ONLY
         code()
@@ -241,7 +242,8 @@ trait BaseMuleGroovyTrait {
                       RuntimeBridgeTestSide muleContext,
                       String connectorName,
                       @DelegatesTo(StandardRequestResponse) Closure closure) {
-        def formatterChoice = new VMRequestResponseChoiceImpl(muleContext)
+        def formatterChoice = new VMRequestResponseChoiceImpl(muleContext,
+                                                              muleContext)
         def code = closure.rehydrate(formatterChoice, this, this)
         code.resolveStrategy = Closure.DELEGATE_ONLY
         code()
@@ -253,7 +255,8 @@ trait BaseMuleGroovyTrait {
                     RuntimeBridgeTestSide muleContext,
                     String connectorName,
                     @DelegatesTo(StandardRequestResponse) Closure closure) {
-        def formatterChoice = new GenericRequestResponseChoiceImpl(muleContext)
+        def formatterChoice = new GenericRequestResponseChoiceImpl(muleContext,
+                                                                   muleContext)
         def code = closure.rehydrate(formatterChoice, this, this)
         code.resolveStrategy = Closure.DELEGATE_ONLY
         code()

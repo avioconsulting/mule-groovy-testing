@@ -1,6 +1,7 @@
 package com.avioconsulting.mule.testing.dsl.mocking
 
 import com.avioconsulting.mule.testing.MessageFactory
+import com.avioconsulting.mule.testing.TransformingEventFactory
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.connectors.HttpRequesterInfo
 import com.avioconsulting.mule.testing.payloadvalidators.ContentTypeCheckDisabledValidator
 import com.avioconsulting.mule.testing.payloadvalidators.HttpRequestPayloadValidator
@@ -18,11 +19,13 @@ class HttpRequestResponseChoiceImpl extends
     private final HttpGetTransformer httpGetTransformer
     private final HttpConnectorErrorTransformer httpConnectorErrorTransformer
 
-    HttpRequestResponseChoiceImpl(MessageFactory messageFactory) {
+    HttpRequestResponseChoiceImpl(MessageFactory messageFactory,
+                                  TransformingEventFactory eventFactory) {
         super(messageFactory,
               new HttpRequestPayloadValidator(),
               new HttpClosureCurrier(),
-              'HTTP Request Mock')
+              'HTTP Request Mock',
+              eventFactory)
         httpValidationTransformer = new HttpValidationTransformer()
         httpGetTransformer = new HttpGetTransformer(messageFactory)
         httpConnectorErrorTransformer = new HttpConnectorErrorTransformer()
