@@ -8,57 +8,70 @@
       xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
-    <http:request-config name="SomeSystem" protocol="HTTP" host="localhost" port="443" basePath="/"
-                         doc:name="HTTP Request Configuration"/>
+    <http:request-config name="SomeSystem"
+                         basePath="/"
+                         doc:name="HTTP Request Configuration">
+        <http:request-connection host="localhost" port="443" protocol="HTTP"/>
+    </http:request-config>
     <flow name="restRequest">
         <ee:transform doc:name="Transform Message">
-            <ee:message><ee:set-payload><![CDATA[%dw 2.0
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
 output application/json
 ---
 {
     key: payload.foo
-}]]></ee:set-payload></ee:message>
+}]]></ee:set-payload>
+            </ee:message>
         </ee:transform>
         <http:request config-ref="SomeSystem" path="/some_path" method="POST" doc:name="SomeSystem Call"/>
         <ee:transform doc:name="Transform Message">
-            <ee:message><ee:set-payload><![CDATA[%dw 2.0
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
 %output application/json
 ---
 {
     reply_key: payload.reply + 1
-}]]></ee:set-payload></ee:message>
+}]]></ee:set-payload>
+            </ee:message>
         </ee:transform>
     </flow>
 
     <flow name="restRequestString">
         <ee:transform doc:name="Transform Message">
-            <ee:message><ee:set-payload><![CDATA[%dw 2.0
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
 %output application/json
 ---
 {
     key: payload.foo
-}]]></ee:set-payload></ee:message>
+}]]></ee:set-payload>
+            </ee:message>
         </ee:transform>
         <http:request config-ref="SomeSystem" path="/some_path" method="POST" doc:name="SomeSystem Call"/>
         <ee:transform doc:name="Transform Message">
-            <ee:message><ee:set-payload><![CDATA[%dw 2.0
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
 %output application/json
 ---
 {
     reply_key: payload.reply + 1
-}]]></ee:set-payload></ee:message>
+}]]></ee:set-payload>
+            </ee:message>
         </ee:transform>
     </flow>
 
 
     <flow name="restRequestWithChoice">
         <ee:transform doc:name="Transform Message">
-            <ee:message><ee:set-payload><![CDATA[%dw 2.0
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
 %output application/json
 ---
 {
     key: payload.foo
-}]]></ee:set-payload></ee:message>
+}]]></ee:set-payload>
+            </ee:message>
         </ee:transform>
         <choice>
             <when expression="#[true]">
@@ -67,12 +80,14 @@ output application/json
                               method="POST"
                               doc:name="SomeSystem Call"/>
                 <ee:transform doc:name="Transform Message">
-                    <ee:message><ee:set-payload><![CDATA[%dw 2.0
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
 %output application/json
 ---
 {
     reply_key: payload.reply + 1
-}]]></ee:set-payload></ee:message>
+}]]></ee:set-payload>
+                    </ee:message>
                 </ee:transform>
             </when>
             <otherwise>
@@ -87,118 +102,128 @@ output application/json
                       method="GET"
                       doc:name="SomeSystem Call"/>
         <ee:transform doc:name="Transform Message">
-            <ee:message><ee:set-payload><![CDATA[%dw 2.0
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
 %output application/json
 ---
 {
     reply_key: payload.reply + 1
-}]]></ee:set-payload></ee:message>
+}]]></ee:set-payload>
+            </ee:message>
         </ee:transform>
     </flow>
 
 
     <flow name="restRequestContentTypeNotSet">
         <ee:transform doc:name="Transform Message">
-            <ee:message><ee:set-payload><![CDATA[%dw 2.0
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
 %output application/json
 ---
 {
     key: payload.foo
-}]]></ee:set-payload></ee:message>
+}]]></ee:set-payload>
+            </ee:message>
         </ee:transform>
         <http:request config-ref="SomeSystem"
                       path="/some_path"
                       method="POST"
                       doc:name="SomeSystem Call"/>
         <ee:transform doc:name="Transform Message">
-            <ee:message><ee:set-payload><![CDATA[%dw 2.0
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
 %output application/json
 ---
 {
     reply_key: payload.reply + 1
-}]]></ee:set-payload></ee:message>
+}]]></ee:set-payload>
+            </ee:message>
         </ee:transform>
     </flow>
 
     <flow name="restRequestContentTypeNotSetForMock">
         <ee:transform doc:name="Transform Message">
-            <ee:message><ee:set-payload><![CDATA[%dw 2.0
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
 %output application/json
 ---
 {
     key: payload.foo
-}]]></ee:set-payload></ee:message>
+}]]></ee:set-payload>
+            </ee:message>
         </ee:transform>
         <http:request config-ref="SomeSystem"
                       path="/some_path"
                       method="POST"
                       doc:name="SomeSystem Call"/>
         <ee:transform doc:name="Transform Message">
-            <ee:message><ee:set-payload><![CDATA[%dw 2.0
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
 %output application/json
 ---
 {
     reply_key: payload.reply + 1
-}]]></ee:set-payload></ee:message>
+}]]></ee:set-payload>
+            </ee:message>
         </ee:transform>
     </flow>
 
     <flow name="hasHttpStatus">
         <!--<set-property propertyName="http.status" value="201"/>-->
         <ee:transform doc:name="Transform Message">
-            <ee:message><ee:set-payload><![CDATA[%dw 2.0
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
 %output application/json
 ---
 {
     key: payload.foo
-}]]></ee:set-payload></ee:message>
+}]]></ee:set-payload>
+            </ee:message>
         </ee:transform>
     </flow>
 
     <flow name="noHttpStatus">
         <ee:transform doc:name="Transform Message">
-            <ee:message><ee:set-payload><![CDATA[%dw 2.0
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
 %output application/json
 ---
 {
     key: payload.foo
-}]]></ee:set-payload></ee:message>
+}]]></ee:set-payload>
+            </ee:message>
         </ee:transform>
     </flow>
 
     <flow name="nullEvent">
-        <idempotent-message-filter idExpression="#[payload.get('foo').asText()]"/>
+        <!--<idempotent-message-filter idExpression="#[payload.get('foo').asText()]"/>-->
         <ee:transform doc:name="Transform Message">
-            <ee:message><ee:set-payload><![CDATA[%dw 2.0
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
 %output application/json
 ---
 {
     key: payload.foo
-}]]></ee:set-payload></ee:message>
+}]]></ee:set-payload>
+            </ee:message>
         </ee:transform>
     </flow>
 
     <flow name="queryParameters">
         <ee:transform doc:name="Transform Message">
-            <ee:message><ee:set-payload><![CDATA[%dw 2.0
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
 %output application/json
 ---
 {
     key: payload.foo
-}]]></ee:set-payload></ee:message>
+}]]></ee:set-payload>
+            </ee:message>
         </ee:transform>
         <http:request config-ref="SomeSystem"
                       path="/some_path/{howdy}"
                       method="GET"
                       doc:name="SomeSystem Call">
-            <http:query-params>
-                <![CDATA[#[output application/java
-                ---
-                {
-                    stuff: 123
-                }
-                }]]]>
-            </http:query-params>
             <http:uri-params>
                 <![CDATA[#[output application/java
                 ---
@@ -207,38 +232,42 @@ output application/json
                 }
                 }]]]>
             </http:uri-params>
+            <http:query-params>
+                <![CDATA[#[output application/java
+                ---
+                {
+                    stuff: 123
+                }
+                }]]]>
+            </http:query-params>
         </http:request>
         <ee:transform doc:name="Transform Message">
-            <ee:message><ee:set-payload><![CDATA[%dw 2.0
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
 %output application/json
 ---
 {
     reply_key: payload.reply + 1
-}]]></ee:set-payload></ee:message>
+}]]></ee:set-payload>
+            </ee:message>
         </ee:transform>
     </flow>
 
     <flow name="queryParametersHttpStatus">
         <ee:transform doc:name="Transform Message">
-            <ee:message><ee:set-payload><![CDATA[%dw 2.0
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
 %output application/json
 ---
 {
     key: payload.foo
-}]]></ee:set-payload></ee:message>
+}]]></ee:set-payload>
+            </ee:message>
         </ee:transform>
         <http:request config-ref="SomeSystem"
                       path="/some_path/{howdy}"
                       method="GET"
                       doc:name="SomeSystem Call">
-            <http:query-params>
-                <![CDATA[#[output application/java
-                ---
-                {
-                    stuff: 123
-                }
-                }]]]>
-            </http:query-params>
             <http:uri-params>
                 <![CDATA[#[output application/java
                 ---
@@ -247,27 +276,39 @@ output application/json
                 }
                 }]]]>
             </http:uri-params>
+            <http:query-params>
+                <![CDATA[#[output application/java
+                ---
+                {
+                    stuff: 123
+                }
+                }]]]>
+            </http:query-params>
             <http:success-status-code-validator values="200,201"/>
         </http:request>
         <set-variable variableName="theStatus" value="#[message.inboundProperties.'http.status']"/>
         <ee:transform doc:name="Transform Message">
-            <ee:message><ee:set-payload><![CDATA[%dw 2.0
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
 %output application/json
 ---
 {
     reply_key: flowVars.theStatus
-}]]></ee:set-payload></ee:message>
+}]]></ee:set-payload>
+            </ee:message>
         </ee:transform>
     </flow>
 
     <flow name="queryParametersEnricher">
         <ee:transform doc:name="Transform Message">
-            <ee:message><ee:set-payload><![CDATA[%dw 2.0
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
 %output application/json
 ---
 {
     key: payload.foo
-}]]></ee:set-payload></ee:message>
+}]]></ee:set-payload>
+            </ee:message>
         </ee:transform>
         <http:request config-ref="SomeSystem"
                       path="/some_path/{howdy}"
@@ -282,14 +323,6 @@ output application/json
                 }
                 }]]]>
             </http:headers>
-            <http:query-params>
-                <![CDATA[#[output application/java
-                ---
-                {
-                    stuff: 123
-                }
-                }]]]>
-            </http:query-params>
             <http:uri-params>
                 <![CDATA[#[output application/java
                 ---
@@ -298,15 +331,25 @@ output application/json
                 }
                 }]]]>
             </http:uri-params>
+            <http:query-params>
+                <![CDATA[#[output application/java
+                ---
+                {
+                    stuff: 123
+                }
+                }]]]>
+            </http:query-params>
         </http:request>
         <set-payload value="#[vars.somePlace]"/>
         <ee:transform doc:name="Transform Message">
-            <ee:message><ee:set-payload><![CDATA[%dw 2.0
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
 %output application/json
 ---
 {
     reply_key: payload.reply + 1
-}]]></ee:set-payload></ee:message>
+}]]></ee:set-payload>
+            </ee:message>
         </ee:transform>
     </flow>
 </mule>
