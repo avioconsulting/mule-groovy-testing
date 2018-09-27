@@ -86,6 +86,21 @@ class RuntimeBridgeTestSide implements
     }
 
     @Override
+    EventWrapper getStreamedMuleEventWithPayload(String payload,
+                                                 EventWrapper rewriteEvent,
+                                                 String mediaType,
+                                                 Map attributes) {
+        assert rewriteEvent instanceof EventWrapperImpl
+        def stream = new ByteArrayInputStream(payload.bytes)
+        def streamProvider = runtimeBridgeMuleSide.getMuleStreamCursor(rewriteEvent.nativeMuleEvent,
+                                                                       stream)
+        getMuleEventWithPayload(streamProvider,
+                                rewriteEvent,
+                                mediaType,
+                                attributes)
+    }
+
+    @Override
     MessageWrapper buildMessage(Object payload) {
         new MessageWrapperImpl(payload,
                                runtimeBridgeMuleSide)

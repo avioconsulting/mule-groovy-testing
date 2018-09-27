@@ -25,11 +25,16 @@ abstract class Common implements
         ]
         // TODO: This is not the same as the ManagedCursorStreamProvider stream an HTTP listener
         // uses, but it might work fine
-        def payload = useStreaming ? new ByteArrayInputStream(jsonString.bytes) : jsonString
-        eventFactory.getMuleEventWithPayload(payload,
-                                             originalMuleEvent,
-                                             'application/json',
-                                             messageProps)
+        if (useStreaming) {
+            return eventFactory.getStreamedMuleEventWithPayload(jsonString,
+                                                                originalMuleEvent,
+                                                                'application/json',
+                                                                messageProps)
+        }
+        return eventFactory.getMuleEventWithPayload(jsonString,
+                                                    originalMuleEvent,
+                                                    'application/json',
+                                                    messageProps)
     }
 
     def disableStreaming() {

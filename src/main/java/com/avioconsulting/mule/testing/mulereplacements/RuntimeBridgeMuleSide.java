@@ -7,8 +7,11 @@ import org.mule.runtime.api.message.Message;
 import org.mule.runtime.api.metadata.MediaType;
 import org.mule.runtime.core.api.construct.Flow;
 import org.mule.runtime.core.api.event.CoreEvent;
+import org.mule.runtime.core.api.streaming.StreamingManager;
+import org.mule.runtime.core.api.streaming.bytes.CursorStreamProviderFactory;
 import org.mule.runtime.core.internal.event.DefaultEventContext;
 
+import java.io.InputStream;
 import java.util.Optional;
 
 public class RuntimeBridgeMuleSide {
@@ -35,6 +38,21 @@ public class RuntimeBridgeMuleSide {
         return CoreEvent.builder((CoreEvent) oldEvent)
                 .message((Message) muleMessage)
                 .build();
+    }
+
+    public Object getMuleStreamCursor(Object muleEvent,
+                                      InputStream stream) {
+        // TODO: See if we can hold on to these and speed lookup?
+        Optional<StreamingManager> streamingManagerOptional = registry.lookupByName("_muleStreamingManager");
+        if (!streamingManagerOptional.isPresent()) {
+            throw new RuntimeException("Cannot get streaming manager!");
+        }
+        StreamingManager mgr = streamingManagerOptional.get();
+        CursorStreamProviderFactory factory = mgr.forBytes().getDefaultCursorProviderFactory();
+        if (!factory.accepts(stream)) {
+            throw new RuntimeException("Factory won't accept it!");
+        }
+        return factory.of((CoreEvent) muleEvent, stream);
     }
 
     public Object getNewEvent(Object muleMessage,

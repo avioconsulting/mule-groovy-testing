@@ -14,4 +14,9 @@ interface TransformingEventFactory {
                                          EventWrapper rewriteEvent,
                                          String mediaType,
                                          Map attributes)
+
+    EventWrapper getStreamedMuleEventWithPayload(String payload,
+                                                 EventWrapper rewriteEvent,
+                                                 String mediaType,
+                                                 Map attributes)
 }
