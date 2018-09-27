@@ -57,7 +57,7 @@ payload map {
 
     <!-- some Mule transports return this -->
     <flow name="nullPayloadTest">
-        <set-payload value="#[org.mule.transport.NullPayload.getInstance()]"/>
+        <set-payload value="#[null]" mimeType="application/json"/>
     </flow>
 
     <flow name="stringResponseTest">

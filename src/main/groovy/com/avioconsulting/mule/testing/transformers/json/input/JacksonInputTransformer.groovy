@@ -21,7 +21,7 @@ class JacksonInputTransformer<T extends ConnectorInfo> extends Common<T> {
     }
 
     def transform(String jsonString) {
-        if (jsonString == '') {
+        if (jsonString == '' || jsonString == null) {
             return null
         }
         def errors = []

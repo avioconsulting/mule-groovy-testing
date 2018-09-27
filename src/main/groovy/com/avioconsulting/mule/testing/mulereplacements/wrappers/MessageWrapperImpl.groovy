@@ -76,7 +76,11 @@ class MessageWrapperImpl implements
             }
         } else if (klass == String.name) {
             return value
-        } else {
+        }
+        else if (value == null) {
+            return value
+        }
+        else {
             throw new Exception("Do not know how to handle payload of type ${klass}")
         }
     }
