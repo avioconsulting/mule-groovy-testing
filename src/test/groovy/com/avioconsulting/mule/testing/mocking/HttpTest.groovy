@@ -600,45 +600,6 @@ class HttpTest extends
     }
 
     @Test
-    void queryParameters_ProcessorChain() {
-        // arrange
-        Map actualParams = null
-        String actualUri = null
-        String actualHttpVerb = null
-
-        mockRestHttpCall('SomeSystem Call') {
-            json {
-                whenCalledWith { HttpRequesterInfo requestInfo ->
-                    actualParams = requestInfo.queryParams
-                    actualUri = requestInfo.uri
-                    actualHttpVerb = requestInfo.httpVerb
-                    [reply: 456]
-                }
-            }
-        }
-
-        // act
-        def result = runFlow('queryParamsNoAnnotationsProcessorChain') {
-            json {
-                inputPayload([foo: 123])
-            }
-        }
-
-        // assert
-        assert actualParams
-        assertThat actualParams,
-                   is(equalTo([stuff: '123']))
-        assert actualUri
-        assertThat actualUri,
-                   is(equalTo('/some_path/there'))
-        assertThat result,
-                   is(equalTo([reply_key: 457]))
-        assert actualHttpVerb
-        assertThat actualHttpVerb,
-                   is(equalTo('GET'))
-    }
-
-    @Test
     void httpPassString() {
         // arrange
         def stuff = null

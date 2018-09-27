@@ -12,8 +12,8 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
                          doc:name="HTTP Request Configuration"/>
     <flow name="restRequest">
         <ee:transform doc:name="Transform Message">
-            <ee:message><ee:set-payload><![CDATA[%dw 1.0
-%output application/json
+            <ee:message><ee:set-payload><![CDATA[%dw 2.0
+output application/json
 ---
 {
     key: payload.foo
@@ -21,8 +21,7 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
         </ee:transform>
         <http:request config-ref="SomeSystem" path="/some_path" method="POST" doc:name="SomeSystem Call"/>
         <ee:transform doc:name="Transform Message">
-            <dw:input-payload mimeType="application/json"/>
-            <ee:message><ee:set-payload><![CDATA[%dw 1.0
+            <ee:message><ee:set-payload><![CDATA[%dw 2.0
 %output application/json
 ---
 {
@@ -33,7 +32,7 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 
     <flow name="restRequestString">
         <ee:transform doc:name="Transform Message">
-            <ee:message><ee:set-payload><![CDATA[%dw 1.0
+            <ee:message><ee:set-payload><![CDATA[%dw 2.0
 %output application/json
 ---
 {
@@ -42,7 +41,7 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
         </ee:transform>
         <http:request config-ref="SomeSystem" path="/some_path" method="POST" doc:name="SomeSystem Call"/>
         <ee:transform doc:name="Transform Message">
-            <ee:message><ee:set-payload><![CDATA[%dw 1.0
+            <ee:message><ee:set-payload><![CDATA[%dw 2.0
 %output application/json
 ---
 {
@@ -54,7 +53,7 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 
     <flow name="restRequestWithChoice">
         <ee:transform doc:name="Transform Message">
-            <ee:message><ee:set-payload><![CDATA[%dw 1.0
+            <ee:message><ee:set-payload><![CDATA[%dw 2.0
 %output application/json
 ---
 {
@@ -65,7 +64,7 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
             <when expression="#[true]">
                 <http:request config-ref="SomeSystem" path="/some_path" method="POST" doc:name="SomeSystem Call"/>
                 <ee:transform doc:name="Transform Message">
-                    <ee:message><ee:set-payload><![CDATA[%dw 1.0
+                    <ee:message><ee:set-payload><![CDATA[%dw 2.0
 %output application/json
 ---
 {
@@ -82,7 +81,7 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
     <flow name="restRequestGet">
         <http:request config-ref="SomeSystem" path="/some_path" method="GET" doc:name="SomeSystem Call"/>
         <ee:transform doc:name="Transform Message">
-            <ee:message><ee:set-payload><![CDATA[%dw 1.0
+            <ee:message><ee:set-payload><![CDATA[%dw 2.0
 %output application/json
 ---
 {
@@ -94,7 +93,7 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 
     <flow name="restRequestContentTypeNotSet">
         <ee:transform doc:name="Transform Message">
-            <ee:message><ee:set-payload><![CDATA[%dw 1.0
+            <ee:message><ee:set-payload><![CDATA[%dw 2.0
 %output application/json
 ---
 {
@@ -103,7 +102,7 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
         </ee:transform>
         <http:request config-ref="SomeSystem" path="/some_path" method="POST" doc:name="SomeSystem Call"/>
         <ee:transform doc:name="Transform Message">
-            <ee:message><ee:set-payload><![CDATA[%dw 1.0
+            <ee:message><ee:set-payload><![CDATA[%dw 2.0
 %output application/json
 ---
 {
@@ -114,7 +113,7 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 
     <flow name="restRequestContentTypeNotSetForMock">
         <ee:transform doc:name="Transform Message">
-            <ee:message><ee:set-payload><![CDATA[%dw 1.0
+            <ee:message><ee:set-payload><![CDATA[%dw 2.0
 %output application/json
 ---
 {
@@ -123,7 +122,7 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
         </ee:transform>
         <http:request config-ref="SomeSystem" path="/some_path" method="POST" doc:name="SomeSystem Call"/>
         <ee:transform doc:name="Transform Message">
-            <ee:message><ee:set-payload><![CDATA[%dw 1.0
+            <ee:message><ee:set-payload><![CDATA[%dw 2.0
 %output application/json
 ---
 {
@@ -135,7 +134,7 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
     <flow name="hasHttpStatus">
         <!--<set-property propertyName="http.status" value="201"/>-->
         <ee:transform doc:name="Transform Message">
-            <ee:message><ee:set-payload><![CDATA[%dw 1.0
+            <ee:message><ee:set-payload><![CDATA[%dw 2.0
 %output application/json
 ---
 {
@@ -146,7 +145,7 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 
     <flow name="noHttpStatus">
         <ee:transform doc:name="Transform Message">
-            <ee:message><ee:set-payload><![CDATA[%dw 1.0
+            <ee:message><ee:set-payload><![CDATA[%dw 2.0
 %output application/json
 ---
 {
@@ -158,7 +157,7 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
     <flow name="nullEvent">
         <idempotent-message-filter idExpression="#[payload.get('foo').asText()]"/>
         <ee:transform doc:name="Transform Message">
-            <ee:message><ee:set-payload><![CDATA[%dw 1.0
+            <ee:message><ee:set-payload><![CDATA[%dw 2.0
 %output application/json
 ---
 {
@@ -169,7 +168,7 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 
     <flow name="queryParameters">
         <ee:transform doc:name="Transform Message">
-            <ee:message><ee:set-payload><![CDATA[%dw 1.0
+            <ee:message><ee:set-payload><![CDATA[%dw 2.0
 %output application/json
 ---
 {
@@ -183,7 +182,7 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
             </http:request-builder>
         </http:request>
         <ee:transform doc:name="Transform Message">
-            <ee:message><ee:set-payload><![CDATA[%dw 1.0
+            <ee:message><ee:set-payload><![CDATA[%dw 2.0
 %output application/json
 ---
 {
@@ -194,7 +193,7 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 
     <flow name="queryParametersHttpStatus">
         <ee:transform doc:name="Transform Message">
-            <ee:message><ee:set-payload><![CDATA[%dw 1.0
+            <ee:message><ee:set-payload><![CDATA[%dw 2.0
 %output application/json
 ---
 {
@@ -210,7 +209,7 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
         </http:request>
         <set-variable variableName="theStatus" value="#[message.inboundProperties.'http.status']"/>
         <ee:transform doc:name="Transform Message">
-            <ee:message><ee:set-payload><![CDATA[%dw 1.0
+            <ee:message><ee:set-payload><![CDATA[%dw 2.0
 %output application/json
 ---
 {
@@ -221,65 +220,32 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 
     <flow name="queryParametersEnricher">
         <ee:transform doc:name="Transform Message">
-            <ee:message><ee:set-payload><![CDATA[%dw 1.0
+            <ee:message><ee:set-payload><![CDATA[%dw 2.0
 %output application/json
 ---
 {
     key: payload.foo
 }]]></ee:set-payload></ee:message>
         </ee:transform>
-        <enricher target="#[flowVars.somePlace]">
-            <http:request config-ref="SomeSystem" path="/some_path/{howdy}" method="GET" doc:name="SomeSystem Call">
-                <http:request-builder>
-                    <http:query-param paramName="stuff" value="#[123]"/>
-                    <http:uri-param paramName="howdy" value="there"/>
-                    <http:header headerName="theHeaderName" value="theHeaderValue"/>
-                </http:request-builder>
-            </http:request>
-        </enricher>
-        <set-payload value="#[flowVars.somePlace]"/>
+        <http:request config-ref="SomeSystem"
+                      path="/some_path/{howdy}"
+                      target="somePlace"
+                      method="GET"
+                      doc:name="SomeSystem Call">
+            <http:request-builder>
+                <http:query-param paramName="stuff" value="#[123]"/>
+                <http:uri-param paramName="howdy" value="there"/>
+                <http:header headerName="theHeaderName" value="theHeaderValue"/>
+            </http:request-builder>
+        </http:request>
+        <set-payload value="#[vars.somePlace]"/>
         <ee:transform doc:name="Transform Message">
-            <ee:message><ee:set-payload><![CDATA[%dw 1.0
+            <ee:message><ee:set-payload><![CDATA[%dw 2.0
 %output application/json
 ---
 {
     reply_key: payload.reply + 1
 }]]></ee:set-payload></ee:message>
         </ee:transform>
-    </flow>
-
-    <flow name="queryParamsNoAnnotationsProcessorChain">
-        <ee:transform doc:name="Transform Message">
-            <ee:message><ee:set-payload><![CDATA[%dw 1.0
-%output application/json
----
-{
-    key: payload.foo
-}]]></ee:set-payload></ee:message>
-        </ee:transform>
-        <enricher target="#[flowVars.somePlace]">
-            <processor-chain>
-                <http:request config-ref="SomeSystem" path="/some_path/{howdy}" method="GET" doc:name="SomeSystem Call">
-                    <http:request-builder>
-                        <http:query-param paramName="stuff" value="#[123]"/>
-                        <http:uri-param paramName="howdy" value="there"/>
-                    </http:request-builder>
-                </http:request>
-            </processor-chain>
-        </enricher>
-        <set-payload value="#[flowVars.somePlace]"/>
-        <ee:transform doc:name="Transform Message">
-            <ee:message><ee:set-payload><![CDATA[%dw 1.0
-%output application/json
----
-{
-    reply_key: payload.reply + 1
-}]]></ee:set-payload></ee:message>
-        </ee:transform>
-        <choice-exception-strategy>
-            <catch-exception-strategy when="#[true]">
-                <logger message="dostuff"/>
-            </catch-exception-strategy>
-        </choice-exception-strategy>
     </flow>
 </mule>
