@@ -7,7 +7,10 @@
       xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
     <flow name="jsonTest">
-        <logger message="made it to flow invoke!" level="INFO"/>
+        <logger message="made it to flow invoke! payload class is #[Java::invoke('java.lang.Object', 'getClass()', payload)]"
+                level="INFO"/>
+        <logger message="made it to flow invoke! payload contents is #[payload]"
+                level="INFO"/>
         <ee:transform doc:name="Transform Message">
             <ee:message>
                 <ee:set-payload><![CDATA[%dw 2.0
