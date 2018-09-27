@@ -15,12 +15,6 @@ trait OverrideConfigList {
         new File(testMavenDir, 'pom.xml')
     }
 
-    List<File> getFlowDirectories() {
-        [
-                new File('src/test/resources')
-        ]
-    }
-
     File getRepositoryDirectory() {
         def targetDir = new File(testMavenDir, 'target')
         new File(targetDir, 'repository')
@@ -31,8 +25,8 @@ trait OverrideConfigList {
         if (!cachedClassLoaderModel) {
             def mvnExecutable = SystemUtils.IS_OS_WINDOWS ? 'mvn.cmd' : 'mvn'
             logger.info 'ClassLoader model has not been built yet, running {} against POM {} to generate one for testing the testing framework',
-            mvnExecutable,
-            mavenPomPath
+                        mvnExecutable,
+                        mavenPomPath
             def processBuilder = new ProcessBuilder(mvnExecutable,
                                                     '-f',
                                                     mavenPomPath.absolutePath,
@@ -45,9 +39,8 @@ trait OverrideConfigList {
             assert classLoaderModelFile.exists()
             cachedClassLoaderModel = new JsonSlurper().parse(classLoaderModelFile)
             logger.info 'Parsed classloader model {}',
-            cachedClassLoaderModel
-        }
-        else {
+                        cachedClassLoaderModel
+        } else {
             logger.info 'Using cached/static classloader model'
         }
         cachedClassLoaderModel

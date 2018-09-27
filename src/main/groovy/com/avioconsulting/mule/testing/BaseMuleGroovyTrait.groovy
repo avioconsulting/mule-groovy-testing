@@ -65,15 +65,19 @@ trait BaseMuleGroovyTrait {
                 FileUtils.copyDirectory(sourceRepositoryDirectory,
                                         targetRepositoryDirectory)
             }
-            def flowDirs = getFlowDirectories()
-            muleArtifact.configs.each { config ->
-                def candidate = flowDirs.collect { flowDir ->
-                    new File(flowDir, config)
-                }.find { file ->
-                    file.exists()
-                }
-                assert candidate: "Expected to find ${config} in ${flowDirs} but did not!"
-                FileUtils.copyFileToDirectory(candidate,
+            def logger = getLogger()
+
+            def configFiles = muleArtifact.configs.collect { config ->
+                def candidateUrl = BaseMuleGroovyTrait.getResource("/${config}")
+                assert candidateUrl: "Expected to find ${config} in classpath but did not!"
+                new File(candidateUrl.toURI())
+            }
+
+            logger.info 'Using config files {}',
+                        configFiles
+
+            configFiles.each { configFile ->
+                FileUtils.copyFileToDirectory(configFile,
                                               appSourceDir)
             }
             muleEngineContainer.deployApplication(artifactName,
@@ -107,13 +111,6 @@ trait BaseMuleGroovyTrait {
 
     File getBuildOutputDirectory() {
         new File('target')
-    }
-
-    List<File> getFlowDirectories() {
-        [
-                new File(buildOutputDirectory, 'test-classes'),
-                new File(buildOutputDirectory, 'classes')
-        ]
     }
 
     File getRepositoryDirectory() {
