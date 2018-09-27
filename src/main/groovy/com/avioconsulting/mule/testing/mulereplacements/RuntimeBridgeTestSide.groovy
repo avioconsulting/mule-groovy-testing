@@ -73,14 +73,17 @@ class RuntimeBridgeTestSide implements
                                          EventWrapper rewriteEvent,
                                          String mediaType,
                                          Map attributes) {
-        // TODO: Might be able to more strongly type this at some point and avoid the if
-        if (rewriteEvent instanceof MockEventWrapper) {
-            assert false: 'Implement this path'
-        }
+
         def message = new MessageWrapperImpl(payload,
                                              runtimeBridgeMuleSide,
                                              mediaType,
                                              attributes)
+        // TODO: Might be able to more strongly type this at some point and avoid the if
+        if (rewriteEvent instanceof MockEventWrapper) {
+            // we can't create mock events, only mutate them
+            rewriteEvent.changeMessage(message)
+            return rewriteEvent
+        }
         def muleEvent = runtimeBridgeMuleSide.getEventFromOldEvent(message.getMuleMessage(),
                                                                    rewriteEvent.getNativeMuleEvent())
         new EventWrapperImpl(muleEvent)
