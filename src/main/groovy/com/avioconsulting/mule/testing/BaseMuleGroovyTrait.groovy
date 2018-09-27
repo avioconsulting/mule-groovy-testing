@@ -7,7 +7,6 @@ import com.avioconsulting.mule.testing.dsl.invokers.*
 import com.avioconsulting.mule.testing.dsl.mocking.*
 import com.avioconsulting.mule.testing.dsl.mocking.sfdc.Choice
 import com.avioconsulting.mule.testing.dsl.mocking.sfdc.ChoiceImpl
-
 import com.avioconsulting.mule.testing.mulereplacements.MockingConfiguration
 import com.avioconsulting.mule.testing.mulereplacements.RuntimeBridgeTestSide
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
@@ -60,7 +59,12 @@ trait BaseMuleGroovyTrait {
             destMavenPath.mkdirs()
             FileUtils.copyFileToDirectory(srcMavenPath,
                                           destMavenPath)
-            // TODO: Copy the repository directory over
+            def sourceRepositoryDirectory = repositoryDirectory
+            if (sourceRepositoryDirectory.exists()) {
+                def targetRepositoryDirectory = join(appSourceDir, 'repository')
+                FileUtils.copyDirectory(sourceRepositoryDirectory,
+                                        targetRepositoryDirectory)
+            }
             def flowDirs = getFlowDirectories()
             muleArtifact.configs.each { config ->
                 def candidate = flowDirs.collect { flowDir ->

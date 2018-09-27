@@ -1,7 +1,12 @@
 package com.avioconsulting.mule.testing
 
+import groovy.json.JsonSlurper
+import org.apache.commons.lang.SystemUtils
+
 // allow us to avoid the overhead of setting up mule-deploy.properties for each test
 trait OverrideConfigList {
+    static Map cachedClassLoaderModel
+
     File getTestMavenDir() {
         new File('src/test/resources/maven')
     }
@@ -17,22 +22,27 @@ trait OverrideConfigList {
     }
 
     File getRepositoryDirectory() {
-        new File(testMavenDir, 'repository')
+        def targetDir = new File(testMavenDir, 'target')
+        new File(targetDir, 'repository')
     }
 
     Map getClassLoaderModel() {
-        // TODO: Run 'mvn clean compile' to generate this from the src/test/resources/maven directory
-        [
-                version            : '1.0',
-                artifactCoordinates: [
-                        groupId   : 'com.avioconsulting.mule',
-                        artifactId: 'tests_for_the_testingframework',
-                        version   : '1.0.0',
-                        type      : 'jar',
-                        classifier: 'mule-application'
-                ],
-                dependencies       : []
-        ]
+        if (!cachedClassLoaderModel) {
+            def mvnExecutable = SystemUtils.IS_OS_WINDOWS ? 'mvn.cmd' : 'mvn'
+            def processBuilder = new ProcessBuilder(mvnExecutable,
+                                                    '-f',
+                                                    mavenPomPath.absolutePath,
+                                                    'clean',
+                                                    'compile')
+            println "Fetching dependencies that would normally be in project lib using command: ${processBuilder.command()}"
+            def process = processBuilder.start()
+            process.inputStream.eachLine { println it }
+            assert process.waitFor() == 0
+            def classLoaderModelFile = new File(testMavenDir, 'target/META-INF/mule-artifact/classloader-model.json')
+            assert classLoaderModelFile.exists()
+            cachedClassLoaderModel = new JsonSlurper().parse(classLoaderModelFile)
+        }
+        cachedClassLoaderModel
     }
 
     Map getMuleArtifactJson() {
