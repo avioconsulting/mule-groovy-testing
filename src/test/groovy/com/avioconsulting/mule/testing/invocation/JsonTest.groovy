@@ -142,23 +142,6 @@ class JsonTest extends
     }
 
     @Test
-    void contentTypeNotSet_CheckDisabled() {
-        // arrange
-
-        // act
-        def result = runFlow('jsonTest') {
-            json {
-                inputPayload([foo: 123])
-            }
-            disableContentTypeCheck()
-        }
-
-        // assert
-        assertThat result,
-                   is(equalTo([key: 123]))
-    }
-
-    @Test
     void emptyPayload_StringTest() {
         // arrange
 

@@ -12,6 +12,4 @@ interface FlowRunner {
     def withOutputHttpStatus(Closure closure)
 
     def withInputEvent(Closure closure)
-
-    def disableContentTypeCheck()
 }

@@ -5,7 +5,6 @@ import com.avioconsulting.mule.testing.TransformingEventFactory
 import com.avioconsulting.mule.testing.mulereplacements.RuntimeBridgeTestSide
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.FlowWrapper
-import com.avioconsulting.mule.testing.payloadvalidators.ContentTypeCheckDisabledValidator
 import com.avioconsulting.mule.testing.payloadvalidators.ListenerPayloadValidator
 
 class FlowRunnerImpl implements
@@ -76,11 +75,6 @@ class FlowRunnerImpl implements
 
     def withInputEvent(Closure closure) {
         withInputEvent = closure
-    }
-
-    def disableContentTypeCheck() {
-        assert invoker: 'Need to specify a proper format first! (e.g. json)'
-        invoker = invoker.withNewPayloadValidator(new ContentTypeCheckDisabledValidator(invoker.payloadValidator))
     }
 
     EventWrapper getEvent() {

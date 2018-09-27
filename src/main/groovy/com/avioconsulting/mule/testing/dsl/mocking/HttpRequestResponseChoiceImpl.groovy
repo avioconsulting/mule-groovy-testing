@@ -3,7 +3,6 @@ package com.avioconsulting.mule.testing.dsl.mocking
 import com.avioconsulting.mule.testing.MessageFactory
 import com.avioconsulting.mule.testing.TransformingEventFactory
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.connectors.HttpRequesterInfo
-import com.avioconsulting.mule.testing.payloadvalidators.ContentTypeCheckDisabledValidator
 import com.avioconsulting.mule.testing.payloadvalidators.HttpRequestPayloadValidator
 import com.avioconsulting.mule.testing.transformers.TransformerChain
 import com.avioconsulting.mule.testing.transformers.http.HttpClosureCurrier
@@ -43,12 +42,6 @@ class HttpRequestResponseChoiceImpl extends
 
     def setHttpReturnCode(Integer code) {
         httpValidationTransformer.httpReturnCode = code
-    }
-
-    def disableContentTypeCheck() {
-        def existingValidator = this.formatter.payloadValidator
-        this.formatter = this.formatter.withNewPayloadValidator(
-                new ContentTypeCheckDisabledValidator(existingValidator))
     }
 
     def httpConnectError() {
