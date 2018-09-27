@@ -42,9 +42,23 @@ class MessageWrapperImpl implements
 
     @Override
     Object getValueInsideTypedValue() {
+        unwrapTypedValue(this.payload)
+    }
+
+    // TODO: Refactor: Should we be using this outside of here
+    @Deprecated()
+    static Object unwrapTypedValue(Object payload) {
         assert payload != null
         assert payload.getClass().name.contains('TypedValue')
         payload.value
+    }
+
+    // TODO: Refactor: Should we be using this outside of here
+    @Deprecated()
+    static boolean isPayloadStreaming(Object payload) {
+        assert payload != null
+        assert payload.getClass().name.contains('TypedValue')
+        payload.dataType.isStreamType()
     }
 
     @Override

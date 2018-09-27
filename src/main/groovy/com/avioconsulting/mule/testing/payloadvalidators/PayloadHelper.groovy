@@ -1,13 +1,13 @@
 package com.avioconsulting.mule.testing.payloadvalidators
 
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
+import com.avioconsulting.mule.testing.mulereplacements.wrappers.MessageWrapperImpl
 
 trait PayloadHelper {
     void validatePayloadType(Object payload,
                              List<Class> allowedPayloadTypes,
                              String context) {
-        assert payload.class.name == 'org.mule.runtime.api.metadata.TypedValue'
-        def actualPayload = payload.value
+        def actualPayload = MessageWrapperImpl.unwrapTypedValue(payload)
         def validType = allowedPayloadTypes.find { type ->
             type.isInstance(actualPayload)
         }

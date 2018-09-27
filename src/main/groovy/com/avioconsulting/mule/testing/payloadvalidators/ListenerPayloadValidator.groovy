@@ -2,6 +2,7 @@ package com.avioconsulting.mule.testing.payloadvalidators
 
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.ConnectorInfo
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
+import com.avioconsulting.mule.testing.mulereplacements.wrappers.MessageWrapperImpl
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.connectors.HttpRequesterInfo
 
 class ListenerPayloadValidator implements
@@ -29,10 +30,8 @@ class ListenerPayloadValidator implements
     }
 
     void validatePayloadType(Object payload) {
-        assert payload.class.name == 'org.mule.runtime.api.metadata.TypedValue'
-        def dataType = payload.dataType
-        if (dataType.isStreamType()) {
-            throw new Exception("Expected a stream type for ${dataType}!")
+        if (MessageWrapperImpl.isPayloadStreaming(payload)) {
+            throw new Exception("Expected a stream type for ${payload}!")
         }
     }
 }
