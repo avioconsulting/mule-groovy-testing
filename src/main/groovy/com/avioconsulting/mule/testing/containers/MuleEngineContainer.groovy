@@ -113,13 +113,13 @@ class MuleEngineContainer {
     // TODO: Derive artifactName?
     RuntimeBridgeTestSide deployApplication(String artifactName,
                                             URI application,
-                                            MockingConfiguration mockingConfiguration) {
+                                            MockingConfiguration mockingConfiguration,
+                                            Properties properties) {
         // have to do this before we deploy to catch the event
         registryListener.setMockingConfiguration(artifactName,
                                                  mockingConfiguration)
-        // TODO: How do we pass in our properties??
-        // TODO: We need the repository directory. The Mule 4.0 build process puts it in target so we should be able to get it easily
-        container.deploymentService.deploy(application)
+        container.deploymentService.deploy(application,
+                                           properties)
         // this we have to do after the deployment
         def muleSide = registryListener.getRuntimeBridge(artifactName)
         new RuntimeBridgeTestSide(muleSide,

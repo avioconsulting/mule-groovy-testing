@@ -82,7 +82,8 @@ trait BaseMuleGroovyTrait {
             }
             muleEngineContainer.deployApplication(artifactName,
                                                   appSourceDir.toURI(),
-                                                  mockingConfiguration)
+                                                  mockingConfiguration,
+                                                  startUpProperties)
         }
         finally {
             FileUtils.deleteDirectory(appSourceDir)
@@ -90,10 +91,7 @@ trait BaseMuleGroovyTrait {
     }
 
     Properties getStartUpProperties() {
-    }
-
-    def getPropertyMap() {
-        [:]
+        new Properties()
     }
 
     BaseEngineConfig getBaseEngineConfig() {
