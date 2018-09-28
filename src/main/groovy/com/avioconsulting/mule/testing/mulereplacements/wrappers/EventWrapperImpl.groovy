@@ -1,7 +1,7 @@
 package com.avioconsulting.mule.testing.mulereplacements.wrappers
 
 class EventWrapperImpl implements EventWrapper {
-    private final MessageWrapper message
+    protected MessageWrapper message
     protected final Object nativeEvent
 
     EventWrapperImpl(Object nativeEvent) {
