@@ -219,29 +219,6 @@ class HttpTest extends
     }
 
     @Test
-    void content_Type_Not_Required_For_get() {
-        // arrange
-        mockRestHttpCall('SomeSystem Call') {
-            json {
-                whenCalledWith {
-                    [reply: 456]
-                }
-            }
-        }
-
-        // act
-        def result = runFlow('restRequestGet') {
-            // using Java to surface attempts to deserialize this payload, etc.
-            java {
-                inputPayload([foo: 123])
-            }
-        }
-
-        // assert
-        assert result
-    }
-
-    @Test
     void http_return_set_201_code() {
         // arrange
         mockRestHttpCall('SomeSystem Call') {
