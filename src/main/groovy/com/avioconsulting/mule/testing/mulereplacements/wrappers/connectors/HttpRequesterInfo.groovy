@@ -8,6 +8,8 @@ class HttpRequesterInfo extends
     private final boolean validationEnabled
     private final Map<String, String> queryParams
     private final Map<String, String> headers
+    private HttpValidatorWrapper validatorWrapper
+    private final String uri
 
     HttpRequesterInfo(String fileName,
                       Integer lineNumber,
@@ -16,11 +18,17 @@ class HttpRequesterInfo extends
               lineNumber,
               parameters)
         this.method = parameters['method'] as String
-        this.validationEnabled = parameters['responseValidationSettings'].responseValidator != null
+        def muleValidator = parameters['responseValidationSettings'].responseValidator
+        this.validationEnabled = muleValidator != null
+        if (this.validationEnabled) {
+            this.validatorWrapper = new HttpValidatorWrapper(muleValidator,
+                                                             this)
+        }
         // it's a MultiMap, keep Mule runtime classes away from our tests
         def requestBuilder = parameters['requestBuilder']
         this.queryParams = convertMultiMap(requestBuilder.queryParams) as Map<String, String>
         this.headers = convertMultiMap(requestBuilder.headers) as Map<String, String>
+        this.uri = requestBuilder.replaceUriParams(parameters['uriSettings'].path)
     }
 
     private static Map convertMultiMap(Map map) {
@@ -33,7 +41,6 @@ class HttpRequesterInfo extends
         this.method
     }
 
-    // TODO: Will need to fully implement this later on
     boolean isValidationEnabled() {
         this.validationEnabled
     }
@@ -44,5 +51,13 @@ class HttpRequesterInfo extends
 
     Map<String, String> getHeaders() {
         return headers
+    }
+
+    HttpValidatorWrapper getValidator() {
+        this.validatorWrapper
+    }
+
+    String getUri() {
+        return uri
     }
 }
