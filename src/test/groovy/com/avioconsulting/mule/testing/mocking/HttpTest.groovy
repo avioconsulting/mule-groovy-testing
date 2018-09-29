@@ -1,7 +1,6 @@
 package com.avioconsulting.mule.testing.mocking
 
 import com.avioconsulting.mule.testing.OverrideConfigList
-import com.avioconsulting.mule.testing.SampleJacksonInput
 import com.avioconsulting.mule.testing.junit.BaseJunitTest
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.MessageWrapper
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.ReturnWrapper
@@ -300,7 +299,7 @@ class HttpTest extends
         mockRestHttpCall('SomeSystem Call') {
             json {
                 whenCalledWith {
-                    setHttpReturnCode(500)
+                    setHttpReturnCode(404)
                     [reply: 456]
                 }
             }
@@ -316,10 +315,12 @@ class HttpTest extends
         }
 
         // assert
+        assertThat result.getClass().name,
+                   is(equalTo('org.mule.runtime.core.internal.exception.MessagingException'))
+        assertThat result.cause.getClass().name,
+                   is(equalTo('org.mule.extension.http.api.request.validator.ResponseValidatorTypedException'))
         assertThat result.message,
-                   is(equalTo('Response code 500 mapped as failure.'))
-        assertThat result.failingMessageProcessor,
-                   is(instanceOf(DefaultHttpRequester))
+                   is(equalTo("HTTP GET on resource '/some_path/there' failed: not found (404)."))
     }
 
     @Test

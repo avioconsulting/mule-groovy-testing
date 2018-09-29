@@ -19,7 +19,7 @@ class HttpValidationTransformer implements
         if (!connectorInfo.validationEnabled) {
             return muleEvent
         }
-        // TODO: Fix this reason/header, figure out how to properly fail with mockeventwrapper
+        // TODO: Fix this reason/header if it matters
         connectorInfo.validator.validate(this.httpReturnCode,
                                          'foo',
                                          [header1: '123'])
