@@ -257,14 +257,14 @@ output application/json
                 <http:success-status-code-validator values="200,201"/>
             </http:response-validator>
         </http:request>
-        <set-variable variableName="theStatus" value="#[message.inboundProperties.'http.status']"/>
+        <set-variable variableName="theStatus" value="#[attributes.'http.status']"/>
         <ee:transform doc:name="Transform Message">
             <ee:message>
                 <ee:set-payload><![CDATA[%dw 2.0
 output application/json
 ---
 {
-    reply_key: flowVars.theStatus
+    reply_key: vars.theStatus
 }]]></ee:set-payload>
             </ee:message>
         </ee:transform>

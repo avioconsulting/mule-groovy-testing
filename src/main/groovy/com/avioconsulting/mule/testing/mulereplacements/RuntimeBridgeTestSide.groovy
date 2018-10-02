@@ -117,6 +117,15 @@ class RuntimeBridgeTestSide implements
                                returnWrapper.mediaType)
     }
 
+    @Override
+    MessageWrapper withNewAttributes(MessageWrapper existingMessage,
+                                     Map attributes) {
+        new MessageWrapperImpl(existingMessage.payload,
+                               runtimeBridgeMuleSide,
+                               existingMessage.mimeType,
+                               attributes)
+    }
+
     def dispose() {
         runtimeBridgeMuleSide.dispose()
     }

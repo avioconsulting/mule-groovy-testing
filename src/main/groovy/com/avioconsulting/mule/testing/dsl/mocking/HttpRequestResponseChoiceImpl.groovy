@@ -25,7 +25,7 @@ class HttpRequestResponseChoiceImpl extends
               new HttpClosureCurrier(),
               'HTTP Request Mock',
               eventFactory)
-        httpValidationTransformer = new HttpValidationTransformer()
+        httpValidationTransformer = new HttpValidationTransformer(messageFactory)
         httpGetTransformer = new HttpGetTransformer(messageFactory)
         httpConnectorErrorTransformer = new HttpConnectorErrorTransformer()
     }
