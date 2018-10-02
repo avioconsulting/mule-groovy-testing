@@ -24,7 +24,10 @@ output application/json
 }]]></ee:set-payload>
             </ee:message>
         </ee:transform>
-        <http:request config-ref="SomeSystem" path="/some_path" method="POST" doc:name="SomeSystem Call"/>
+        <http:request config-ref="SomeSystem"
+                      path="/some_path"
+                      method="POST"
+                      doc:name="SomeSystem Call"/>
         <ee:transform doc:name="Transform Message">
             <ee:message>
                 <ee:set-payload><![CDATA[%dw 2.0

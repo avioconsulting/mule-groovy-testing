@@ -419,10 +419,12 @@ class HttpTest extends
         }
 
         // assert
-        assertThat result.cause,
-                   is(instanceOf(ConnectException))
-        assertThat result.failingMessageProcessor,
-                   is(instanceOf(DefaultHttpRequester))
+        assertThat result.getClass().name,
+                   is(equalTo('org.mule.runtime.core.internal.exception.MessagingException'))
+        assertThat result.cause.getClass().name,
+                   is(equalTo('org.mule.extension.http.api.error.HttpRequestFailedException'))
+        assertThat result.message,
+                   is(equalTo("HTTP POST on resource 'http://localhost:443/some_path' failed: Connection refused."))
     }
 
     @Test
