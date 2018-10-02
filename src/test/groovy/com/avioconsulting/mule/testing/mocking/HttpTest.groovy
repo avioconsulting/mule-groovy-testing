@@ -264,33 +264,7 @@ class HttpTest extends
 
         // assert
         assertThat result.message,
-                   is(containsString('Response code 202 mapped as failure'))
-    }
-
-    @Test
-    void qhttp_return_error_code() {
-        // arrange
-        mockRestHttpCall('SomeSystem Call') {
-            json {
-                whenCalledWith {
-                    setHttpReturnCode(500)
-                    [reply: 456]
-                }
-            }
-        }
-
-        // act
-        def result = shouldFail {
-            runFlow('queryParametersHttpStatus') {
-                json {
-                    inputPayload([foo: 123])
-                }
-            }
-        }
-
-        // assert
-        assertThat result.message,
-                   is(containsString('Response code 500 mapped as failure'))
+                   is(containsString("HTTP GET on resource '/some_path/there' failed with status code 202."))
     }
 
     @Test
