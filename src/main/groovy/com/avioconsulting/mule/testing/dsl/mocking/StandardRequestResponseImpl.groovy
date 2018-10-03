@@ -43,7 +43,8 @@ abstract class StandardRequestResponseImpl<T extends ConnectorInfo> implements
 
     def xml(@DelegatesTo(XMLFormatter) Closure closure) {
         formatter = new XMLFormatterImpl(initialPayloadValidator,
-                                         requestResponseUse)
+                                         requestResponseUse,
+                                         eventFactory)
         this.closure = closure
     }
 

@@ -1,16 +1,19 @@
 package com.avioconsulting.mule.testing.transformers.xml
 
+import com.avioconsulting.mule.testing.TransformingEventFactory
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.ConnectorInfo
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
 import com.avioconsulting.mule.testing.payloadvalidators.IPayloadValidator
 
-class XMLTransformer<T extends ConnectorInfo> {
+abstract class XMLTransformer<T extends ConnectorInfo> {
     protected final XMLMessageBuilder xmlMessageBuilder
     private final IPayloadValidator<T> payloadValidator
 
-    XMLTransformer(IPayloadValidator<T> payloadValidator) {
+    XMLTransformer(IPayloadValidator<T> payloadValidator,
+                   TransformingEventFactory transformingEventFactory) {
         this.payloadValidator = payloadValidator
-        this.xmlMessageBuilder = new XMLMessageBuilder(false)
+        this.xmlMessageBuilder = new XMLMessageBuilder(false,
+                                                       transformingEventFactory)
     }
 
     def validateContentType(EventWrapper muleEvent,
