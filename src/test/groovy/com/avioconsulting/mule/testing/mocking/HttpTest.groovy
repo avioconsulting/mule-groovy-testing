@@ -264,7 +264,7 @@ class HttpTest extends
 
         // assert
         assertThat result.message,
-                   is(containsString("HTTP GET on resource '/some_path/there' failed with status code 202."))
+                   is(containsString("HTTP GET on resource 'http://localhost:443/some_path/there' failed with status code 202."))
     }
 
     @Test
@@ -294,7 +294,7 @@ class HttpTest extends
         assertThat result.cause.getClass().name,
                    is(equalTo('org.mule.extension.http.api.request.validator.ResponseValidatorTypedException'))
         assertThat result.message,
-                   is(equalTo("HTTP GET on resource '/some_path/there' failed: not found (404)."))
+                   is(equalTo("HTTP GET on resource 'http://localhost:443/some_path/there' failed: not found (404)."))
     }
 
     @Test
