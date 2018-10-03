@@ -58,6 +58,7 @@ class HttpConnectorErrorTransformer implements
                                    Exception cause,
                                    String details,
                                    String errorEnumCode) {
+        // we are mimicing how HttpRequestor throws this exception in a real scenario
         // have to do all of this with reflection since it's inside the app
         def appClassLoader = fetchAppClassLoader.appClassloader
         def exceptionClass = appClassLoader.loadClass('org.mule.extension.http.api.error.HttpRequestFailedException')
@@ -68,7 +69,7 @@ class HttpConnectorErrorTransformer implements
         def connectivityError = errorTypeDefinitionClass.enumConstants.find { c ->
             c.toString() == errorEnumCode
         }
-        assert connectivityError : "Could not locate ${errorEnumCode} in ${errorTypeDefinitionClass.enumConstants}"
+        assert connectivityError: "Could not locate ${errorEnumCode} in ${errorTypeDefinitionClass.enumConstants}"
         exceptionClass.newInstance(msg,
                                    cause,
                                    connectivityError) as Exception
