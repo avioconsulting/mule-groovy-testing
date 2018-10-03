@@ -1,16 +1,16 @@
 package com.avioconsulting.mule.testing.payloadvalidators
 
+import com.avioconsulting.mule.testing.mulereplacements.wrappers.ConnectorInfo
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
-import com.avioconsulting.mule.testing.mulereplacements.wrappers.connectors.VmInfo
 
 class VmPayloadValidator implements
-        IPayloadValidator<VmInfo>,
+        IPayloadValidator<ConnectorInfo>,
         PayloadHelper {
-    boolean isPayloadTypeValidationRequired(VmInfo vm) {
+    boolean isPayloadTypeValidationRequired(ConnectorInfo vm) {
         true
     }
 
-    boolean isContentTypeValidationRequired(VmInfo vm) {
+    boolean isContentTypeValidationRequired(ConnectorInfo vm) {
         return false
     }
 
@@ -19,8 +19,6 @@ class VmPayloadValidator implements
     }
 
     void validatePayloadType(Object payload) {
-        validatePayloadType(payload,
-                            [String],
-                            'VMs must have string payloads.')
+        // practically required a string in Mule 3.x, 4.1 should not have that restriction
     }
 }

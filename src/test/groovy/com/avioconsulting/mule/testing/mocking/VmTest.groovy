@@ -5,11 +5,13 @@ import com.avioconsulting.mule.testing.SampleJacksonInput
 import com.avioconsulting.mule.testing.junit.BaseJunitTest
 import org.junit.Test
 
-import static groovy.test.GroovyAssert.shouldFail
-import static org.hamcrest.Matchers.*
+import static org.hamcrest.Matchers.equalTo
+import static org.hamcrest.Matchers.is
 import static org.junit.Assert.assertThat
 
-class VmTest extends BaseJunitTest implements OverrideConfigList {
+class VmTest extends
+        BaseJunitTest implements
+        OverrideConfigList {
     List<String> getConfigResources() {
         ['vm_test.xml']
     }
@@ -66,33 +68,5 @@ class VmTest extends BaseJunitTest implements OverrideConfigList {
         assert inputReceived
         assertThat inputReceived.foobar,
                    is(equalTo(456))
-    }
-
-
-    @Test
-    void mock_gives_good_error_not_string() {
-        // arrange
-        mockVmReceive('The Queue') {
-            json {
-                whenCalledWith(SampleJacksonInput) { SampleJacksonInput input ->
-                }
-            }
-        }
-
-        // act
-        def exception = shouldFail {
-            runFlow('vmRequest_NotString') {
-                json {
-                    def input = new SampleJacksonInput()
-                    input.foobar = 456
-                    inputPayload(input)
-                }
-            }
-        }
-
-        // assert
-        assertThat exception.message,
-                   is(containsString(
-                           'Expected payload to be of type [class java.lang.String] here but it actually was class java.io.ByteArrayInputStream. VMs must have string payloads.'))
     }
 }
