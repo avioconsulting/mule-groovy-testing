@@ -34,23 +34,44 @@ class HttpConnectorErrorTransformer implements
             return muleEvent
         }
         if (triggerConnectException) {
-            def appClassLoader = fetchAppClassLoader.appClassloader
-            def exceptionClass = appClassLoader.loadClass('org.mule.extension.http.api.error.HttpRequestFailedException')
-            def messageClass = appClassLoader.loadClass('org.mule.runtime.api.i18n.I18nMessage')
-            def msg = messageClass.newInstance("HTTP ${connectorInfo.method} on resource '${connectorInfo.uri}' failed: Connection refused.",
-                                               -1)
-            def errorTypeDefinitionClass = appClassLoader.loadClass('org.mule.extension.http.api.error.HttpError')
-            def connectivityError = errorTypeDefinitionClass.enumConstants.find { c ->
-                c.toString() == 'CONNECTIVITY'
-            }
-            def exception = exceptionClass.newInstance(msg,
-                                                       new ConnectException('could not reach HTTP server'),
-                                                       connectivityError)
-            throw exception
+            throw getException(connectorInfo,
+                               new ConnectException('could not reach HTTP server'),
+                               'Connection refused',
+                               'CONNECTIVITY')
         }
         if (triggerTimeoutException) {
-            throw new TimeoutException('HTTP timeout!')
+            throw getException(connectorInfo,
+                               new TimeoutException('HTTP timeout!'),
+                               'Some timeout error',
+                               'TIMEOUT')
         }
+    }
+
+    /**
+     *
+     * @param connectorInfo
+     * @param cause
+     * @param details
+     * @param errorEnumCode - from HttpError
+     */
+    private Exception getException(HttpRequesterInfo connectorInfo,
+                                   Exception cause,
+                                   String details,
+                                   String errorEnumCode) {
+        // have to do all of this with reflection since it's inside the app
+        def appClassLoader = fetchAppClassLoader.appClassloader
+        def exceptionClass = appClassLoader.loadClass('org.mule.extension.http.api.error.HttpRequestFailedException')
+        def messageClass = appClassLoader.loadClass('org.mule.runtime.api.i18n.I18nMessage')
+        def msg = messageClass.newInstance("HTTP ${connectorInfo.method} on resource '${connectorInfo.uri}' failed: ${details}.",
+                                           -1)
+        def errorTypeDefinitionClass = appClassLoader.loadClass('org.mule.extension.http.api.error.HttpError')
+        def connectivityError = errorTypeDefinitionClass.enumConstants.find { c ->
+            c.toString() == errorEnumCode
+        }
+        assert connectivityError : "Could not locate ${errorEnumCode} in ${errorTypeDefinitionClass.enumConstants}"
+        exceptionClass.newInstance(msg,
+                                   cause,
+                                   connectivityError) as Exception
     }
 
     @Override
