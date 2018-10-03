@@ -10,8 +10,6 @@ import groovy.json.JsonSlurper
 import groovy.util.logging.Log4j2
 import org.junit.Test
 
-import java.util.concurrent.TimeoutException
-
 import static groovy.test.GroovyAssert.shouldFail
 import static org.hamcrest.Matchers.*
 import static org.junit.Assert.assertThat
