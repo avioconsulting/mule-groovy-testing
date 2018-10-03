@@ -37,8 +37,7 @@ class HttpConnectorErrorTransformer implements
             def appClassLoader = fetchAppClassLoader.appClassloader
             def exceptionClass = appClassLoader.loadClass('org.mule.extension.http.api.error.HttpRequestFailedException')
             def messageClass = appClassLoader.loadClass('org.mule.runtime.api.i18n.I18nMessage')
-            // TODO: Hard coded error message
-            def msg = messageClass.newInstance("HTTP POST on resource 'http://localhost:443/some_path' failed: Connection refused.",
+            def msg = messageClass.newInstance("HTTP ${connectorInfo.method} on resource '${connectorInfo.uri}' failed: Connection refused.",
                                                -1)
             def errorTypeDefinitionClass = appClassLoader.loadClass('org.mule.extension.http.api.error.HttpError')
             def connectivityError = errorTypeDefinitionClass.enumConstants.find { c ->

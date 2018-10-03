@@ -28,7 +28,10 @@ class HttpRequesterInfo extends
         def requestBuilder = parameters['requestBuilder']
         this.queryParams = convertMultiMap(requestBuilder.queryParams) as Map<String, String>
         this.headers = convertMultiMap(requestBuilder.headers) as Map<String, String>
-        this.uri = requestBuilder.replaceUriParams(parameters['uriSettings'].path)
+        def uriParams = parameters['client'].defaultUriParameters
+        def host = "${uriParams.scheme.scheme}://${uriParams.host}:${uriParams.port}"
+        def path = requestBuilder.replaceUriParams(parameters['uriSettings'].path)
+        this.uri = "${host}${path}"
     }
 
     private static Map convertMultiMap(Map map) {
