@@ -48,14 +48,17 @@ class RuntimeBridgeTestSide implements
     EventWrapper getMuleEventWithPayload(Object payload,
                                          String flowName,
                                          Map attributes) {
-        assert false: 'NIE'
+        assert false: 'Not yet implemented'
     }
 
     @Override
     EventWrapper getMuleEventWithPayload(Object payload,
                                          String mediaType,
                                          EventWrapper rewriteEvent) {
-        assert false: 'NIE'
+        getMuleEventWithPayload(payload,
+                                rewriteEvent,
+                                mediaType,
+                                [:])
     }
 
     @Override

@@ -5,6 +5,7 @@ import com.avioconsulting.mule.testing.TransformingEventFactory
 import com.avioconsulting.mule.testing.mulereplacements.MuleMessageTransformer
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.ConnectorInfo
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
+import com.avioconsulting.mule.testing.mulereplacements.wrappers.ReturnWrapper
 import com.avioconsulting.mule.testing.payloadvalidators.IPayloadValidator
 import com.avioconsulting.mule.testing.transformers.ClosureCurrier
 import com.avioconsulting.mule.testing.transformers.InputTransformer
@@ -39,7 +40,9 @@ class RawFormatterImpl<T extends ConnectorInfo> implements
             @Override
             EventWrapper transformOutput(Object inputMessage,
                                          EventWrapper originalMuleEvent) {
-                transformingEventFactory.getMuleEventWithPayload(inputMessage,
+                assert inputMessage instanceof ReturnWrapper : "When using 'raw', you need to return a ReturnWrapper object so that the media/mime type is known. You returned ${inputMessage.class}"
+                transformingEventFactory.getMuleEventWithPayload(inputMessage.payload,
+                                                                 inputMessage.mediaType,
                                                                  originalMuleEvent)
             }
         }
