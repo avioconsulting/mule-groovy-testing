@@ -249,29 +249,4 @@ class XMLRestTest extends BaseJunitTest implements OverrideConfigList {
                            [reply_key: 23]
                    )))
     }
-
-    @Test
-    void contentTypeNotSet() {
-        // arrange
-        mockRestHttpCall('SomeSystem Call') {
-            xml {
-                whenCalledWithMapAsXml { Map input ->
-                }
-            }
-        }
-
-        // act
-        def result = shouldFail {
-            runFlow('xmlTestWithoutContentType') {
-                json {
-                    inputPayload([foo: 123])
-                }
-            }
-        }
-
-        // assert
-        assertThat result.message,
-                   is(containsString(
-                           'Expected Content-Type to be of type [application/xml] but it actually was null. Check your mock endpoints.'))
-    }
 }
