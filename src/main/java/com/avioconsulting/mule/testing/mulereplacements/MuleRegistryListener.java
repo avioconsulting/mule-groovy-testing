@@ -9,6 +9,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class MuleRegistryListener implements DeploymentListener {
+    // we share a single listener for the whole container so if we change apps
+    // (e.g. we change our config files/properties/etc. we need to be able to differentiate)
     private final Map<String, RuntimeBridgeMuleSide> runtimeBridges;
     private final Map<String, Object> mockingConfigurations;
 
@@ -17,12 +19,17 @@ public class MuleRegistryListener implements DeploymentListener {
         this.mockingConfigurations = new HashMap<>();
     }
 
+    // this will run after onArtifactCreated and will allow our test code to use
+    // the registry to get ahold of certain Mule objects (like running flows, etc.)
     @Override
     public void onArtifactInitialised(String artifactName,
                                       Registry registry) {
         this.runtimeBridges.put(artifactName, new RuntimeBridgeMuleSide(registry));
     }
 
+    // this will run first before onArtifactInitialised does. we use it to tweak some services
+    // e.g. inject our mock interceptor, etc. The mocking config will have already
+    // been set by MuleEngineContainer before deployment happens
     @Override
     public void onArtifactCreated(String artifactName,
                                   CustomizationService custSvc) {

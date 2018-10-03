@@ -110,7 +110,7 @@ class MuleEngineContainer {
         container.deploymentService.undeploy(app.artifactName)
     }
 
-    // TODO: Derive artifactName?
+    // TODO: Derive artifactName? We might have to in order to avoid conflicts inside the registry listener
     RuntimeBridgeTestSide deployApplication(String artifactName,
                                             URI application,
                                             MockingConfiguration mockingConfiguration,
