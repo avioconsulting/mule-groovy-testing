@@ -17,7 +17,10 @@ class XMLTransformer<T extends ConnectorInfo> {
                             T messageProcessor) {
         if (payloadValidator.isContentTypeValidationRequired(messageProcessor)) {
             payloadValidator.validateContentType(muleEvent,
-                                                 ['application/xml'])
+                                                 [
+                                                         'application/xml',
+                                                         'application/xml; charset=UTF-8'
+                                                 ])
         }
     }
 }
