@@ -2,15 +2,18 @@ package com.avioconsulting.mule.testing.mocking
 
 import com.avioconsulting.mule.testing.OverrideConfigList
 import com.avioconsulting.mule.testing.junit.BaseJunitTest
+import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
+import com.avioconsulting.mule.testing.mulereplacements.wrappers.MessageWrapper
 import groovy.json.JsonOutput
 import org.junit.Test
-import org.mule.runtime.api.event.Event
 
-import static groovy.test.GroovyAssert.shouldFail
-import static org.hamcrest.Matchers.*
+import static org.hamcrest.Matchers.equalTo
+import static org.hamcrest.Matchers.is
 import static org.junit.Assert.assertThat
 
-class XMLRestTest extends BaseJunitTest implements OverrideConfigList {
+class XMLRestTest extends
+        BaseJunitTest implements
+        OverrideConfigList {
     List<String> getConfigResources() {
         ['simple_xml_test.xml']
     }
@@ -54,12 +57,12 @@ class XMLRestTest extends BaseJunitTest implements OverrideConfigList {
     @Test
     void mockViaMap_withMuleMsg() {
         // arrange
-        Event sentMessage = null
+        MessageWrapper sentMessage = null
         mockRestHttpCall('SomeSystem Call') {
             xml {
                 whenCalledWithMapAsXml { Map input,
-                                         Event message ->
-                    sentMessage = message
+                                         EventWrapper event ->
+                    sentMessage = event.message
                     [
                             rootElementResponse: [
                                     reply: 22
@@ -77,8 +80,8 @@ class XMLRestTest extends BaseJunitTest implements OverrideConfigList {
         }
 
         // assert
-        assertThat sentMessage.message.getProperty('content-type', PropertyScope.INBOUND),
-                   is(equalTo('application/json; charset=utf-8'))
+        assertThat sentMessage.mimeType,
+                   is(equalTo('application/xml; charset=UTF-8'))
     }
 
     @Test
@@ -191,12 +194,12 @@ class XMLRestTest extends BaseJunitTest implements OverrideConfigList {
     @Test
     void mockGroovyXmlParser_withMuleMsg() {
         // arrange
-        Event sentMessage = null
+        MessageWrapper sentMessage = null
         mockRestHttpCall('SomeSystem Call') {
             xml {
                 whenCalledWithGroovyXmlParser { Node input,
-                                                Event muleEvent ->
-                    sentMessage = muleEvent
+                                                EventWrapper muleEvent ->
+                    sentMessage = muleEvent.message
                     def node = new Node(null, 'rootElementResponse')
                     node.appendNode('reply', 22)
                     node
@@ -212,8 +215,8 @@ class XMLRestTest extends BaseJunitTest implements OverrideConfigList {
         }
 
         // assert
-        assertThat sentMessage.message.getProperty('content-type', PropertyScope.INBOUND),
-                   is(equalTo('application/json; charset=utf-8'))
+        assertThat sentMessage.mimeType,
+                   is(equalTo('application/xml; charset=UTF-8'))
     }
 
     @Test
