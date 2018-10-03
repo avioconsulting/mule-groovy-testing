@@ -2,56 +2,57 @@
 
 <mule xmlns:http="http://www.mulesoft.org/schema/mule/http"
       xmlns="http://www.mulesoft.org/schema/mule/core"
-      xmlns:dw="http://www.mulesoft.org/schema/mule/ee/dw"
+      xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
       xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
-http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee/dw/current/dw.xsd">
-    <http:request-config name="SomeSystem" protocol="HTTP" host="localhost" port="443" basePath="/"
-                         doc:name="HTTP Request Configuration"/>
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+    <http:request-config name="SomeSystem"
+                         basePath="/"
+                         doc:name="HTTP Request Configuration">
+        <http:request-connection host="localhost" port="443" protocol="HTTP"/>
+    </http:request-config>
     <flow name="xmlTest">
-        <dw:transform-message doc:name="Transform Message">
-            <dw:set-payload><![CDATA[%dw 1.0
-%output application/xml
+        <ee:transform doc:name="Transform Message">
+            <ee:message><ee:set-payload><![CDATA[%dw 2.0
+output application/xml
 ---
 {
     rootElement: {
         key: payload.foo
     }
-}]]></dw:set-payload>
-        </dw:transform-message>
-        <set-property propertyName="Content-Type" value="application/xml"/>
+}]]></ee:set-payload></ee:message>
+        </ee:transform>
         <http:request config-ref="SomeSystem" path="/some_path" method="POST" doc:name="SomeSystem Call"/>
-        <dw:transform-message doc:name="Transform Message">
-            <dw:set-payload><![CDATA[%dw 1.0
-%output application/json
+        <ee:transform doc:name="Transform Message">
+            <ee:message><ee:set-payload><![CDATA[%dw 2.0
+output application/json
 ---
 {
     reply_key: payload.rootElementResponse.reply + 1
-}]]></dw:set-payload>
-        </dw:transform-message>
-        <set-property propertyName="Content-Type" value="application/json"/>
+}]]></ee:set-payload></ee:message>
+        </ee:transform>
     </flow>
 
     <flow name="xmlTestWithoutContentType">
-        <dw:transform-message doc:name="Transform Message">
-            <dw:set-payload><![CDATA[%dw 1.0
-%output application/xml
+        <ee:transform doc:name="Transform Message">
+            <ee:message><ee:set-payload><![CDATA[%dw 2.0
+output application/xml
 ---
 {
     rootElement: {
         key: payload.foo
     }
-}]]></dw:set-payload>
-        </dw:transform-message>
+}]]></ee:set-payload></ee:message>
+        </ee:transform>
         <http:request config-ref="SomeSystem" path="/some_path" method="POST" doc:name="SomeSystem Call"/>
     </flow>
 
     <flow name="nestedTest">
-        <dw:transform-message doc:name="Transform Message">
-            <dw:set-payload><![CDATA[%dw 1.0
-%output application/xml
+        <ee:transform doc:name="Transform Message">
+            <ee:message><ee:set-payload><![CDATA[%dw 2.0
+output application/xml
 ---
 {
     rootElement: {
@@ -59,18 +60,16 @@ http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee
             key: payload.foo
         }
     }
-}]]></dw:set-payload>
-        </dw:transform-message>
-        <set-property propertyName="Content-Type" value="application/xml"/>
+}]]></ee:set-payload></ee:message>
+        </ee:transform>
         <http:request config-ref="SomeSystem" path="/some_path" method="POST" doc:name="SomeSystem Call"/>
-        <dw:transform-message doc:name="Transform Message">
-            <dw:set-payload><![CDATA[%dw 1.0
-%output application/json
+        <ee:transform doc:name="Transform Message">
+            <ee:message><ee:set-payload><![CDATA[%dw 2.0
+output application/json
 ---
 {
     reply_key: payload.rootElementResponse.reply + 1
-}]]></dw:set-payload>
-        </dw:transform-message>
-        <set-property propertyName="Content-Type" value="application/json"/>
+}]]></ee:set-payload></ee:message>
+        </ee:transform>
     </flow>
 </mule>
