@@ -37,6 +37,7 @@ class XMLGroovyParserTransformer<T extends ConnectorInfo> extends
             outputXmlString = XmlUtil.serialize(reply)
         }
 
+
         def reader = new StringReader(outputXmlString)
         this.xmlMessageBuilder.build(reader,
                                      muleEvent,

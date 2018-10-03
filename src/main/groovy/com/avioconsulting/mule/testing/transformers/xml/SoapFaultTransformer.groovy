@@ -2,7 +2,6 @@ package com.avioconsulting.mule.testing.transformers.xml
 
 import com.avioconsulting.mule.testing.mulereplacements.MuleMessageTransformer
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
-import com.avioconsulting.mule.testing.mulereplacements.wrappers.MockEventWrapper
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.connectors.SoapConsumerInfo
 
 // TODO: Find a better way to do this
@@ -19,7 +18,7 @@ class SoapFaultTransformer implements
         }
     }()
 
-    private MockEventWrapper muleEvent
+    private EventWrapper muleEvent
     private SoapConsumerInfo originalProcessor
 
     Throwable createSoapFaultException(soapFault) {

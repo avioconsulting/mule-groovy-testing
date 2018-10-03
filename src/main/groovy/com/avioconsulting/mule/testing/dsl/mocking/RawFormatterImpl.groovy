@@ -1,6 +1,7 @@
 package com.avioconsulting.mule.testing.dsl.mocking
 
-import com.avioconsulting.mule.testing.MessageFactory
+
+import com.avioconsulting.mule.testing.TransformingEventFactory
 import com.avioconsulting.mule.testing.mulereplacements.MuleMessageTransformer
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.ConnectorInfo
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
@@ -16,12 +17,12 @@ class RawFormatterImpl<T extends ConnectorInfo> implements
     private final IPayloadValidator payloadValidator
     private MuleMessageTransformer<T> transformer
     private final ClosureCurrier closureCurrier
-    private final MessageFactory messageFactory
+    private final TransformingEventFactory transformingEventFactory
 
-    RawFormatterImpl(MessageFactory messageFactory,
+    RawFormatterImpl(TransformingEventFactory transformingEventFactory,
                      IPayloadValidator payloadValidator,
                      ClosureCurrier closureCurrier) {
-        this.messageFactory = messageFactory
+        this.transformingEventFactory = transformingEventFactory
         this.closureCurrier = closureCurrier
         this.payloadValidator = payloadValidator
     }
@@ -38,9 +39,8 @@ class RawFormatterImpl<T extends ConnectorInfo> implements
             @Override
             EventWrapper transformOutput(Object inputMessage,
                                          EventWrapper originalMuleEvent) {
-                def newMessage = messageFactory.buildMessage(inputMessage)
-                originalMuleEvent.changeMessage(newMessage)
-                return originalMuleEvent
+                transformingEventFactory.getMuleEventWithPayload(inputMessage,
+                                                                 originalMuleEvent)
             }
         }
         this.transformer = new StandardTransformer(closure,
@@ -56,7 +56,7 @@ class RawFormatterImpl<T extends ConnectorInfo> implements
 
     @Override
     IFormatter withNewPayloadValidator(IPayloadValidator validator) {
-        new RawFormatterImpl(messageFactory,
+        new RawFormatterImpl(transformingEventFactory,
                              validator,
                              closureCurrier)
     }

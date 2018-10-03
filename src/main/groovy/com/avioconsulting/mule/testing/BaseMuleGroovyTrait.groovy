@@ -226,12 +226,11 @@ trait BaseMuleGroovyTrait {
     }
 
     def mockRestHttpCall(MockingConfiguration mockingConfiguration,
-                         RuntimeBridgeTestSide muleContext,
+                         RuntimeBridgeTestSide bridge,
                          String connectorName,
                          @DelegatesTo(HttpRequestResponseChoice) Closure closure) {
-        def formatterChoice = new HttpRequestResponseChoiceImpl(muleContext,
-                                                                muleContext,
-                                                                muleContext)
+        def formatterChoice = new HttpRequestResponseChoiceImpl(bridge,
+                                                                bridge)
         def code = closure.rehydrate(formatterChoice, this, this)
         code.resolveStrategy = Closure.DELEGATE_ONLY
         code()
@@ -240,11 +239,10 @@ trait BaseMuleGroovyTrait {
     }
 
     def mockVmReceive(MockingConfiguration mockingConfiguration,
-                      RuntimeBridgeTestSide muleContext,
+                      RuntimeBridgeTestSide bridge,
                       String connectorName,
                       @DelegatesTo(StandardRequestResponse) Closure closure) {
-        def formatterChoice = new VMRequestResponseChoiceImpl(muleContext,
-                                                              muleContext)
+        def formatterChoice = new VMRequestResponseChoiceImpl(bridge)
         def code = closure.rehydrate(formatterChoice, this, this)
         code.resolveStrategy = Closure.DELEGATE_ONLY
         code()
@@ -253,11 +251,10 @@ trait BaseMuleGroovyTrait {
     }
 
     def mockGeneric(MockingConfiguration mockingConfiguration,
-                    RuntimeBridgeTestSide muleContext,
+                    RuntimeBridgeTestSide bridge,
                     String connectorName,
                     @DelegatesTo(StandardRequestResponse) Closure closure) {
-        def formatterChoice = new GenericRequestResponseChoiceImpl(muleContext,
-                                                                   muleContext)
+        def formatterChoice = new GenericRequestResponseChoiceImpl(bridge)
         def code = closure.rehydrate(formatterChoice, this, this)
         code.resolveStrategy = Closure.DELEGATE_ONLY
         code()

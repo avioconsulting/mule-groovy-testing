@@ -6,6 +6,9 @@ interface TransformingEventFactory {
     EventWrapper getMuleEventWithPayload(Object payload,
                                          EventWrapper rewriteEvent)
 
+    EventWrapper getMuleEventWithAttributes(EventWrapper rewriteEvent,
+                                            Map attributes)
+
     EventWrapper getMuleEventWithPayload(Object payload,
                                          EventWrapper rewriteEvent,
                                          Map attributes)

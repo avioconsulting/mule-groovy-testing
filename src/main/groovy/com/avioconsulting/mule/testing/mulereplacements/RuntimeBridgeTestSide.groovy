@@ -1,15 +1,13 @@
 package com.avioconsulting.mule.testing.mulereplacements
 
 import com.avioconsulting.mule.testing.InvokerEventFactory
-import com.avioconsulting.mule.testing.MessageFactory
 import com.avioconsulting.mule.testing.TransformingEventFactory
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.*
 
 class RuntimeBridgeTestSide implements
         InvokerEventFactory,
         TransformingEventFactory,
-        IFetchAppClassLoader,
-        MessageFactory {
+        IFetchAppClassLoader {
     private final Object runtimeBridgeMuleSide
 
     String getArtifactName() {
@@ -74,7 +72,6 @@ class RuntimeBridgeTestSide implements
                                          EventWrapper rewriteEvent,
                                          String mediaType,
                                          Map attributes) {
-
         def message = new MessageWrapperImpl(payload,
                                              runtimeBridgeMuleSide,
                                              mediaType,
@@ -103,28 +100,6 @@ class RuntimeBridgeTestSide implements
                                 rewriteEvent,
                                 mediaType,
                                 attributes)
-    }
-
-    @Override
-    MessageWrapper buildMessage(Object payload) {
-        new MessageWrapperImpl(payload,
-                               runtimeBridgeMuleSide)
-    }
-
-    @Override
-    MessageWrapper buildMessage(ReturnWrapper returnWrapper) {
-        new MessageWrapperImpl(returnWrapper.payload,
-                               runtimeBridgeMuleSide,
-                               returnWrapper.mediaType)
-    }
-
-    @Override
-    MessageWrapper withNewAttributes(MessageWrapper existingMessage,
-                                     Map attributes) {
-        new MessageWrapperImpl(existingMessage.payload,
-                               runtimeBridgeMuleSide,
-                               existingMessage.mimeType,
-                               attributes)
     }
 
     def dispose() {

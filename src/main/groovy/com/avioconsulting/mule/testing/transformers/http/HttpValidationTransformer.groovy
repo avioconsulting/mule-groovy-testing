@@ -1,9 +1,8 @@
 package com.avioconsulting.mule.testing.transformers.http
 
-import com.avioconsulting.mule.testing.MessageFactory
+import com.avioconsulting.mule.testing.TransformingEventFactory
 import com.avioconsulting.mule.testing.mulereplacements.MuleMessageTransformer
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
-import com.avioconsulting.mule.testing.mulereplacements.wrappers.MockEventWrapper
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.connectors.HttpRequesterInfo
 import com.avioconsulting.mule.testing.transformers.IHaveStateToReset
 
@@ -11,21 +10,20 @@ class HttpValidationTransformer implements
         IHaveStateToReset,
         MuleMessageTransformer<HttpRequesterInfo> {
     private Integer httpReturnCode
-    private final MessageFactory messageFactory
+    private final TransformingEventFactory transformingEventFactory
 
-    HttpValidationTransformer(MessageFactory messageFactory) {
-        this.messageFactory = messageFactory
+    HttpValidationTransformer(TransformingEventFactory transformingEventFactory) {
+        this.transformingEventFactory = transformingEventFactory
         reset()
     }
 
     EventWrapper transform(EventWrapper muleEvent,
                            HttpRequesterInfo connectorInfo) {
-        assert muleEvent instanceof MockEventWrapper
-        def message = messageFactory.withNewAttributes(muleEvent.message,
-                                                       [
-                                                               'http.status': this.httpReturnCode
-                                                       ])
-        muleEvent.changeMessage(message)
+        def attributes = [
+                'http.status': this.httpReturnCode
+        ]
+        muleEvent = transformingEventFactory.getMuleEventWithAttributes(muleEvent,
+                                                                        attributes)
         if (!connectorInfo.validationEnabled) {
             return muleEvent
         }
