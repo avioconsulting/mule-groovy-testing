@@ -50,32 +50,6 @@ class HttpTest extends
     }
 
     @Test
-    void mocksProperly_raw_no_return_wrapper() {
-        // arrange
-        mockRestHttpCall('SomeSystem Call') {
-            raw {
-                whenCalledWith { MessageWrapper incoming ->
-                    JsonOutput.toJson([reply: 456])
-                }
-            }
-        }
-
-        // act
-        def result = shouldFail {
-            runFlow('restRequest') {
-                json {
-                    inputPayload([foo: 123])
-                }
-            }
-        }
-
-        // assert
-        assertThat result.message,
-                   is(containsString("When using 'raw', you need to return a ReturnWrapper object so that the media/mime type is known"))
-    }
-
-
-    @Test
     void mocksProperly_raw() {
         // arrange
         MessageWrapper stuff = null

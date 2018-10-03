@@ -40,9 +40,14 @@ class RawFormatterImpl<T extends ConnectorInfo> implements
             @Override
             EventWrapper transformOutput(Object inputMessage,
                                          EventWrapper originalMuleEvent) {
-                assert inputMessage instanceof ReturnWrapper : "When using 'raw', you need to return a ReturnWrapper object so that the media/mime type is known. You returned ${inputMessage.class}"
-                transformingEventFactory.getMuleEventWithPayload(inputMessage.payload,
-                                                                 inputMessage.mediaType,
+                def payload = inputMessage
+                String mediaType = null
+                if (inputMessage instanceof ReturnWrapper) {
+                    payload = inputMessage.payload
+                    mediaType = inputMessage.mediaType
+                }
+                transformingEventFactory.getMuleEventWithPayload(payload,
+                                                                 mediaType,
                                                                  originalMuleEvent)
             }
         }
