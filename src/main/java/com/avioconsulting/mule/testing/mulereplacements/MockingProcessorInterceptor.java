@@ -42,15 +42,11 @@ public class MockingProcessorInterceptor implements ProcessorInterceptor {
 
     private void executeMock(ComponentLocation location,
                              InterceptionEvent event,
-                             Map<String, ProcessorParameterValue> parameters) {
-        try {
-            doMockInvocationMethod.invoke(mockingConfiguration,
-                                          location,
-                                          event,
-                                          parameters);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+                             Map<String, ProcessorParameterValue> parameters) throws InvocationTargetException, IllegalAccessException {
+        doMockInvocationMethod.invoke(mockingConfiguration,
+                                      location,
+                                      event,
+                                      parameters);
     }
 
     @Override
@@ -65,14 +61,13 @@ public class MockingProcessorInterceptor implements ProcessorInterceptor {
                             event,
                             parameters);
                 return action.skip();
-            } catch (Throwable t) {
+            } catch (InvocationTargetException cause) {
                 // need to unwrap our reflection based Mule exceptions
-                Throwable cause = t.getCause();
-                if (!(cause instanceof InvocationTargetException)) {
-                    return action.fail(new Exception("Expected exception cause to be a InvocationTargetException but it was: " + cause.getClass().getName()));
-                }
-                Throwable actualException = ((InvocationTargetException) cause).getTargetException();
+                Throwable actualException = cause.getTargetException();
                 return action.fail(actualException);
+            } catch (IllegalAccessException e) {
+                throw new RuntimeException("Should not have had a reflection problem but did",
+                                           e);
             }
         }
         return action.proceed();
