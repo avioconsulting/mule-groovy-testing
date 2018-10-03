@@ -1,6 +1,5 @@
 package com.avioconsulting.mule.testing.transformers.http
 
-
 import com.avioconsulting.mule.testing.mulereplacements.MuleMessageTransformer
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.connectors.HttpRequesterInfo
@@ -32,19 +31,10 @@ class HttpConnectorErrorTransformer implements
             return muleEvent
         }
         if (triggerConnectException) {
-            def muleClassLoader = muleEvent.muleClassLoader
-            def exceptionClass = muleClassLoader.loadClass('org.mule.extension.http.api.error.HttpRequestFailedException')
-            def messageClass = muleClassLoader.loadClass('org.mule.runtime.api.i18n.I18nMessage')
-            def msg = messageClass.newInstance("HTTP someMethod failed.",
-                                               -1)
-            // interceptor/action/processor/extensionModel might be a good way to get ahold of this
-            def errorTypeDefinitionClass = muleClassLoader.loadClass('org.mule.runtime.module.extension.internal.loader.enricher.ModuleErrors')
-            def connectivityError = errorTypeDefinitionClass.enumConstants.find { c ->
-                c.toString() == 'CONNECTIVITY'
-            }
-            def exception = exceptionClass.newInstance(msg,
-                                                       new ConnectException('could not reach HTTP server'),
-                                                       connectivityError)
+            // the correct error won't be lookup unless the classloader matches
+            def exceptionKlass = muleEvent.muleClassLoader.loadClass('org.mule.runtime.api.connection.ConnectionException')
+            def exception = exceptionKlass.newInstance('could not reach',
+                                                       new ConnectException('could not reach HTTP server'))
             throw exception
         }
         if (triggerTimeoutException) {
