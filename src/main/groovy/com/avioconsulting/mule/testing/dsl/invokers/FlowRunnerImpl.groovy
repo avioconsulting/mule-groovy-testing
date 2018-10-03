@@ -84,7 +84,7 @@ class FlowRunnerImpl implements
         code()
         def event = invoker.getEvent()
         if (withInputEvent) {
-            withInputEvent(event)
+            event = withInputEvent(event)
         }
         event
     }

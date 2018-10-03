@@ -31,7 +31,8 @@ class WithInputEventTest extends
             }
 
             withInputEvent { EventWrapper inputEvent ->
-                inputEvent.setFlowVariable('foo', 123)
+                inputEvent.withVariable('foo',
+                                        123)
             }
         } as SampleJacksonOutput
 

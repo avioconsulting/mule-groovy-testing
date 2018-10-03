@@ -25,14 +25,17 @@ class RuntimeBridgeTestSide implements
         def muleFlowOptional = runtimeBridgeMuleSide.lookupByName(flowName)
         assert muleFlowOptional.isPresent(): "Flow with name '${flowName}' was not found. Are you using the right flow name?"
         def muleFlow = muleFlowOptional.get()
-        new FlowWrapper(muleFlow.name, muleFlow)
+        new FlowWrapper(muleFlow.name,
+                        muleFlow,
+                        runtimeBridgeMuleSide)
     }
 
     private EventWrapper getMuleEvent(MessageWrapper message, String flowName) {
         assert message instanceof MessageWrapperImpl
         def muleEvent = runtimeBridgeMuleSide.getNewEvent(message.muleMessage,
                                                           flowName)
-        new EventWrapperImpl(muleEvent)
+        new EventWrapperImpl(muleEvent,
+                             runtimeBridgeMuleSide)
     }
 
     @Override
@@ -51,6 +54,8 @@ class RuntimeBridgeTestSide implements
         assert false: 'Not yet implemented'
     }
 
+    // TODO: Get rid of this, just use direct stuff in EventWrapperImpl since it now has the bridge
+    @Deprecated
     @Override
     EventWrapper getMuleEventWithPayload(Object payload,
                                          String mediaType,
@@ -61,6 +66,8 @@ class RuntimeBridgeTestSide implements
                                 [:])
     }
 
+    // TODO: Get rid of this, just use direct stuff in EventWrapperImpl since it now has the bridge
+    @Deprecated
     @Override
     EventWrapper getMuleEventWithAttributes(EventWrapper rewriteEvent,
                                             Map attributes) {
@@ -71,6 +78,8 @@ class RuntimeBridgeTestSide implements
                                 attributes)
     }
 
+    // TODO: Get rid of this, just use direct stuff in EventWrapperImpl since it now has the bridge
+    @Deprecated
     @Override
     EventWrapper getMuleEventWithPayload(Object payload,
                                          EventWrapper rewriteEvent,
@@ -81,10 +90,11 @@ class RuntimeBridgeTestSide implements
                                              mediaType,
                                              attributes)
         assert rewriteEvent instanceof EventWrapperImpl
-        rewriteEvent.createNewEventFromOld(runtimeBridgeMuleSide,
-                                           message)
+        rewriteEvent.createNewEventFromOld(message)
     }
 
+    // TODO: Get rid of this, just use direct stuff in EventWrapperImpl since it now has the bridge
+    @Deprecated
     @Override
     EventWrapper getStreamedMuleEventWithPayload(String payload,
                                                  EventWrapper rewriteEvent,

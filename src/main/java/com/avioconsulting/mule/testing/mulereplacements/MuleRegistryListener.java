@@ -5,6 +5,7 @@ import org.mule.runtime.api.config.custom.CustomizationService;
 import org.mule.runtime.api.deployment.management.ComponentInitialStateManager;
 import org.mule.runtime.module.deployment.api.DeploymentListener;
 
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,7 +25,19 @@ public class MuleRegistryListener implements DeploymentListener {
     @Override
     public void onArtifactInitialised(String artifactName,
                                       Registry registry) {
-        this.runtimeBridges.put(artifactName, new RuntimeBridgeMuleSide(registry));
+        RuntimeBridgeMuleSide bridge = new RuntimeBridgeMuleSide(registry);
+        this.runtimeBridges.put(artifactName, bridge);
+        // it's handy for our mocking config to have access to the runtime bridge object
+        Object mockingConfiguration = mockingConfigurations.get(artifactName);
+        try {
+            Class<?> mockingConfigClass = mockingConfiguration.getClass();
+            Method setter = mockingConfigClass.getDeclaredMethod("setRuntimeBridgeMuleSide",
+                                                                 Object.class);
+            setter.invoke(mockingConfiguration,
+                          bridge);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     // this will run first before onArtifactInitialised does. we use it to tweak some services

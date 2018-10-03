@@ -5,6 +5,7 @@ import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapperImp
 class MockingConfiguration {
     private final Map<String, MuleMessageTransformer> mocks = [:]
     private final List<String> keepListenersOnForTheseFlows
+    Object runtimeBridgeMuleSide
 
     MockingConfiguration(List<String> keepListenersOnForTheseFlows) {
         this.keepListenersOnForTheseFlows = keepListenersOnForTheseFlows
@@ -39,7 +40,8 @@ class MockingConfiguration {
         def params = (parameters as Map).collectEntries { key, value ->
             [key, value.resolveValue()]
         }
-        def event = new EventWrapperImpl(interceptionEvent)
+        def event = new EventWrapperImpl(interceptionEvent,
+                                         this.runtimeBridgeMuleSide)
         def factory = new ConnectorInfoFactory()
         def connectorInfo = factory.getConnectorInfo(componentLocation.fileName.get() as String,
                                                      componentLocation.lineInFile.get() as Integer,

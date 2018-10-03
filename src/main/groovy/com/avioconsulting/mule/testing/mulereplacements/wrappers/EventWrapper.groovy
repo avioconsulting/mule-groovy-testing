@@ -4,4 +4,7 @@ interface EventWrapper {
     MessageWrapper getMessage()
 
     String getMessageAsString()
+
+    EventWrapper withVariable(String variableName,
+                              Object value)
 }

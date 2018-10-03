@@ -6,13 +6,16 @@ class FlowWrapper extends
         ConnectorInfo {
     String name
     private final Object nativeMuleObject
+    private final Object runtimeBridgeMuleSide
 
     // TODO: Better design
     FlowWrapper(String name,
-                Object nativeMuleObject) {
+                Object nativeMuleObject,
+                Object runtimeBridgeMuleSide) {
         super(getComponentLocationField(nativeMuleObject, 'fileName') as String,
               getComponentLocationField(nativeMuleObject, 'lineInFile') as Integer,
               [:])
+        this.runtimeBridgeMuleSide = runtimeBridgeMuleSide
         this.nativeMuleObject = nativeMuleObject
         this.name = name
     }
@@ -31,6 +34,7 @@ class FlowWrapper extends
     EventWrapper process(EventWrapper input) {
         assert input instanceof EventWrapperImpl
         def muleEvent = nativeMuleObject.process(input.nativeMuleEvent)
-        new EventWrapperImpl(muleEvent)
+        new EventWrapperImpl(muleEvent,
+                             runtimeBridgeMuleSide)
     }
 }

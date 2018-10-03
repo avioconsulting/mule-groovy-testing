@@ -47,6 +47,16 @@ public class RuntimeBridgeMuleSide {
                 .build();
     }
 
+    public Object getEventFromOldEvent(Object muleMessage,
+                                       Object oldEvent,
+                                       String variableName,
+                                       Object variableValue) {
+        return CoreEvent.builder((CoreEvent) oldEvent)
+                .addVariable(variableName, variableValue)
+                .message((Message) muleMessage)
+                .build();
+    }
+
     public Object getMuleStreamCursor(Object muleEvent,
                                       InputStream stream) {
         // TODO: See if we can hold on to these and speed lookup?
