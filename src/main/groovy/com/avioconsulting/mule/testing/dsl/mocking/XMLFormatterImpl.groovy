@@ -34,7 +34,8 @@ class XMLFormatterImpl<T extends ConnectorInfo> implements
 
     def whenCalledWithMapAsXml(Closure closure) {
         transformer = new XMLMapTransformer(closure,
-                                            payloadValidator)
+                                            payloadValidator,
+                                            transformingEventFactory)
     }
 
     def whenCalledWithGroovyXmlParser(Closure closure) {

@@ -1,5 +1,6 @@
 package com.avioconsulting.mule.testing.transformers.xml
 
+import com.avioconsulting.mule.testing.TransformingEventFactory
 import com.avioconsulting.mule.testing.mulereplacements.MuleMessageTransformer
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.ConnectorInfo
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
@@ -15,8 +16,9 @@ class XMLMapTransformer<T extends ConnectorInfo> extends
     private final Closure closure
 
     XMLMapTransformer(Closure closure,
-                      IPayloadValidator<T> payloadValidator) {
-        super(payloadValidator)
+                      IPayloadValidator<T> payloadValidator,
+                      TransformingEventFactory transformingEventFactory) {
+        super(payloadValidator, transformingEventFactory)
         this.closure = closure
     }
 
@@ -36,8 +38,7 @@ class XMLMapTransformer<T extends ConnectorInfo> extends
             assert result instanceof Map
             xmlReply = generateXmlFromMap(result)
         }
-        def reader = new StringReader(xmlReply)
-        this.xmlMessageBuilder.build(reader,
+        this.xmlMessageBuilder.build(xmlReply,
                                      incomingEvent,
                                      200)
     }
