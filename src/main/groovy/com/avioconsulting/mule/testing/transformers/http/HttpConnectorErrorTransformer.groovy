@@ -37,6 +37,7 @@ class HttpConnectorErrorTransformer implements
             def messageClass = muleClassLoader.loadClass('org.mule.runtime.api.i18n.I18nMessage')
             def msg = messageClass.newInstance("HTTP someMethod failed.",
                                                -1)
+            // interceptor/action/processor/extensionModel might be a good way to get ahold of this
             def errorTypeDefinitionClass = muleClassLoader.loadClass('org.mule.runtime.module.extension.internal.loader.enricher.ModuleErrors')
             def connectivityError = errorTypeDefinitionClass.enumConstants.find { c ->
                 c.toString() == 'CONNECTIVITY'
