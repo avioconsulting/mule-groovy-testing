@@ -1,7 +1,6 @@
 package com.avioconsulting.mule.testing.mulereplacements
 
-
-import com.avioconsulting.mule.testing.mulereplacements.wrappers.MockEventWrapperImpl
+import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapperImpl
 
 class MockingConfiguration {
     private final Map<String, MuleMessageTransformer> mocks = [:]
@@ -40,15 +39,13 @@ class MockingConfiguration {
         def params = (parameters as Map).collectEntries { key, value ->
             [key, value.resolveValue()]
         }
-        def event = new MockEventWrapperImpl(interceptionEvent)
+        def event = new EventWrapperImpl(interceptionEvent)
         def factory = new ConnectorInfoFactory()
         def connectorInfo = factory.getConnectorInfo(componentLocation.fileName.get() as String,
                                                      componentLocation.lineInFile.get() as Integer,
                                                      params)
-        def result = mockProcess.transform(event,
-                                           connectorInfo)
-        assert result == event: "Expected the same event to be passed along"
-        result
+        mockProcess.transform(event,
+                              connectorInfo)
     }
 
     boolean shouldFlowListenerBeEnabled(String flowName) {

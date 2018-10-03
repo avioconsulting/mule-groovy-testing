@@ -47,23 +47,24 @@ class RuntimeBridgeTestSide implements
     @Override
     EventWrapper getMuleEventWithPayload(Object payload,
                                          String flowName,
-                                         Map properties) {
+                                         Map attributes) {
         assert false: 'NIE'
     }
 
     @Override
     EventWrapper getMuleEventWithPayload(Object payload,
+                                         String mediaType,
                                          EventWrapper rewriteEvent) {
         assert false: 'NIE'
     }
 
     @Override
-    EventWrapper getMuleEventWithPayload(Object payload,
-                                         EventWrapper rewriteEvent,
-                                         Map attributes) {
-        getMuleEventWithPayload(payload,
+    EventWrapper getMuleEventWithAttributes(EventWrapper rewriteEvent,
+                                            Map attributes) {
+        def existingMessage = rewriteEvent.message
+        getMuleEventWithPayload(existingMessage.payload,
                                 rewriteEvent,
-                                null,
+                                existingMessage.mimeType,
                                 attributes)
     }
 
@@ -76,15 +77,9 @@ class RuntimeBridgeTestSide implements
                                              runtimeBridgeMuleSide,
                                              mediaType,
                                              attributes)
-        // TODO: Might be able to more strongly type this at some point and avoid the if
-        if (rewriteEvent instanceof MockEventWrapper) {
-            // we can't create mock events, only mutate them
-            rewriteEvent.changeMessage(message)
-            return rewriteEvent
-        }
-        def muleEvent = runtimeBridgeMuleSide.getEventFromOldEvent(message.getMuleMessage(),
-                                                                   rewriteEvent.getNativeMuleEvent())
-        new EventWrapperImpl(muleEvent)
+        assert rewriteEvent instanceof EventWrapperImpl
+        rewriteEvent.createNewEventFromOld(runtimeBridgeMuleSide,
+                                           message)
     }
 
     @Override
