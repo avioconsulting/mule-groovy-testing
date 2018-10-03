@@ -150,6 +150,7 @@ class MuleEngineContainer {
             dep.bundleUri.toURL()
         }
         embeddedUrls.add(embeddedBundleImplDescriptor.bundleUri.toURL())
+        // need to be able to at least load our registry listener
         embeddedUrls.add(MuleRegistryListener.protectionDomain.codeSource.location)
         new URLClassLoader(embeddedUrls.toArray(new URL[0]),
                            parentClassLoader)
