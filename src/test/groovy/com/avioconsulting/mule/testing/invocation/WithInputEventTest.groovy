@@ -4,14 +4,16 @@ import com.avioconsulting.mule.testing.OverrideConfigList
 import com.avioconsulting.mule.testing.SampleJacksonInput
 import com.avioconsulting.mule.testing.SampleJacksonOutput
 import com.avioconsulting.mule.testing.junit.BaseJunitTest
+import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
 import org.junit.Test
-import org.mule.runtime.api.event.Event
 
 import static org.hamcrest.Matchers.equalTo
 import static org.hamcrest.Matchers.is
 import static org.junit.Assert.assertThat
 
-class WithInputEventTest extends BaseJunitTest implements OverrideConfigList {
+class WithInputEventTest extends
+        BaseJunitTest implements
+        OverrideConfigList {
     List<String> getConfigResources() {
         ['input_message_test.xml']
     }
@@ -28,7 +30,7 @@ class WithInputEventTest extends BaseJunitTest implements OverrideConfigList {
                 inputPayload(input, SampleJacksonOutput)
             }
 
-            withInputEvent { Event inputEvent ->
+            withInputEvent { EventWrapper inputEvent ->
                 inputEvent.setFlowVariable('foo', 123)
             }
         } as SampleJacksonOutput
