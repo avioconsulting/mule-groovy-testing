@@ -1,6 +1,6 @@
 package com.avioconsulting.mule.testing.mulereplacements
 
-import com.avioconsulting.mule.testing.mulereplacements.wrappers.MockEventWrapper
+
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.MockEventWrapperImpl
 
 class MockingConfiguration {
@@ -42,12 +42,14 @@ class MockingConfiguration {
         }
         def event = new MockEventWrapperImpl(interceptionEvent)
         def factory = new ConnectorInfoFactory()
+        def id = componentLocation.getComponentIdentifier().getIdentifier()
         def connectorInfo = factory.getConnectorInfo(componentLocation.fileName.get() as String,
                                                      componentLocation.lineInFile.get() as Integer,
-                                                     params)
+                                                     params,
+                                                     id)
         def result = mockProcess.transform(event,
                                            connectorInfo)
-        assert result == event : "Expected the same event to be passed along"
+        assert result == event: "Expected the same event to be passed along"
         result
     }
 

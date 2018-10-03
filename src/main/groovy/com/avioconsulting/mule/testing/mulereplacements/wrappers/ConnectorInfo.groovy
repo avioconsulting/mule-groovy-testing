@@ -5,10 +5,13 @@ class ConnectorInfo {
     private final Map<String, Object> parameters
     private final String fileName
     private final int lineNumber
+    private final Object componentId
 
     ConnectorInfo(String fileName,
                   Integer lineNumber,
-                  Map<String, Object> parameters) {
+                  Map<String, Object> parameters,
+                  Object componentId) {
+        this.componentId = componentId
         this.lineNumber = lineNumber
         this.fileName = fileName
         this.parameters = parameters
@@ -16,6 +19,10 @@ class ConnectorInfo {
 
     Map<String, Object> getParameters() {
         this.parameters
+    }
+
+    Object getComponentId() {
+        return componentId
     }
 
     @Override

@@ -10,18 +10,23 @@ class FlowWrapper extends
     // TODO: Better design
     FlowWrapper(String name,
                 Object nativeMuleObject) {
-        super(getComponentLocation(nativeMuleObject, 'fileName') as String,
-              getComponentLocation(nativeMuleObject, 'lineInFile') as Integer,
-              [:])
+        super(getComponentLocationField(nativeMuleObject, 'fileName') as String,
+              getComponentLocationField(nativeMuleObject, 'lineInFile') as Integer,
+              [:],
+              getComponentLocation(nativeMuleObject).componentIdentifier.identifier)
         this.nativeMuleObject = nativeMuleObject
         this.name = name
     }
 
-    private static Object getComponentLocation(Object nativeMuleObject,
-                                               String field) {
-        def componentLocation = nativeMuleObject.annotations[new QName('mule',
-                                                                       'COMPONENT_LOCATION')]
+    private static Object getComponentLocationField(Object nativeMuleObject,
+                                                    String field) {
+        def componentLocation = getComponentLocation(nativeMuleObject)
         componentLocation[field].get()
+    }
+
+    private static Object getComponentLocation(Object nativeMuleObject) {
+        nativeMuleObject.annotations[new QName('mule',
+                                               'COMPONENT_LOCATION')]
     }
 
     EventWrapper process(EventWrapper input) {

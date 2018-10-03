@@ -230,6 +230,7 @@ trait BaseMuleGroovyTrait {
                          String connectorName,
                          @DelegatesTo(HttpRequestResponseChoice) Closure closure) {
         def formatterChoice = new HttpRequestResponseChoiceImpl(muleContext,
+                                                                muleContext,
                                                                 muleContext)
         def code = closure.rehydrate(formatterChoice, this, this)
         code.resolveStrategy = Closure.DELEGATE_ONLY

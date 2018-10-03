@@ -1,10 +1,14 @@
 package com.avioconsulting.mule.testing.mulereplacements;
 
 import org.mule.runtime.api.artifact.Registry;
+import org.mule.runtime.api.component.ComponentIdentifier;
 import org.mule.runtime.api.component.location.ComponentLocation;
 import org.mule.runtime.api.event.EventContext;
+import org.mule.runtime.api.exception.ErrorTypeRepository;
+import org.mule.runtime.api.message.ErrorType;
 import org.mule.runtime.api.message.Message;
 import org.mule.runtime.api.metadata.MediaType;
+import org.mule.runtime.core.api.MuleContext;
 import org.mule.runtime.core.api.construct.Flow;
 import org.mule.runtime.core.api.event.CoreEvent;
 import org.mule.runtime.core.api.streaming.StreamingManager;
@@ -69,7 +73,7 @@ public class RuntimeBridgeMuleSide {
             // We have to find a way to bridge these 2 so that we can create streams from mocks
             return new CoreInterceptionEvent((DefaultInterceptionEvent) muleEvent);
         }
-        throw new RuntimeException("Do not know how to handle "+muleEvent.getClass().getName());
+        throw new RuntimeException("Do not know how to handle " + muleEvent.getClass().getName());
     }
 
     // called from RuntimeBridgeTestSide
@@ -99,5 +103,31 @@ public class RuntimeBridgeMuleSide {
         return CoreEvent.builder(context)
                 .message((Message) muleMessage)
                 .build();
+    }
+
+    private MuleContext getMuleContext() {
+        Optional<MuleContext> lookedUp = registry.lookupByType(MuleContext.class);
+        if (!lookedUp.isPresent()) {
+            throw new RuntimeException("Only way we know how to get the app's classloader currently is through its MuleContext");
+        }
+        return lookedUp.get();
+    }
+
+    public ClassLoader getAppClassloader() {
+        return getMuleContext().getExecutionClassLoader();
+    }
+
+    public Object lookupErrorType(ComponentIdentifier id,
+                                  String errorType) {
+        ErrorTypeRepository errorTypeRepo = getMuleContext().getErrorTypeRepository();
+        ComponentIdentifier errorTypeId = ComponentIdentifier.builder()
+                .namespace(id.getNamespace().toUpperCase())
+                .name(errorType.toUpperCase())
+                .build();
+        Optional<ErrorType> value = errorTypeRepo.getErrorType(errorTypeId);
+        if (!value.isPresent()) {
+            throw new RuntimeException("Unable to lookup error type! "+errorTypeId.toString());
+        }
+        return value.get();
     }
 }

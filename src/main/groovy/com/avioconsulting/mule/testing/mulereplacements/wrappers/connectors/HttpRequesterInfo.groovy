@@ -13,10 +13,12 @@ class HttpRequesterInfo extends
 
     HttpRequesterInfo(String fileName,
                       Integer lineNumber,
-                      Map<String, Object> parameters) {
+                      Map<String, Object> parameters,
+                      Object componentId) {
         super(fileName,
               lineNumber,
-              parameters)
+              parameters,
+              componentId)
         this.method = parameters['method'] as String
         def muleValidator = parameters['responseValidationSettings'].responseValidator
         this.validationEnabled = muleValidator != null

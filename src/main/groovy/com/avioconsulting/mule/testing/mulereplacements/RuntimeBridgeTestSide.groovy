@@ -8,6 +8,7 @@ import com.avioconsulting.mule.testing.mulereplacements.wrappers.*
 class RuntimeBridgeTestSide implements
         InvokerEventFactory,
         TransformingEventFactory,
+        IFetchAppClassLoader,
         MessageFactory {
     private final Object runtimeBridgeMuleSide
 
@@ -128,5 +129,15 @@ class RuntimeBridgeTestSide implements
 
     def dispose() {
         runtimeBridgeMuleSide.dispose()
+    }
+
+    ClassLoader getAppClassloader() {
+        runtimeBridgeMuleSide.getAppClassloader()
+    }
+
+    def lookupErrorType(componentId,
+                        String errorType) {
+        runtimeBridgeMuleSide.lookupErrorType(componentId,
+                                              errorType)
     }
 }
