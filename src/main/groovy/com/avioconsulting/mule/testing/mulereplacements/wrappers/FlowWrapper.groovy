@@ -12,8 +12,7 @@ class FlowWrapper extends
                 Object nativeMuleObject) {
         super(getComponentLocationField(nativeMuleObject, 'fileName') as String,
               getComponentLocationField(nativeMuleObject, 'lineInFile') as Integer,
-              [:],
-              getComponentLocation(nativeMuleObject).componentIdentifier.identifier)
+              [:])
         this.nativeMuleObject = nativeMuleObject
         this.name = name
     }

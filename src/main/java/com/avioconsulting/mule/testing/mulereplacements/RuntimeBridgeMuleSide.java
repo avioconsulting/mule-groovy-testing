@@ -1,11 +1,8 @@
 package com.avioconsulting.mule.testing.mulereplacements;
 
 import org.mule.runtime.api.artifact.Registry;
-import org.mule.runtime.api.component.ComponentIdentifier;
 import org.mule.runtime.api.component.location.ComponentLocation;
 import org.mule.runtime.api.event.EventContext;
-import org.mule.runtime.api.exception.ErrorTypeRepository;
-import org.mule.runtime.api.message.ErrorType;
 import org.mule.runtime.api.message.Message;
 import org.mule.runtime.api.metadata.MediaType;
 import org.mule.runtime.core.api.MuleContext;
@@ -115,19 +112,5 @@ public class RuntimeBridgeMuleSide {
 
     public ClassLoader getAppClassloader() {
         return getMuleContext().getExecutionClassLoader();
-    }
-
-    public Object lookupErrorType(ComponentIdentifier id,
-                                  String errorType) {
-        ErrorTypeRepository errorTypeRepo = getMuleContext().getErrorTypeRepository();
-        ComponentIdentifier errorTypeId = ComponentIdentifier.builder()
-                .namespace(id.getNamespace().toUpperCase())
-                .name(errorType.toUpperCase())
-                .build();
-        Optional<ErrorType> value = errorTypeRepo.getErrorType(errorTypeId);
-        if (!value.isPresent()) {
-            throw new RuntimeException("Unable to lookup error type! "+errorTypeId.toString());
-        }
-        return value.get();
     }
 }

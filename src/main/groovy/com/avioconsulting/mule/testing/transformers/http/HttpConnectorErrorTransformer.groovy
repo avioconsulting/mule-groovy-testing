@@ -35,10 +35,6 @@ class HttpConnectorErrorTransformer implements
         }
         if (triggerConnectException) {
             def appClassLoader = fetchAppClassLoader.appClassloader
-            // TODO: We didn't need the component Id stuff, remove it
-            def componentId = connectorInfo.componentId
-            def et = fetchAppClassLoader.lookupErrorType(componentId,
-                                                         'connectivity')
             def exceptionClass = appClassLoader.loadClass('org.mule.extension.http.api.error.HttpRequestFailedException')
             def messageClass = appClassLoader.loadClass('org.mule.runtime.api.i18n.I18nMessage')
             // TODO: Hard coded error message

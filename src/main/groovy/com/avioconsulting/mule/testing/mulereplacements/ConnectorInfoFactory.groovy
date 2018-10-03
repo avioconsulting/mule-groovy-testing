@@ -7,17 +7,14 @@ import com.avioconsulting.mule.testing.mulereplacements.wrappers.connectors.Http
 class ConnectorInfoFactory {
     ConnectorInfo getConnectorInfo(String fileName,
                                    Integer lineInFile,
-                                   Map params,
-                                   Object componentId) {
+                                   Map params) {
         if (params['requestBuilder']?.class?.name?.endsWith('HttpRequesterRequestBuilder')) {
             return new HttpRequesterInfo(fileName,
                                          lineInFile,
-                                         params,
-                                         componentId)
+                                         params)
         }
         new ConnectorInfo(fileName,
                           lineInFile,
-                          params,
-                          componentId)
+                          params)
     }
 }

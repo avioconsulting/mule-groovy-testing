@@ -42,11 +42,9 @@ class MockingConfiguration {
         }
         def event = new MockEventWrapperImpl(interceptionEvent)
         def factory = new ConnectorInfoFactory()
-        def id = componentLocation.getComponentIdentifier().getIdentifier()
         def connectorInfo = factory.getConnectorInfo(componentLocation.fileName.get() as String,
                                                      componentLocation.lineInFile.get() as Integer,
-                                                     params,
-                                                     id)
+                                                     params)
         def result = mockProcess.transform(event,
                                            connectorInfo)
         assert result == event: "Expected the same event to be passed along"

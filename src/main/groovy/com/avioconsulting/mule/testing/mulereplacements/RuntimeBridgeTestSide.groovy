@@ -134,10 +134,4 @@ class RuntimeBridgeTestSide implements
     ClassLoader getAppClassloader() {
         runtimeBridgeMuleSide.getAppClassloader()
     }
-
-    def lookupErrorType(componentId,
-                        String errorType) {
-        runtimeBridgeMuleSide.lookupErrorType(componentId,
-                                              errorType)
-    }
 }
