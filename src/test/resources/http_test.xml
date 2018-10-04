@@ -171,20 +171,6 @@ output application/json
         </ee:transform>
     </flow>
 
-    <flow name="nullEvent">
-        <!--<idempotent-message-filter idExpression="#[payload.get('foo').asText()]"/>-->
-        <ee:transform doc:name="Transform Message">
-            <ee:message>
-                <ee:set-payload><![CDATA[%dw 2.0
-output application/json
----
-{
-    key: payload.foo
-}]]></ee:set-payload>
-            </ee:message>
-        </ee:transform>
-    </flow>
-
     <flow name="queryParameters">
         <ee:transform doc:name="Transform Message">
             <ee:message>

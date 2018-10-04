@@ -3,14 +3,16 @@ package com.avioconsulting.mule.testing.invocation
 import com.avioconsulting.mule.testing.OverrideConfigList
 import com.avioconsulting.mule.testing.SampleJacksonInput
 import com.avioconsulting.mule.testing.junit.BaseJunitTest
+import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
 import org.junit.Test
-import org.mule.runtime.api.event.Event
 
 import static groovy.test.GroovyAssert.shouldFail
 import static org.hamcrest.Matchers.*
 import static org.junit.Assert.assertThat
 
-class OutputEventHttpStatusTest extends BaseJunitTest implements OverrideConfigList {
+class OutputEventHttpStatusTest extends
+        BaseJunitTest implements
+        OverrideConfigList {
     List<String> getConfigResources() {
         ['http_test.xml']
     }
@@ -18,7 +20,7 @@ class OutputEventHttpStatusTest extends BaseJunitTest implements OverrideConfigL
     @Test
     void getAccessToEvent() {
         // arrange
-        Event saveOutput = null
+        EventWrapper saveOutput = null
         def input = new SampleJacksonInput()
         input.foobar = 123
 
@@ -27,8 +29,7 @@ class OutputEventHttpStatusTest extends BaseJunitTest implements OverrideConfigL
             json {
                 inputPayload(input)
             }
-            disableContentTypeCheck()
-            withOutputEvent { Event output ->
+            withOutputEvent { EventWrapper output ->
                 saveOutput = output
             }
         }
@@ -51,7 +52,6 @@ class OutputEventHttpStatusTest extends BaseJunitTest implements OverrideConfigL
             json {
                 inputPayload(input)
             }
-            disableContentTypeCheck()
             withOutputHttpStatus { Integer status ->
                 httpStatus = status
             }
@@ -75,7 +75,6 @@ class OutputEventHttpStatusTest extends BaseJunitTest implements OverrideConfigL
                 json {
                     inputPayload(input)
                 }
-                disableContentTypeCheck()
                 withOutputHttpStatus {}
             }
         }
@@ -83,34 +82,5 @@ class OutputEventHttpStatusTest extends BaseJunitTest implements OverrideConfigL
         // assert
         assertThat result.message,
                    is(containsString('No HTTP status was returned from your flow. Did you forget?'))
-    }
-
-    @Test
-    void nullEvent() {
-        // arrange
-        def input = new SampleJacksonInput()
-        input.foobar = 123
-
-        // act
-        runFlow('nullEvent') {
-            json {
-                inputPayload(input)
-            }
-            disableContentTypeCheck()
-        }
-        def result = shouldFail {
-            runFlow('nullEvent') {
-                json {
-                    inputPayload(input)
-                }
-                disableContentTypeCheck()
-                withOutputHttpStatus {}
-            }
-        }
-
-        // assert
-        assertThat result.message,
-                   is(containsString(
-                           'A null event was returned (filter?) so No HTTP status was returned from your flow. With the real flow, an HTTP status of 200 will usually be set by default so this test is usually not required.'))
     }
 }
