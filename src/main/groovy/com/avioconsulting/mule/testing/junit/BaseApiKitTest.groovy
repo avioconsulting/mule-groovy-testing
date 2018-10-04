@@ -97,27 +97,36 @@ abstract class BaseApiKitTest extends
         urlParts.removeAll { part -> part == '' }
         def url = '/' + urlParts.join('/')
         logger.info "Setting http request path to ${url}..."
-        def props = [
-                'listener.path': httpListenerPath,
-                method         : method,
-                'relative.path': url,
-                'request.path' : url,
-                'request.uri'  : url,
+        def appClassLoader = runtimeBridge.appClassloader
+        def multiMapClass = appClassLoader.loadClass('org.mule.runtime.api.util.MultiMap')
+        def getMultiMap = { Map incoming ->
+            multiMapClass.newInstance(incoming)
+        }
+        def attrClass = appClassLoader.loadClass('org.mule.extension.http.api.HttpRequestAttributes')
+        queryParams = (queryParams ?: [:]).collectEntries { key, value ->
+            // everything needs to be a string to mimic real HTTP listener
+            [key.toString(), value.toString()]
+        }
+        def headers = [
+                host: "localhost:${System.getProperty(TEST_PORT_PROPERTY)}".toString()
         ]
-        if (queryParams) {
-            props['query.params'] = queryParams.collectEntries { key, value ->
-                // everything needs to be a string to mimic real HTTP listener
-                [key.toString(), value.toString()]
-            }
-        }
-        def httpProps = props.collectEntries { prop, value ->
-            ["http.${prop}".toString(), value]
-        }
-        httpProps['host'] = "localhost:${System.getProperty(TEST_PORT_PROPERTY)}".toString()
-        // TODO: Need to set these as attributes on the event (and confirm they are still valid)
-        httpProps.each { prop, value ->
-            message.setProperty(prop, value, PropertyScope.INBOUND)
-        }
-        // TODO: Return a fresh event
+        // public HttpRequestAttributes(MultiMap<String, String> headers, String listenerPath, String relativePath, String version, String scheme, String method, String requestPath, String requestUri, String queryString, MultiMap<String, String> queryParams, Map<String, String> uriParams, String remoteAddress, Certificate clientCertificate) {
+        //        this(headers, listenerPath, relativePath, version, scheme, method, requestPath, requestUri, queryString, queryParams, uriParams, "", remoteAddress, clientCertificate);
+        //    }
+        def attributes = attrClass.newInstance(getMultiMap(headers),
+                                               httpListenerPath,
+                                               url,
+                                               'HTTP/1.1',
+                                               'http',
+                                               method,
+                                               url,
+                                               url,
+                                               '', // query string
+                                               getMultiMap(queryParams),
+                                               [:], // uri params
+                                               '/remoteaddress',
+                                               null)
+        // TODO: Need to be able to work with non-map attributes
+        event.withNewAttributes(attributes)
     }
 }
