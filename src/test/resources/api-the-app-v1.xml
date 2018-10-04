@@ -29,7 +29,7 @@ http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/m
         <apikit:router config-ref="api-the-app-v1-config"
                        doc:name="APIkit Router"/>
     </flow>
-    <flow name="post:/resources:application/json:api-the-app-v1-config">
+    <flow name="post:\resources:application\json:api-the-app-v1-config">
         <ee:transform doc:name="Transform Message">
             <ee:message><ee:set-payload><![CDATA[%dw 2.0
 output application/json
@@ -39,7 +39,7 @@ output application/json
 }]]></ee:set-payload></ee:message>
         </ee:transform>
     </flow>
-    <flow name="get:/resources/{id}:api-the-app-v1-config">
+    <flow name="get:\resources\(id):api-the-app-v1-config">
         <ee:transform doc:name="Transform Message">
             <ee:message><ee:set-payload><![CDATA[%dw 2.0
 output application/json
@@ -49,7 +49,7 @@ output application/json
 }]]></ee:set-payload></ee:message>
         </ee:transform>
     </flow>
-    <flow name="get:/resources:api-the-app-v1-config">
+    <flow name="get:\resources:api-the-app-v1-config">
         <set-variable variableName="foo" value="#[message.inboundProperties.'http.query.params'.foo]"/>
         <set-variable variableName="bar" value="#[message.inboundProperties.'http.query.params'.bar]"/>
         <ee:transform doc:name="Transform Message">
