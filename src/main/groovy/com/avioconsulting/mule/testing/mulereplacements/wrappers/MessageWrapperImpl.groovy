@@ -15,7 +15,7 @@ class MessageWrapperImpl implements
                        String mediaType = null,
                        Object attributes = null) {
         def messageBuilder = runtimeBridgeMuleSide.messageBuilder
-        messageBuilder = messageBuilder.value(payload)
+        messageBuilder = payload != null && payload.getClass().name == 'org.mule.runtime.api.metadata.TypedValue' ? messageBuilder.payload(payload) : messageBuilder.value(payload)
         if (mediaType) {
             messageBuilder = messageBuilder.mediaType(runtimeBridgeMuleSide.getMediaType(mediaType))
         }
