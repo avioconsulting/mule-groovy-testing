@@ -1,4 +1,4 @@
-package com.avioconsulting.mule.testing.invocation
+package com.avioconsulting.mule.testing.invocation.listeners
 
 import com.avioconsulting.mule.testing.OverrideConfigList
 import com.avioconsulting.mule.testing.junit.BaseJunitTest
@@ -7,46 +7,16 @@ import org.junit.Ignore
 import org.junit.Test
 
 import static groovy.test.GroovyAssert.shouldFail
-import static org.hamcrest.Matchers.*
+import static org.hamcrest.Matchers.equalTo
+import static org.hamcrest.Matchers.is
 import static org.junit.Assert.assertThat
 import static org.junit.Assert.fail
 
 @Log4j2
-class ListenersDisabledTest extends BaseJunitTest implements OverrideConfigList {
-    private static final String TEST_PORT_PROPERTY = 'avio.test.http.port'
-    static int unusedPort = -1
-
-    @Override
-    Map getStartUpProperties() {
-        def properties = super.getStartUpProperties()
-        // have to have the listener running to use apikit
-        // http listener gets go
-        // ing before the properties object this method creates has had its values take effect
-        if (unusedPort == -1) {
-            unusedPort = findUnusedPort()
-            log.info 'Setting HTTP listener port to {}',
-                     unusedPort
-        }
-        properties.put(TEST_PORT_PROPERTY,
-                       unusedPort as String)
-        properties
-    }
-
-    static int findUnusedPort() {
-        (8088..8199).find { candidate ->
-            try {
-                def socket = new ServerSocket(candidate,
-                                              1,
-                                              InetAddress.loopbackAddress)
-                socket.close()
-                true
-            }
-            catch (IOException ignored) {
-                false
-            }
-        }
-    }
-
+class ListenersDisabledTest extends
+        BaseJunitTest implements
+        OverrideConfigList,
+        PortStuff {
     @Test
     void cant_access_url() {
         // arrange
