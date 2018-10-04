@@ -51,8 +51,8 @@ output application/json
         </ee:transform>
     </flow>
     <flow name="get:\resources:api-the-app-v1-config">
-        <set-variable variableName="foo" value="#[message.inboundProperties.'http.query.params'.foo]"/>
-        <set-variable variableName="bar" value="#[message.inboundProperties.'http.query.params'.bar]"/>
+        <set-variable variableName="foo" value="#[attributes.queryParams.foo]"/>
+        <set-variable variableName="bar" value="#[attributes.queryParams.bar]"/>
         <ee:transform doc:name="Transform Message">
             <ee:message><ee:set-payload><![CDATA[%dw 2.0
 output application/json
