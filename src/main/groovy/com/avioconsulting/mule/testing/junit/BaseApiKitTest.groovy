@@ -51,15 +51,6 @@ abstract class BaseApiKitTest extends
     }
 
     @Override
-    List<String> keepListenersOnForTheseFlows() {
-        // apikit complains unless these 2 are both open
-        ['main', 'console'].collect { suffix ->
-            // toString here to ensure we return Java string and not Groovy strings
-            "${fullApiName}-${suffix}".toString()
-        }
-    }
-
-    @Override
     Map<String, String> getConfigResourceSubstitutes() {
         ['global.xml': 'global-test.xml']
     }
