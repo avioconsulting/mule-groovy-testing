@@ -5,7 +5,7 @@ import org.apache.commons.lang.SystemUtils
 
 import java.security.MessageDigest
 
-// allow us to avoid the overhead of setting up mule-deploy.properties for each test
+// allow us to avoid the overhead of setting up mule-deploy-props-test-artifact.json for each test
 trait OverrideConfigList {
     static Map cachedClassLoaderModel
 

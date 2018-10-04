@@ -154,7 +154,10 @@ trait BaseMuleGroovyTrait {
     }
 
     List<String> getConfigResources() {
-        muleArtifactJson.configs
+        def subs = getConfigResourceSubstitutes()
+        muleArtifactJson.configs.findResults { String entry ->
+            subs.containsKey(entry) ? subs[entry] : entry
+        }
     }
 
     def runFlow(RuntimeBridgeTestSide muleContext,
