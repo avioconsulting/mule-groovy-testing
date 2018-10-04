@@ -147,10 +147,20 @@ trait BaseMuleGroovyTrait {
         new JsonSlurper().parse(file) as Map
     }
 
+    File getMuleArtifactPath() {
+        new File(muleArtifactDirectory, 'mule-artifact.json')
+    }
+
     Map getMuleArtifactJson() {
-        def file = new File(muleArtifactDirectory, 'mule-artifact.json')
+        def file = getMuleArtifactPath()
         assert file.exists(): "Could not find ${file}. Has the Mule Maven plugin built your project yet. If you are not going to create this file, override getMuleArtifactJson"
-        new JsonSlurper().parse(file) as Map
+        def map = new JsonSlurper().parse(file) as Map
+        def entirelyDifferentConfigList = getConfigResources()
+        if (entirelyDifferentConfigList) {
+            map.configs = entirelyDifferentConfigList
+        }
+        map.configs = substituteConfigResources(map.configs as List<String>)
+        map
     }
 
     String getArtifactName() {
@@ -158,8 +168,13 @@ trait BaseMuleGroovyTrait {
     }
 
     List<String> getConfigResources() {
+        // if null, framework will use list from artifact descriptor
+        null
+    }
+
+    List<String> substituteConfigResources(List<String> configs) {
         def subs = getConfigResourceSubstitutes()
-        muleArtifactJson.configs.findResults { String entry ->
+        configs.findResults { String entry ->
             subs.containsKey(entry) ? subs[entry] : entry
         }
     }

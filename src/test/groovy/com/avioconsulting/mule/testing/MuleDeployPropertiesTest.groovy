@@ -11,10 +11,9 @@ import static org.junit.Assert.assertThat
 
 class MuleDeployPropertiesTest extends
         BaseJunitTest {
-    Map getMuleArtifactJson() {
-        def file = new File('src/test/resources/mule-deploy-props-test-artifact.json')
-        assert file.exists(): "Could not find ${file}. Has the Mule Maven plugin built your project yet. If you are not going to create this file, override getMuleArtifactJson"
-        new JsonSlurper().parse(file) as Map
+    @Override
+    File getMuleArtifactPath() {
+        new File('src/test/resources/mule-deploy-props-test-artifact.json')
     }
 
     @Override
@@ -36,24 +35,13 @@ class MuleDeployPropertiesTest extends
         // arrange
 
         // act
-        def result = this.configResources
+        def artifactConfigs = getMuleArtifactJson().configs as List<String>
 
         // assert
-        assertThat result,
+        assertThat artifactConfigs,
                    is(equalTo([
                            'java_test.xml',
                            'http_test.xml'
                    ]))
-    }
-
-    @Test
-    void artifact_descriptor_includes_them() {
-        // arrange
-
-        // act
-        def artifact = getMuleArtifactJson()
-
-        // assert
-        fail 'write the test'
     }
 }

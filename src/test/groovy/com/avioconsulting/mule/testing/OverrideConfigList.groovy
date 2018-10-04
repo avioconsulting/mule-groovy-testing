@@ -62,8 +62,9 @@ trait OverrideConfigList {
     }
 
     Map getMuleArtifactJson() {
+        def configs = substituteConfigResources(getConfigResources())
         [
-                configs                         : getConfigResources(),
+                configs                         : configs,
                 secureProperties                : [],
                 redeploymentEnabled             : true,
                 name                            : 'tests_for_the_test',
