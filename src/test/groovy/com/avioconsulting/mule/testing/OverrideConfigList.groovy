@@ -10,6 +10,9 @@ trait OverrideConfigList {
     static Map cachedClassLoaderModel
 
     File getTestMavenDir() {
+        // putting this here because it's a @Before hook on the cheap
+        System.setProperty('mule.verbose.exceptions',
+                           'true')
         new File('src/test/resources/maven')
     }
 
