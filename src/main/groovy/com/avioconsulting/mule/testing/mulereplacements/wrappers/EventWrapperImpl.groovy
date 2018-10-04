@@ -21,7 +21,7 @@ class EventWrapperImpl implements
         this.runtimeBridgeMuleSide = runtimeBridgeMuleSide
     }
 
-    EventWrapper createNewEventFromOld(MessageWrapperImpl newMessage) {
+    EventWrapper withNewPayload(MessageWrapperImpl newMessage) {
         def muleMsg = newMessage.muleMessage
         if (isInterceptionEvent()) {
             // mocks can't return new events, they have to mutate, so we'll mutate the message
@@ -40,18 +40,18 @@ class EventWrapperImpl implements
     }
 
     @Override
-    EventWrapper createNewEventFromOld(Object payload,
-                                       String mediaType) {
+    EventWrapper withNewPayload(Object payload,
+                                String mediaType) {
         def message = new MessageWrapperImpl(payload,
                                              runtimeBridgeMuleSide,
                                              mediaType)
-        createNewEventFromOld(message)
+        withNewPayload(message)
     }
 
     @Override
-    EventWrapper newStreamedEvent(String payload,
-                                  String mediaType,
-                                  Map attributes) {
+    EventWrapper withNewStreamingPayload(String payload,
+                                         String mediaType,
+                                         Map attributes) {
         def stream = new ByteArrayInputStream(payload.bytes)
         def streamProvider = runtimeBridgeMuleSide.getMuleStreamCursor(this.nativeEvent,
                                                                        stream)
@@ -59,7 +59,7 @@ class EventWrapperImpl implements
                                              runtimeBridgeMuleSide,
                                              mediaType,
                                              attributes)
-        createNewEventFromOld(message)
+        withNewPayload(message)
     }
 
     private boolean isInterceptionEvent() {
@@ -95,7 +95,7 @@ class EventWrapperImpl implements
                                              runtimeBridgeMuleSide,
                                              this.message.mimeType,
                                              attributes)
-        createNewEventFromOld(message)
+        withNewPayload(message)
     }
 
     Object getNativeMuleEvent() {

@@ -10,11 +10,10 @@ interface EventWrapper {
 
     EventWrapper withNewAttributes(Map attributes)
 
-    EventWrapper createNewEventFromOld(Object payload,
-                                       String mediaType)
+    EventWrapper withNewPayload(Object payload,
+                                String mediaType)
 
-    // TODO: Consistent naming
-    EventWrapper newStreamedEvent(String payload,
-                                  String mediaType,
-                                  Map attributes)
+    EventWrapper withNewStreamingPayload(String payload,
+                                         String mediaType,
+                                         Map attributes)
 }

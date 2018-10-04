@@ -42,8 +42,8 @@ class RawFormatterImpl<T extends ConnectorInfo> implements
                     payload = inputMessage.payload
                     mediaType = inputMessage.mediaType
                 }
-                originalMuleEvent.createNewEventFromOld(payload,
-                                                        mediaType)
+                originalMuleEvent.withNewPayload(payload,
+                                                 mediaType)
             }
         }
         this.transformer = new StandardTransformer(closure,

@@ -11,8 +11,8 @@ class HttpGetTransformer implements
         // for GET requests, we don't want to pass on the payload
         if (connectorInfo.method == 'GET') {
             // a wildcard mediatype should work for this
-            return muleEvent.createNewEventFromOld(null,
-                                                   '*/*')
+            return muleEvent.withNewPayload(null,
+                                            '*/*')
         }
         muleEvent
     }

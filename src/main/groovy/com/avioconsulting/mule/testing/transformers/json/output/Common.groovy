@@ -15,8 +15,8 @@ abstract class Common implements
         def messageProps = [
                 'http.status': '200'
         ]
-        originalMuleEvent.newStreamedEvent(jsonString,
-                                           'application/json',
-                                           messageProps)
+        originalMuleEvent.withNewStreamingPayload(jsonString,
+                                                  'application/json',
+                                                  messageProps)
     }
 }

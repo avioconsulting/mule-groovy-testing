@@ -25,9 +25,9 @@ class XMLMessageBuilder {
                        EventWrapper rewriteEvent,
                        Integer httpStatus = null) {
         def messageProps = getXmlProperties(httpStatus)
-        rewriteEvent.newStreamedEvent(xmlPayload,
-                                      'application/xml',
-                                      messageProps)
+        rewriteEvent.withNewStreamingPayload(xmlPayload,
+                                             'application/xml',
+                                             messageProps)
     }
 
     private static LinkedHashMap<String, String> getXmlProperties(Integer httpStatus) {
