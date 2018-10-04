@@ -45,4 +45,15 @@ class MuleDeployPropertiesTest extends
                            'http_test.xml'
                    ]))
     }
+
+    @Test
+    void artifact_descriptor_includes_them() {
+        // arrange
+
+        // act
+        def artifact = getMuleArtifactJson()
+
+        // assert
+        fail 'write the test'
+    }
 }

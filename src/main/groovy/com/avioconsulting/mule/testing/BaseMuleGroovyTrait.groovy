@@ -7,6 +7,7 @@ import com.avioconsulting.mule.testing.dsl.invokers.*
 import com.avioconsulting.mule.testing.dsl.mocking.*
 import com.avioconsulting.mule.testing.dsl.mocking.sfdc.Choice
 import com.avioconsulting.mule.testing.dsl.mocking.sfdc.ChoiceImpl
+import com.avioconsulting.mule.testing.junit.TestingConfiguration
 import com.avioconsulting.mule.testing.mulereplacements.MockingConfiguration
 import com.avioconsulting.mule.testing.mulereplacements.RuntimeBridgeTestSide
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
@@ -22,8 +23,8 @@ import org.apache.logging.log4j.Logger
 trait BaseMuleGroovyTrait {
     abstract Logger getLogger()
 
-    MuleEngineContainer createMuleEngineContainer() {
-        new MuleEngineContainer(baseEngineConfig)
+    MuleEngineContainer createMuleEngineContainer(TestingConfiguration testingConfiguration) {
+        new MuleEngineContainer(testingConfiguration.engineConfig)
     }
 
     static File join(Object... paths) {
@@ -34,8 +35,11 @@ trait BaseMuleGroovyTrait {
     }
 
     RuntimeBridgeTestSide deployApplication(MuleEngineContainer muleEngineContainer,
+                                            TestingConfiguration testingConfiguration,
                                             MockingConfiguration mockingConfiguration) {
-        def artifactName = getArtifactName()
+        def muleArtifact = testingConfiguration.artifactModel
+        // will ensure some uniqueness
+        def artifactName = "${muleArtifact.name}:${testingConfiguration.hashCode()}"
         def appSourceDir = new File(muleEngineContainer.muleHomeDirectory,
                                     artifactName)
         appSourceDir.mkdirs()
@@ -44,19 +48,18 @@ trait BaseMuleGroovyTrait {
             def muleArtifactDir = join(metaInfDir, 'mule-artifact')
             muleArtifactDir.mkdirs()
             def classLoaderFile = join(muleArtifactDir, 'classloader-model.json')
-            def classLoaderModel = getClassLoaderModel()
+            def classLoaderModel = testingConfiguration.classLoaderModel
             def logger = getLogger()
             def classLoaderModelJson = JsonOutput.prettyPrint(JsonOutput.toJson(classLoaderModel))
             logger.info 'Using classloader model {}',
                         classLoaderModelJson
             classLoaderFile.text = classLoaderModelJson
             def artifactJson = join(muleArtifactDir, 'mule-artifact.json')
-            def muleArtifact = getMuleArtifactJson()
             def muleArtifactJson = JsonOutput.prettyPrint(JsonOutput.toJson(muleArtifact))
             logger.info 'Using Mule artifact descriptor {}',
                         muleArtifactJson
             artifactJson.text = muleArtifactJson
-            def srcMavenPath = getMavenPomPath()
+            def srcMavenPath = new File(testingConfiguration.mavenPomPath)
             assert srcMavenPath.exists(): "Expected Maven pom @ ${srcMavenPath}."
             def artifactCoordinates = classLoaderModel.artifactCoordinates
             def destMavenPath = join(metaInfDir,
@@ -66,7 +69,7 @@ trait BaseMuleGroovyTrait {
             destMavenPath.mkdirs()
             FileUtils.copyFileToDirectory(srcMavenPath,
                                           destMavenPath)
-            def sourceRepositoryDirectory = repositoryDirectory
+            def sourceRepositoryDirectory = new File(testingConfiguration.repositoryDirectory)
             if (sourceRepositoryDirectory.exists()) {
                 def targetRepositoryDirectory = join(appSourceDir, 'repository')
                 FileUtils.copyDirectory(sourceRepositoryDirectory,
@@ -86,18 +89,19 @@ trait BaseMuleGroovyTrait {
                 FileUtils.copyFileToDirectory(configFile,
                                               appSourceDir)
             }
+            def properties = new Properties(testingConfiguration.startupProperties)
             muleEngineContainer.deployApplication(artifactName,
                                                   appSourceDir.toURI(),
                                                   mockingConfiguration,
-                                                  startUpProperties)
+                                                  properties)
         }
         finally {
             FileUtils.deleteDirectory(appSourceDir)
         }
     }
 
-    Properties getStartUpProperties() {
-        new Properties()
+    Map getStartUpProperties() {
+        [:]
     }
 
     BaseEngineConfig getBaseEngineConfig() {

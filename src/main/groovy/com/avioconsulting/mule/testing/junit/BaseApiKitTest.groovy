@@ -33,7 +33,7 @@ abstract class BaseApiKitTest extends
     }
 
     @Override
-    Properties getStartUpProperties() {
+    Map getStartUpProperties() {
         def properties = super.getStartUpProperties()
         // have to have the listener running to use apikit
         // http listener gets go

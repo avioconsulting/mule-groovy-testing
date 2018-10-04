@@ -27,48 +27,65 @@ class BaseJunitTest implements
     protected static RuntimeBridgeTestSide runtimeBridge
     protected static TestingConfiguration currentTestingConfig
     private static MockingConfiguration mockingConfiguration
+    protected static final Map<TestingConfiguration, Integer> failedConfigurations = [:]
 
     @Override
     Logger getLogger() {
         this.log
     }
 
-    void startEngine() {
+    void startEngine(TestingConfiguration proposedConfig) {
         if (!muleEngineContainer) {
             log.info 'Starting up Mule engine for the first time for {}...',
                      baseEngineConfig
-            muleEngineContainer = createMuleEngineContainer()
+            muleEngineContainer = createMuleEngineContainer(proposedConfig)
         } else {
-            if (muleEngineContainer.engineConfig != baseEngineConfig) {
+            if (muleEngineContainer.engineConfig != proposedConfig.engineConfig) {
                 log.info 'Restarting Mule engine due to base engine config difference. Existing {}, New {}',
                          muleEngineContainer.engineConfig,
                          baseEngineConfig
                 muleEngineContainer.shutdown()
-                muleEngineContainer = createMuleEngineContainer()
+                muleEngineContainer = createMuleEngineContainer(proposedConfig)
             }
         }
     }
 
     @Before
     void startMule() {
-        startEngine()
-        def proposedTestingConfig = new TestingConfiguration(startUpProperties,
-                                                             configResources,
-                                                             this.keepListenersOnForTheseFlows())
+        def proposedTestingConfig = new TestingConfiguration(getStartUpProperties(),
+                                                             getClassLoaderModel(),
+                                                             getMuleArtifactJson(),
+                                                             keepListenersOnForTheseFlows(),
+                                                             getBaseEngineConfig(),
+                                                             getMavenPomPath().absolutePath,
+                                                             getRepositoryDirectory().absolutePath)
+        if (failedConfigurations.containsKey(proposedTestingConfig)) {
+            logger.error('Skipping load of application because this testing config previously failed to start')
+            return
+        }
+        startEngine(proposedTestingConfig)
         def newBridgeNeeded = proposedTestingConfig != currentTestingConfig || !runtimeBridge
         if (!runtimeBridge) {
             log.info 'Deploying Mule app for the first time'
         } else if (proposedTestingConfig != currentTestingConfig) {
             log.info 'Existing Mule app will not work because config has changed, undeploying'
             muleEngineContainer.undeployApplication(runtimeBridge)
+            runtimeBridge = null
             log.info 'Starting fresh Mule app...'
         } else {
             log.info 'Using existing Mule app...'
         }
         if (newBridgeNeeded) {
             mockingConfiguration = new MockingConfiguration(this.keepListenersOnForTheseFlows())
-            runtimeBridge = deployApplication(muleEngineContainer,
-                                              mockingConfiguration)
+            try {
+                runtimeBridge = deployApplication(muleEngineContainer,
+                                                  proposedTestingConfig,
+                                                  mockingConfiguration)
+            }
+            catch (e) {
+                failedConfigurations[proposedTestingConfig] = 1
+                throw e
+            }
             currentTestingConfig = proposedTestingConfig
         }
         mockingConfiguration.clearMocks()

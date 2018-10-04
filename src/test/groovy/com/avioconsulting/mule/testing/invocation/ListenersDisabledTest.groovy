@@ -17,7 +17,7 @@ class ListenersDisabledTest extends BaseJunitTest implements OverrideConfigList 
     static int unusedPort = -1
 
     @Override
-    Properties getStartUpProperties() {
+    Map getStartUpProperties() {
         def properties = super.getStartUpProperties()
         // have to have the listener running to use apikit
         // http listener gets go
