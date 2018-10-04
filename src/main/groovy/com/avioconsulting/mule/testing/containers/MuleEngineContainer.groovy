@@ -36,7 +36,7 @@ class MuleEngineContainer {
         }
         // TODO: Do we need this still?
         System.setProperty('mule.mode.embedded',
-                           'true');
+                           'true')
         // mule won't start without a log4j2 config
         def log4jResource = MuleEngineContainer.getResource('/log4j2-for-mule-home.xml')
         assert log4jResource
