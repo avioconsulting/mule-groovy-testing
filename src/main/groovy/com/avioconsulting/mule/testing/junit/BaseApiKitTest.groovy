@@ -50,7 +50,6 @@ abstract class BaseApiKitTest extends
         properties
     }
 
-    // TODO: Get these in TestingConfiguration and also reconfigure configResources/properties to use TestingConfiguration
     @Override
     List<String> keepListenersOnForTheseFlows() {
         // apikit complains unless these 2 are both open
