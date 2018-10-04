@@ -1,6 +1,6 @@
 package com.avioconsulting.mule.testing.dsl.mocking
 
-import com.avioconsulting.mule.testing.TransformingEventFactory
+
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.ConnectorInfo
 import com.avioconsulting.mule.testing.payloadvalidators.IPayloadValidator
 import com.avioconsulting.mule.testing.transformers.ClosureCurrier
@@ -13,13 +13,10 @@ abstract class StandardRequestResponseImpl<T extends ConnectorInfo> implements
     private Closure closure
     private final ClosureCurrier closureCurrier
     private final String requestResponseUse
-    private final TransformingEventFactory eventFactory
 
     StandardRequestResponseImpl(IPayloadValidator initialPayloadValidator,
                                 ClosureCurrier closureCurrier,
-                                String requestResponseUse,
-                                TransformingEventFactory eventFactory) {
-        this.eventFactory = eventFactory
+                                String requestResponseUse) {
         this.requestResponseUse = requestResponseUse
         this.closureCurrier = closureCurrier
         this.initialPayloadValidator = initialPayloadValidator
@@ -36,22 +33,19 @@ abstract class StandardRequestResponseImpl<T extends ConnectorInfo> implements
 
     def json(@DelegatesTo(JsonFormatter) Closure closure) {
         formatter = new JsonFormatterImpl(initialPayloadValidator,
-                                          closureCurrier,
-                                          eventFactory)
+                                          closureCurrier)
         this.closure = closure
     }
 
     def xml(@DelegatesTo(XMLFormatter) Closure closure) {
         formatter = new XMLFormatterImpl(initialPayloadValidator,
-                                         requestResponseUse,
-                                         eventFactory)
+                                         requestResponseUse)
         this.closure = closure
     }
 
     @Override
     def raw(@DelegatesTo(RawFormatter) Closure closure) {
-        formatter = new RawFormatterImpl<T>(eventFactory,
-                                            initialPayloadValidator,
+        formatter = new RawFormatterImpl<T>(initialPayloadValidator,
                                             closureCurrier)
         this.closure = closure
     }

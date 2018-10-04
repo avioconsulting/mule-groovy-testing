@@ -1,12 +1,10 @@
 package com.avioconsulting.mule.testing.mulereplacements
 
 import com.avioconsulting.mule.testing.InvokerEventFactory
-import com.avioconsulting.mule.testing.TransformingEventFactory
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.*
 
 class RuntimeBridgeTestSide implements
         InvokerEventFactory,
-        TransformingEventFactory,
         IFetchAppClassLoader {
     private final Object runtimeBridgeMuleSide
 
@@ -52,62 +50,6 @@ class RuntimeBridgeTestSide implements
                                          String flowName,
                                          Map attributes) {
         assert false: 'Not yet implemented'
-    }
-
-    // TODO: Get rid of this, just use direct stuff in EventWrapperImpl since it now has the bridge
-    @Deprecated
-    @Override
-    EventWrapper getMuleEventWithPayload(Object payload,
-                                         String mediaType,
-                                         EventWrapper rewriteEvent) {
-        getMuleEventWithPayload(payload,
-                                rewriteEvent,
-                                mediaType,
-                                [:])
-    }
-
-    // TODO: Get rid of this, just use direct stuff in EventWrapperImpl since it now has the bridge
-    @Deprecated
-    @Override
-    EventWrapper getMuleEventWithAttributes(EventWrapper rewriteEvent,
-                                            Map attributes) {
-        def existingMessage = rewriteEvent.message
-        getMuleEventWithPayload(existingMessage.payload,
-                                rewriteEvent,
-                                existingMessage.mimeType,
-                                attributes)
-    }
-
-    // TODO: Get rid of this, just use direct stuff in EventWrapperImpl since it now has the bridge
-    @Deprecated
-    @Override
-    EventWrapper getMuleEventWithPayload(Object payload,
-                                         EventWrapper rewriteEvent,
-                                         String mediaType,
-                                         Map attributes) {
-        def message = new MessageWrapperImpl(payload,
-                                             runtimeBridgeMuleSide,
-                                             mediaType,
-                                             attributes)
-        assert rewriteEvent instanceof EventWrapperImpl
-        rewriteEvent.createNewEventFromOld(message)
-    }
-
-    // TODO: Get rid of this, just use direct stuff in EventWrapperImpl since it now has the bridge
-    @Deprecated
-    @Override
-    EventWrapper getStreamedMuleEventWithPayload(String payload,
-                                                 EventWrapper rewriteEvent,
-                                                 String mediaType,
-                                                 Map attributes) {
-        assert rewriteEvent instanceof EventWrapperImpl
-        def stream = new ByteArrayInputStream(payload.bytes)
-        def streamProvider = runtimeBridgeMuleSide.getMuleStreamCursor(rewriteEvent.nativeMuleEvent,
-                                                                       stream)
-        getMuleEventWithPayload(streamProvider,
-                                rewriteEvent,
-                                mediaType,
-                                attributes)
     }
 
     def dispose() {

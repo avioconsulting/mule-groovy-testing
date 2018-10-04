@@ -1,16 +1,10 @@
 package com.avioconsulting.mule.testing.transformers.json.output
 
-import com.avioconsulting.mule.testing.TransformingEventFactory
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
 import com.avioconsulting.mule.testing.transformers.OutputTransformer
 
 abstract class Common implements
         OutputTransformer {
-    private final TransformingEventFactory eventFactory
-
-    Common(TransformingEventFactory eventFactory) {
-        this.eventFactory = eventFactory
-    }
 
     abstract String getJsonOutput(input)
 
@@ -21,9 +15,8 @@ abstract class Common implements
         def messageProps = [
                 'http.status': '200'
         ]
-        return eventFactory.getStreamedMuleEventWithPayload(jsonString,
-                                                            originalMuleEvent,
-                                                            'application/json',
-                                                            messageProps)
+        originalMuleEvent.newStreamedEvent(jsonString,
+                                           'application/json',
+                                           messageProps)
     }
 }

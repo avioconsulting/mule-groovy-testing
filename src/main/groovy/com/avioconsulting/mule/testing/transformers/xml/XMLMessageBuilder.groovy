@@ -1,6 +1,5 @@
 package com.avioconsulting.mule.testing.transformers.xml
 
-import com.avioconsulting.mule.testing.TransformingEventFactory
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
 
 class XMLMessageBuilder {
@@ -17,11 +16,8 @@ class XMLMessageBuilder {
     }()
 
     private final boolean wrapWithApiKitStreamReader
-    private final TransformingEventFactory transformingEventFactory
 
-    XMLMessageBuilder(boolean wrapWithApiKitStreamReader,
-                      TransformingEventFactory transformingEventFactory) {
-        this.transformingEventFactory = transformingEventFactory
+    XMLMessageBuilder(boolean wrapWithApiKitStreamReader) {
         this.wrapWithApiKitStreamReader = wrapWithApiKitStreamReader
     }
 
@@ -29,10 +25,9 @@ class XMLMessageBuilder {
                        EventWrapper rewriteEvent,
                        Integer httpStatus = null) {
         def messageProps = getXmlProperties(httpStatus)
-        transformingEventFactory.getStreamedMuleEventWithPayload(xmlPayload,
-                                                                 rewriteEvent,
-                                                                 'application/xml',
-                                                                 messageProps)
+        rewriteEvent.newStreamedEvent(xmlPayload,
+                                      'application/xml',
+                                      messageProps)
     }
 
     private static LinkedHashMap<String, String> getXmlProperties(Integer httpStatus) {

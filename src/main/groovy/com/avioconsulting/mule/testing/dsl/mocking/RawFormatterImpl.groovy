@@ -1,7 +1,6 @@
 package com.avioconsulting.mule.testing.dsl.mocking
 
 
-import com.avioconsulting.mule.testing.TransformingEventFactory
 import com.avioconsulting.mule.testing.mulereplacements.MuleMessageTransformer
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.ConnectorInfo
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
@@ -18,12 +17,9 @@ class RawFormatterImpl<T extends ConnectorInfo> implements
     private final IPayloadValidator payloadValidator
     private MuleMessageTransformer<T> transformer
     private final ClosureCurrier closureCurrier
-    private final TransformingEventFactory transformingEventFactory
 
-    RawFormatterImpl(TransformingEventFactory transformingEventFactory,
-                     IPayloadValidator payloadValidator,
+    RawFormatterImpl(IPayloadValidator payloadValidator,
                      ClosureCurrier closureCurrier) {
-        this.transformingEventFactory = transformingEventFactory
         this.closureCurrier = closureCurrier
         this.payloadValidator = payloadValidator
     }
@@ -46,9 +42,8 @@ class RawFormatterImpl<T extends ConnectorInfo> implements
                     payload = inputMessage.payload
                     mediaType = inputMessage.mediaType
                 }
-                transformingEventFactory.getMuleEventWithPayload(payload,
-                                                                 mediaType,
-                                                                 originalMuleEvent)
+                originalMuleEvent.createNewEventFromOld(payload,
+                                                        mediaType)
             }
         }
         this.transformer = new StandardTransformer(closure,
@@ -64,8 +59,7 @@ class RawFormatterImpl<T extends ConnectorInfo> implements
 
     @Override
     IFormatter withNewPayloadValidator(IPayloadValidator validator) {
-        new RawFormatterImpl(transformingEventFactory,
-                             validator,
+        new RawFormatterImpl(validator,
                              closureCurrier)
     }
 

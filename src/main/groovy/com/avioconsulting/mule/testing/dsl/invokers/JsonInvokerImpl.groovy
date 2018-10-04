@@ -1,7 +1,6 @@
 package com.avioconsulting.mule.testing.dsl.invokers
 
 import com.avioconsulting.mule.testing.InvokerEventFactory
-import com.avioconsulting.mule.testing.TransformingEventFactory
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.FlowWrapper
 import com.avioconsulting.mule.testing.payloadvalidators.IPayloadValidator
@@ -11,7 +10,9 @@ import com.avioconsulting.mule.testing.transformers.StringInputTransformer
 import com.avioconsulting.mule.testing.transformers.json.input.JacksonInputTransformer
 import com.avioconsulting.mule.testing.transformers.json.output.JacksonOutputTransformer
 
-class JsonInvokerImpl implements JsonInvoker, Invoker {
+class JsonInvokerImpl implements
+        JsonInvoker,
+        Invoker {
     private OutputTransformer transformBeforeCallingFlow
     private InputTransformer transformAfterCallingFlow
     private inputObject
@@ -20,13 +21,10 @@ class JsonInvokerImpl implements JsonInvoker, Invoker {
     private final IPayloadValidator initialPayloadValidator
     private final InvokerEventFactory invokerEventFactory
     private final FlowWrapper flow
-    private final TransformingEventFactory transformingEventFactory
 
     JsonInvokerImpl(IPayloadValidator initialPayloadValidator,
                     InvokerEventFactory invokerEventFactory,
-                    TransformingEventFactory transformingEventFactory,
                     FlowWrapper flow) {
-        this.transformingEventFactory = transformingEventFactory
         this.flow = flow
         this.invokerEventFactory = invokerEventFactory
         this.initialPayloadValidator = initialPayloadValidator
@@ -73,7 +71,7 @@ class JsonInvokerImpl implements JsonInvoker, Invoker {
     private setInputTransformer(inputObject) {
         assert !(inputObject instanceof Class): 'Use outputOnly if a only an output class is being supplied!'
         this.inputObject = inputObject
-        transformBeforeCallingFlow = new JacksonOutputTransformer(transformingEventFactory)
+        transformBeforeCallingFlow = new JacksonOutputTransformer()
     }
 
     EventWrapper getEvent() {
@@ -101,7 +99,6 @@ class JsonInvokerImpl implements JsonInvoker, Invoker {
     Invoker withNewPayloadValidator(IPayloadValidator validator) {
         new JsonInvokerImpl(validator,
                             invokerEventFactory,
-                            transformingEventFactory,
                             flow)
     }
 }

@@ -1,6 +1,6 @@
 package com.avioconsulting.mule.testing.transformers.xml
 
-import com.avioconsulting.mule.testing.TransformingEventFactory
+
 import com.avioconsulting.mule.testing.mulereplacements.MuleMessageTransformer
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.ConnectorInfo
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
@@ -15,9 +15,8 @@ class XMLGroovyParserTransformer<T extends ConnectorInfo> extends
     private final Closure closure
 
     XMLGroovyParserTransformer(Closure closure,
-                               IPayloadValidator<T> payloadValidator,
-                               TransformingEventFactory transformingEventFactory) {
-        super(payloadValidator, transformingEventFactory)
+                               IPayloadValidator<T> payloadValidator) {
+        super(payloadValidator)
         this.closure = closure
     }
 

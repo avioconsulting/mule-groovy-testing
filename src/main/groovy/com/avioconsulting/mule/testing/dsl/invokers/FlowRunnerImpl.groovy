@@ -1,7 +1,6 @@
 package com.avioconsulting.mule.testing.dsl.invokers
 
 import com.avioconsulting.mule.testing.InvokerEventFactory
-import com.avioconsulting.mule.testing.TransformingEventFactory
 import com.avioconsulting.mule.testing.mulereplacements.RuntimeBridgeTestSide
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.FlowWrapper
@@ -16,7 +15,6 @@ class FlowRunnerImpl implements
     private Closure muleOutputEventHook = null
     private Closure withInputEvent = null
     private final InvokerEventFactory invokerEventFactory
-    private final TransformingEventFactory transformingEventFactory
     private final FlowWrapper flow
     private final String flowName
 
@@ -27,13 +25,11 @@ class FlowRunnerImpl implements
         this.flow = flowMessageProcessor
         this.runtimeBridge = runtimeBridge
         this.invokerEventFactory = runtimeBridge
-        this.transformingEventFactory = runtimeBridge
     }
 
     def json(@DelegatesTo(JsonInvoker) Closure closure) {
         def jsonInvoker = new JsonInvokerImpl(new ListenerPayloadValidator(),
                                               invokerEventFactory,
-                                              transformingEventFactory,
                                               flow)
         invoker = jsonInvoker
         this.closure = closure
