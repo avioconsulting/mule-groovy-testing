@@ -160,17 +160,17 @@ trait BaseMuleGroovyTrait {
         }
     }
 
-    def runFlow(RuntimeBridgeTestSide muleContext,
+    def runFlow(RuntimeBridgeTestSide bridge,
                 String flowName,
                 @DelegatesTo(FlowRunner) Closure closure) {
-        def flow = muleContext.getFlow(flowName)
-        def runner = new FlowRunnerImpl(muleContext,
+        def flow = bridge.getFlow(flowName)
+        def runner = new FlowRunnerImpl(bridge,
                                         flow,
                                         flowName)
         def code = closure.rehydrate(runner, this, this)
         code.resolveStrategy = Closure.DELEGATE_ONLY
         code()
-        def outputEvent = runFlow(muleContext,
+        def outputEvent = runFlow(bridge,
                                   flowName,
                                   runner.getEvent())
         runner.transformOutput(outputEvent)
