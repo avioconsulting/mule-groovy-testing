@@ -75,11 +75,10 @@ abstract class BaseApiKitTest extends
         def code = closure.rehydrate(runner, this, this)
         code.resolveStrategy = Closure.DELEGATE_ONLY
         code()
-        def inputEvent = runner.event
-        inputEvent = setHttpProps(inputEvent,
-                                  httpMethod,
-                                  path,
-                                  queryParams)
+        def inputEvent = setHttpProps(runner.event,
+                                      httpMethod,
+                                      path,
+                                      queryParams)
         def outputEvent = runFlow(runtimeBridge,
                                   flowName,
                                   inputEvent)
