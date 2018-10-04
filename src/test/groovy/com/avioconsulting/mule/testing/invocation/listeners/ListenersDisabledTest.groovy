@@ -75,7 +75,7 @@ class ListenersDisabledTest extends
     List<String> getConfigResources() {
         [
                 'global-test.xml',
-                'listener-disabled-test.xml'
+                'listener-enabledisable-test.xml'
         ]
     }
 }

@@ -16,7 +16,7 @@ class ListenersEnabledTest extends
         BaseJunitTest implements
         OverrideConfigList,
         PortStuff {
-    
+
     @Override
     List<String> keepListenersOnForTheseFlows() {
         ['theTest']
@@ -44,8 +44,7 @@ class ListenersEnabledTest extends
     List<String> getConfigResources() {
         [
                 'global-test.xml',
-                // TODO: Rename this file
-                'listener-disabled-test.xml'
+                'listener-enabledisable-test.xml'
         ]
     }
 }
