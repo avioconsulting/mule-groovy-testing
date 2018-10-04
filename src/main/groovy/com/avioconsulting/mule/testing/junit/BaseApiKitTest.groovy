@@ -3,10 +3,10 @@ package com.avioconsulting.mule.testing.junit
 import com.avioconsulting.mule.testing.OpenPortLocator
 import com.avioconsulting.mule.testing.dsl.invokers.FlowRunner
 import com.avioconsulting.mule.testing.dsl.invokers.FlowRunnerImpl
-import org.mule.runtime.api.message.Message
-import org.mule.runtime.core.api.construct.Flow
+import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
 
-abstract class BaseApiKitTest extends BaseJunitTest {
+abstract class BaseApiKitTest extends
+        BaseJunitTest {
     private static final String TEST_PORT_PROPERTY = 'avio.test.http.port'
 
     abstract String getApiNameUnderTest()
@@ -50,6 +50,7 @@ abstract class BaseApiKitTest extends BaseJunitTest {
         properties
     }
 
+    // TODO: Get these in TestingConfiguration and also reconfigure configResources/properties to use TestingConfiguration
     @Override
     List<String> keepListenersOnForTheseFlows() {
         // apikit complains unless these 2 are both open
@@ -68,28 +69,28 @@ abstract class BaseApiKitTest extends BaseJunitTest {
                       String path,
                       Map queryParams = null,
                       @DelegatesTo(FlowRunner) Closure closure) {
-        def flow = muleContext.registry.lookupFlowConstruct(flowName) as Flow
-        def runner = new FlowRunnerImpl(muleContext,
+        def flow = runtimeBridge.getFlow(flowName)
+        def runner = new FlowRunnerImpl(runtimeBridge,
                                         flow,
                                         flowName)
         def code = closure.rehydrate(runner, this, this)
         code.resolveStrategy = Closure.DELEGATE_ONLY
         code()
         def inputEvent = runner.event
-        setHttpProps(inputEvent.message,
-                     httpMethod,
-                     path,
-                     queryParams)
-        def outputEvent = runFlow(muleContext,
+        inputEvent = setHttpProps(inputEvent,
+                                  httpMethod,
+                                  path,
+                                  queryParams)
+        def outputEvent = runFlow(runtimeBridge,
                                   flowName,
                                   inputEvent)
         runner.transformOutput(outputEvent)
     }
 
-    private def setHttpProps(Message message,
-                             String method,
-                             String path,
-                             Map queryParams) {
+    private EventWrapper setHttpProps(EventWrapper event,
+                                      String method,
+                                      String path,
+                                      Map queryParams) {
         def urlParts = httpListenerPath.split('/')
         assert urlParts.last() == '*': 'Expected wildcard listener!'
         urlParts = urlParts[0..-2]
@@ -114,8 +115,10 @@ abstract class BaseApiKitTest extends BaseJunitTest {
             ["http.${prop}".toString(), value]
         }
         httpProps['host'] = "localhost:${System.getProperty(TEST_PORT_PROPERTY)}".toString()
+        // TODO: Need to set these as attributes on the event (and confirm they are still valid)
         httpProps.each { prop, value ->
             message.setProperty(prop, value, PropertyScope.INBOUND)
         }
+        // TODO: Return a fresh event
     }
 }
