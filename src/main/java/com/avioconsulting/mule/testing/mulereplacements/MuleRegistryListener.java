@@ -50,7 +50,7 @@ public class MuleRegistryListener implements DeploymentListener {
         custSvc.registerCustomServiceImpl("muleGroovyTestingProcessorIntFactory",
                                           new MockingProcessorInterceptorFactory(mockingConfiguration));
         custSvc.overrideDefaultServiceImpl(ComponentInitialStateManager.SERVICE_ID,
-                                           new SourceDisableManager());
+                                           new SourceDisableManager(mockingConfiguration));
     }
 
     public RuntimeBridgeMuleSide getRuntimeBridge(String artifactName) {

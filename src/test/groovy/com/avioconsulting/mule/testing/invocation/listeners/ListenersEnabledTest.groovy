@@ -30,14 +30,11 @@ class ListenersEnabledTest extends
         // act
         log.info 'Attempting to access {}',
                  url
-        def exception = shouldFail {
-            log.info "Got this back from the URL but should not have '{}'",
-                     url.text
-        }
+        def result = url.text
 
         // assert
-        assertThat exception.message,
-                   is(equalTo('FOOBAR: Server returned HTTP response code: 503 for URL: http://localhost:8088/the-app/api/v1/howdy'))
+        assertThat result,
+                   is(equalTo('our payload'))
     }
 
     @Override
