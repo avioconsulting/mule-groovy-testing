@@ -96,7 +96,6 @@ abstract class BaseApiKitTest extends
         urlParts.addAll(path.split('/'))
         urlParts.removeAll { part -> part == '' }
         def url = '/' + urlParts.join('/')
-        logger.info "Setting http request path to ${url}..."
         def appClassLoader = runtimeBridge.appClassloader
         def multiMapClass = appClassLoader.loadClass('org.mule.runtime.api.util.MultiMap')
         def getMultiMap = { Map incoming ->
@@ -108,7 +107,10 @@ abstract class BaseApiKitTest extends
             [key.toString(), value.toString()]
         }
         def headers = [
-                host: "localhost:${System.getProperty(TEST_PORT_PROPERTY)}".toString()
+                host          : "localhost:${System.getProperty(TEST_PORT_PROPERTY)}".toString(),
+                // Even though content type is set on the message/payload mediatype,
+                // apikit router in mule 4 depends on this
+                'content-type': event.message.mimeType
         ]
         // public HttpRequestAttributes(MultiMap<String, String> headers, String listenerPath, String relativePath, String version, String scheme, String method, String requestPath, String requestUri, String queryString, MultiMap<String, String> queryParams, Map<String, String> uriParams, String remoteAddress, Certificate clientCertificate) {
         //        this(headers, listenerPath, relativePath, version, scheme, method, requestPath, requestUri, queryString, queryParams, uriParams, "", remoteAddress, clientCertificate);
@@ -126,6 +128,8 @@ abstract class BaseApiKitTest extends
                                                [:], // uri params
                                                '/remoteaddress',
                                                null)
+        logger.info 'APIkit flow invocation: simulating HTTP listener using attributes: {}',
+                    attributes
         event.withNewAttributes(attributes)
     }
 }
