@@ -5,6 +5,8 @@ interface EventWrapper {
 
     String getMessageAsString()
 
+    Object getVariable(String variableName)
+
     EventWrapper withVariable(String variableName,
                               Object value)
 

@@ -145,7 +145,6 @@ output application/json
     </flow>
 
     <flow name="hasHttpStatus">
-        <!--<set-property propertyName="http.status" value="201"/>-->
         <ee:transform doc:name="Transform Message">
             <ee:message>
                 <ee:set-payload><![CDATA[%dw 2.0
@@ -155,6 +154,9 @@ output application/json
     key: payload.foo
 }]]></ee:set-payload>
             </ee:message>
+            <ee:variables>
+                <ee:set-variable variableName="httpStatus">201</ee:set-variable>
+            </ee:variables>
         </ee:transform>
     </flow>
 

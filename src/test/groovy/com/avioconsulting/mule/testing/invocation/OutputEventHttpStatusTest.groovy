@@ -36,8 +36,8 @@ class OutputEventHttpStatusTest extends
 
         // assert
         assert saveOutput
-        assertThat saveOutput.message.getOutboundProperty('http.status'),
-                   is(equalTo('201'))
+        assertThat saveOutput.getVariable('httpStatus').value,
+                   is(equalTo(201))
     }
 
     @Test
@@ -81,6 +81,6 @@ class OutputEventHttpStatusTest extends
 
         // assert
         assertThat result.message,
-                   is(containsString('No HTTP status was returned from your flow. Did you forget?'))
+                   is(containsString('No HTTP status was returned from your flow in the httpStatus variable. Did you forget?'))
     }
 }

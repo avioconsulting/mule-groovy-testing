@@ -77,6 +77,11 @@ class EventWrapperImpl implements
     }
 
     @Override
+    Object getVariable(String variableName) {
+        nativeEvent.getVariables()[variableName]
+    }
+
+    @Override
     EventWrapper withVariable(String variableName,
                               Object value) {
         assert !isInterceptionEvent(): 'Have not implemented this'
