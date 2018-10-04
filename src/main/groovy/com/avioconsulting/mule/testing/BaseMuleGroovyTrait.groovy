@@ -75,19 +75,12 @@ trait BaseMuleGroovyTrait {
                 FileUtils.copyDirectory(sourceRepositoryDirectory,
                                         targetRepositoryDirectory)
             }
-
-            def configFiles = muleArtifact.configs.collect { config ->
-                def candidateUrl = BaseMuleGroovyTrait.getResource("/${config}")
-                assert candidateUrl: "Expected to find ${config} in classpath but did not!"
-                new File(candidateUrl.toURI())
-            }
-
-            logger.info 'Using config files {}',
-                        configFiles
-
-            configFiles.each { configFile ->
-                FileUtils.copyFileToDirectory(configFile,
-                                              appSourceDir)
+            testingConfiguration.outputDirsToCopy.each { dir ->
+                logger.info 'Copying classpath/output directory {} to {}',
+                            dir,
+                            appSourceDir
+                FileUtils.copyDirectory(dir,
+                                        appSourceDir)
             }
             def properties = new Properties(testingConfiguration.startupProperties)
             muleEngineContainer.deployApplication(artifactName,
@@ -119,6 +112,14 @@ trait BaseMuleGroovyTrait {
 
     File getBuildOutputDirectory() {
         new File('target')
+    }
+
+    List<File> outputDirsToCopy() {
+        def build = buildOutputDirectory
+        [
+                new File(build, 'classes'),
+                new File(build, 'test-classes')
+        ]
     }
 
     File getRepositoryDirectory() {

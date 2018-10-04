@@ -56,6 +56,7 @@ class BaseJunitTest implements
                                                              getClassLoaderModel(),
                                                              getMuleArtifactJson(),
                                                              keepListenersOnForTheseFlows(),
+                                                             outputDirsToCopy(),
                                                              getBaseEngineConfig(),
                                                              getMavenPomPath().absolutePath,
                                                              getRepositoryDirectory().absolutePath)

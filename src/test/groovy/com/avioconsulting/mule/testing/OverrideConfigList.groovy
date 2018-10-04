@@ -22,6 +22,26 @@ trait OverrideConfigList {
         new File(targetDir, 'repository')
     }
 
+    List<File> outputDirsToCopy() {
+        def getResourcePath = { Class klass, String file ->
+            def resource = klass.getResource(file)
+            assert resource
+            new File(resource.toURI()).toPath().parent.toFile()
+        }
+        def srcResourcesPath = getResourcePath(BaseMuleGroovyTrait,
+                                               '/global-test.xml')
+        def tstResourcesPath = getResourcePath(OverrideConfigList,
+                                               '/http_test.xml')
+        def result = [
+                srcResourcesPath,
+                tstResourcesPath
+        ]
+        def logger = getLogger()
+        logger.info 'Using outputdirs {} for test',
+                    result
+        result
+    }
+
     Map getClassLoaderModel() {
         def logger = getLogger()
         if (!cachedClassLoaderModel) {
