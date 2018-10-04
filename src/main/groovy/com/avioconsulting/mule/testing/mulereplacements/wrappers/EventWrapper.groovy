@@ -8,7 +8,7 @@ interface EventWrapper {
     EventWrapper withVariable(String variableName,
                               Object value)
 
-    EventWrapper withNewAttributes(Map attributes)
+    EventWrapper withNewAttributes(attributes)
 
     EventWrapper withNewPayload(Object payload,
                                 String mediaType)

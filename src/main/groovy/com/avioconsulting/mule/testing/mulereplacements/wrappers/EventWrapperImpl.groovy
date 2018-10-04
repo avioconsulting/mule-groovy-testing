@@ -90,7 +90,7 @@ class EventWrapperImpl implements
     }
 
     @Override
-    EventWrapper withNewAttributes(Map attributes) {
+    EventWrapper withNewAttributes(attributes) {
         def message = new MessageWrapperImpl(this.message.payload,
                                              runtimeBridgeMuleSide,
                                              this.message.mimeType,

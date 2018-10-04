@@ -126,7 +126,6 @@ abstract class BaseApiKitTest extends
                                                [:], // uri params
                                                '/remoteaddress',
                                                null)
-        // TODO: Need to be able to work with non-map attributes
         event.withNewAttributes(attributes)
     }
 }
