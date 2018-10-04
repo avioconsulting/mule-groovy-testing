@@ -30,6 +30,7 @@ http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/m
                        doc:name="APIkit Router"/>
     </flow>
     <flow name="post:\resources:application\json:api-the-app-v1-config">
+        <logger message="made it to post flow!" level="INFO"/>
         <ee:transform doc:name="Transform Message">
             <ee:message><ee:set-payload><![CDATA[%dw 2.0
 output application/json

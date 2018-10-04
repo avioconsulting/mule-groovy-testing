@@ -8,6 +8,7 @@
 
     <Loggers>
 
+        <AsyncLogger name="org.mule.module.apikit" level="DEBUG"/>
         <!-- CXF is used heavily by Mule for web services -->
         <AsyncLogger name="org.apache.cxf" level="WARN"/>
 
