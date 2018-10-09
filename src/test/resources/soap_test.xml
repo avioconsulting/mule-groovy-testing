@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:dw="http://www.mulesoft.org/schema/mule/ee/dw"
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
       xmlns:ws="http://www.mulesoft.org/schema/mule/ws"
       xmlns:apikit-soap="http://www.mulesoft.org/schema/mule/apikit-soap"
       xmlns="http://www.mulesoft.org/schema/mule/core"
@@ -9,14 +9,14 @@
       xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/ws http://www.mulesoft.org/schema/mule/ws/current/mule-ws.xsd
 http://www.mulesoft.org/schema/mule/apikit-soap http://www.mulesoft.org/schema/mule/apikit-soap/current/mule-apikit-soap.xsd
-http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee/dw/current/dw.xsd">
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
     <ws:consumer-config name="Web_Service_Consumer" service="SOAPTestService" port="SOAPTestService"
                         serviceAddress="http://localhost:8081" wsdlLocation="soap/test.wsdl"
                         doc:name="Web Service Consumer"/>
-    <apikit-soap:config name="/SOAPTestService/SOAPTestService/api-config"
-                        wsdlUrl="soap/test.wsdl"
-                        serviceName="SOAPTestService"
-                        portName="SOAPTestService" doc:name="APIkit SOAP: Configuration"/>
+    <apikit-soap:config name="soapkit-config"
+                        wsdlLocation="soap/test.wsdl"
+                        service="SOAPTestService"
+                        port="SOAPTestService" doc:name="APIkit SOAP: Configuration"/>
     <ws:consumer-config name="Web_Service_Consumer_Weather"
                         wsdlLocation="https://graphical.weather.gov/xml/DWMLgen/wsdl/ndfdXML.wsdl" service="ndfdXML"
                         port="ndfdXMLPort"
@@ -24,9 +24,9 @@ http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee
                         doc:name="Web Service Consumer"/>
 
     <flow name="soaptestFlow">
-        <dw:transform-message doc:name="Transform Message">
-            <dw:set-payload><![CDATA[%dw 1.0
-%output application/xml
+        <ee:transform doc:name="Transform Message">
+            <ee:message><ee:set-payload><![CDATA[%dw 2.0
+output application/xml
 %namespace ns0 http://www.avioconsulting.com/schemas/SOAPTest/v1
 ---
 {
@@ -34,20 +34,20 @@ http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee
 		ns0#title: 'theTitle ' ++ payload.foo,
 		ns0#approvalDate: '2017-04-01'
 	}
-}]]></dw:set-payload>
-        </dw:transform-message>
+}]]></ee:set-payload></ee:message>
+        </ee:transform>
         <ws:consumer config-ref="Web_Service_Consumer"
                      operation="operation1"
                      doc:name="A SOAP Call"/>
-        <dw:transform-message doc:name="Transform Message">
-            <dw:set-payload><![CDATA[%dw 1.0
-%output application/json
+        <ee:transform doc:name="Transform Message">
+            <ee:message><ee:set-payload><![CDATA[%dw 2.0
+output application/json
 %namespace ns0 http://www.avioconsulting.com/schemas/SOAPTest/v1
 ---
 {
 	result: payload.ns0#SOAPTestResponse.details
-}]]></dw:set-payload>
-        </dw:transform-message>
+}]]></ee:set-payload></ee:message>
+        </ee:transform>
         <set-property propertyName="Content-Type" value="application/json"/>
     </flow>
     <flow name="soaptestFlowNoPayloadChange">
@@ -55,17 +55,17 @@ http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee
     </flow>
     <flow name="/some/soap/flow">
         <logger message="invoked" level="INFO"/>
-        <dw:transform-message doc:name="Transform Message">
-            <dw:set-payload><![CDATA[%dw 1.0
-%output application/xml
+        <ee:transform doc:name="Transform Message">
+            <ee:message><ee:set-payload><![CDATA[%dw 2.0
+output application/xml
 %namespace ns0 http://www.avioconsulting.com/schemas/SOAPTest/v1
 ---
 {
 	ns0#SOAPTestResponse: {
 		ns0#details: 'theTitle ' ++ payload.ns0#SOAPTestRequest.title
 	}
-}]]></dw:set-payload>
-        </dw:transform-message>
+}]]></ee:set-payload></ee:message>
+        </ee:transform>
     </flow>
     <flow name="/some/soap/flow/messagepayloadasstring">
         <logger message="before, payload is of type #[payload.getClass().getName()] loaded from source #[payload.getClass().getProtectionDomain().getCodeSource().getLocation()]"
@@ -79,43 +79,54 @@ http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee
         <set-payload value="#[message.payloadAs(java.lang.String)]" doc:name="Set Payload"/>
         <logger message="payload is now #[payload] of type #[payload.getClass().getName()]" level="INFO"
                 doc:name="Logger"/>
-        <dw:transform-message doc:name="Transform Message">
+        <ee:transform doc:name="Transform Message">
             <dw:input-payload mimeType="application/xml"/>
-            <dw:set-payload><![CDATA[%dw 1.0
-%output application/xml
+            <ee:message><ee:set-payload><![CDATA[%dw 2.0
+output application/xml
 %namespace ns0 http://www.avioconsulting.com/schemas/SOAPTest/v1
 ---
 {
 	ns0#SOAPTestResponse: {
 		ns0#details: 'theTitle ' ++ payload.ns0#SOAPTestRequest.title
 	}
-}]]></dw:set-payload>
-        </dw:transform-message>
+}]]></ee:set-payload></ee:message>
+        </ee:transform>
     </flow>
     <flow name="api-main">
-        <apikit-soap:router config-ref="/SOAPTestService/SOAPTestService/api-config" doc:name="SOAP Router"/>
+        <apikit-soap:router config-ref="soapkit-config">
+            <apikit-soap:message>#[payload]</apikit-soap:message>
+            <apikit-soap:attributes>#[
+                %dw 2.0
+                output application/java
+                ---
+                {
+                headers: attributes.headers,
+                method: attributes.method,
+                queryString: attributes.queryString
+                }]</apikit-soap:attributes>
+        </apikit-soap:router>
     </flow>
-    <flow name="operation1:/SOAPTestService/SOAPTestService/api-config">
+    <flow name="operation1:\soapkit-config">
         <logger message="invoked" level="INFO"/>
-        <dw:transform-message doc:name="Transform Message">
-            <dw:set-payload><![CDATA[%dw 1.0
-%output application/xml
+        <ee:transform doc:name="Transform Message">
+            <ee:message><ee:set-payload><![CDATA[%dw 2.0
+output application/xml
 %namespace ns0 http://www.avioconsulting.com/schemas/SOAPTest/v1
 ---
 {
 	ns0#SOAPTestResponse: {
 		ns0#details: 'theTitle ' ++ payload.ns0#SOAPTestRequest.title
 	}
-}]]></dw:set-payload>
-        </dw:transform-message>
+}]]></ee:set-payload></ee:message>
+        </ee:transform>
     </flow>
     <flow name="weatherSoapFaultFlow">
-        <dw:transform-message doc:name="Transform Message">
-            <dw:set-payload><![CDATA[%dw 1.0
-%output application/xml
+        <ee:transform doc:name="Transform Message">
+            <ee:message><ee:set-payload><![CDATA[%dw 2.0
+output application/xml
 ---
-zipCodeList: "?"]]></dw:set-payload>
-        </dw:transform-message>
+zipCodeList: "?"]]></ee:set-payload></ee:message>
+        </ee:transform>
         <ws:consumer config-ref="Web_Service_Consumer_Weather" operation="LatLonListZipCode" doc:name="Get Weather"/>
     </flow>
 </mule>
