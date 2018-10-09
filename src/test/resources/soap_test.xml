@@ -32,7 +32,7 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
             <ee:message>
                 <ee:set-payload><![CDATA[%dw 2.0
 output application/xml
-%namespace ns0 http://www.avioconsulting.com/schemas/SOAPTest/v1
+ns ns0 http://www.avioconsulting.com/schemas/SOAPTest/v1
 ---
 {
 	ns0#SOAPTestRequest: {
@@ -49,7 +49,7 @@ output application/xml
             <ee:message>
                 <ee:set-payload><![CDATA[%dw 2.0
 output application/json
-%namespace ns0 http://www.avioconsulting.com/schemas/SOAPTest/v1
+ns ns0 http://www.avioconsulting.com/schemas/SOAPTest/v1
 ---
 {
 	result: payload.ns0#SOAPTestResponse.details
@@ -66,7 +66,7 @@ output application/json
             <ee:message>
                 <ee:set-payload><![CDATA[%dw 2.0
 output application/xml
-%namespace ns0 http://www.avioconsulting.com/schemas/SOAPTest/v1
+ns ns0 http://www.avioconsulting.com/schemas/SOAPTest/v1
 ---
 {
 	ns0#SOAPTestResponse: {
@@ -97,7 +97,7 @@ output application/xml
             <ee:message>
                 <ee:set-payload><![CDATA[%dw 2.0
 output application/xml
-%namespace ns0 http://www.avioconsulting.com/schemas/SOAPTest/v1
+ns ns0 http://www.avioconsulting.com/schemas/SOAPTest/v1
 ---
 {
 	ns0#SOAPTestResponse: {
