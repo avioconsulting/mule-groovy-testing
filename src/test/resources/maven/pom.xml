@@ -62,6 +62,12 @@
             <version>1.1.4</version>
             <classifier>mule-plugin</classifier>
         </dependency>
+        <dependency>
+            <groupId>org.mule.connectors</groupId>
+            <artifactId>mule-wsc-connector</artifactId>
+            <version>1.1.1</version>
+            <classifier>mule-plugin</classifier>
+        </dependency>
     </dependencies>
 
     <repositories>
@@ -76,6 +82,11 @@
             <name>MuleSoft Releases Repository</name>
             <url>https://repository.mulesoft.org/releases/</url>
             <layout>default</layout>
+        </repository>
+        <repository>
+            <id>avio-mule-ee-releases</id>
+            <name>AVIO MuleEE Releases Repository</name>
+            <url>https://devops.avioconsulting.com/nexus/repository/mulesoft-ee-releases/</url>
         </repository>
     </repositories>
     <pluginRepositories>
