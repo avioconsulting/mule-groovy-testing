@@ -95,7 +95,14 @@ trait OverrideConfigList {
                 requiredProduct                 : 'MULE_EE',
                 classLoaderModelLoaderDescriptor: [
                         id        : 'mule',
-                        attributes: [:]
+                        attributes: [
+                                exportedPackages : [],
+                                // if we don't export resources, we can't load them off the classpath
+                                exportedResources: [
+                                        'soap/test.wsdl',
+                                        'soap/SOAPTest_v1.xsd'
+                                ]
+                        ]
                 ],
                 bundleDescriptorLoader          : [
                         id        : 'mule',
