@@ -26,6 +26,7 @@ class SoapApikitInvokerImpl extends
         this.runtimeBridgeTestSide = runtimeBridgeTestSide
         this.eventFactory = eventFactory
         this.flowName = flowName
+        def flow = runtimeBridgeTestSide.getFlow(flowName)
         soapAction = deriveSoapAction(flow,
                                       operation)
     }
