@@ -10,7 +10,7 @@ abstract class XMLTransformer<T extends ConnectorInfo> {
 
     XMLTransformer(IPayloadValidator<T> payloadValidator) {
         this.payloadValidator = payloadValidator
-        this.xmlMessageBuilder = new XMLMessageBuilder(false)
+        this.xmlMessageBuilder = new XMLMessageBuilder()
     }
 
     def validateContentType(EventWrapper muleEvent,

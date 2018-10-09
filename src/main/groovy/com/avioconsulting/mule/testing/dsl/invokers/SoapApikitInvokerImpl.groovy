@@ -1,6 +1,8 @@
 package com.avioconsulting.mule.testing.dsl.invokers
 
 import com.avioconsulting.mule.testing.InvokerEventFactory
+import com.avioconsulting.mule.testing.mulereplacements.HttpAttributeBuilder
+import com.avioconsulting.mule.testing.mulereplacements.RuntimeBridgeTestSide
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
 import groovy.util.logging.Log4j2
 import groovy.xml.XmlUtil
@@ -9,16 +11,21 @@ import javax.xml.namespace.QName
 import javax.xml.soap.MessageFactory
 
 @Log4j2
-class SoapApikitInvokerImpl extends SoapInvokerBaseImpl {
+class SoapApikitInvokerImpl extends
+        SoapInvokerBaseImpl implements
+        HttpAttributeBuilder {
     private final String soapAction
     private final String flowName
+    private final InvokerEventFactory eventFactory
+    private final RuntimeBridgeTestSide runtimeBridgeTestSide
 
     SoapApikitInvokerImpl(InvokerEventFactory eventFactory,
                           String flowName,
-                          String operation) {
-        super(eventFactory)
+                          String operation,
+                          RuntimeBridgeTestSide runtimeBridgeTestSide) {
+        this.runtimeBridgeTestSide = runtimeBridgeTestSide
+        this.eventFactory = eventFactory
         this.flowName = flowName
-        assert flow: "Could not find flow ${flowName}!"
         soapAction = deriveSoapAction(flow,
                                       operation)
     }
@@ -38,21 +45,24 @@ class SoapApikitInvokerImpl extends SoapInvokerBaseImpl {
         def soapRequest = new String(bytes)
         log.info 'Put together a SOAP request payload of {}',
                  XmlUtil.serialize(soapRequest)
-        def reader = new StringReader(soapRequest)
-        def muleEvent = this.xmlMessageBuilder.build(reader, flowName)
-        def muleMessage = muleEvent.message.with {
-            // without soapaction, you get weird null pointer exceptions
-            setProperty('SOAPAction',
-                        soapAction,
-                        PropertyScope.INBOUND)
-            // satisfy the need for checking for ?wsdl or ?xsd
-            setProperty('http.query.params',
-                        [:],
-                        PropertyScope.INBOUND)
-            it
-        }
+        def newEvent = eventFactory.getMuleEventWithPayload(null,
+                                                            flowName)
+        def muleEvent = this.xmlMessageBuilder.build(soapRequest,
+                                                     newEvent)
+        def additionalHeaders = [
+                'SOAPAction': soapAction
+        ]
+        def attributes = getHttpListenerAttributes('/*',
+                                                   'POST',
+                                                   '/',
+                                                   [:],
+                                                   runtimeBridgeTestSide,
+                                                   muleEvent.message.mimeType,
+                                                   9999,
+                                                   additionalHeaders)
+        muleEvent = muleEvent.withNewAttributes(attributes)
         log.info "Put together SOAP/Mule message {}",
-                 muleMessage.toString()
+                 muleEvent.toString()
         muleEvent
     }
 

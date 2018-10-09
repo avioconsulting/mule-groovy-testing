@@ -196,19 +196,19 @@ trait BaseMuleGroovyTrait {
         runner.transformOutput(outputEvent)
     }
 
-    EventWrapper runSoapApikitFlow(RuntimeBridgeTestSide muleContext,
+    EventWrapper runSoapApikitFlow(RuntimeBridgeTestSide bridge,
                                    String operation,
                                    String apiKitFlowName = 'api-main',
                                    @DelegatesTo(SoapInvoker) Closure closure) {
-        def invoker = new SoapApikitInvokerImpl(muleContext,
-                                                muleContext,
+        def invoker = new SoapApikitInvokerImpl(bridge,
                                                 apiKitFlowName,
-                                                operation)
+                                                operation,
+                                                bridge)
         def code = closure.rehydrate(invoker, this, this)
         code.resolveStrategy = Closure.DELEGATE_ONLY
         code()
         def event = invoker.event
-        runFlow(muleContext,
+        runFlow(bridge,
                 apiKitFlowName,
                 event)
     }

@@ -106,4 +106,10 @@ class EventWrapperImpl implements
     Object getNativeMuleEvent() {
         nativeEvent
     }
+
+
+    @Override
+    String toString() {
+        nativeEvent.toString()
+    }
 }
