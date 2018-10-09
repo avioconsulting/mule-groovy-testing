@@ -21,11 +21,11 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
                         wsdlLocation="soap/test.wsdl"
                         service="SOAPTestService"
                         port="SOAPTestService" doc:name="APIkit SOAP: Configuration"/>
-    <wsc:config name="Web_Service_Consumer_Weather">
-        <wsc:connection wsdlLocation="https://graphical.weather.gov/xml/DWMLgen/wsdl/ndfdXML.wsdl"
-                        service="ndfdXML"
-                        port="ndfdXMLPort"
-                        address="https://graphical.weather.gov/xml/SOAP_server/ndfdXMLserver.php"/>
+    <wsc:config name="Web_Service_Consumer_Calculator">
+        <wsc:connection wsdlLocation="http://www.dneonline.com/calculator.asmx?wsdl"
+                        service="Calculator"
+                        port="CalculatorSoap"
+                        address="http://www.dneonline.com/calculator.asmx"/>
     </wsc:config>
     <flow name="soaptestFlow">
         <ee:transform doc:name="Transform Message">
@@ -112,10 +112,18 @@ ns ns0 http://www.avioconsulting.com/schemas/SOAPTest/v1
             <ee:message>
                 <ee:set-payload><![CDATA[%dw 2.0
 output application/xml
+ns ns0 http://tempuri.org
 ---
-zipCodeList: "?"]]></ee:set-payload>
+{
+	ns0#Add: {
+		intA: 123,
+		intB: 456
+	}
+}]]></ee:set-payload>
             </ee:message>
         </ee:transform>
-        <wsc:consume config-ref="Web_Service_Consumer_Weather" operation="LatLonListZipCode" doc:name="Get Weather"/>
+        <wsc:consume config-ref="Web_Service_Consumer_Calculator"
+                     operation="Add"
+                     doc:name="Get Weather"/>
     </flow>
 </mule>
