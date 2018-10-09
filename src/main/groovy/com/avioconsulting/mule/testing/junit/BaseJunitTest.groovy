@@ -61,8 +61,9 @@ class BaseJunitTest implements
                                                              getMavenPomPath().absolutePath,
                                                              getRepositoryDirectory().absolutePath)
         if (failedConfigurations.containsKey(proposedTestingConfig)) {
-            logger.error('Skipping load of application because this testing config previously failed to start')
-            return
+            def msg = 'Skipping load of application because this testing config previously failed to start'
+            logger.error(msg)
+            throw new RuntimeException(msg)
         }
         startEngine(proposedTestingConfig)
         def newBridgeNeeded = proposedTestingConfig != currentTestingConfig || !runtimeBridge
