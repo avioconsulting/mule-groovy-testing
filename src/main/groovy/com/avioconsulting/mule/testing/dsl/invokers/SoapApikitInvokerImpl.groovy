@@ -8,6 +8,7 @@ import com.avioconsulting.mule.testing.mulereplacements.wrappers.FlowWrapper
 import groovy.util.logging.Log4j2
 import groovy.xml.XmlUtil
 
+import javax.wsdl.factory.WSDLFactory
 import javax.xml.namespace.QName
 import javax.xml.soap.MessageFactory
 
@@ -29,7 +30,8 @@ class SoapApikitInvokerImpl extends
         this.flowName = flowName
         def flow = runtimeBridgeTestSide.getFlow(flowName)
         soapAction = deriveSoapAction(flow,
-                                      operation)
+                                      operation,
+                                      runtimeBridgeTestSide)
     }
 
     @Override
@@ -69,20 +71,12 @@ class SoapApikitInvokerImpl extends
     }
 
     private static String deriveSoapAction(FlowWrapper flow,
-                                           String soapOperationName) {
+                                           String soapOperationName,
+                                           RuntimeBridgeTestSide bridge) {
         def config = flow.getConfigurationInstance('apikit-soap:router')
         // config is SoapkitConfiguration
         def wsdlUrl = config.info.wsdlLocation as String
-        Class wsdlFactoryClass
-        try {
-            wsdlFactoryClass = SoapApikitInvokerImpl.getClassLoader().loadClass('javax.wsdl.factory.WSDLFactory')
-        }
-        catch (e) {
-            throw new Exception("Could not find javax.wsdl.factory.WSDLFactory. Is wsdl4j in the classpath?",
-                                e)
-        }
-        // use reflection to not force SOAP on non-SOAP test library users
-        def fact = wsdlFactoryClass.newInstance()
+        def fact = WSDLFactory.newInstance()
         def reader = fact.newWSDLReader()
         def defin = reader.readWSDL(wsdlUrl)
         def bindings = defin.bindings.values()
