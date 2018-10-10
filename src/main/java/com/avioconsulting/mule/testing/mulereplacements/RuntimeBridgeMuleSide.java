@@ -12,6 +12,7 @@ import org.mule.runtime.core.api.streaming.StreamingManager;
 import org.mule.runtime.core.api.streaming.bytes.CursorStreamProviderFactory;
 import org.mule.runtime.core.internal.event.DefaultEventContext;
 import org.mule.runtime.core.internal.interception.DefaultInterceptionEvent;
+import org.mule.runtime.dsl.api.component.config.DefaultComponentLocation;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -102,9 +103,18 @@ public class RuntimeBridgeMuleSide {
         CompletableFuture<Void> externalCompletionCallback = new CompletableFuture<>();
         this.streamCompletionCallbacks.add(externalCompletionCallback);
         // without the completion callback, any streams in the payload will be closed when the flow under test 'completes'
+        // need at least 1 part and a location in the event context for toString()
+        // to work properly
+        List<DefaultComponentLocation.DefaultLocationPart> parts = new ArrayList<>();
+        parts.add(new DefaultComponentLocation.DefaultLocationPart("/",
+                                                                   Optional.empty(),
+                                                                   Optional.empty(),
+                                                                   Optional.empty()));
         // which will make it impossible to get at the payload
+        DefaultComponentLocation location = new DefaultComponentLocation(Optional.of("dummyFlowName"),
+                                                                         parts);
         EventContext context = new DefaultEventContext(flow,
-                                                       (ComponentLocation) null,
+                                                       location,
                                                        null,
                                                        Optional.of(externalCompletionCallback));
         return CoreEvent.builder(context)
