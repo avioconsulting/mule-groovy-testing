@@ -5,24 +5,28 @@ import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
 import groovy.util.logging.Log4j2
 
 @Log4j2
-class SoapOperationFlowInvokerImpl extends SoapInvokerBaseImpl {
+class SoapOperationFlowInvokerImpl extends
+        SoapInvokerBaseImpl {
     private final String flowName
+    private final InvokerEventFactory eventFactory
 
     SoapOperationFlowInvokerImpl(InvokerEventFactory eventFactory,
                                  String flowName) {
-        super(eventFactory)
+        this.eventFactory = eventFactory
         this.flowName = flowName
     }
 
     EventWrapper getEvent() {
-        StringReader reader
+        String xml
         if (inputObject instanceof File) {
-            def xml = inputObject.text
-            reader = new StringReader(xml)
+            xml = inputObject.text
         } else {
-            reader = jaxbHelper.getMarshalled(inputObject)
+            def reader = jaxbHelper.getMarshalled(inputObject)
+            xml = reader.text
         }
-        this.xmlMessageBuilder.build(reader,
-                                     flowName)
+        def newEvent = eventFactory.getMuleEventWithPayload(null,
+                                                            flowName)
+        this.xmlMessageBuilder.build(xml,
+                                     newEvent)
     }
 }

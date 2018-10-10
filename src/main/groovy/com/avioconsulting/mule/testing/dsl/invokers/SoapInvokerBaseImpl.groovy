@@ -26,9 +26,7 @@ abstract class SoapInvokerBaseImpl implements
 
     @Override
     def transformOutput(EventWrapper event) {
-        def incomingMessage = event.message
-        def payload = incomingMessage.payload
-        jaxbHelper.unmarshal(payload)
+        jaxbHelper.unmarshal(event.messageAsString)
     }
 
     @Override
