@@ -100,7 +100,8 @@ ns ns0 http://www.avioconsulting.com/schemas/SOAPTest/v1
         </apikit-soap:router>
     </flow>
     <flow name="operation1:\soapkit-config">
-        <logger message="invoked" level="INFO"/>
+        <logger message="soap operation flow invoked ok" level="INFO"/>
+        <logger message="payload: #[payload]" level="INFO"/>
         <ee:transform doc:name="Transform Message">
             <ee:message>
                 <ee:set-payload><![CDATA[%dw 2.0
