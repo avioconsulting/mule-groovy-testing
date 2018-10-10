@@ -30,7 +30,8 @@ class SoapApikitInvokerImpl extends
         this.flowName = flowName
         def flow = runtimeBridgeTestSide.getFlow(flowName)
         soapAction = deriveSoapAction(flow,
-                                      operation)
+                                      operation,
+                                      runtimeBridgeTestSide)
     }
 
     @Override
@@ -70,13 +71,18 @@ class SoapApikitInvokerImpl extends
     }
 
     private static String deriveSoapAction(FlowWrapper flow,
-                                           String soapOperationName) {
+                                           String soapOperationName,
+                                           RuntimeBridgeTestSide bridge) {
         def config = flow.getConfigurationInstance('apikit-soap:router')
         // config is SoapkitConfiguration
-        def wsdlUrl = config.info.wsdlLocation as String
+        def wsdlPath = config.info.wsdlLocation as String
+        // Using this app classloader here because the WSDL itself is a resource and we will be
+        // unable to find it based on path alone
+        def wsdlUrl = bridge.appClassloader.getResource(wsdlPath)
+        assert wsdlUrl : "Was unable to locate WSDL at ${wsdlPath}. Should not have been able to get this far without that"
         def fact = WSDLFactory.newInstance()
         def reader = fact.newWSDLReader()
-        def defin = reader.readWSDL(wsdlUrl)
+        def defin = reader.readWSDL(wsdlUrl.toString())
         def bindings = defin.bindings.values()
         def operations = bindings.collect { binding ->
             binding.bindingOperations
