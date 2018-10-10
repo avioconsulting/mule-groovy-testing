@@ -1,16 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+      xmlns:http="http://www.mulesoft.org/schema/mule/http"
       xmlns:wsc="http://www.mulesoft.org/schema/mule/wsc"
       xmlns:apikit-soap="http://www.mulesoft.org/schema/mule/apikit-soap"
       xmlns="http://www.mulesoft.org/schema/mule/core"
       xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
-
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
 http://www.mulesoft.org/schema/mule/apikit-soap http://www.mulesoft.org/schema/mule/apikit-soap/current/mule-apikit-soap.xsd
 http://www.mulesoft.org/schema/mule/wsc http://www.mulesoft.org/schema/mule/wsc/current/mule-wsc.xsd
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+    <http:listener-config name="test-http-listener-config"
+                          doc:name="HTTP Listener Configuration">
+        <http:listener-connection host="localhost" port="9999"/>
+    </http:listener-config>
     <wsc:config name="Web_Service_Consumer">
         <wsc:connection wsdlLocation="soap/test.wsdl"
                         service="SOAPTestService"
@@ -77,6 +82,9 @@ ns ns0 http://www.avioconsulting.com/schemas/SOAPTest/v1
         </ee:transform>
     </flow>
     <flow name="api-main">
+        <http:listener config-ref="test-http-listener-config"
+                       path="/*"
+                       doc:name="HTTP"/>
         <apikit-soap:router config-ref="soapkit-config">
             <apikit-soap:message>#[payload]</apikit-soap:message>
             <apikit-soap:attributes>#[
