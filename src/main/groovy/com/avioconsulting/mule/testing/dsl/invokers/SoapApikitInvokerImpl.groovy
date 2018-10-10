@@ -30,8 +30,7 @@ class SoapApikitInvokerImpl extends
         this.flowName = flowName
         def flow = runtimeBridgeTestSide.getFlow(flowName)
         soapAction = deriveSoapAction(flow,
-                                      operation,
-                                      runtimeBridgeTestSide)
+                                      operation)
     }
 
     @Override
@@ -71,8 +70,7 @@ class SoapApikitInvokerImpl extends
     }
 
     private static String deriveSoapAction(FlowWrapper flow,
-                                           String soapOperationName,
-                                           RuntimeBridgeTestSide bridge) {
+                                           String soapOperationName) {
         def config = flow.getConfigurationInstance('apikit-soap:router')
         // config is SoapkitConfiguration
         def wsdlUrl = config.info.wsdlLocation as String
