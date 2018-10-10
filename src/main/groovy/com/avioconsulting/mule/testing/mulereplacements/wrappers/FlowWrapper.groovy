@@ -1,7 +1,6 @@
 package com.avioconsulting.mule.testing.mulereplacements.wrappers
 
 import javax.xml.namespace.QName
-import java.util.concurrent.atomic.AtomicReference
 
 class FlowWrapper extends
         ConnectorInfo {
@@ -47,7 +46,10 @@ class FlowWrapper extends
             id.toString() == processorComponentIdentifier
         }
         assert processor: "Was unable to find processor ${processorComponentIdentifier} in ${processors}"
-        def configProviderReference = processor.configurationProvider as AtomicReference
-        def configProvider = configProviderReference.get()
+        def configurationOptional = processor.getStaticConfiguration() as Optional
+        assert configurationOptional.isPresent(): 'Expected config to exist!'
+        // LifecycleAwareConfigurationInstance
+        def lifecyleAwareConfig = configurationOptional.get()
+        lifecyleAwareConfig.getValue()
     }
 }
