@@ -4,6 +4,7 @@ import com.avioconsulting.mule.testing.InvokerEventFactory
 import com.avioconsulting.mule.testing.mulereplacements.HttpAttributeBuilder
 import com.avioconsulting.mule.testing.mulereplacements.RuntimeBridgeTestSide
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
+import com.avioconsulting.mule.testing.mulereplacements.wrappers.FlowWrapper
 import groovy.util.logging.Log4j2
 import groovy.xml.XmlUtil
 
@@ -67,8 +68,9 @@ class SoapApikitInvokerImpl extends
         muleEvent
     }
 
-    private static String deriveSoapAction(Object flow,
+    private static String deriveSoapAction(FlowWrapper flow,
                                            String soapOperationName) {
+        def config = flow.getConfigurationInstance('apikit-soap:router')
         def apiKitRouter = flow.messageProcessors.find { p ->
             // startsWith == avoid proxy class name stuff from cglib
             p.getClass().name.startsWith('org.mule.module.soapkit.Router')
