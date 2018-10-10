@@ -20,18 +20,24 @@ class RuntimeBridgeTestSide implements
     }
 
     FlowWrapper getFlow(String flowName) {
-        def muleFlowOptional = runtimeBridgeMuleSide.lookupByName(flowName)
-        assert muleFlowOptional.isPresent(): "Flow with name '${flowName}' was not found. Are you using the right flow name?"
-        def muleFlow = muleFlowOptional.get()
+        def muleFlow = getNativeFlow(flowName)
         new FlowWrapper(muleFlow.name,
                         muleFlow,
                         runtimeBridgeMuleSide)
     }
 
-    private EventWrapper getMuleEvent(MessageWrapper message, String flowName) {
+    private Object getNativeFlow(String flowName) {
+        def muleFlowOptional = runtimeBridgeMuleSide.lookupByName(flowName)
+        assert muleFlowOptional.isPresent(): "Flow with name '${flowName}' was not found. Are you using the right flow name?"
+        muleFlowOptional.get()
+    }
+
+    private EventWrapper getMuleEvent(MessageWrapper message,
+                                      String flowName) {
         assert message instanceof MessageWrapperImpl
+        def flow = getNativeFlow(flowName)
         def muleEvent = runtimeBridgeMuleSide.getNewEvent(message.muleMessage,
-                                                          flowName)
+                                                          flow)
         new EventWrapperImpl(muleEvent,
                              runtimeBridgeMuleSide)
     }

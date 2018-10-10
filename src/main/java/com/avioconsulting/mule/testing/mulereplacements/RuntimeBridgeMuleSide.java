@@ -12,8 +12,8 @@ import org.mule.runtime.core.api.streaming.StreamingManager;
 import org.mule.runtime.core.api.streaming.bytes.CursorStreamProviderFactory;
 import org.mule.runtime.core.internal.event.DefaultEventContext;
 import org.mule.runtime.core.internal.interception.DefaultInterceptionEvent;
-import org.mule.runtime.dsl.api.component.config.DefaultComponentLocation;
 
+import javax.xml.namespace.QName;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +21,10 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 public class RuntimeBridgeMuleSide {
+    // ideally this code would be shared with FlowWrapper but they are on different
+    // sides of the classloader divide
+    private static final QName COMPONENT_LOCATION = new QName("mule",
+                                                              "COMPONENT_LOCATION");
     private final Registry registry;
 
     private final List<CompletableFuture<Void>> streamCompletionCallbacks = new ArrayList<>();
@@ -94,25 +98,13 @@ public class RuntimeBridgeMuleSide {
     }
 
     public Object getNewEvent(Object muleMessage,
-                              String flowName) {
-        Optional<Flow> flowOpt = (Optional<Flow>) lookupByName(flowName);
-        if (!flowOpt.isPresent()) {
-            throw new RuntimeException("Flow not present! " + flowName);
-        }
-        Flow flow = flowOpt.get();
+                              Object flowObj) {
+        Flow flow = (Flow) flowObj;
         CompletableFuture<Void> externalCompletionCallback = new CompletableFuture<>();
         this.streamCompletionCallbacks.add(externalCompletionCallback);
         // without the completion callback, any streams in the payload will be closed when the flow under test 'completes'
-        // need at least 1 part and a location in the event context for toString()
-        // to work properly
-        List<DefaultComponentLocation.DefaultLocationPart> parts = new ArrayList<>();
-        parts.add(new DefaultComponentLocation.DefaultLocationPart("/",
-                                                                   Optional.empty(),
-                                                                   Optional.empty(),
-                                                                   Optional.empty()));
         // which will make it impossible to get at the payload
-        DefaultComponentLocation location = new DefaultComponentLocation(Optional.of("dummyFlowName"),
-                                                                         parts);
+        ComponentLocation location = (ComponentLocation) flow.getAnnotation(COMPONENT_LOCATION);
         EventContext context = new DefaultEventContext(flow,
                                                        location,
                                                        null,
