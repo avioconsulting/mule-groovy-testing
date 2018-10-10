@@ -71,18 +71,20 @@ class SoapApikitInvokerImpl extends
     private static String deriveSoapAction(FlowWrapper flow,
                                            String soapOperationName) {
         def config = flow.getConfigurationInstance('apikit-soap:router')
-        def apiKitRouter = flow.messageProcessors.find { p ->
-            // startsWith == avoid proxy class name stuff from cglib
-            p.getClass().name.startsWith('org.mule.module.soapkit.Router')
+        // config is SoapkitConfiguration
+        def wsdlUrl = config.info.wsdlLocation as String
+        Class wsdlFactoryClass
+        try {
+            wsdlFactoryClass = SoapApikitInvokerImpl.getClassLoader().loadClass('javax.wsdl.factory.WSDLFactory')
         }
-        assert apiKitRouter: "Expected flow ${flow.name} to have an apikit SOAP router!"
-        def wsdlUrl = apiKitRouter.config.wsdlResource
-        def wsdlFactoryClass = SoapApikitInvokerImpl.getClassLoader().loadClass('javax.wsdl.factory.WSDLFactory')
-        assert wsdlFactoryClass: "Could not find javax.wsdl.factory.WSDLFactory. Is wsdl4j in the classpath?"
+        catch (e) {
+            throw new Exception("Could not find javax.wsdl.factory.WSDLFactory. Is wsdl4j in the classpath?",
+                                e)
+        }
         // use reflection to not force SOAP on non-SOAP test library users
         def fact = wsdlFactoryClass.newInstance()
         def reader = fact.newWSDLReader()
-        def defin = reader.readWSDL(wsdlUrl.toString())
+        def defin = reader.readWSDL(wsdlUrl)
         def bindings = defin.bindings.values()
         def operations = bindings.collect { binding ->
             binding.bindingOperations
