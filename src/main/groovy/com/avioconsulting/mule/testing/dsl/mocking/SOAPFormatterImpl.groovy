@@ -1,5 +1,6 @@
 package com.avioconsulting.mule.testing.dsl.mocking
 
+import com.avioconsulting.mule.testing.mulereplacements.IFetchAppClassLoader
 import com.avioconsulting.mule.testing.mulereplacements.MuleMessageTransformer
 import com.avioconsulting.mule.testing.payloadvalidators.IPayloadValidator
 import com.avioconsulting.mule.testing.transformers.TransformerChain
@@ -26,22 +27,25 @@ class SOAPFormatterImpl extends
 
     private WsConsumerConnectorErrorTransformer httpConnectorErrorTransformer
     private SoapFaultTransformer soapFaultTransformer
+    private final IFetchAppClassLoader fetchAppClassLoader
 
-    SOAPFormatterImpl(IPayloadValidator payloadValidator) {
+    SOAPFormatterImpl(IPayloadValidator payloadValidator,
+                      IFetchAppClassLoader fetchAppClassLoader) {
         super(payloadValidator,
               'SOAP/WS Consumer Mock')
+        this.fetchAppClassLoader = fetchAppClassLoader
         this.soapFaultTransformer = new SoapFaultTransformer()
     }
 
     def httpConnectError() {
-        httpConnectorErrorTransformer = new WsConsumerConnectorErrorTransformer()
+        httpConnectorErrorTransformer = new WsConsumerConnectorErrorTransformer(fetchAppClassLoader)
         httpConnectorErrorTransformer.triggerConnectException()
         // avoid DSL weirdness
         return null
     }
 
     def httpTimeoutError() {
-        httpConnectorErrorTransformer = new WsConsumerConnectorErrorTransformer()
+        httpConnectorErrorTransformer = new WsConsumerConnectorErrorTransformer(fetchAppClassLoader)
         httpConnectorErrorTransformer.triggerTimeoutException()
         // avoid DSL weirdness
         return null
@@ -72,6 +76,7 @@ class SOAPFormatterImpl extends
 
     @Override
     IFormatter withNewPayloadValidator(IPayloadValidator validator) {
-        new SOAPFormatterImpl(validator)
+        new SOAPFormatterImpl(validator,
+                              fetchAppClassLoader)
     }
 }

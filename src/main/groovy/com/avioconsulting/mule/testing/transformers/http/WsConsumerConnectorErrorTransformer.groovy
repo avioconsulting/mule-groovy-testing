@@ -28,10 +28,16 @@ class WsConsumerConnectorErrorTransformer implements
 
 
     @Override
-    EventWrapper transform(EventWrapper event,
+    EventWrapper transform(EventWrapper muleEvent,
                            SoapConsumerInfo connectorInfo) {
-        // TODO: Follow the HttpConnectorErrorTransformer pattern
-        return null
+        if (!triggerConnectException && !triggerTimeoutException) {
+            return muleEvent
+        }
+        if (triggerConnectException) {
+            def exceptionKlass = fetchAppClassLoader.appClassloader.loadClass('org.mule.runtime.soap.api.exception.DispatchingException')
+            def exception = exceptionKlass.newInstance('An error occurred while sending the SOAP request')
+            throw exception
+        }
     }
 
     @Override
