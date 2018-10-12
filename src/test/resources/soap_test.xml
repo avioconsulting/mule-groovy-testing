@@ -19,6 +19,12 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
     <http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="2a9fdde8-2190-4605-83a4-6c2a2bb82901" responseTimeout="500" >
         <http:request-connection host="localhost" port="8081" />
     </http:request-config>
+    <wsc:config name="Web_Service_Consumer">
+        <wsc:connection wsdlLocation="soap/test.wsdl"
+                        service="SOAPTestService"
+                        port="SOAPTestService"
+                        address="http://localhost:8081"/>
+    </wsc:config>
     <wsc:config name="Web_Service_Consumer_Custom_Transport">
         <wsc:connection wsdlLocation="soap/test.wsdl"
                         service="SOAPTestService"
