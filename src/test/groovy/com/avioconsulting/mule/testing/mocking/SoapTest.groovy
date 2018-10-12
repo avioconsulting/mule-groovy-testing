@@ -2,6 +2,7 @@ package com.avioconsulting.mule.testing.mocking
 
 import com.avioconsulting.mule.testing.OverrideConfigList
 import com.avioconsulting.mule.testing.junit.BaseJunitTest
+import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
 import com.avioconsulting.mule.testing.soapxmlroot.SOAPTestRequest
 import com.avioconsulting.mule.testing.soapxmlroot.SOAPTestResponse
 import com.avioconsulting.schemas.soaptest.v1.ObjectFactory
@@ -9,7 +10,6 @@ import com.avioconsulting.schemas.soaptest.v1.SOAPTestRequestType
 import com.avioconsulting.schemas.soaptest.v1.SOAPTestResponseType
 import groovy.xml.DOMBuilder
 import org.junit.Test
-import org.mule.runtime.api.event.Event
 
 import javax.xml.namespace.QName
 import java.util.concurrent.TimeoutException
@@ -57,10 +57,10 @@ class SoapTest extends BaseJunitTest implements OverrideConfigList {
     @Test
     void with_mule_message() {
         // arrange
-        Event sentMessage = null
+        EventWrapper sentMessage = null
         mockSoapCall('A SOAP Call') {
             whenCalledWithJaxb(SOAPTestRequestType) { SOAPTestRequestType request,
-                                                      Event msg ->
+                                                      EventWrapper msg ->
                 sentMessage = msg
                 def response = new SOAPTestResponseType()
                 response.details = 'yes!'
@@ -76,8 +76,8 @@ class SoapTest extends BaseJunitTest implements OverrideConfigList {
         }
 
         // assert
-        assertThat sentMessage.message.getProperty('content-type', PropertyScope.INBOUND),
-                   is(equalTo('application/json; charset=utf-8'))
+        assertThat sentMessage.message.mimeType,
+                   is(equalTo('application/xml; charset=UTF-8'))
     }
 
 
