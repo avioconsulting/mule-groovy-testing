@@ -13,7 +13,7 @@ class HttpConnectorErrorTransformer implements
         MuleMessageTransformer<HttpRequesterInfo> {
     private boolean triggerConnectException
     private boolean triggerTimeoutException
-    private final IFetchAppClassLoader fetchAppClassLoader
+    protected final IFetchAppClassLoader fetchAppClassLoader
 
     HttpConnectorErrorTransformer(IFetchAppClassLoader fetchAppClassLoader) {
         this.fetchAppClassLoader = fetchAppClassLoader
@@ -34,17 +34,31 @@ class HttpConnectorErrorTransformer implements
             return muleEvent
         }
         if (triggerConnectException) {
-            throw getException(connectorInfo,
-                               new ConnectException('could not reach HTTP server'),
-                               'Connection refused',
-                               'CONNECTIVITY')
+            throw getConnectionException(connectorInfo.uri,
+                                         connectorInfo.method)
         }
         if (triggerTimeoutException) {
-            throw getException(connectorInfo,
-                               new TimeoutException('HTTP timeout!'),
-                               'Some timeout error',
-                               'TIMEOUT')
+            throw getTimeoutException(connectorInfo.uri,
+                                      connectorInfo.method)
         }
+    }
+
+    protected Exception getConnectionException(String uri,
+                                               String method) {
+        getException(uri,
+                     method,
+                     new ConnectException('could not reach HTTP server'),
+                     'Connection refused',
+                     'CONNECTIVITY')
+    }
+
+    protected Exception getTimeoutException(String uri,
+                                            String method) {
+        getException(uri,
+                     method,
+                     new TimeoutException('HTTP timeout!'),
+                     'Some timeout error',
+                     'TIMEOUT')
     }
 
     /**
@@ -54,7 +68,8 @@ class HttpConnectorErrorTransformer implements
      * @param details
      * @param errorEnumCode - from HttpError
      */
-    private Exception getException(HttpRequesterInfo connectorInfo,
+    private Exception getException(String uri,
+                                   String method,
                                    Exception cause,
                                    String details,
                                    String errorEnumCode) {
@@ -63,7 +78,7 @@ class HttpConnectorErrorTransformer implements
         def appClassLoader = fetchAppClassLoader.appClassloader
         def exceptionClass = appClassLoader.loadClass('org.mule.extension.http.api.error.HttpRequestFailedException')
         def messageClass = appClassLoader.loadClass('org.mule.runtime.api.i18n.I18nMessage')
-        def msg = messageClass.newInstance("HTTP ${connectorInfo.method} on resource '${connectorInfo.uri}' failed: ${details}.",
+        def msg = messageClass.newInstance("HTTP ${method} on resource '${uri}' failed: ${details}.",
                                            -1)
         def errorTypeDefinitionClass = appClassLoader.loadClass('org.mule.extension.http.api.error.HttpError')
         def connectivityError = errorTypeDefinitionClass.enumConstants.find { c ->

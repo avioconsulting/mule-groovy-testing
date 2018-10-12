@@ -6,15 +6,17 @@ import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.connectors.SoapConsumerInfo
 import com.avioconsulting.mule.testing.transformers.IHaveStateToReset
 
-class WsConsumerConnectorErrorTransformer implements
+class WsConsumerConnectorErrorTransformer extends
+        HttpConnectorErrorTransformer implements
         IHaveStateToReset,
         MuleMessageTransformer<SoapConsumerInfo> {
+    // all SOAP requests are POSTs
+    private static final String SOAP_METHOD = 'POST'
     private boolean triggerConnectException
     private boolean triggerTimeoutException
-    private final IFetchAppClassLoader fetchAppClassLoader
 
     WsConsumerConnectorErrorTransformer(IFetchAppClassLoader fetchAppClassLoader) {
-        this.fetchAppClassLoader = fetchAppClassLoader
+        super(fetchAppClassLoader)
         reset()
     }
 
@@ -33,11 +35,19 @@ class WsConsumerConnectorErrorTransformer implements
         if (!triggerConnectException && !triggerTimeoutException) {
             return muleEvent
         }
+        Throwable exception
         if (triggerConnectException) {
-            def exceptionKlass = fetchAppClassLoader.appClassloader.loadClass('org.mule.runtime.soap.api.exception.DispatchingException')
-            def exception = exceptionKlass.newInstance('An error occurred while sending the SOAP request')
-            throw exception
+            // when custom transports (aka HTTP reequest configs) are used, then these exceptions behave more like
+            // exceptions coming out of the HTTP requester
+            if (connectorInfo.customHttpTransportConfigured) {
+                exception = getConnectionException(connectorInfo.uri,
+                                                   SOAP_METHOD)
+            } else {
+                def exceptionKlass = fetchAppClassLoader.appClassloader.loadClass('org.mule.runtime.soap.api.exception.DispatchingException')
+                exception = exceptionKlass.newInstance('An error occurred while sending the SOAP request') as Throwable
+            }
         }
+        throw exception
     }
 
     @Override
