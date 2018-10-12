@@ -6,6 +6,8 @@ import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.connectors.SoapConsumerInfo
 import com.avioconsulting.mule.testing.transformers.IHaveStateToReset
 
+import java.util.concurrent.TimeoutException
+
 class WsConsumerConnectorErrorTransformer extends
         HttpConnectorErrorTransformer implements
         IHaveStateToReset,
@@ -35,7 +37,7 @@ class WsConsumerConnectorErrorTransformer extends
         if (!triggerConnectException && !triggerTimeoutException) {
             return muleEvent
         }
-        Throwable exception
+        Throwable exception = null
         if (triggerConnectException) {
             // when custom transports (aka HTTP reequest configs) are used, then these exceptions behave more like
             // exceptions coming out of the HTTP requester
@@ -47,6 +49,12 @@ class WsConsumerConnectorErrorTransformer extends
                 exception = exceptionKlass.newInstance('An error occurred while sending the SOAP request') as Throwable
             }
         }
+        if (triggerTimeoutException) {
+            def exceptionKlass = fetchAppClassLoader.appClassloader.loadClass('org.mule.runtime.soap.api.exception.DispatchingException')
+            exception = exceptionKlass.newInstance('The SOAP request timed out',
+                                                   new TimeoutException('HTTP timeout!')) as Throwable
+        }
+        assert exception: 'should not make it thus far without one'
         throw exception
     }
 
