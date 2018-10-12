@@ -191,7 +191,8 @@ class SoapTest extends
                    is(equalTo('org.mule.runtime.soap.api.exception.DispatchingException'))
         assertThat result.cause.cause,
                    is(nullValue())
-        // TODO: error type -  WSC:CANNOT_DISPATCH
+        assertThat result.info['Error type'],
+                   is(equalTo(' WSC:CANNOT_DISPATCH'))
         assertThat result.message,
                    is(equalTo('An error occurred while sending the SOAP request.'))
     }
@@ -248,6 +249,8 @@ class SoapTest extends
                    is(equalTo('org.mule.runtime.soap.api.exception.DispatchingException'))
         assertThat result.cause.cause.class.name,
                    is(equalTo('java.util.concurrent.TimeoutException'))
+        assertThat result.info['Error type'],
+                   is(equalTo('WSC:CANNOT_DISPATCH'))
         assertThat result.message,
                    is(equalTo('The SOAP request timed out.'))
     }
@@ -275,6 +278,8 @@ class SoapTest extends
                    is(equalTo('org.mule.extension.http.api.error.HttpRequestFailedException'))
         assertThat result.cause.cause.getClass().name,
                    is(equalTo('java.util.concurrent.TimeoutException'))
+        assertThat result.info['Error type'],
+                   is(equalTo('HTTP:TIMEOUT'))
         assertThat result.message,
                    is(equalTo("HTTP POST on resource 'http://localhost:8081' failed: Some timeout error."))
     }

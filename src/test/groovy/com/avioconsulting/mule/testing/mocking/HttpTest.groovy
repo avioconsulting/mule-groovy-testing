@@ -456,6 +456,8 @@ class HttpTest extends
                    is(equalTo('org.mule.extension.http.api.error.HttpRequestFailedException'))
         assertThat result.cause.cause.getClass().name,
                    is(equalTo('java.util.concurrent.TimeoutException'))
+        assertThat result.info['Error type'],
+                   is(equalTo('HTTP:TIMEOUT'))
         assertThat result.message,
                    is(equalTo("HTTP POST on resource 'http://localhost:443/some_path' failed: Some timeout error."))
     }
