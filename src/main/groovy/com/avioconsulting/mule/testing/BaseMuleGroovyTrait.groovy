@@ -298,12 +298,10 @@ trait BaseMuleGroovyTrait {
     }
 
     def mockSoapCall(MockingConfiguration mockingConfiguration,
-                     RuntimeBridgeTestSide muleContext,
                      String connectorName,
                      @DelegatesTo(SOAPFormatter) Closure closure) {
         def payloadValidator = new SOAPPayloadValidator()
-        def soapFormatter = new SOAPFormatterImpl(muleContext,
-                                                  payloadValidator)
+        def soapFormatter = new SOAPFormatterImpl(payloadValidator)
         def code = closure.rehydrate(soapFormatter, this, this)
         code.resolveStrategy = Closure.DELEGATE_ONLY
         code()

@@ -125,7 +125,6 @@ class BaseJunitTest implements
     def mockSoapCall(String connectorName,
                      @DelegatesTo(SOAPFormatter) Closure closure) {
         mockSoapCall(mockingConfiguration,
-                     runtimeBridge,
                      connectorName,
                      closure)
     }
