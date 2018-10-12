@@ -190,6 +190,8 @@ class SoapTest extends
                    is(equalTo('org.mule.runtime.core.internal.exception.MessagingException'))
         assertThat result.cause.class.name,
                    is(equalTo('org.mule.runtime.soap.api.exception.DispatchingException'))
+        assertThat result.cause.cause,
+                   is(nullValue())
         assertThat result.message,
                    is(equalTo('An error occurred while sending the SOAP request.'))
     }
