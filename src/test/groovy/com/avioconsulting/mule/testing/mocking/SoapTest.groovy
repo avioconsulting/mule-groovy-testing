@@ -12,7 +12,6 @@ import groovy.xml.DOMBuilder
 import org.junit.Test
 
 import javax.xml.namespace.QName
-import java.util.concurrent.TimeoutException
 
 import static groovy.test.GroovyAssert.shouldFail
 import static org.hamcrest.Matchers.*
@@ -170,7 +169,7 @@ class SoapTest extends
     }
 
     @Test
-    void httpConnectionError() {
+    void httpConnectionError_no_custom_transport() {
         // arrange
         mockSoapCall('A SOAP Call') {
             httpConnectError()
@@ -197,7 +196,34 @@ class SoapTest extends
     }
 
     @Test
-    void http_TimeoutError() {
+    void httpConnectionError_custom_transport() {
+        // arrange
+        mockSoapCall('A SOAP Call') {
+            httpConnectError()
+        }
+
+        // act
+        def result = shouldFail {
+            runFlow('soaptestFlow_Custom_Transport') {
+                json {
+                    inputPayload([foo: 123])
+                }
+            }
+        }
+
+        // assert
+        assertThat result.class.name,
+                   is(equalTo('org.mule.runtime.core.internal.exception.MessagingException'))
+        assertThat result.cause.class.name,
+                   is(equalTo('org.mule.runtime.soap.api.exception.DispatchingException'))
+        assertThat result.cause.cause,
+                   is(nullValue())
+        assertThat result.message,
+                   is(equalTo('An error occurred while sending the SOAP request.'))
+    }
+
+    @Test
+    void http_TimeoutError_no_custom_transport() {
         // arrange
         mockSoapCall('A SOAP Call') {
             httpTimeoutError()
@@ -213,10 +239,41 @@ class SoapTest extends
         }
 
         // assert
-        assertThat result,
-                   is(instanceOf(MessagingException))
-        assertThat result.cause,
-                   is(instanceOf(TimeoutException))
+        assertThat result.class.name,
+                   is(equalTo('org.mule.runtime.core.internal.exception.MessagingException'))
+        assertThat result.cause.class.name,
+                   is(equalTo('org.mule.runtime.soap.api.exception.DispatchingException'))
+        assertThat result.cause.cause,
+                   is(nullValue())
+        assertThat result.message,
+                   is(equalTo('An error occurred while sending the SOAP request.'))
+    }
+
+    @Test
+    void http_TimeoutError_custom_transport() {
+        // arrange
+        mockSoapCall('A SOAP Call') {
+            httpTimeoutError()
+        }
+
+        // act
+        def result = shouldFail {
+            runFlow('soaptestFlow_Custom_Transport') {
+                json {
+                    inputPayload([foo: 123])
+                }
+            }
+        }
+
+        // assert
+        assertThat result.class.name,
+                   is(equalTo('org.mule.runtime.core.internal.exception.MessagingException'))
+        assertThat result.cause.class.name,
+                   is(equalTo('org.mule.runtime.soap.api.exception.DispatchingException'))
+        assertThat result.cause.cause,
+                   is(nullValue())
+        assertThat result.message,
+                   is(equalTo('An error occurred while sending the SOAP request.'))
     }
 
     @Test

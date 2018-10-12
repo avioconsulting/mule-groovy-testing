@@ -16,11 +16,18 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
                           doc:name="HTTP Listener Configuration">
         <http:listener-connection host="localhost" port="9999"/>
     </http:listener-config>
-    <wsc:config name="Web_Service_Consumer">
+    <http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="2a9fdde8-2190-4605-83a4-6c2a2bb82901" responseTimeout="500" >
+        <http:request-connection host="localhost" port="8081" />
+    </http:request-config>
+    <wsc:config name="Web_Service_Consumer_Custom_Transport">
         <wsc:connection wsdlLocation="soap/test.wsdl"
                         service="SOAPTestService"
                         port="SOAPTestService"
-                        address="http://localhost:8081"/>
+                        address="http://localhost:8081">
+            <wsc:custom-transport-configuration>
+                <wsc:http-transport-configuration requesterConfig="HTTP_Request_configuration" />
+            </wsc:custom-transport-configuration>
+        </wsc:connection>
     </wsc:config>
     <apikit-soap:config name="soapkit-config"
                         wsdlLocation="soap/test.wsdl"
@@ -48,6 +55,36 @@ ns ns0 http://www.avioconsulting.com/schemas/SOAPTest/v1
             </ee:message>
         </ee:transform>
         <wsc:consume config-ref="Web_Service_Consumer"
+                     operation="operation1"
+                     doc:name="A SOAP Call"/>
+        <ee:transform doc:name="Transform Message">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+ns ns0 http://www.avioconsulting.com/schemas/SOAPTest/v1
+---
+{
+	result: payload.ns0#SOAPTestResponse.details
+}]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+    </flow>
+    <flow name="soaptestFlow_Custom_Transport">
+        <ee:transform doc:name="Transform Message">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/xml
+ns ns0 http://www.avioconsulting.com/schemas/SOAPTest/v1
+---
+{
+	ns0#SOAPTestRequest: {
+		ns0#title: 'theTitle ' ++ payload.foo,
+		ns0#approvalDate: '2017-04-01'
+	}
+}]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+        <wsc:consume config-ref="Web_Service_Consumer_Custom_Transport"
                      operation="operation1"
                      doc:name="A SOAP Call"/>
         <ee:transform doc:name="Transform Message">
