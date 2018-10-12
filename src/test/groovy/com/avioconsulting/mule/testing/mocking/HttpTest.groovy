@@ -423,6 +423,8 @@ class HttpTest extends
                    is(equalTo('org.mule.extension.http.api.error.HttpRequestFailedException'))
         assertThat result.cause.cause.getClass().name,
                    is(equalTo('java.net.ConnectException'))
+        assertThat result.info['Error type'],
+                   is(equalTo('HTTP:CONNECTIVITY'))
         assertThat result.message,
                    is(equalTo("HTTP POST on resource 'http://localhost:443/some_path' failed: Connection refused."))
     }
