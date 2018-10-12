@@ -264,14 +264,14 @@ class SoapTest extends
         }
 
         // assert
-        assertThat result.class.name,
+        assertThat result.getClass().name,
                    is(equalTo('org.mule.runtime.core.internal.exception.MessagingException'))
-        assertThat result.cause.class.name,
-                   is(equalTo('org.mule.runtime.soap.api.exception.DispatchingException'))
-        assertThat result.cause.cause,
-                   is(nullValue())
+        assertThat result.cause.getClass().name,
+                   is(equalTo('org.mule.extension.http.api.error.HttpRequestFailedException'))
+        assertThat result.cause.cause.getClass().name,
+                   is(equalTo('java.util.concurrent.TimeoutException'))
         assertThat result.message,
-                   is(equalTo('An error occurred while sending the SOAP request.'))
+                   is(equalTo("HTTP POST on resource 'http://localhost:8081' failed: Timeout exceeded."))
     }
 
     @Test
