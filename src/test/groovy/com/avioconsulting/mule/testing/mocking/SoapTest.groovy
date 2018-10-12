@@ -18,7 +18,9 @@ import static groovy.test.GroovyAssert.shouldFail
 import static org.hamcrest.Matchers.*
 import static org.junit.Assert.assertThat
 
-class SoapTest extends BaseJunitTest implements OverrideConfigList {
+class SoapTest extends
+        BaseJunitTest implements
+        OverrideConfigList {
     List<String> getConfigResources() {
         ['soap_test.xml']
     }
@@ -184,10 +186,12 @@ class SoapTest extends BaseJunitTest implements OverrideConfigList {
         }
 
         // assert
-        assertThat result,
-                   is(instanceOf(MessagingException))
-        assertThat result.cause,
-                   is(instanceOf(ConnectException))
+        assertThat result.class.name,
+                   is(equalTo('org.mule.runtime.core.internal.exception.MessagingException'))
+        assertThat result.cause.class.name,
+                   is(equalTo('org.mule.runtime.soap.api.exception.DispatchingException'))
+        assertThat result.message,
+                   is(equalTo('An error occurred while sending the SOAP request.'))
     }
 
     @Test
