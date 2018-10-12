@@ -216,6 +216,8 @@ class SoapTest extends
                    is(equalTo('org.mule.runtime.core.internal.exception.MessagingException'))
         assertThat result.cause.getClass().name,
                    is(equalTo('org.mule.extension.http.api.error.HttpRequestFailedException'))
+        assertThat result.cause.cause.getClass().name,
+                   is(equalTo('java.net.ConnectException'))
         assertThat result.message,
                    is(equalTo("HTTP POST on resource 'http://localhost:8081' failed: Connection refused."))
     }
