@@ -273,7 +273,7 @@ class SoapTest extends
         assertThat result.cause.cause.getClass().name,
                    is(equalTo('java.util.concurrent.TimeoutException'))
         assertThat result.message,
-                   is(equalTo("HTTP POST on resource 'http://localhost:8081' failed: Timeout exceeded."))
+                   is(equalTo("HTTP POST on resource 'http://localhost:8081' failed: Some timeout error."))
     }
 
     @Test

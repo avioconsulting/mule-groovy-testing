@@ -38,10 +38,11 @@ class WsConsumerConnectorErrorTransformer extends
             return muleEvent
         }
         Throwable exception = null
+        def customHttpTransportConfigured = connectorInfo.customHttpTransportConfigured
         if (triggerConnectException) {
             // when custom transports (aka HTTP reequest configs) are used, then these exceptions behave more like
             // exceptions coming out of the HTTP requester
-            if (connectorInfo.customHttpTransportConfigured) {
+            if (customHttpTransportConfigured) {
                 exception = getConnectionException(connectorInfo.uri,
                                                    SOAP_METHOD)
             } else {
@@ -50,9 +51,14 @@ class WsConsumerConnectorErrorTransformer extends
             }
         }
         if (triggerTimeoutException) {
-            def exceptionKlass = fetchAppClassLoader.appClassloader.loadClass('org.mule.runtime.soap.api.exception.DispatchingException')
-            exception = exceptionKlass.newInstance('The SOAP request timed out',
-                                                   new TimeoutException('HTTP timeout!')) as Throwable
+            if (customHttpTransportConfigured) {
+                exception = getTimeoutException(connectorInfo.uri,
+                                                SOAP_METHOD)
+            } else {
+                def exceptionKlass = fetchAppClassLoader.appClassloader.loadClass('org.mule.runtime.soap.api.exception.DispatchingException')
+                exception = exceptionKlass.newInstance('The SOAP request timed out',
+                                                       new TimeoutException('HTTP timeout!')) as Throwable
+            }
         }
         assert exception: 'should not make it thus far without one'
         throw exception
