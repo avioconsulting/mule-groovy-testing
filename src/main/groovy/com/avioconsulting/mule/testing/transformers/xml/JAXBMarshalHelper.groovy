@@ -1,6 +1,6 @@
 package com.avioconsulting.mule.testing.transformers.xml
 
-import com.sun.org.apache.xalan.internal.xsltc.trax.TransformerFactoryImpl
+import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
 import groovy.util.logging.Log4j2
 import groovy.xml.XmlUtil
 import org.w3c.dom.Document
@@ -8,11 +8,6 @@ import org.w3c.dom.Document
 import javax.xml.bind.JAXBContext
 import javax.xml.bind.JAXBElement
 import javax.xml.parsers.DocumentBuilderFactory
-import javax.xml.stream.XMLStreamReader
-import javax.xml.transform.OutputKeys
-import javax.xml.transform.TransformerFactory
-import javax.xml.transform.stax.StAXSource
-import javax.xml.transform.stream.StreamResult
 
 @Log4j2
 class JAXBMarshalHelper {
@@ -34,7 +29,7 @@ class JAXBMarshalHelper {
         doc
     }
 
-    StringReader getMarshalled(objectOrJaxbElement) {
+    String getMarshalled(objectOrJaxbElement) {
         def marshaller = this.jaxbContext.createMarshaller()
         def stringWriter = new StringWriter()
 
@@ -47,7 +42,7 @@ class JAXBMarshalHelper {
             log.info 'JAXB Marshaller for {}, marshalled a payload of {}',
                      this.helperUse,
                      asString
-            new StringReader(asString)
+            asString
         }
         catch (e) {
             throw new Exception(
@@ -56,33 +51,9 @@ class JAXBMarshalHelper {
         }
     }
 
-    def unmarshal(Object payload) {
+    def unmarshal(EventWrapper event) {
         def unmarshaller = this.jaxbContext.createUnmarshaller()
-        String payloadAsStr
-        switch (payload) {
-        // until successful/alternate path is a string
-            case String:
-                payloadAsStr = payload
-                break
-            case InputStream:
-                payloadAsStr = payload.text
-                break
-            case XMLStreamReader:
-                assert payload instanceof XMLStreamReader
-                // the default TransformerFactory.newInstance() method returned a transformer
-                // that does not work properly with StAXSource, so using one that is compatible
-                def transformer = TransformerFactory.newInstance(TransformerFactoryImpl.name,
-                                                                 Thread.currentThread().contextClassLoader)
-                        .newTransformer()
-                transformer.setOutputProperty(OutputKeys.INDENT, 'yes')
-                def writer = new StringWriter()
-                transformer.transform(new StAXSource(payload),
-                                      new StreamResult(writer))
-                payloadAsStr = writer.toString()
-                break
-            default:
-                throw new Exception("do not know how to handle XML payload of ${payload.getClass().name}")
-        }
+        def payloadAsStr = event.messageAsString
         log.info 'JAXB Unmarshaller for {}, received payload of {}',
                  this.helperUse,
                  payloadAsStr

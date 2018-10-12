@@ -29,29 +29,12 @@ class XMLJAXBTransformer<T extends ConnectorInfo> extends
                            ConnectorInfo connectorInfo) {
         validateContentType(event,
                             connectorInfo)
-        def payload = event.message.payload
-        def nullPayload = payload instanceof byte[] && payload.length == 0
-        def strongTypedPayload
-        if (nullPayload) {
-            log.warn('SOAP mock was sent a message with empty payload! using MuleMessage payload.')
-            strongTypedPayload = event.message
-        } else {
-            strongTypedPayload = helper.unmarshal(payload)
-        }
-
+        def strongTypedPayload = helper.unmarshal(event)
         def forMuleMsg = withMuleEvent(this.closure,
                                        event)
         def reply = forMuleMsg(strongTypedPayload)
-
-        StringReader reader
-        if (reply instanceof File) {
-            def xml = reply.text
-            reader = new StringReader(xml)
-        } else {
-            reader = helper.getMarshalled(reply)
-        }
-
-        this.xmlMessageBuilder.build(reader,
+        String xml = reply instanceof File ? reply.text : helper.getMarshalled(reply)
+        this.xmlMessageBuilder.build(xml,
                                      event,
                                      200)
     }

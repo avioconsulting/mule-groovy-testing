@@ -17,13 +17,7 @@ class SoapOperationFlowInvokerImpl extends
     }
 
     EventWrapper getEvent() {
-        String xml
-        if (inputObject instanceof File) {
-            xml = inputObject.text
-        } else {
-            def reader = jaxbHelper.getMarshalled(inputObject)
-            xml = reader.text
-        }
+        String xml = inputObject instanceof File ? inputObject.text : jaxbHelper.getMarshalled(inputObject)
         def newEvent = eventFactory.getMuleEventWithPayload(null,
                                                             flowName)
         this.xmlMessageBuilder.build(xml,

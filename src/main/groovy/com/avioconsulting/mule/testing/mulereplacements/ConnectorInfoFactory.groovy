@@ -3,6 +3,7 @@ package com.avioconsulting.mule.testing.mulereplacements
 
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.ConnectorInfo
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.connectors.HttpRequesterInfo
+import com.avioconsulting.mule.testing.mulereplacements.wrappers.connectors.SoapConsumerInfo
 
 class ConnectorInfoFactory {
     ConnectorInfo getConnectorInfo(String fileName,
@@ -12,6 +13,11 @@ class ConnectorInfoFactory {
             return new HttpRequesterInfo(fileName,
                                          lineInFile,
                                          params)
+        }
+        else if (params['message']?.class?.name?.endsWith('SoapMessageBuilder')) {
+            return new SoapConsumerInfo(fileName,
+                                        lineInFile,
+                                        params)
         }
         new ConnectorInfo(fileName,
                           lineInFile,
