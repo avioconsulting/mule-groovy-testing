@@ -9,6 +9,10 @@ interface SOAPFormatter extends XMLFormatter {
 
     def soapFault(String message,
                   QName faultCode,
+                  QName subCode)
+
+    def soapFault(String message,
+                  QName faultCode,
                   QName subCode,
-                  Closure markupBuilderClosure)
+                  Closure detailMarkupBuilderClosure)
 }

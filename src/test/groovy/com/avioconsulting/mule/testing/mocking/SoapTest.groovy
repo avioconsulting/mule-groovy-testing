@@ -285,23 +285,19 @@ class SoapTest extends
     }
 
     @Test
-    void soap_fault() {
+    void soap_fault_no_detail_provided() {
         // arrange
         mockSoapCall('Do Math') {
             whenCalledWithMapAsXml { request ->
                 soapFault('Error with one or more zip codes: ',
                           new QName('',
                                     'SERVER'),
-                          null) { DOMBuilder detailBuilder ->
-                    detailBuilder.detail {
-                        foobar()
-                    }
-                }
+                          null)
             }
         }
 
         // act
-        def exception = shouldFail {
+        def result = shouldFail {
             runFlow('calculatorSoapFaultFlow') {
                 json {
                     inputPayload([foo: 123])
@@ -310,20 +306,51 @@ class SoapTest extends
         }
 
         // assert
-        assertThat exception,
-                   is(instanceOf(SoapFaultException))
-        // for intellij
-        assert false: 'soapfaultexception??'
-        //assert exception instanceof SoapFaultException
-        assertThat exception.message,
-                   is(equalTo('Error with one or more zip codes: .'))
-        assertThat exception.faultCode,
-                   is(equalTo(new QName('', 'SERVER')))
-        assertThat exception.subCode,
-                   is(nullValue())
-        def detail = exception.detail
+        assertThat result.getClass().name,
+                   is(equalTo('org.mule.runtime.core.internal.exception.MessagingException'))
+        def soapFaultException = result.cause
+        assertThat soapFaultException.getClass().name,
+                   is(equalTo('org.mule.runtime.soap.api.exception.SoapFaultException'))
+        assertThat soapFaultException.cause.getClass().name,
+                   is(equalTo('org.apache.cxf.binding.soap.SoapFault'))
+        assertThat result.info['Error type'],
+                   is(equalTo('WSC:SOAP_FAULT'))
+        assertThat result.message,
+                   is(startsWith('System.Web.Services.Protocols.SoapException: Server was unable to read request'))
+        assertThat soapFaultException.faultCode,
+                   is(equalTo(new QName('http://schemas.xmlsoap.org/soap/envelope/', 'Client')))
+        assertThat soapFaultException.subCode,
+                   is(equalTo(Optional.empty()))
+        def detail = soapFaultException.detail
         assert detail
-        assertThat detail.serialize().trim(),
-                   is(equalTo('<detail>\n<foobar/>\n</detail>'))
+        assertThat detail.trim(),
+                   is(equalTo('<?xml version="1.0" encoding="UTF-8"?><detail/>'))
     }
+
+    @Test
+    void soap_fault_detail_provided() {
+        // arrange
+        //        mockSoapCall('Do Math') {
+//            whenCalledWithMapAsXml { request ->
+//                soapFault('Error with one or more zip codes: ',
+//                          new QName('',
+//                                    'SERVER'),
+//                          null) { DOMBuilder detailBuilder ->
+//                    detailBuilder.detail {
+//                        foobar()
+//                    }
+//                }
+//            }
+//        }
+
+        // act
+
+        // assert
+        def detail = soapFaultException.detail
+        assert detail
+        assertThat detail.trim(),
+                   is(equalTo('<detail>\n<foobar/>\n</detail>'))
+        fail 'write the test'
+    }
+
 }
