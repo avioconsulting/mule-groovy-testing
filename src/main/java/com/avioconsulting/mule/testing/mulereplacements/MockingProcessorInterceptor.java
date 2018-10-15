@@ -99,31 +99,9 @@ public class MockingProcessorInterceptor implements ProcessorInterceptor {
                 // need to unwrap our reflection based Mule exceptions
                 Throwable actualException = cause.getTargetException();
                 if (actualException instanceof ModuleException) {
-                    CompletableFuture<InterceptionEvent> completableFuture = new CompletableFuture<>();
-                    DefaultInterceptionEvent realEvent = (DefaultInterceptionEvent) event;
-                    ModuleException moduleException = (ModuleException) actualException;
-                    ErrorTypeDefinition theType = moduleException.getType();
-                    ComponentIdentifier identifier = location.getComponentIdentifier().getIdentifier();
-                    ErrorTypeRepository errorTypeRepo = getErrorTypeRepository();
-                    ComponentIdentifier errorComponentIdentifier = ComponentIdentifier.builder()
-                            // the component's namespace is lcased, it worked this way but being conservative here
-                            .namespace(identifier.getNamespace().toUpperCase())
-                            .name(theType.getType())
-                            .build();
-                    Optional<ErrorType> errorType = errorTypeRepo.lookupErrorType(errorComponentIdentifier);
-                    if (!errorType.isPresent()) {
-                        throw new RuntimeException("Unable to lookup error type! " + errorComponentIdentifier);
-                    }
-                    realEvent.setError(errorType.get(),
-                                       actualException);
-                    Processor processor = getProcessor(action);
-                    if (!(processor instanceof Component)) {
-                        throw new RuntimeException("Expected processor to be an instance of Component but was: " + processor.getClass().getName());
-                    }
-                    completableFuture.completeExceptionally(new MessagingException(realEvent.resolve(),
-                                                                                   actualException,
-                                                                                   (Component) processor));
-                    return completableFuture;
+                    return fail((DefaultInterceptionEvent) event,
+                                action,
+                                (ModuleException) actualException);
                 }
                 return action.fail(actualException);
             } catch (IllegalAccessException e) {
@@ -134,5 +112,32 @@ public class MockingProcessorInterceptor implements ProcessorInterceptor {
         return action.proceed();
     }
 
-
+    private CompletableFuture<InterceptionEvent> fail(DefaultInterceptionEvent event,
+                                                      InterceptionAction action,
+                                                      ModuleException moduleException) {
+        CompletableFuture<InterceptionEvent> completableFuture = new CompletableFuture<>();
+        ErrorTypeDefinition errorTypeDefinition = moduleException.getType();
+        Processor processor = getProcessor(action);
+        if (!(processor instanceof Component)) {
+            throw new RuntimeException("Expected processor to be an instance of Component but was: " + processor.getClass().getName());
+        }
+        Component component = (Component) processor;
+        ComponentIdentifier processorIdentifier = component.getLocation().getComponentIdentifier().getIdentifier();
+        ErrorTypeRepository repository = getErrorTypeRepository();
+        ComponentIdentifier errorComponentIdentifier = ComponentIdentifier.builder()
+                // the component's namespace is lcased, it worked this way but being conservative here
+                .namespace(processorIdentifier.getNamespace().toUpperCase())
+                .name(errorTypeDefinition.getType())
+                .build();
+        Optional<ErrorType> errorType = repository.lookupErrorType(errorComponentIdentifier);
+        if (!errorType.isPresent()) {
+            throw new RuntimeException("Unable to lookup error type! " + errorComponentIdentifier);
+        }
+        event.setError(errorType.get(),
+                       moduleException);
+        completableFuture.completeExceptionally(new MessagingException(event.resolve(),
+                                                                       moduleException,
+                                                                       component));
+        return completableFuture;
+    }
 }
