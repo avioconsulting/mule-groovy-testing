@@ -168,7 +168,8 @@ ns ns0 http://tempuri.org
 ---
 {
 	ns0#Add: {
-		intA: 123,
+	    // used for testing with real service
+		intA: 'howdy',
 		intB: 456
 	}
 }]]></ee:set-payload>
