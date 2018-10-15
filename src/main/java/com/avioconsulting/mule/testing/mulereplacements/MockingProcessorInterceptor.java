@@ -99,6 +99,10 @@ public class MockingProcessorInterceptor implements ProcessorInterceptor {
                 // need to unwrap our reflection based Mule exceptions
                 Throwable actualException = cause.getTargetException();
                 if (actualException instanceof ModuleException) {
+                    // not using action.fail(Throwable) because if you supply the raw exception, flow error handlers will not
+                    // receive the error type. action.fail(ErrorType) would then prevent other useful exception
+                    // details from being passed along. We have our own implementation that sets the error type
+                    // and exception details properly, just like the real ModuleExceptionHandler would
                     return fail((DefaultInterceptionEvent) event,
                                 action,
                                 (ModuleException) actualException);
