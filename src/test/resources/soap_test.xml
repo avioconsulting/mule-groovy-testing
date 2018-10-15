@@ -164,13 +164,13 @@ ns ns0 http://www.avioconsulting.com/schemas/SOAPTest/v1
             <ee:message>
                 <ee:set-payload><![CDATA[%dw 2.0
 output application/xml
-ns ns0 http://tempuri.org
+ns ns0 http://tempuri.org/
 ---
 {
 	ns0#Add: {
 	    // used for testing with real service
-		intA: 'howdy',
-		intB: 456
+		ns0#intA: 'howdy',
+		ns0#intB: 456
 	}
 }]]></ee:set-payload>
             </ee:message>
