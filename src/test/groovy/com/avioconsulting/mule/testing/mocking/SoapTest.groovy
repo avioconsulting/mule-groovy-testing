@@ -289,9 +289,9 @@ class SoapTest extends
         // arrange
         mockSoapCall('Do Math') {
             whenCalledWithMapAsXml { request ->
-                soapFault('Error with one or more zip codes: ',
-                          new QName('',
-                                    'SERVER'),
+                soapFault('System.Web.Services.Protocols.SoapException: Server was unable to read request...',
+                          new QName('http://schemas.xmlsoap.org/soap/envelope/',
+                                    'Client'),
                           null)
             }
         }
