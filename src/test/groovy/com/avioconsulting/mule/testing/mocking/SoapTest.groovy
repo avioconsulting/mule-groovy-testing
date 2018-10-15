@@ -287,7 +287,7 @@ class SoapTest extends
     @Test
     void soap_fault() {
         // arrange
-        mockSoapCall('Get Weather') {
+        mockSoapCall('Do Math') {
             whenCalledWithMapAsXml { request ->
                 soapFault('Error with one or more zip codes: ',
                           new QName('',
@@ -302,7 +302,7 @@ class SoapTest extends
 
         // act
         def exception = shouldFail {
-            runFlow('weatherSoapFaultFlow') {
+            runFlow('calculatorSoapFaultFlow') {
                 json {
                     inputPayload([foo: 123])
                 }

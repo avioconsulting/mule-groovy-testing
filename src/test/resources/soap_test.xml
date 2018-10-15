@@ -159,7 +159,7 @@ ns ns0 http://www.avioconsulting.com/schemas/SOAPTest/v1
             </ee:message>
         </ee:transform>
     </flow>
-    <flow name="weatherSoapFaultFlow">
+    <flow name="calculatorSoapFaultFlow">
         <ee:transform doc:name="Transform Message">
             <ee:message>
                 <ee:set-payload><![CDATA[%dw 2.0
@@ -176,6 +176,6 @@ ns ns0 http://tempuri.org
         </ee:transform>
         <wsc:consume config-ref="Web_Service_Consumer_Calculator"
                      operation="Add"
-                     doc:name="Get Weather"/>
+                     doc:name="Do Math"/>
     </flow>
 </mule>
