@@ -98,16 +98,24 @@ public class MockingProcessorInterceptor implements ProcessorInterceptor {
             } catch (InvocationTargetException cause) {
                 // need to unwrap our reflection based Mule exceptions
                 Throwable actualException = cause.getTargetException();
-                if (actualException.getClass().getName().equals("com.avioconsulting.mule.testing.mulereplacements.wrappers.ModuleExceptionWrapper")) {
-                    // not using action.fail(Throwable) because if you supply the raw exception, flow error handlers will not
-                    // receive the error type. action.fail(ErrorType) would then prevent other useful exception
-                    // details from being passed along. We have our own implementation that sets the error type
-                    // and exception details properly, just like the real ModuleExceptionHandler would
-                    return fail((DefaultInterceptionEvent) event,
-                                action,
-                                actualException);
+                switch (actualException.getClass().getName()) {
+                    case "com.avioconsulting.mule.testing.mulereplacements.wrappers.ModuleExceptionWrapper":
+                        // not using action.fail(Throwable) because if you supply the raw exception, flow error handlers will not
+                        // receive the error type. action.fail(ErrorType) would then prevent other useful exception
+                        // details from being passed along. We have our own implementation that sets the error type
+                        // and exception details properly, just like the real ModuleExceptionHandler would
+                        return fail(event,
+                                    action,
+                                    actualException);
+                    case "com.avioconsulting.mule.testing.mulereplacements.wrappers.CustomErrorWrapperException":
+                        // using this for same reason as above, except our mocking code already built out the
+                        // error codes for us
+                        return failWithCustomerErrorWrapper(event,
+                                                            action,
+                                                            actualException);
+                    default:
+                        return action.fail(actualException);
                 }
-                return action.fail(actualException);
             } catch (IllegalAccessException e) {
                 throw new RuntimeException("Should not have had a reflection problem but did",
                                            e);
@@ -127,33 +135,66 @@ public class MockingProcessorInterceptor implements ProcessorInterceptor {
         }
     }
 
-    private CompletableFuture<InterceptionEvent> fail(DefaultInterceptionEvent event,
+    private CompletableFuture<InterceptionEvent> fail(InterceptionEvent event,
                                                       InterceptionAction action,
                                                       Throwable moduleExceptionWrapper) {
-        CompletableFuture<InterceptionEvent> completableFuture = new CompletableFuture<>();
         ModuleException moduleException = (ModuleException) moduleExceptionWrapper.getCause();
         ErrorTypeDefinition errorTypeDefinition = moduleException.getType();
-        ErrorTypeRepository repository = getErrorTypeRepository();
         // see ModuleExceptionWrapper for why we get the namespace for the error this way
         String namespace = getNamespace(moduleExceptionWrapper);
+        String errorTypeCode = errorTypeDefinition.getType();
+        return fail(event,
+                    action,
+                    moduleException,
+                    namespace,
+                    errorTypeCode);
+    }
+
+    private CompletableFuture<InterceptionEvent> failWithCustomerErrorWrapper(InterceptionEvent event,
+                                                                              InterceptionAction action,
+                                                                              Throwable customErrorWrapperException) {
+        try {
+            // CustomErrorWrapperException is groovy,  therefore reflection
+            Class<? extends Throwable> customErrorWrapperExceptionClass = customErrorWrapperException.getClass();
+            Method namespaceMethod = customErrorWrapperExceptionClass.getDeclaredMethod("getNamespace");
+            String namespace = (String) namespaceMethod.invoke(customErrorWrapperException);
+            Method errorTypeMethod = customErrorWrapperExceptionClass.getDeclaredMethod("getErrorCode");
+            String errorTypeCode = (String) errorTypeMethod.invoke(customErrorWrapperException);
+            return fail(event,
+                        action,
+                        customErrorWrapperException.getCause(),
+                        namespace,
+                        errorTypeCode);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private CompletableFuture<InterceptionEvent> fail(InterceptionEvent event,
+                                                      InterceptionAction action,
+                                                      Throwable exception,
+                                                      String namespace,
+                                                      String errorTypeCode) {
         ComponentIdentifier errorComponentIdentifier = ComponentIdentifier.builder()
                 .namespace(namespace)
-                .name(errorTypeDefinition.getType())
+                .name(errorTypeCode)
                 .build();
+        ErrorTypeRepository repository = getErrorTypeRepository();
         Optional<ErrorType> errorType = repository.lookupErrorType(errorComponentIdentifier);
         if (!errorType.isPresent()) {
             throw new RuntimeException("Unable to lookup error type! " + errorComponentIdentifier);
         }
-        event.setError(errorType.get(),
-                       moduleException);
+        DefaultInterceptionEvent eventImpl = (DefaultInterceptionEvent) event;
+        eventImpl.setError(errorType.get(),
+                           exception);
         Processor processor = getProcessor(action);
         if (!(processor instanceof Component)) {
             throw new RuntimeException("Expected processor to be an instance of Component but was: " + processor.getClass().getName());
         }
         Component component = (Component) processor;
-
-        completableFuture.completeExceptionally(new MessagingException(event.resolve(),
-                                                                       moduleException,
+        CompletableFuture<InterceptionEvent> completableFuture = new CompletableFuture<>();
+        completableFuture.completeExceptionally(new MessagingException(eventImpl.resolve(),
+                                                                       exception,
                                                                        component));
         return completableFuture;
     }
