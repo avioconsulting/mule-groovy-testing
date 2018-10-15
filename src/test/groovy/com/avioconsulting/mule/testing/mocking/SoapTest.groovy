@@ -192,7 +192,7 @@ class SoapTest extends
         assertThat result.cause.cause,
                    is(nullValue())
         assertThat result.info['Error type'],
-                   is(equalTo(' WSC:CANNOT_DISPATCH'))
+                   is(equalTo('WSC:CANNOT_DISPATCH'))
         assertThat result.message,
                    is(equalTo('An error occurred while sending the SOAP request.'))
     }
