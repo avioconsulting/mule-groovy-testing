@@ -3,6 +3,7 @@ package com.avioconsulting.mule.testing.mulereplacements;
 import org.mule.runtime.api.artifact.Registry;
 import org.mule.runtime.api.component.location.ComponentLocation;
 import org.mule.runtime.api.event.EventContext;
+import org.mule.runtime.api.exception.ErrorTypeRepository;
 import org.mule.runtime.api.message.Message;
 import org.mule.runtime.api.metadata.MediaType;
 import org.mule.runtime.core.api.MuleContext;
@@ -124,5 +125,14 @@ public class RuntimeBridgeMuleSide {
 
     public ClassLoader getAppClassloader() {
         return getMuleContext().getExecutionClassLoader();
+    }
+
+    public ErrorTypeRepository getErrorTypeRepository() {
+        Optional<ErrorTypeRepository> optional = this.registry.lookupByType(ErrorTypeRepository.class);
+        if (!optional.isPresent()) {
+            throw new RuntimeException("Unable to get error type repository!");
+        }
+        return optional.get();
+
     }
 }

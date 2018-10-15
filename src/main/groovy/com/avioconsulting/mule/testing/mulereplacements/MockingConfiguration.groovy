@@ -53,4 +53,8 @@ class MockingConfiguration {
     boolean shouldFlowListenerBeEnabled(String flowName) {
         keepListenersOnForTheseFlows.contains(flowName)
     }
+
+    Object getErrorTypeRepository() {
+        runtimeBridgeMuleSide.getErrorTypeRepository()
+    }
 }
