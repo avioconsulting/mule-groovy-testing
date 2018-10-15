@@ -1,5 +1,6 @@
 package com.avioconsulting.mule.testing.mulereplacements;
 
+import org.mule.runtime.api.component.Component;
 import org.mule.runtime.api.component.ComponentIdentifier;
 import org.mule.runtime.api.component.location.ComponentLocation;
 import org.mule.runtime.api.exception.ErrorTypeRepository;
@@ -8,11 +9,13 @@ import org.mule.runtime.api.interception.InterceptionEvent;
 import org.mule.runtime.api.interception.ProcessorInterceptor;
 import org.mule.runtime.api.interception.ProcessorParameterValue;
 import org.mule.runtime.api.message.ErrorType;
+import org.mule.runtime.core.api.processor.Processor;
 import org.mule.runtime.core.internal.exception.MessagingException;
 import org.mule.runtime.core.internal.interception.DefaultInterceptionEvent;
 import org.mule.runtime.extension.api.error.ErrorTypeDefinition;
 import org.mule.runtime.extension.api.exception.ModuleException;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Map;
@@ -68,6 +71,18 @@ public class MockingProcessorInterceptor implements ProcessorInterceptor {
         }
     }
 
+    private static Processor getProcessor(InterceptionAction action) {
+        // action is of type org.mule.runtime.core.internal.processor.interceptor.ReactiveInterceptionAction
+        // ReactiveInterceptionAction.processor is a private field. Only way known to get ahold of this
+        try {
+            Field processorField = action.getClass().getDeclaredField("processor");
+            processorField.setAccessible(true);
+            return (Processor) processorField.get(action);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     @Override
     public CompletableFuture<InterceptionEvent> around(ComponentLocation location,
                                                        Map<String, ProcessorParameterValue> parameters,
@@ -101,10 +116,13 @@ public class MockingProcessorInterceptor implements ProcessorInterceptor {
                     }
                     realEvent.setError(errorType.get(),
                                        actualException);
-                    //processorField = c.class.getDeclaredField("ReactiveInterceptionAction")
+                    Processor processor = getProcessor(action);
+                    if (!(processor instanceof Component)) {
+                        throw new RuntimeException("Expected processor to be an instance of Component but was: " + processor.getClass().getName());
+                    }
                     completableFuture.completeExceptionally(new MessagingException(realEvent.resolve(),
                                                                                    actualException,
-                                                                                   null));
+                                                                                   (Component) processor));
                     return completableFuture;
                 }
                 return action.fail(actualException);
