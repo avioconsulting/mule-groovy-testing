@@ -3,6 +3,7 @@ package com.avioconsulting.mule.testing.transformers.http
 import com.avioconsulting.mule.testing.mulereplacements.IFetchAppClassLoader
 import com.avioconsulting.mule.testing.mulereplacements.MuleMessageTransformer
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
+import com.avioconsulting.mule.testing.mulereplacements.wrappers.ModuleExceptionWrapper
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.connectors.HttpRequesterInfo
 import com.avioconsulting.mule.testing.transformers.IHaveStateToReset
 
@@ -85,9 +86,13 @@ class HttpConnectorErrorTransformer implements
             c.toString() == errorEnumCode
         }
         assert connectivityError: "Could not locate ${errorEnumCode} in ${errorTypeDefinitionClass.enumConstants}"
-        exceptionClass.newInstance(msg,
-                                   cause,
-                                   connectivityError) as Exception
+        def exception = exceptionClass.newInstance(msg,
+                                                   cause,
+                                                   connectivityError) as Exception
+        // errors using the underlying HTTP transport, whether SOAP (when set to custom) or HTTP request
+        // have been observed to use the HTTP namespace
+        new ModuleExceptionWrapper(exception,
+                                   'HTTP')
     }
 
     @Override
