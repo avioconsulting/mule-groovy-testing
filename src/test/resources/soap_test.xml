@@ -70,7 +70,7 @@ output application/json
 ns ns0 http://www.avioconsulting.com/schemas/SOAPTest/v1
 ---
 {
-	result: payload.ns0#SOAPTestResponse.details
+	result: payload.body.ns0#SOAPTestResponse.details
 }]]></ee:set-payload>
             </ee:message>
         </ee:transform>
@@ -100,7 +100,7 @@ output application/json
 ns ns0 http://www.avioconsulting.com/schemas/SOAPTest/v1
 ---
 {
-	result: payload.ns0#SOAPTestResponse.details
+	result: payload.body.ns0#SOAPTestResponse.details
 }]]></ee:set-payload>
             </ee:message>
         </ee:transform>
