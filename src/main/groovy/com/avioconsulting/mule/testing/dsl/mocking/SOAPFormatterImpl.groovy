@@ -2,10 +2,9 @@ package com.avioconsulting.mule.testing.dsl.mocking
 
 import com.avioconsulting.mule.testing.mulereplacements.IFetchAppClassLoader
 import com.avioconsulting.mule.testing.mulereplacements.MuleMessageTransformer
+import com.avioconsulting.mule.testing.mulereplacements.wrappers.CustomErrorWrapperException
 import com.avioconsulting.mule.testing.payloadvalidators.IPayloadValidator
-import com.avioconsulting.mule.testing.transformers.TransformerChain
 import com.avioconsulting.mule.testing.transformers.http.WsConsumerConnectorErrorTransformer
-import com.avioconsulting.mule.testing.transformers.xml.SoapFaultTransformer
 import groovy.xml.DOMBuilder
 
 import javax.xml.namespace.QName
@@ -13,20 +12,18 @@ import javax.xml.namespace.QName
 class SOAPFormatterImpl extends
         XMLFormatterImpl implements
         SOAPFormatter {
-    // don't want to tie ourselves to a given version of CXF/ws by expressing a compile dependency
     @Lazy
-    private static Class soapFaultClass = {
+    private Class muleSoapFaultClass = {
         try {
-            SOAPFormatterImpl.classLoader.loadClass('org.apache.cxf.binding.soap.SoapFault')
+            fetchAppClassLoader.appClassloader.loadClass('org.mule.runtime.soap.api.exception.SoapFaultException')
         }
         catch (e) {
-            throw new Exception('Was not able to load SoapFault properly. You need to have CXF in your project to use the XML functions. Consider adding the org.mule.modules:mule-module-cxf:jar:3.9.1 dependency with at least test scope to your project',
+            throw new Exception('Was not able to load SoapFaultException properly. Do you have thw WSC consumer module in your POM?',
                                 e)
         }
     }()
 
     private WsConsumerConnectorErrorTransformer httpConnectorErrorTransformer
-    private SoapFaultTransformer soapFaultTransformer
     private final IFetchAppClassLoader fetchAppClassLoader
 
     SOAPFormatterImpl(IPayloadValidator payloadValidator,
@@ -34,7 +31,6 @@ class SOAPFormatterImpl extends
         super(payloadValidator,
               'SOAP/WS Consumer Mock')
         this.fetchAppClassLoader = fetchAppClassLoader
-        this.soapFaultTransformer = new SoapFaultTransformer()
     }
 
     def httpConnectError() {
@@ -54,10 +50,27 @@ class SOAPFormatterImpl extends
     @Override
     def soapFault(String message,
                   QName faultCode,
+                  QName subCode) {
+        def cxfExceptionStub = new Exception('Normally this would be a org.apache.cxf.binding.soap.SoapFault exception but that one is harder to find in the ClassLoader model and org.mule.runtime.soap.api.exception.SoapFaultException, which is the direct cause anyways, has all of the details available')
+        def muleException = muleSoapFaultClass.newInstance(faultCode,
+                                                           subCode,
+                                                           '<?xml version="1.0" encoding="UTF-8"?><detail/>',
+                                                           message,
+                                                           null, // node
+                                                           null,
+                                                           cxfExceptionStub) as Throwable
+        throw new CustomErrorWrapperException(muleException,
+                                              'WSC',
+                                              'SOAP_FAULT')
+    }
+
+    @Override
+    def soapFault(String message,
+                  QName faultCode,
                   QName subCode,
                   Closure closure) {
         def result = closure(DOMBuilder.newInstance())
-        def soapFault = soapFaultClass.newInstance(message, faultCode)
+        def soapFault = cxfSoapFaultClass.newInstance(message, faultCode)
         soapFault.detail = result
         soapFault.addSubCode(subCode)
         // for the last step, we need the MuleEvent
@@ -70,8 +83,7 @@ class SOAPFormatterImpl extends
         if (httpConnectorErrorTransformer) {
             return httpConnectorErrorTransformer
         }
-        new TransformerChain(this.soapFaultTransformer,
-                             super.transformer)
+        return super.transformer
     }
 
     @Override

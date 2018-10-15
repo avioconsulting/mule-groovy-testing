@@ -312,7 +312,7 @@ class SoapTest extends
         assertThat soapFaultException.getClass().name,
                    is(equalTo('org.mule.runtime.soap.api.exception.SoapFaultException'))
         assertThat soapFaultException.cause.getClass().name,
-                   is(equalTo('org.apache.cxf.binding.soap.SoapFault'))
+                   is(equalTo('java.lang.Exception'))
         assertThat result.info['Error type'],
                    is(equalTo('WSC:SOAP_FAULT'))
         assertThat result.message,
