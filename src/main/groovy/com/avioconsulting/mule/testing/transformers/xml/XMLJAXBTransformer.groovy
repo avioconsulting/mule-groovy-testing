@@ -14,12 +14,15 @@ class XMLJAXBTransformer<T extends ConnectorInfo> extends
         ClosureMuleMessageHandler {
     private final Closure closure
     private final JAXBMarshalHelper helper
+    private final XMLMessageBuilder.MessageType messageType
 
     XMLJAXBTransformer(Closure closure,
                        Class inputJaxbClass,
                        IPayloadValidator<T> payloadValidator,
-                       String transformerUse) {
+                       String transformerUse,
+                       XMLMessageBuilder.MessageType messageType) {
         super(payloadValidator)
+        this.messageType = messageType
         this.closure = closure
         this.helper = new JAXBMarshalHelper(inputJaxbClass,
                                             transformerUse)
@@ -36,6 +39,7 @@ class XMLJAXBTransformer<T extends ConnectorInfo> extends
         String xml = reply instanceof File ? reply.text : helper.getMarshalled(reply)
         this.xmlMessageBuilder.build(xml,
                                      event,
+                                     messageType,
                                      200)
     }
 }

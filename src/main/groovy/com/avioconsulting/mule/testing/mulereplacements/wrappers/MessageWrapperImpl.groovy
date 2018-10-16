@@ -2,6 +2,7 @@ package com.avioconsulting.mule.testing.mulereplacements.wrappers
 
 class MessageWrapperImpl implements
         MessageWrapper {
+    static final String TYPED_VALUE_CLASS_NAME = 'org.mule.runtime.api.metadata.TypedValue'
     private final Object muleMessage
     private final Object payload
 
@@ -15,7 +16,9 @@ class MessageWrapperImpl implements
                        String mediaType = null,
                        Object attributes = null) {
         def messageBuilder = runtimeBridgeMuleSide.messageBuilder
-        messageBuilder = payload != null && payload.getClass().name == 'org.mule.runtime.api.metadata.TypedValue' ? messageBuilder.payload(payload) : messageBuilder.value(payload)
+        messageBuilder = payload != null && payload.getClass().name == TYPED_VALUE_CLASS_NAME ?
+                messageBuilder.payload(payload) :
+                messageBuilder.value(payload)
         if (mediaType) {
             messageBuilder = messageBuilder.mediaType(runtimeBridgeMuleSide.getMediaType(mediaType))
         }
@@ -49,7 +52,7 @@ class MessageWrapperImpl implements
     @Deprecated()
     static Object unwrapTypedValue(Object payload) {
         assert payload != null
-        assert payload.getClass().name.contains('TypedValue')
+        assert payload.getClass().name == TYPED_VALUE_CLASS_NAME
         payload.value
     }
 
@@ -57,7 +60,7 @@ class MessageWrapperImpl implements
     @Deprecated()
     static boolean isPayloadStreaming(Object payload) {
         assert payload != null
-        assert payload.getClass().name.contains('TypedValue')
+        assert payload.getClass().name == TYPED_VALUE_CLASS_NAME
         payload.dataType.isStreamType()
     }
 
@@ -76,11 +79,9 @@ class MessageWrapperImpl implements
             }
         } else if (klass == String.name) {
             return value
-        }
-        else if (value == null) {
+        } else if (value == null) {
             return value
-        }
-        else {
+        } else {
             throw new Exception("Do not know how to handle payload of type ${klass}")
         }
     }

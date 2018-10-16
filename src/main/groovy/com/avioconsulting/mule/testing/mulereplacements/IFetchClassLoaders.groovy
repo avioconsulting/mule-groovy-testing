@@ -1,5 +1,6 @@
 package com.avioconsulting.mule.testing.mulereplacements
 
-interface IFetchAppClassLoader {
+interface IFetchClassLoaders {
     ClassLoader getAppClassloader()
+    ClassLoader getRuntimeClassLoader()
 }

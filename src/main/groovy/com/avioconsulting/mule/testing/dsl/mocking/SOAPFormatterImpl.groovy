@@ -1,10 +1,11 @@
 package com.avioconsulting.mule.testing.dsl.mocking
 
-import com.avioconsulting.mule.testing.mulereplacements.IFetchAppClassLoader
+import com.avioconsulting.mule.testing.mulereplacements.IFetchClassLoaders
 import com.avioconsulting.mule.testing.mulereplacements.MuleMessageTransformer
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.CustomErrorWrapperException
 import com.avioconsulting.mule.testing.payloadvalidators.IPayloadValidator
 import com.avioconsulting.mule.testing.transformers.http.WsConsumerConnectorErrorTransformer
+import com.avioconsulting.mule.testing.transformers.xml.XMLMessageBuilder
 import groovy.xml.DOMBuilder
 
 import javax.xml.namespace.QName
@@ -24,12 +25,13 @@ class SOAPFormatterImpl extends
     }()
 
     private WsConsumerConnectorErrorTransformer httpConnectorErrorTransformer
-    private final IFetchAppClassLoader fetchAppClassLoader
+    private final IFetchClassLoaders fetchAppClassLoader
 
     SOAPFormatterImpl(IPayloadValidator payloadValidator,
-                      IFetchAppClassLoader fetchAppClassLoader) {
+                      IFetchClassLoaders fetchAppClassLoader) {
         super(payloadValidator,
-              'SOAP/WS Consumer Mock')
+              'SOAP/WS Consumer Mock',
+              XMLMessageBuilder.MessageType.Soap)
         this.fetchAppClassLoader = fetchAppClassLoader
     }
 

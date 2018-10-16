@@ -1,6 +1,6 @@
 package com.avioconsulting.mule.testing.transformers.http
 
-import com.avioconsulting.mule.testing.mulereplacements.IFetchAppClassLoader
+import com.avioconsulting.mule.testing.mulereplacements.IFetchClassLoaders
 import com.avioconsulting.mule.testing.mulereplacements.MuleMessageTransformer
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.ModuleExceptionWrapper
@@ -14,9 +14,9 @@ class HttpConnectorErrorTransformer implements
         MuleMessageTransformer<HttpRequesterInfo> {
     private boolean triggerConnectException
     private boolean triggerTimeoutException
-    protected final IFetchAppClassLoader fetchAppClassLoader
+    protected final IFetchClassLoaders fetchAppClassLoader
 
-    HttpConnectorErrorTransformer(IFetchAppClassLoader fetchAppClassLoader) {
+    HttpConnectorErrorTransformer(IFetchClassLoaders fetchAppClassLoader) {
         this.fetchAppClassLoader = fetchAppClassLoader
         reset()
     }

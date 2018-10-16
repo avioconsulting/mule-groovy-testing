@@ -1,6 +1,6 @@
 package com.avioconsulting.mule.testing.transformers.http
 
-import com.avioconsulting.mule.testing.mulereplacements.IFetchAppClassLoader
+import com.avioconsulting.mule.testing.mulereplacements.IFetchClassLoaders
 import com.avioconsulting.mule.testing.mulereplacements.MuleMessageTransformer
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.CustomErrorWrapperException
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
@@ -22,7 +22,7 @@ class WsConsumerConnectorErrorTransformer extends
         fetchAppClassLoader.appClassloader.loadClass('org.mule.runtime.soap.api.exception.DispatchingException')
     }()
 
-    WsConsumerConnectorErrorTransformer(IFetchAppClassLoader fetchAppClassLoader) {
+    WsConsumerConnectorErrorTransformer(IFetchClassLoaders fetchAppClassLoader) {
         super(fetchAppClassLoader)
         reset()
     }

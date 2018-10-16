@@ -8,7 +8,6 @@ import com.avioconsulting.mule.testing.soapxmlroot.SOAPTestResponse
 import com.avioconsulting.schemas.soaptest.v1.ObjectFactory
 import com.avioconsulting.schemas.soaptest.v1.SOAPTestRequestType
 import com.avioconsulting.schemas.soaptest.v1.SOAPTestResponseType
-import groovy.xml.DOMBuilder
 import org.junit.Test
 
 import javax.xml.namespace.QName
@@ -54,6 +53,29 @@ class SoapTest extends
         assertThat result,
                    is(equalTo([result: 'yes!']))
     }
+
+    // allows easy testing with real service
+    @Test
+    void mocks_properly_real_service() {
+        // arrange
+        mockSoapCall('Do Math') {
+            whenCalledWithMapAsXml { Map request ->
+                new File('src/test/resources/soap/calculator_response.xml')
+            }
+        }
+
+        // act
+        def result = runFlow('calculatorFlow') {
+            json {
+                inputPayload([foo: 123])
+            }
+        } as Map
+
+        // assert
+        assertThat result.result,
+                   is(equalTo('4'))
+    }
+
 
     @Test
     void with_mule_message() {

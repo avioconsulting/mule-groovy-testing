@@ -3,13 +3,28 @@ package com.avioconsulting.mule.testing.transformers.xml
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
 
 class XMLMessageBuilder {
+    private static final String XML_MEDIA_TYPE = 'application/xml'
+    enum MessageType {
+        Mule41Stream,
+        Soap
+    }
+
     EventWrapper build(String xmlPayload,
                        EventWrapper rewriteEvent,
+                       MessageType messageType,
                        Integer httpStatus = null) {
         def messageProps = getXmlProperties(httpStatus)
-        rewriteEvent.withNewStreamingPayload(xmlPayload,
-                                             'application/xml',
-                                             messageProps)
+        switch (messageType) {
+            case MessageType.Mule41Stream:
+                return rewriteEvent.withNewStreamingPayload(xmlPayload,
+                                                            XML_MEDIA_TYPE,
+                                                            messageProps)
+            case MessageType.Soap:
+                return rewriteEvent.withSoapPayload(xmlPayload,
+                                                    messageProps)
+            default:
+                throw new Exception("Unknown message type! ${messageType}")
+        }
     }
 
     private static LinkedHashMap<String, String> getXmlProperties(Integer httpStatus) {

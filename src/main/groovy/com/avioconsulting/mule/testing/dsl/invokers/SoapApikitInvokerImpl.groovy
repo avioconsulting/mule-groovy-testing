@@ -5,6 +5,7 @@ import com.avioconsulting.mule.testing.mulereplacements.HttpAttributeBuilder
 import com.avioconsulting.mule.testing.mulereplacements.RuntimeBridgeTestSide
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.FlowWrapper
+import com.avioconsulting.mule.testing.transformers.xml.XMLMessageBuilder
 import groovy.util.logging.Log4j2
 import groovy.xml.XmlUtil
 
@@ -52,7 +53,8 @@ class SoapApikitInvokerImpl extends
         def newEvent = eventFactory.getMuleEventWithPayload(null,
                                                             flowName)
         def muleEvent = this.xmlMessageBuilder.build(soapRequest,
-                                                     newEvent)
+                                                     newEvent,
+                                                     XMLMessageBuilder.MessageType.Mule41Stream)
         def additionalHeaders = [
                 'SOAPAction': soapAction
         ]
@@ -79,7 +81,7 @@ class SoapApikitInvokerImpl extends
         // Using this app classloader here because the WSDL itself is a resource and we will be
         // unable to find it based on path alone
         def wsdlUrl = bridge.appClassloader.getResource(wsdlPath)
-        assert wsdlUrl : "Was unable to locate WSDL at ${wsdlPath}. Should not have been able to get this far without that"
+        assert wsdlUrl: "Was unable to locate WSDL at ${wsdlPath}. Should not have been able to get this far without that"
         def fact = WSDLFactory.newInstance()
         def reader = fact.newWSDLReader()
         def defin = reader.readWSDL(wsdlUrl.toString())

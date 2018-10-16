@@ -181,4 +181,35 @@ ns ns0 http://tempuri.org/
                      operation="Add"
                      doc:name="Do Math"/>
     </flow>
+    <flow name="calculatorFlow">
+        <ee:transform doc:name="Transform Message">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/xml
+ns ns0 http://tempuri.org/
+---
+{
+	ns0#Add: {
+	    // used for testing with real service
+		ns0#intA: 2,
+		ns0#intB: 2
+	}
+}]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+        <wsc:consume config-ref="Web_Service_Consumer_Calculator"
+                     operation="Add"
+                     doc:name="Do Math"/>
+        <ee:transform doc:name="Transform Message">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+ns ns0 http://tempuri.org/
+---
+{
+	result: payload.body.ns0#AddResponse.ns0#AddResult
+}]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+    </flow>
 </mule>

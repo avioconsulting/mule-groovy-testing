@@ -15,6 +15,13 @@ interface EventWrapper {
     EventWrapper withNewPayload(Object payload,
                                 String mediaType)
 
+    EventWrapper withSoapPayload(String xmlPayload,
+                                 Map attributes)
+
+    EventWrapper withNewPayload(Object payload,
+                                String mediaType,
+                                Map attributes)
+
     EventWrapper withNewStreamingPayload(String payload,
                                          String mediaType,
                                          Map attributes)

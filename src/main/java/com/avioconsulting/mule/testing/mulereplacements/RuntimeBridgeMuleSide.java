@@ -5,7 +5,9 @@ import org.mule.runtime.api.component.location.ComponentLocation;
 import org.mule.runtime.api.event.EventContext;
 import org.mule.runtime.api.exception.ErrorTypeRepository;
 import org.mule.runtime.api.message.Message;
+import org.mule.runtime.api.metadata.DataType;
 import org.mule.runtime.api.metadata.MediaType;
+import org.mule.runtime.api.metadata.TypedValue;
 import org.mule.runtime.core.api.MuleContext;
 import org.mule.runtime.core.api.construct.Flow;
 import org.mule.runtime.core.api.event.CoreEvent;
@@ -134,5 +136,14 @@ public class RuntimeBridgeMuleSide {
         }
         return optional.get();
 
+    }
+
+    public ClassLoader getRuntimeClassLoader() {
+        return CoreEvent.class.getClassLoader();
+    }
+
+    public <T> TypedValue<T> getSoapTypedValue(T soapOutputPayload) {
+        return new TypedValue<T>(soapOutputPayload,
+                                 DataType.XML_STRING);
     }
 }

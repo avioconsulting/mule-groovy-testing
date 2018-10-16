@@ -13,10 +13,13 @@ class XMLGroovyParserTransformer<T extends ConnectorInfo> extends
         MuleMessageTransformer<T>,
         ClosureMuleMessageHandler {
     private final Closure closure
+    private final XMLMessageBuilder.MessageType messageType
 
     XMLGroovyParserTransformer(Closure closure,
-                               IPayloadValidator<T> payloadValidator) {
+                               IPayloadValidator<T> payloadValidator,
+                               XMLMessageBuilder.MessageType messageType) {
         super(payloadValidator)
+        this.messageType = messageType
         this.closure = closure
     }
 
@@ -40,6 +43,7 @@ class XMLGroovyParserTransformer<T extends ConnectorInfo> extends
 
         this.xmlMessageBuilder.build(outputXmlString,
                                      muleEvent,
+                                     messageType,
                                      200)
     }
 }

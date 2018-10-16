@@ -49,6 +49,35 @@ class EventWrapperImpl implements
     }
 
     @Override
+    EventWrapper withSoapPayload(String xmlPayload,
+                                 Map attributes) {
+        def stream = new ByteArrayInputStream(xmlPayload.bytes)
+        def soapOutputPayloadClass = runtimeBridgeMuleSide
+                .getAppClassloader()
+                .loadClass('org.mule.runtime.extension.api.soap.SoapOutputPayload')
+        def streamTypedValue = runtimeBridgeMuleSide.getSoapTypedValue(stream)
+        def soapOutputPayload = soapOutputPayloadClass.newInstance(streamTypedValue,
+                                                                   [:], // attachments
+                                                                   [:]) // headers
+        def message = new MessageWrapperImpl(soapOutputPayload,
+                                             runtimeBridgeMuleSide,
+                                             'application/java',
+                                             attributes)
+        withNewPayload(message)
+    }
+
+    @Override
+    EventWrapper withNewPayload(Object payload,
+                                String mediaType,
+                                Map attributes) {
+        def message = new MessageWrapperImpl(payload,
+                                             runtimeBridgeMuleSide,
+                                             mediaType,
+                                             attributes)
+        withNewPayload(message)
+    }
+
+    @Override
     EventWrapper withNewStreamingPayload(String payload,
                                          String mediaType,
                                          Map attributes) {

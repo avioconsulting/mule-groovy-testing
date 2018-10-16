@@ -5,7 +5,7 @@ import com.avioconsulting.mule.testing.mulereplacements.wrappers.*
 
 class RuntimeBridgeTestSide implements
         InvokerEventFactory,
-        IFetchAppClassLoader {
+        IFetchClassLoaders {
     private final Object runtimeBridgeMuleSide
 
     String getArtifactName() {
@@ -64,5 +64,10 @@ class RuntimeBridgeTestSide implements
 
     ClassLoader getAppClassloader() {
         runtimeBridgeMuleSide.getAppClassloader()
+    }
+
+    @Override
+    ClassLoader getRuntimeClassLoader() {
+        runtimeBridgeMuleSide.getRuntimeClassLoader()
     }
 }

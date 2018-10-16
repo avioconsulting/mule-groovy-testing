@@ -2,6 +2,7 @@ package com.avioconsulting.mule.testing.dsl.invokers
 
 import com.avioconsulting.mule.testing.InvokerEventFactory
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
+import com.avioconsulting.mule.testing.transformers.xml.XMLMessageBuilder
 import groovy.util.logging.Log4j2
 
 @Log4j2
@@ -21,6 +22,7 @@ class SoapOperationFlowInvokerImpl extends
         def newEvent = eventFactory.getMuleEventWithPayload(null,
                                                             flowName)
         this.xmlMessageBuilder.build(xml,
-                                     newEvent)
+                                     newEvent,
+                                     XMLMessageBuilder.MessageType.Mule41Stream)
     }
 }
