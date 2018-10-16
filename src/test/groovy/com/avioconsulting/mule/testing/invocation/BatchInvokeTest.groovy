@@ -81,7 +81,7 @@ class BatchInvokeTest extends BaseJunitTest implements OverrideConfigList {
 
         // act
         def result = shouldFail {
-            runBatch('theJob') {
+            runBatch('theJobContainerFlow') {
                 java {
                     inputPayload(items)
                 }
@@ -122,7 +122,7 @@ class BatchInvokeTest extends BaseJunitTest implements OverrideConfigList {
 
         // act
         def result = shouldFail {
-            runBatch('theJob',
+            runBatch('theJobContainerFlow',
                      null,
                      true) {
                 java {
@@ -162,7 +162,7 @@ class BatchInvokeTest extends BaseJunitTest implements OverrideConfigList {
 
         // act
         def result = shouldFail {
-            runBatch('theJob',
+            runBatch('theJobContainerFlow',
                      null,
                      true) {
                 java {
@@ -202,7 +202,7 @@ class BatchInvokeTest extends BaseJunitTest implements OverrideConfigList {
 
         // act
         def result = shouldFail {
-            runBatch('theJob') {
+            runBatch('theJobContainerFlow') {
                 java {
                     inputPayload(items)
                 }
@@ -242,7 +242,7 @@ class BatchInvokeTest extends BaseJunitTest implements OverrideConfigList {
         }
 
         // act
-        runBatch('secondJobCallsFirst', ['theJob']) {
+        runBatch('secondJobCallsFirstContainerFlow', ['theJob']) {
             java {
                 inputPayload(items)
             }
@@ -282,7 +282,7 @@ class BatchInvokeTest extends BaseJunitTest implements OverrideConfigList {
         }
 
         // act
-        runBatch('secondJobCallsFirst') {
+        runBatch('secondJobCallsFirstContainerFlow') {
             java {
                 inputPayload(items)
             }
@@ -321,7 +321,7 @@ class BatchInvokeTest extends BaseJunitTest implements OverrideConfigList {
 
         // act
         def result = shouldFail {
-            runBatch('secondJobCallsFirst', ['theJob']) {
+            runBatch('secondJobCallsFirstContainerFlow', ['theJob']) {
                 java {
                     inputPayload(items)
                 }
@@ -358,7 +358,7 @@ class BatchInvokeTest extends BaseJunitTest implements OverrideConfigList {
         }
 
         // act
-        runBatch('secondJobCallsFirstTwice') {
+        runBatch('secondJobCallsFirstTwiceContainerFlow') {
             java {
                 inputPayload(items)
             }
