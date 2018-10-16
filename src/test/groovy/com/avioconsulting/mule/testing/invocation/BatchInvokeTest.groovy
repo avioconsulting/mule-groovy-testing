@@ -9,7 +9,9 @@ import static groovy.test.GroovyAssert.shouldFail
 import static org.hamcrest.Matchers.*
 import static org.junit.Assert.assertThat
 
-class BatchInvokeTest extends BaseJunitTest implements OverrideConfigList {
+class BatchInvokeTest extends
+        BaseJunitTest implements
+        OverrideConfigList {
     @Override
     List<String> getConfigResources() {
         ['batch_test.xml']
@@ -133,7 +135,7 @@ class BatchInvokeTest extends BaseJunitTest implements OverrideConfigList {
 
         // assert
         assertThat result.message,
-                   is(containsString('HTTP timeout'))
+                   is(equalTo("HTTP POST on resource 'http://localhost:443/some_path' failed: Some timeout error."))
     }
 
     @Test
