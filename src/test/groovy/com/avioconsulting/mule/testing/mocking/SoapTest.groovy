@@ -8,6 +8,7 @@ import com.avioconsulting.mule.testing.soapxmlroot.SOAPTestResponse
 import com.avioconsulting.schemas.soaptest.v1.ObjectFactory
 import com.avioconsulting.schemas.soaptest.v1.SOAPTestRequestType
 import com.avioconsulting.schemas.soaptest.v1.SOAPTestResponseType
+import groovy.xml.DOMBuilder
 import org.junit.Test
 
 import javax.xml.namespace.QName
@@ -352,27 +353,32 @@ class SoapTest extends
     @Test
     void soap_fault_detail_provided() {
         // arrange
-        //        mockSoapCall('Do Math') {
-//            whenCalledWithMapAsXml { request ->
-//                soapFault('Error with one or more zip codes: ',
-//                          new QName('',
-//                                    'SERVER'),
-//                          null) { DOMBuilder detailBuilder ->
-//                    detailBuilder.detail {
-//                        foobar()
-//                    }
-//                }
-//            }
-//        }
+        mockSoapCall('Do Math') {
+            whenCalledWithMapAsXml { request ->
+                soapFault('Error with one or more zip codes: ',
+                          new QName('',
+                                    'SERVER'),
+                          null) { DOMBuilder detailBuilder ->
+                    detailBuilder.detail {
+                        foobar()
+                    }
+                }
+            }
+        }
 
         // act
+        def result = shouldFail {
+            runFlow('calculatorSoapFaultFlow') {
+                json {
+                    inputPayload([foo: 123])
+                }
+            }
+        }
 
         // assert
-        def detail = soapFaultException.detail
+        def detail = result.cause.detail
         assert detail
         assertThat detail.trim(),
-                   is(equalTo('<detail>\n<foobar/>\n</detail>'))
-        fail 'write the test'
+                   is(equalTo('<?xml version="1.0" encoding="UTF-8"?><detail>\n  <foobar/>\n</detail>'))
     }
-
 }

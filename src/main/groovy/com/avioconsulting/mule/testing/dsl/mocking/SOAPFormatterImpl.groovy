@@ -53,17 +53,11 @@ class SOAPFormatterImpl extends
     def soapFault(String message,
                   QName faultCode,
                   QName subCode) {
-        def cxfExceptionStub = new Exception('Normally this would be a org.apache.cxf.binding.soap.SoapFault exception but that one is harder to find in the ClassLoader model and org.mule.runtime.soap.api.exception.SoapFaultException, which is the direct cause anyways, has all of the details available')
-        def muleException = muleSoapFaultClass.newInstance(faultCode,
-                                                           subCode,
-                                                           '<?xml version="1.0" encoding="UTF-8"?><detail/>',
-                                                           message,
-                                                           null, // node
-                                                           null,
-                                                           cxfExceptionStub) as Throwable
-        throw new CustomErrorWrapperException(muleException,
-                                              'WSC',
-                                              'SOAP_FAULT')
+        soapFault(message,
+                  faultCode,
+                  subCode) { builder ->
+            null
+        }
     }
 
     @Override
@@ -71,13 +65,19 @@ class SOAPFormatterImpl extends
                   QName faultCode,
                   QName subCode,
                   Closure closure) {
-        def result = closure(DOMBuilder.newInstance())
-        def soapFault = cxfSoapFaultClass.newInstance(message, faultCode)
-        soapFault.detail = result
-        soapFault.addSubCode(subCode)
-        // for the last step, we need the MuleEvent
-        def wsConsumerException = this.soapFaultTransformer.createSoapFaultException(soapFault)
-        throw wsConsumerException
+        def detailResult = closure(DOMBuilder.newInstance())
+        def detailString = detailResult ? detailResult.serialize() : '<detail/>'
+        def cxfExceptionStub = new Exception('Normally this would be a org.apache.cxf.binding.soap.SoapFault exception but that one is harder to find in the ClassLoader model and org.mule.runtime.soap.api.exception.SoapFaultException, which is the direct cause anyways, has all of the details available')
+        def muleException = muleSoapFaultClass.newInstance(faultCode,
+                                                           subCode,
+                                                           '<?xml version="1.0" encoding="UTF-8"?>' + detailString,
+                                                           message,
+                                                           null, // node
+                                                           null,
+                                                           cxfExceptionStub) as Throwable
+        throw new CustomErrorWrapperException(muleException,
+                                              'WSC',
+                                              'SOAP_FAULT')
     }
 
     @Override
