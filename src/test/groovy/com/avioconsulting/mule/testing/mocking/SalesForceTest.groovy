@@ -2,12 +2,14 @@ package com.avioconsulting.mule.testing.mocking
 
 import com.avioconsulting.mule.testing.OverrideConfigList
 import com.avioconsulting.mule.testing.junit.BaseJunitTest
+import org.junit.Ignore
 import org.junit.Test
 
 import static groovy.test.GroovyAssert.shouldFail
 import static org.hamcrest.Matchers.*
 import static org.junit.Assert.assertThat
 
+@Ignore('DQL is not available in Studio 7 yet')
 class SalesForceTest extends BaseJunitTest implements OverrideConfigList {
     List<String> getConfigResources() {
         ['sfdc_test.xml']
