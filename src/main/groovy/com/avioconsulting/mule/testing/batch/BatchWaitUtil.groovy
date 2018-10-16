@@ -19,24 +19,23 @@ class BatchWaitUtil {
                 boolean throwUnderlyingException,
                 Closure closure) {
         // need to wait for batch thread to finish
-        def batchListener = new BatchCompletionListener(requestedJobsToWaitFor,
-                                                        throwUnderlyingException)
+        def batchListener = bridge.batchNotifyListener
+        batchListener.begin(requestedJobsToWaitFor,
+                              throwUnderlyingException)
         def jobsToWaitFor = batchListener.jobsToWaitFor
-        def centralListener = bridge.batchNotifyListener
-        centralListener.addListener(batchListener)
         try {
             closure()
             def getIncompletes = {
-                jobsToWaitFor - batchListener.results.keySet()
+                jobsToWaitFor - batchListener.batchJobResults.keySet()
             }
             while (getIncompletes().any()) {
                 logger.info "Still waiting for batch jobs ${getIncompletes()} to finish"
-                synchronized (batchListener.results) {
+                synchronized (batchListener.batchJobResults) {
                     // wait 60 seconds
-                    batchListener.results.wait() //(60 * 1000)
+                    batchListener.batchJobResults.wait() //(60 * 1000)
                 }
             }
-            def failedJobs = batchListener.results.findAll { ignore, result ->
+            def failedJobs = batchListener.batchJobResults.findAll { ignore, result ->
                 result.failedRecords > 0 || result.failedOnCompletePhase
             }.collect { name, result ->
                 "Job: ${name}, failed records: ${result.failedRecords} onComplete fail: ${result.failedOnCompletePhase}"
@@ -55,7 +54,7 @@ class BatchWaitUtil {
             assert failedJobs.isEmpty(): "Expected no failed job instances but got ${failedJobs}"
         }
         finally {
-            centralListener.removeListener(batchListener)
+            batchListener.end()
         }
     }
 }

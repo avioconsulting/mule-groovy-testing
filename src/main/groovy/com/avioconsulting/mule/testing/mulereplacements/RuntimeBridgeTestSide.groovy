@@ -71,7 +71,7 @@ class RuntimeBridgeTestSide implements
         runtimeBridgeMuleSide.getRuntimeClassLoader()
     }
 
-    Object getBatchNotifyListener() {
-        runtimeBridgeMuleSide.getBatchNotifyListener()
+    BatchNotifyListenerWrapper getBatchNotifyListener() {
+        new BatchNotifyListenerWrapper(runtimeBridgeMuleSide.getBatchNotifyListener())
     }
 }
