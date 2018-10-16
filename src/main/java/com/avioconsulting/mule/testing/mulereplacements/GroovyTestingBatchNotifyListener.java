@@ -13,8 +13,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class OurBatchNotifyListener implements BatchNotificationListener {
-    private static final Logger logger = LogManager.getLogger(OurBatchNotifyListener.class);
+public class GroovyTestingBatchNotifyListener implements BatchNotificationListener {
+    private static final Logger logger = LogManager.getLogger(GroovyTestingBatchNotifyListener.class);
     private List<String> jobsToWaitFor;
     private final Map<String, BatchJobResult> batchJobResults = new HashMap<>();
     private boolean throwUnderlyingException;

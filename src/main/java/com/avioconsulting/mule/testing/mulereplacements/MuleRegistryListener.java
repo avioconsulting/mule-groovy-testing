@@ -14,7 +14,7 @@ public class MuleRegistryListener implements DeploymentListener {
     // (e.g. we change our config files/properties/etc. we need to be able to differentiate)
     private final Map<String, RuntimeBridgeMuleSide> runtimeBridges;
     private final Map<String, Object> mockingConfigurations;
-    private final Map<String, OurBatchNotifyListener> batchListeners;
+    private final Map<String, GroovyTestingBatchNotifyListener> batchListeners;
 
     public MuleRegistryListener() {
         this.runtimeBridges = new HashMap<>();
@@ -54,7 +54,7 @@ public class MuleRegistryListener implements DeploymentListener {
                                           new MockingProcessorInterceptorFactory(mockingConfiguration));
         custSvc.overrideDefaultServiceImpl(ComponentInitialStateManager.SERVICE_ID,
                                            new SourceDisableManager(mockingConfiguration));
-        OurBatchNotifyListener batchListener = new OurBatchNotifyListener();
+        GroovyTestingBatchNotifyListener batchListener = new GroovyTestingBatchNotifyListener();
         this.batchListeners.put(artifactName, batchListener);
         custSvc.registerCustomServiceImpl("muleGroovyBatchListener",
                                           batchListener);

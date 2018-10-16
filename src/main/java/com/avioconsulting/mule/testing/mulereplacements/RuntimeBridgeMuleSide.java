@@ -30,7 +30,7 @@ public class RuntimeBridgeMuleSide {
                                                               "COMPONENT_LOCATION");
     private final Registry registry;
     private final List<CompletableFuture<Void>> streamCompletionCallbacks = new ArrayList<>();
-    private OurBatchNotifyListener batchNotifyListener;
+    private GroovyTestingBatchNotifyListener batchNotifyListener;
 
     public RuntimeBridgeMuleSide(Registry registry) {
         this.registry = registry;
@@ -147,11 +147,11 @@ public class RuntimeBridgeMuleSide {
                                  DataType.XML_STRING);
     }
 
-    public OurBatchNotifyListener getBatchNotifyListener() {
+    public GroovyTestingBatchNotifyListener getBatchNotifyListener() {
         return batchNotifyListener;
     }
 
-    public void setBatchNotifyListener(OurBatchNotifyListener batchNotifyListener) {
+    public void setBatchNotifyListener(GroovyTestingBatchNotifyListener batchNotifyListener) {
         this.batchNotifyListener = batchNotifyListener;
     }
 }
