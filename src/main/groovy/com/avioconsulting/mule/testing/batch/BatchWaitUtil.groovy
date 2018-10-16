@@ -1,15 +1,15 @@
 package com.avioconsulting.mule.testing.batch
 
+import com.avioconsulting.mule.testing.mulereplacements.RuntimeBridgeTestSide
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
-import org.mule.runtime.core.api.MuleContext
 
 class BatchWaitUtil {
-    private final MuleContext muleContext
+    private final RuntimeBridgeTestSide bridge
     protected static final Logger logger = LogManager.getLogger(BatchWaitUtil)
 
-    BatchWaitUtil(MuleContext muleContext) {
-        this.muleContext = muleContext
+    BatchWaitUtil(RuntimeBridgeTestSide bridge) {
+        this.bridge = bridge
     }
 
     // useUnderlyingExceptions will ignore the "outer failures" from the batch job and will
@@ -22,7 +22,8 @@ class BatchWaitUtil {
         def batchListener = new BatchCompletionListener(requestedJobsToWaitFor,
                                                         throwUnderlyingException)
         def jobsToWaitFor = batchListener.jobsToWaitFor
-        muleContext.registerListener(batchListener)
+        def centralListener = bridge.batchNotifyListener
+        centralListener.addListener(batchListener)
         try {
             closure()
             def getIncompletes = {
@@ -54,7 +55,7 @@ class BatchWaitUtil {
             assert failedJobs.isEmpty(): "Expected no failed job instances but got ${failedJobs}"
         }
         finally {
-            muleContext.unregisterListener(batchListener)
+            centralListener.removeListener(batchListener)
         }
     }
 }

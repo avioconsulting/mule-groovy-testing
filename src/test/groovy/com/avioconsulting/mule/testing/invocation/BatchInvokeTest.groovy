@@ -40,7 +40,7 @@ class BatchInvokeTest extends BaseJunitTest implements OverrideConfigList {
         }
 
         // act
-        runBatch('theJob') {
+        runBatch('theJobContainerFlow') {
             java {
                 inputPayload(items)
             }

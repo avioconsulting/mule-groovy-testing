@@ -109,8 +109,8 @@ dependencies {
     // REST only and not SOAP
     compile 'wsdl4j:wsdl4j:1.6.3'
     testCompile 'org.apache.ant:ant:1.9.7'
-//    testRuntime group: 'org.mule.modules',
-//                name: 'mule-soapkit-module',
-//                classifier: 'mule-plugin',
-//                version: '1.1.4'
+    compile group: 'com.mulesoft.mule.runtime.modules',
+            name: 'mule-module-batch-ee',
+            //classifier: 'mule-plugin',
+            version: '4.1.2'
 }

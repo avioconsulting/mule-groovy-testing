@@ -15,7 +15,6 @@ import com.avioconsulting.mule.testing.payloadvalidators.SOAPPayloadValidator
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 import org.apache.commons.io.FileUtils
-import org.apache.commons.lang.NotImplementedException
 import org.apache.logging.log4j.Logger
 
 // basic idea here is to have a trait that could be mixed in to any type of testing framework situation
@@ -220,32 +219,33 @@ trait BaseMuleGroovyTrait {
         flow.process(event)
     }
 
-    def waitForBatchCompletion(RuntimeBridgeTestSide muleContext,
+    def waitForBatchCompletion(RuntimeBridgeTestSide bridge,
                                List<String> jobsToWaitFor = null,
                                boolean throwUnderlyingException = false,
                                Closure closure) {
-        def batchWaitUtil = new BatchWaitUtil(muleContext)
+        def batchWaitUtil = new BatchWaitUtil(bridge)
         batchWaitUtil.waitFor(jobsToWaitFor, throwUnderlyingException, closure)
     }
 
-    def runBatch(RuntimeBridgeTestSide muleContext,
+    def runBatch(RuntimeBridgeTestSide bridge,
                  String batchName,
                  List<String> jobsToWaitFor = null,
                  boolean throwUnderlyingException = false,
                  @DelegatesTo(BatchRunner) Closure closure) {
-        throw new NotImplementedException()
-//        def runner = new FlowRunnerImpl(muleContext,
-//                                        null,// batch doesn't inherit from flow
-//                                        batchName)
-//        def code = closure.rehydrate(runner, this, this)
-//        code.resolveStrategy = Closure.DELEGATE_ONLY
-//        code()
-//        def batchJob = muleContext.registry.get(batchName) as BatchJobAdapter
-//        waitForBatchCompletion(muleContext,
-//                               jobsToWaitFor,
-//                               throwUnderlyingException) {
-//            batchJob.execute(runner.getEvent())
-//        }
+        def flow = bridge.getFlow(batchName)
+        def runner = new FlowRunnerImpl(bridge,
+                                        flow,
+                                        batchName)
+        def code = closure.rehydrate(runner, this, this)
+        code.resolveStrategy = Closure.DELEGATE_ONLY
+        code()
+        waitForBatchCompletion(bridge,
+                               jobsToWaitFor,
+                               throwUnderlyingException) {
+            runFlow(bridge,
+                    batchName,
+                    runner.getEvent())
+        }
     }
 
     def mockRestHttpCall(MockingConfiguration mockingConfiguration,

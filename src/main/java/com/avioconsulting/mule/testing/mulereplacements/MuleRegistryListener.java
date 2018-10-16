@@ -14,10 +14,12 @@ public class MuleRegistryListener implements DeploymentListener {
     // (e.g. we change our config files/properties/etc. we need to be able to differentiate)
     private final Map<String, RuntimeBridgeMuleSide> runtimeBridges;
     private final Map<String, Object> mockingConfigurations;
+    private final Map<String, OurBatchNotifyListener> batchListeners;
 
     public MuleRegistryListener() {
         this.runtimeBridges = new HashMap<>();
         this.mockingConfigurations = new HashMap<>();
+        this.batchListeners = new HashMap<>();
     }
 
     // this will run after onArtifactCreated and will allow our test code to use
@@ -27,6 +29,7 @@ public class MuleRegistryListener implements DeploymentListener {
                                       Registry registry) {
         RuntimeBridgeMuleSide bridge = new RuntimeBridgeMuleSide(registry);
         this.runtimeBridges.put(artifactName, bridge);
+        bridge.setBatchNotifyListener(this.batchListeners.get(artifactName));
         // it's handy for our mocking config to have access to the runtime bridge object
         Object mockingConfiguration = mockingConfigurations.get(artifactName);
         try {
@@ -51,6 +54,10 @@ public class MuleRegistryListener implements DeploymentListener {
                                           new MockingProcessorInterceptorFactory(mockingConfiguration));
         custSvc.overrideDefaultServiceImpl(ComponentInitialStateManager.SERVICE_ID,
                                            new SourceDisableManager(mockingConfiguration));
+        OurBatchNotifyListener batchListener = new OurBatchNotifyListener();
+        this.batchListeners.put(artifactName, batchListener);
+        custSvc.registerCustomServiceImpl("muleGroovyBatchListener",
+                                          batchListener);
     }
 
     public RuntimeBridgeMuleSide getRuntimeBridge(String artifactName) {

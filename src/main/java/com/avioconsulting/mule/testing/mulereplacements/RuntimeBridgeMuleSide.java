@@ -29,8 +29,8 @@ public class RuntimeBridgeMuleSide {
     private static final QName COMPONENT_LOCATION = new QName("mule",
                                                               "COMPONENT_LOCATION");
     private final Registry registry;
-
     private final List<CompletableFuture<Void>> streamCompletionCallbacks = new ArrayList<>();
+    private OurBatchNotifyListener batchNotifyListener;
 
     public RuntimeBridgeMuleSide(Registry registry) {
         this.registry = registry;
@@ -145,5 +145,13 @@ public class RuntimeBridgeMuleSide {
     public <T> TypedValue<T> getSoapTypedValue(T soapOutputPayload) {
         return new TypedValue<T>(soapOutputPayload,
                                  DataType.XML_STRING);
+    }
+
+    public OurBatchNotifyListener getBatchNotifyListener() {
+        return batchNotifyListener;
+    }
+
+    public void setBatchNotifyListener(OurBatchNotifyListener batchNotifyListener) {
+        this.batchNotifyListener = batchNotifyListener;
     }
 }
