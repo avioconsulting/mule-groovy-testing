@@ -3,6 +3,11 @@ package com.avioconsulting.mule.testing.mulereplacements.wrappers
 class BatchNotifyListenerWrapper {
     private final Object muleSideListener
 
+    /**
+     *
+     * @param muleSideListener - com.avioconsulting.mule.testing.mulereplacements.GroovyTestingBatchNotifyListener but we have classpath
+     * /reflection stuff to worry about
+     */
     BatchNotifyListenerWrapper(Object muleSideListener) {
         this.muleSideListener = muleSideListener
     }

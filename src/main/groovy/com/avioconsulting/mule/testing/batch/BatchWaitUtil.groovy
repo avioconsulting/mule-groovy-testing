@@ -1,6 +1,7 @@
 package com.avioconsulting.mule.testing.batch
 
 import com.avioconsulting.mule.testing.mulereplacements.RuntimeBridgeTestSide
+import com.avioconsulting.mule.testing.mulereplacements.wrappers.BatchJobResultWrapper
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 
@@ -21,7 +22,7 @@ class BatchWaitUtil {
         // need to wait for batch thread to finish
         def batchListener = bridge.batchNotifyListener
         batchListener.begin(requestedJobsToWaitFor,
-                              throwUnderlyingException)
+                            throwUnderlyingException)
         def jobsToWaitFor = batchListener.jobsToWaitFor
         try {
             closure()
@@ -35,10 +36,13 @@ class BatchWaitUtil {
                     batchListener.batchJobResults.wait() //(60 * 1000)
                 }
             }
-            def failedJobs = batchListener.batchJobResults.findAll { ignore, result ->
-                result.failedRecords > 0 || result.failedOnCompletePhase
-            }.collect { name, result ->
-                "Job: ${name}, failed records: ${result.failedRecords} onComplete fail: ${result.failedOnCompletePhase}"
+            def failedJobs = batchListener.batchJobResults.collectEntries { String name,
+                                                                            Object result ->
+                [name, new BatchJobResultWrapper(result)]
+            }.findResults { String name,
+                            BatchJobResultWrapper result ->
+                def failed = result.failedRecords > 0 || result.failedOnCompletePhase
+                failed ? "Job: ${name}, failed records: ${result.failedRecords} onComplete fail: ${result.failedOnCompletePhase}" : null
             }
             if (throwUnderlyingException) {
                 assert failedJobs.any(): 'Expected job to fail since throwUnderlyingException=true but it did not!'
