@@ -32,6 +32,8 @@ public class MuleRegistryListener implements DeploymentListener {
         bridge.setBatchNotifyListener(this.batchListeners.get(artifactName));
         // our mocking setup can't function without access to the runtime bridge
         Object mockingConfiguration = mockingConfigurations.get(artifactName);
+        // have to use reflection because the mocking config is loaded by the unit test classloader. We are in
+        // the Mule runtime classloader
         try {
             Class<?> mockingConfigClass = mockingConfiguration.getClass();
             Method setter = mockingConfigClass.getDeclaredMethod("setRuntimeBridgeMuleSide",
