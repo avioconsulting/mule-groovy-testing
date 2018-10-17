@@ -23,81 +23,87 @@ class MuleEngineContainer {
     private final File muleHomeDirectory
 
     MuleEngineContainer(BaseEngineConfig engineConfig) {
-        this.engineConfig = engineConfig
-        muleHomeDirectory = new File('.mule')
-        System.setProperty('mule.home',
-                           muleHomeDirectory.absolutePath)
-        System.setProperty('mule.testingMode',
-                           'true')
-        log.info "Checking for temporary .mule directory at ${muleHomeDirectory.absolutePath}"
-        if (muleHomeDirectory.exists()) {
-            log.info "Removing ${muleHomeDirectory.absolutePath}"
-            muleHomeDirectory.deleteDir()
-        }
-        // TODO: Do we need this still?
-        System.setProperty('mule.mode.embedded',
-                           'true')
-        // mule won't start without a log4j2 config
-        def log4jResource = MuleEngineContainer.getResource('/log4j2-for-mule-home.xml')
-        assert log4jResource
-        def confDirectory = new File(muleHomeDirectory, 'conf')
-        confDirectory.mkdirs()
-        def targetFile = new File(confDirectory, 'log4j2.xml')
-        FileUtils.copyFile(new File(log4jResource.toURI()),
-                           targetFile)
-        def domainsDir = new File(muleHomeDirectory, 'domains')
-        domainsDir.mkdirs()
-        // won't start apps without this domain there but it can be empty
-        def defaultDomainDir = new File(domainsDir, 'default')
-        defaultDomainDir.mkdirs()
-        def appsDir = new File(muleHomeDirectory, 'apps')
-        if (appsDir.exists()) {
-            appsDir.deleteDir()
-        }
-        appsDir.mkdirs()
-        def mavenClientProvider = MavenClientProvider.discoverProvider(DefaultEmbeddedContainerBuilder.classLoader)
-        // TODO: No hard coding, use Maven settings file??
-        def repo = new File('/Users/brady/.m2/repository')
-        assert repo.exists()
-        def mavenConfig = MavenConfiguration.newMavenConfigurationBuilder()
-                .localMavenRepositoryLocation(repo)
-                .offlineMode(true)
-        // TODO: hard coding
-                .userSettingsLocation(new File('/Users/brady/.m2/settings.xml'))
-                .build()
-        def mavenClient = mavenClientProvider.createMavenClient(mavenConfig)
-        def classLoaderFactory = new MavenContainerClassLoaderFactory(mavenClient)
-        def services = classLoaderFactory.getServices(engineConfig.muleVersion,
-                                                      Product.MULE_EE)
-        def servicesDir = new File(muleHomeDirectory, 'services')
-        services.each { svcUrl ->
-            FileUtils.copyFileToDirectory(new File(svcUrl.toURI()),
-                                          servicesDir)
-        }
-        def containerModulesClassLoader = classLoaderFactory.create(engineConfig.muleVersion,
-                                                                    Product.MULE_EE,
-                                                                    JdkOnlyClassLoaderFactory.create(),
-                                                                    muleHomeDirectory.toURI().toURL())
-        def containerClassLoader = createEmbeddedImplClassLoader(containerModulesClassLoader,
-                                                                 mavenClient,
-                                                                 engineConfig.muleVersion)
-        // work around this - https://jira.apache.org/jira/browse/LOG4J2-2152
-        def preserve = Thread.currentThread().contextClassLoader
-        registryListener = null
         try {
-            Thread.currentThread().contextClassLoader = containerClassLoader
-            // TODO: Hard coded name?
-            def containerKlass = containerClassLoader.loadClass("org.mule.runtime.module.launcher.MuleContainer")
-            container = containerKlass.newInstance()
-            container.start(false)
-            def registryListenerKlass = containerClassLoader.loadClass(MuleRegistryListener.name)
-            registryListener = registryListenerKlass.newInstance()
-            container.deploymentService.addDeploymentListener(registryListener)
-            assert container
-            assert registryListener
+            this.engineConfig = engineConfig
+            muleHomeDirectory = new File('.mule')
+            System.setProperty('mule.home',
+                               muleHomeDirectory.absolutePath)
+            System.setProperty('mule.testingMode',
+                               'true')
+            log.info "Checking for temporary .mule directory at ${muleHomeDirectory.absolutePath}"
+            if (muleHomeDirectory.exists()) {
+                log.info "Removing ${muleHomeDirectory.absolutePath}"
+                muleHomeDirectory.deleteDir()
+            }
+            // TODO: Do we need this still?
+            System.setProperty('mule.mode.embedded',
+                               'true')
+            // mule won't start without a log4j2 config
+            def log4jResource = MuleEngineContainer.getResourceAsStream('/log4j2-for-mule-home.xml')
+            assert log4jResource
+            def confDirectory = new File(muleHomeDirectory, 'conf')
+            confDirectory.mkdirs()
+            def targetFile = new File(confDirectory, 'log4j2.xml')
+            targetFile.text = log4jResource.text
+            def domainsDir = new File(muleHomeDirectory, 'domains')
+            domainsDir.mkdirs()
+            // won't start apps without this domain there but it can be empty
+            def defaultDomainDir = new File(domainsDir, 'default')
+            defaultDomainDir.mkdirs()
+            def appsDir = new File(muleHomeDirectory, 'apps')
+            if (appsDir.exists()) {
+                appsDir.deleteDir()
+            }
+            appsDir.mkdirs()
+            def mavenClientProvider = MavenClientProvider.discoverProvider(DefaultEmbeddedContainerBuilder.classLoader)
+            // TODO: No hard coding, use Maven settings file??
+            def repo = new File('/Users/brady/.m2/repository')
+            assert repo.exists()
+            def mavenConfig = MavenConfiguration.newMavenConfigurationBuilder()
+                    .localMavenRepositoryLocation(repo)
+                    .offlineMode(true)
+            // TODO: hard coding
+                    .userSettingsLocation(new File('/Users/brady/.m2/settings.xml'))
+                    .build()
+            def mavenClient = mavenClientProvider.createMavenClient(mavenConfig)
+            def classLoaderFactory = new MavenContainerClassLoaderFactory(mavenClient)
+            def services = classLoaderFactory.getServices(engineConfig.muleVersion,
+                                                          Product.MULE_EE)
+            def servicesDir = new File(muleHomeDirectory, 'services')
+            services.each { svcUrl ->
+                FileUtils.copyFileToDirectory(new File(svcUrl.toURI()),
+                                              servicesDir)
+            }
+            def containerModulesClassLoader = classLoaderFactory.create(engineConfig.muleVersion,
+                                                                        Product.MULE_EE,
+                                                                        JdkOnlyClassLoaderFactory.create(),
+                                                                        muleHomeDirectory.toURI().toURL())
+            def containerClassLoader = createEmbeddedImplClassLoader(containerModulesClassLoader,
+                                                                     mavenClient,
+                                                                     engineConfig.muleVersion)
+            // work around this - https://jira.apache.org/jira/browse/LOG4J2-2152
+            def preserve = Thread.currentThread().contextClassLoader
+            registryListener = null
+            try {
+                Thread.currentThread().contextClassLoader = containerClassLoader
+                // TODO: Hard coded name?
+                def containerKlass = containerClassLoader.loadClass("org.mule.runtime.module.launcher.MuleContainer")
+                container = containerKlass.newInstance()
+                container.start(false)
+                def registryListenerKlass = containerClassLoader.loadClass(MuleRegistryListener.name)
+                registryListener = registryListenerKlass.newInstance()
+                container.deploymentService.addDeploymentListener(registryListener)
+                assert container
+                assert registryListener
+            }
+            finally {
+                Thread.currentThread().contextClassLoader = preserve
+            }
         }
-        finally {
-            Thread.currentThread().contextClassLoader = preserve
+        catch (e) {
+            log.error 'Unable to load Mule container!',
+                      e
+            throw e
         }
     }
 
