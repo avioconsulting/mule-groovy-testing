@@ -122,3 +122,7 @@ dependencies {
     testCompile 'org.apache.ant:ant:1.9.7'
     compile group: 'org.apache.maven.shared', name: 'maven-invoker', version: '3.0.1'
 }
+
+test {
+    systemProperty 'maven.home', System.getProperty('maven.home')
+}
