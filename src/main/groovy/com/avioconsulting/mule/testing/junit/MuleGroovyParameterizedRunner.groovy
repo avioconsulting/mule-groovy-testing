@@ -4,7 +4,8 @@ import org.junit.runner.Runner
 import org.junit.runner.notification.RunNotifier
 import org.junit.runners.Parameterized
 
-class MuleGroovyParameterizedRunner extends Parameterized {
+class MuleGroovyParameterizedRunner extends
+        Parameterized {
     MuleGroovyParameterizedRunner(Class<?> klass) throws Throwable {
         super(klass)
     }

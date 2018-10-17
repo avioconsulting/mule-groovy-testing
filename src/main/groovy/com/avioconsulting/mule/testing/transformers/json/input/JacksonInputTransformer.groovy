@@ -4,7 +4,8 @@ import com.avioconsulting.mule.testing.mulereplacements.wrappers.ConnectorInfo
 import com.avioconsulting.mule.testing.payloadvalidators.IPayloadValidator
 import com.fasterxml.jackson.databind.ObjectMapper
 
-class JacksonInputTransformer<T extends ConnectorInfo> extends Common<T> {
+class JacksonInputTransformer<T extends ConnectorInfo> extends
+        Common<T> {
     def mapper = new ObjectMapper()
     private final List<Class> inputClasses
 

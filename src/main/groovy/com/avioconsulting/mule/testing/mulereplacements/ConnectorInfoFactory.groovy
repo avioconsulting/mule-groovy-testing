@@ -13,8 +13,7 @@ class ConnectorInfoFactory {
             return new HttpRequesterInfo(fileName,
                                          lineInFile,
                                          params)
-        }
-        else if (params['message']?.class?.name?.endsWith('SoapMessageBuilder')) {
+        } else if (params['message']?.class?.name?.endsWith('SoapMessageBuilder')) {
             return new SoapConsumerInfo(fileName,
                                         lineInFile,
                                         params)

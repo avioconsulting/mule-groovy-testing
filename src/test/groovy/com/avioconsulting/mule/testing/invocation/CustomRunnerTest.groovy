@@ -8,7 +8,9 @@ import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
 
 @RunWith(MuleGroovyParameterizedRunner)
-class CustomRunnerTest extends BaseJunitTest implements OverrideConfigList {
+class CustomRunnerTest extends
+        BaseJunitTest implements
+        OverrideConfigList {
     @Parameterized.Parameters(name = "{0}")
     static Collection<Object[]> testData() {
         [

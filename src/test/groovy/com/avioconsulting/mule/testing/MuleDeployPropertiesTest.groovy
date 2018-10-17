@@ -1,7 +1,6 @@
 package com.avioconsulting.mule.testing
 
 import com.avioconsulting.mule.testing.junit.BaseJunitTest
-import groovy.json.JsonSlurper
 import org.junit.Before
 import org.junit.Test
 

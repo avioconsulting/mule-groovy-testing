@@ -5,7 +5,8 @@ import org.junit.runners.BlockJUnit4ClassRunner
 import org.junit.runners.model.FrameworkMethod
 import org.junit.runners.model.InitializationError
 
-class MuleGroovyJunitRunner extends BlockJUnit4ClassRunner {
+class MuleGroovyJunitRunner extends
+        BlockJUnit4ClassRunner {
     static boolean listenerSetup = false
 
     MuleGroovyJunitRunner(Class<?> klass) throws InitializationError {

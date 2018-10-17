@@ -10,7 +10,9 @@ import org.junit.Test
 import static org.hamcrest.Matchers.*
 import static org.junit.Assert.assertThat
 
-class SoapTest extends BaseJunitTest implements OverrideConfigList,
+class SoapTest extends
+        BaseJunitTest implements
+        OverrideConfigList,
         XmlDateHelp {
     List<String> getConfigResources() {
         ['soap_test.xml']

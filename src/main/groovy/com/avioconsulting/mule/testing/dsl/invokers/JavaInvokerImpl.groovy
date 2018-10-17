@@ -4,7 +4,9 @@ import com.avioconsulting.mule.testing.InvokerEventFactory
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
 import com.avioconsulting.mule.testing.payloadvalidators.IPayloadValidator
 
-class JavaInvokerImpl implements JavaInvoker, Invoker {
+class JavaInvokerImpl implements
+        JavaInvoker,
+        Invoker {
     private inputObject
     private final InvokerEventFactory eventFactory
     private final String flowName

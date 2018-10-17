@@ -10,7 +10,9 @@ import static groovy.test.GroovyAssert.shouldFail
 import static org.hamcrest.Matchers.*
 import static org.junit.Assert.assertThat
 
-class ApikitFlowInvokeTest extends BaseApiKitTest implements OverrideConfigList {
+class ApikitFlowInvokeTest extends
+        BaseApiKitTest implements
+        OverrideConfigList {
     @Test
     void getConfigResourceSubstitutes_hasCorrectGlobalXmls() {
         // arrange

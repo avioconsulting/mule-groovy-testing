@@ -15,29 +15,34 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
     </http:request-config>
     <flow name="xmlTest">
         <ee:transform doc:name="Transform Message">
-            <ee:message><ee:set-payload><![CDATA[%dw 2.0
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
 output application/xml
 ---
 {
     rootElement: {
         key: payload.foo
     }
-}]]></ee:set-payload></ee:message>
+}]]></ee:set-payload>
+            </ee:message>
         </ee:transform>
         <http:request config-ref="SomeSystem" path="/some_path" method="POST" doc:name="SomeSystem Call"/>
         <ee:transform doc:name="Transform Message">
-            <ee:message><ee:set-payload><![CDATA[%dw 2.0
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
 output application/json
 ---
 {
     reply_key: payload.rootElementResponse.reply + 1
-}]]></ee:set-payload></ee:message>
+}]]></ee:set-payload>
+            </ee:message>
         </ee:transform>
     </flow>
 
     <flow name="nestedTest">
         <ee:transform doc:name="Transform Message">
-            <ee:message><ee:set-payload><![CDATA[%dw 2.0
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
 output application/xml
 ---
 {
@@ -46,16 +51,19 @@ output application/xml
             key: payload.foo
         }
     }
-}]]></ee:set-payload></ee:message>
+}]]></ee:set-payload>
+            </ee:message>
         </ee:transform>
         <http:request config-ref="SomeSystem" path="/some_path" method="POST" doc:name="SomeSystem Call"/>
         <ee:transform doc:name="Transform Message">
-            <ee:message><ee:set-payload><![CDATA[%dw 2.0
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
 output application/json
 ---
 {
     reply_key: payload.rootElementResponse.reply + 1
-}]]></ee:set-payload></ee:message>
+}]]></ee:set-payload>
+            </ee:message>
         </ee:transform>
     </flow>
 </mule>

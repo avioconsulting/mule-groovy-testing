@@ -13,7 +13,7 @@ http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/m
                    raml="api-the-app-v1.raml"
                    disableValidations="${skip.apikit.validation}"
                    outboundHeadersMapName="outboundHeaders"
-                   httpStatusVarName="httpStatus" />
+                   httpStatusVarName="httpStatus"/>
     <flow name="api-the-app-v1-main">
         <http:listener config-ref="${http.listener.config}"
                        path="/the-app/api/v1/*"
@@ -32,34 +32,40 @@ http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/m
     <flow name="post:\resources:application\json:api-the-app-v1-config">
         <logger message="made it to post flow!" level="INFO"/>
         <ee:transform doc:name="Transform Message">
-            <ee:message><ee:set-payload><![CDATA[%dw 2.0
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
 output application/json
 ---
 {
     key: payload.foo
-}]]></ee:set-payload></ee:message>
+}]]></ee:set-payload>
+            </ee:message>
         </ee:transform>
     </flow>
     <flow name="get:\resources\(id):api-the-app-v1-config">
         <ee:transform doc:name="Transform Message">
-            <ee:message><ee:set-payload><![CDATA[%dw 2.0
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
 output application/json
 ---
 {
     key: 123
-}]]></ee:set-payload></ee:message>
+}]]></ee:set-payload>
+            </ee:message>
         </ee:transform>
     </flow>
     <flow name="get:\resources:api-the-app-v1-config">
         <set-variable variableName="foo" value="#[attributes.queryParams.foo]"/>
         <set-variable variableName="bar" value="#[attributes.queryParams.bar]"/>
         <ee:transform doc:name="Transform Message">
-            <ee:message><ee:set-payload><![CDATA[%dw 2.0
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
 output application/json
 ---
 {
     key: vars.foo + vars.bar
-}]]></ee:set-payload></ee:message>
+}]]></ee:set-payload>
+            </ee:message>
         </ee:transform>
     </flow>
 </mule>

@@ -1,12 +1,11 @@
 package com.avioconsulting.mule.testing.invocation.listeners
 
-import com.avioconsulting.mule.testing.BaseMuleGroovyTrait
+
 import com.avioconsulting.mule.testing.OverrideConfigList
 import com.avioconsulting.mule.testing.junit.BaseJunitTest
 import groovy.util.logging.Log4j2
 import org.junit.Test
 
-import static groovy.test.GroovyAssert.shouldFail
 import static org.hamcrest.Matchers.equalTo
 import static org.hamcrest.Matchers.is
 import static org.junit.Assert.assertThat
