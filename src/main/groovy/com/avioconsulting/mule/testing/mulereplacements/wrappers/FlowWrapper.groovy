@@ -4,17 +4,16 @@ import javax.xml.namespace.QName
 
 class FlowWrapper extends
         ConnectorInfo {
-    String name
     private final Object nativeMuleObject
     private final Object runtimeBridgeMuleSide
     private static final QName componentId = new QName('config', 'componentIdentifier')
 
-    // TODO: Better design
     FlowWrapper(String name,
                 Object nativeMuleObject,
                 Object runtimeBridgeMuleSide) {
         super(getComponentLocationField(nativeMuleObject, 'fileName') as String,
               getComponentLocationField(nativeMuleObject, 'lineInFile') as Integer,
+              'n/a',
               [:])
         this.runtimeBridgeMuleSide = runtimeBridgeMuleSide
         this.nativeMuleObject = nativeMuleObject

@@ -3,6 +3,7 @@ package com.avioconsulting.mule.testing.mulereplacements
 import com.avioconsulting.mule.testing.junit.TestingConfiguration
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapperImpl
 import groovy.util.logging.Log4j2
+import org.apache.logging.log4j.CloseableThreadContext
 
 @Log4j2
 class MockingConfiguration {
@@ -37,10 +38,10 @@ class MockingConfiguration {
      * @param interceptionEvent - org.mule.runtime.api.interception.InterceptionEvent
      * @param parameters - Map<String, org.mule.runtime.api.interception.ProcessorParameterValue>
      */
-    void executeMock(Object componentLocation,
+    void executeMock(String connectorName,
+                     Object componentLocation,
                      Object interceptionEvent,
                      Object parameters) {
-        def connectorName = parameters.get('doc:name').providedValue() as String
         def mockProcess = mocks[connectorName]
         def params = (parameters as Map).collectEntries { key, value ->
             [key, value.resolveValue()]
@@ -49,10 +50,30 @@ class MockingConfiguration {
                                          this.runtimeBridgeMuleSide)
         def factory = new ConnectorInfoFactory()
         def connectorInfo = factory.getConnectorInfo(componentLocation.fileName.get() as String,
+                                                     connectorName,
+                                                     componentLocation.getRootContainerName() as String,
                                                      componentLocation.lineInFile.get() as Integer,
                                                      params)
-        mockProcess.transform(event,
-                              connectorInfo)
+        def threadContext = CloseableThreadContext.push('Mock processor')
+        threadContext.put('connector', connectorInfo.name)
+        threadContext.put('container', connectorInfo.container)
+        threadContext.put('filename', connectorInfo.fileName)
+        threadContext.put('lineNumber', connectorInfo.lineNumber.toString())
+        try {
+            log.info 'Beginning mock execution'
+            try {
+                mockProcess.transform(event,
+                                      connectorInfo)
+            }
+            catch (e) {
+                log.info 'Completed mock execution with exception'
+                throw e
+            }
+            log.info 'Completed mock execution'
+        }
+        finally {
+            threadContext.close()
+        }
     }
 
     boolean shouldFlowListenerBeEnabled(String flowName) {

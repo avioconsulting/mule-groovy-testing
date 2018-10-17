@@ -36,6 +36,7 @@ public class MockingProcessorInterceptor implements ProcessorInterceptor {
             this.isMockEnabledMethod = mockingConfigClass.getDeclaredMethod("isMocked",
                                                                             String.class);
             this.doMockInvocationMethod = mockingConfigClass.getDeclaredMethod("executeMock",
+                                                                               String.class,
                                                                                Object.class,
                                                                                Object.class,
                                                                                Object.class);
@@ -54,10 +55,12 @@ public class MockingProcessorInterceptor implements ProcessorInterceptor {
         }
     }
 
-    private void executeMock(ComponentLocation location,
+    private void executeMock(String connectorName,
+                             ComponentLocation location,
                              InterceptionEvent event,
                              Map<String, ProcessorParameterValue> parameters) throws InvocationTargetException, IllegalAccessException {
         doMockInvocationMethod.invoke(mockingConfiguration,
+                                      connectorName,
                                       location,
                                       event,
                                       parameters);
@@ -88,40 +91,47 @@ public class MockingProcessorInterceptor implements ProcessorInterceptor {
                                                        Map<String, ProcessorParameterValue> parameters,
                                                        InterceptionEvent event,
                                                        InterceptionAction action) {
-        if (parameters.containsKey(CONNECTOR_NAME_PARAMETER) &&
-                isMockEnabled(parameters.get(CONNECTOR_NAME_PARAMETER).providedValue())) {
-            try {
-                executeMock(location,
-                            event,
-                            parameters);
-                return action.skip();
-            } catch (InvocationTargetException cause) {
-                // need to unwrap our reflection based Mule exceptions
-                Throwable actualException = cause.getTargetException();
-                switch (actualException.getClass().getName()) {
-                    case "com.avioconsulting.mule.testing.mulereplacements.wrappers.ModuleExceptionWrapper":
-                        // not using action.fail(Throwable) because if you supply the raw exception, flow error handlers will not
-                        // receive the error type. action.fail(ErrorType) would then prevent other useful exception
-                        // details from being passed along. We have our own implementation that sets the error type
-                        // and exception details properly, just like the real ModuleExceptionHandler would
-                        return fail(event,
-                                    action,
-                                    actualException);
-                    case "com.avioconsulting.mule.testing.mulereplacements.wrappers.CustomErrorWrapperException":
-                        // using this for same reason as above, except our mocking code already built out the
-                        // error codes for us
-                        return failWithCustomerErrorWrapper(event,
-                                                            action,
-                                                            actualException);
-                    default:
-                        return action.fail(actualException);
-                }
-            } catch (IllegalAccessException e) {
-                throw new RuntimeException("Should not have had a reflection problem but did",
-                                           e);
-            }
+        if (!parameters.containsKey(CONNECTOR_NAME_PARAMETER)) {
+            return action.proceed();
         }
-        return action.proceed();
+
+        String connectorName = parameters.get(CONNECTOR_NAME_PARAMETER).providedValue();
+
+        if (!isMockEnabled(connectorName)) {
+            return action.proceed();
+        }
+
+        try {
+            executeMock(connectorName,
+                        location,
+                        event,
+                        parameters);
+            return action.skip();
+        } catch (InvocationTargetException cause) {
+            // need to unwrap our reflection based Mule exceptions
+            Throwable actualException = cause.getTargetException();
+            switch (actualException.getClass().getName()) {
+                case "com.avioconsulting.mule.testing.mulereplacements.wrappers.ModuleExceptionWrapper":
+                    // not using action.fail(Throwable) because if you supply the raw exception, flow error handlers will not
+                    // receive the error type. action.fail(ErrorType) would then prevent other useful exception
+                    // details from being passed along. We have our own implementation that sets the error type
+                    // and exception details properly, just like the real ModuleExceptionHandler would
+                    return fail(event,
+                                action,
+                                actualException);
+                case "com.avioconsulting.mule.testing.mulereplacements.wrappers.CustomErrorWrapperException":
+                    // using this for same reason as above, except our mocking code already built out the
+                    // error codes for us
+                    return failWithCustomerErrorWrapper(event,
+                                                        action,
+                                                        actualException);
+                default:
+                    return action.fail(actualException);
+            }
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException("Should not have had a reflection problem but did",
+                                       e);
+        }
     }
 
     private String getNamespace(Throwable moduleExceptionWrapper) {

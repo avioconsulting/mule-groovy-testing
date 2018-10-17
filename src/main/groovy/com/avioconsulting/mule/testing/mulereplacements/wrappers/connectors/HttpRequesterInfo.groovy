@@ -13,9 +13,11 @@ class HttpRequesterInfo extends
 
     HttpRequesterInfo(String fileName,
                       Integer lineNumber,
+                      String container,
                       Map<String, Object> parameters) {
         super(fileName,
               lineNumber,
+              container,
               parameters)
         this.method = parameters['method'] as String
         def muleValidator = parameters['responseValidationSettings'].responseValidator

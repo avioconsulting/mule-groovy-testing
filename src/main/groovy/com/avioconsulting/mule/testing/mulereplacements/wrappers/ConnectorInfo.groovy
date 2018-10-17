@@ -1,15 +1,17 @@
 package com.avioconsulting.mule.testing.mulereplacements.wrappers
 
-// TODO: Possibly subclass this for different connectors?
 class ConnectorInfo {
     private final Map<String, Object> parameters
-    private final String fileName
+    private final String fileName, container
     private final int lineNumber
+    String name
 
     ConnectorInfo(String fileName,
                   Integer lineNumber,
+                  String container,
                   Map<String, Object> parameters) {
         this.lineNumber = lineNumber
+        this.container = container
         this.fileName = fileName
         this.parameters = parameters
     }
@@ -20,6 +22,18 @@ class ConnectorInfo {
 
     @Override
     String toString() {
-        "${getClass().name} - in ${fileName}:${lineNumber}"
+        "${getClass().name} - ${name} - in ${fileName}:${lineNumber}"
+    }
+
+    String getFileName() {
+        return fileName
+    }
+
+    int getLineNumber() {
+        return lineNumber
+    }
+
+    String getContainer() {
+        return container
     }
 }
