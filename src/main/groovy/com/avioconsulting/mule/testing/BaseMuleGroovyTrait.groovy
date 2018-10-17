@@ -15,8 +15,9 @@ import com.avioconsulting.mule.testing.payloadvalidators.SOAPPayloadValidator
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 import org.apache.commons.io.FileUtils
-import org.apache.commons.lang.SystemUtils
 import org.apache.logging.log4j.Logger
+import org.apache.maven.shared.invoker.DefaultInvocationRequest
+import org.apache.maven.shared.invoker.DefaultInvoker
 
 import java.security.MessageDigest
 
@@ -150,7 +151,7 @@ trait BaseMuleGroovyTrait {
     def regenerateClassLoaderModelAndArtifactDescriptor() {
         def isMavenRun = System.getProperty('sun.java.command').contains('surefire')
         if (isMavenRun) {
-            assert classLoaderModelFile.exists() : "Expected ${classLoaderModelFile} to already exist because we are running from Maven but it does not. Has the Mule Maven plugin run?"
+            assert classLoaderModelFile.exists(): "Expected ${classLoaderModelFile} to already exist because we are running from Maven but it does not. Has the Mule Maven plugin run?"
             logger.info 'Skipping classloader model regenerate because we are running in Maven'
             return
         }
@@ -162,19 +163,25 @@ trait BaseMuleGroovyTrait {
         def classLoaderModelFile = getClassLoaderModelFile() as File
         def needUpdate = (!digestFile.exists()) || digestFile.text != sha256 || !classLoaderModelFile.exists()
         if (needUpdate) {
-            def mvnExecutable = SystemUtils.IS_OS_WINDOWS ? 'mvn.cmd' : 'mvn'
-            logger.info 'ClassLoader model/artifact descriptor have not been built yet, running {} against POM {} to generate one',
-                        mvnExecutable,
+            // not the cleanest way in the world, but it avoids lots of coupling. and it's more cross platform
+            // compatible than direct shell invocation
+            logger.info 'ClassLoader model/artifact descriptor have not been built yet, running maven against POM {} to generate one',
                         mavenPomPath
-            def processBuilder = new ProcessBuilder(mvnExecutable,
-                                                    '-f',
-                                                    mavenPomPath.absolutePath,
-                                                    'clean',
-                                                    'compile')
-            def process = processBuilder.start()
-            process.inputStream.eachLine { println it }
-            assert process.waitFor() == 0
-            assert classLoaderModelFile.exists() : 'Somehow we successfully ran a Maven compile but did not generate a classloader model.'
+            def mavenInvokeRequest = new DefaultInvocationRequest()
+            mavenInvokeRequest.setPomFile(mavenPomPath)
+            // this will trigger Mule's Maven plugin to populate both mule-artifact.json with all the config files/exports/etc.
+            // and generate the classloader model
+            mavenInvokeRequest.setGoals(['generate-test-sources'])
+            def mavenInvoker = new DefaultInvoker()
+            try {
+                mavenInvoker.execute(mavenInvokeRequest)
+            }
+            catch (e) {
+                def exception = new Exception("Unable to call Maven!\nNOTE: This requires a normal Maven install on your machine. You cannot use the version of Maven bundled inside Studio. See below for common IDE instructions.\n---------\nStudio/Eclipse: Window->Preferences->Java->Installed JREs->highlight the JRE->Edit, then paste in -Dmaven.home=yourMavenHomeDirectory into 'Default VM arguments'.\n---------\nIntelliJ: Run Menu->Edit Configurations->Templates->Junit, then paste in -Dmaven.home=yourMavenHomeDirectory into 'VM options'. You might need to re-create any existing Run Configurations.\n---------",
+                                              e)
+                throw exception
+            }
+            assert classLoaderModelFile.exists(): 'Somehow we successfully ran a Maven compile but did not generate a classloader model.'
             digestFile.write(sha256)
         } else {
             logger.info 'already up to date classLoader model on filesystem'
