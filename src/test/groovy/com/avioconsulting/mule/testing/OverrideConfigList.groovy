@@ -1,11 +1,6 @@
 package com.avioconsulting.mule.testing
-
-import groovy.json.JsonSlurper
-
 // allow us to avoid the overhead of setting up mule-deploy-props-test-artifact.json for each test
 trait OverrideConfigList {
-    static Map cachedClassLoaderModel
-
     File getProjectDirectory() {
         // putting this here because it's a @Before hook on the cheap
         System.setProperty('mule.verbose.exceptions',
@@ -31,19 +26,6 @@ trait OverrideConfigList {
         logger.info 'Using outputdirs {} for test',
                     result
         result
-    }
-
-    Map getClassLoaderModel() {
-        def logger = getLogger()
-        if (!cachedClassLoaderModel) {
-            regenerateClassLoaderModelAndArtifactDescriptor()
-            def classLoaderModelFile = getClassLoaderModelFile() as File
-            assert classLoaderModelFile.exists()
-            cachedClassLoaderModel = new JsonSlurper().parse(classLoaderModelFile)
-        } else {
-            logger.info 'Using cached/static classloader model'
-        }
-        cachedClassLoaderModel
     }
 
     Map getMuleArtifactJson() {

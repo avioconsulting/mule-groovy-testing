@@ -11,6 +11,7 @@ import com.avioconsulting.mule.testing.dsl.mocking.StandardRequestResponse
 import com.avioconsulting.mule.testing.dsl.mocking.sfdc.Choice
 import com.avioconsulting.mule.testing.mulereplacements.MockingConfiguration
 import com.avioconsulting.mule.testing.mulereplacements.RuntimeBridgeTestSide
+import groovy.json.JsonSlurper
 import groovy.util.logging.Log4j2
 import org.apache.logging.log4j.Logger
 import org.junit.Before
@@ -27,6 +28,7 @@ class BaseJunitTest implements
     protected static TestingConfiguration currentTestingConfig
     private static MockingConfiguration mockingConfiguration
     protected static final Map<TestingConfiguration, Integer> failedConfigurations = [:]
+    private static Map cachedClassLoaderModel
 
     @Override
     Logger getLogger() {
@@ -47,6 +49,14 @@ class BaseJunitTest implements
                 muleEngineContainer = createMuleEngineContainer(proposedConfig)
             }
         }
+    }
+
+    Map getClassLoaderModel() {
+        if (!cachedClassLoaderModel) {
+            regenerateClassLoaderModelAndArtifactDescriptor()
+            cachedClassLoaderModel = new JsonSlurper().parse(classLoaderModelFile)
+        }
+        cachedClassLoaderModel
     }
 
     @Before

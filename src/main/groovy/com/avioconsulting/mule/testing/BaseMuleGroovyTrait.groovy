@@ -148,11 +148,19 @@ trait BaseMuleGroovyTrait {
     }
 
     def regenerateClassLoaderModelAndArtifactDescriptor() {
+        def isMavenRun = System.getProperty('sun.java.command').contains('surefire')
+        if (isMavenRun) {
+            assert classLoaderModelFile.exists() : "Expected ${classLoaderModelFile} to already exist because we are running from Maven but it does not. Has the Mule Maven plugin run?"
+            logger.info 'Skipping classloader model regenerate because we are running in Maven'
+            return
+        }
+        logger.info 'Continuing with classloader regenerate since we are probably running from an IDE'
         def digest = MessageDigest.getInstance('SHA-256')
         digest.update(mavenPomPath.text.bytes)
         def sha256 = Base64.encoder.encodeToString(digest.digest())
         def digestFile = new File(buildOutputDirectory, 'pom.xml.sha256')
-        def needUpdate = (!digestFile.exists()) || digestFile.text != sha256
+        def classLoaderModelFile = getClassLoaderModelFile() as File
+        def needUpdate = (!digestFile.exists()) || digestFile.text != sha256 || !classLoaderModelFile.exists()
         if (needUpdate) {
             def mvnExecutable = SystemUtils.IS_OS_WINDOWS ? 'mvn.cmd' : 'mvn'
             logger.info 'ClassLoader model/artifact descriptor have not been built yet, running {} against POM {} to generate one',
@@ -166,6 +174,7 @@ trait BaseMuleGroovyTrait {
             def process = processBuilder.start()
             process.inputStream.eachLine { println it }
             assert process.waitFor() == 0
+            assert classLoaderModelFile.exists() : 'Somehow we successfully ran a Maven compile but did not generate a classloader model.'
             digestFile.write(sha256)
         } else {
             logger.info 'already up to date classLoader model on filesystem'
@@ -182,7 +191,7 @@ trait BaseMuleGroovyTrait {
      */
     Map getClassLoaderModel() {
         def file = classLoaderModelFile
-        assert file.exists(): "Could not find ${file}. Has the Mule Maven plugin built your project yet. If you are not going to create this file, override getClassLoaderModel"
+        assert file.exists(): "Could not find ${file}. Has the Mule Maven plugin built your project yet? If you are not going to create this file yourself, you might want to run regenerateClassLoaderModelAndArtifactDescriptor()"
         new JsonSlurper().parse(file) as Map
     }
 
