@@ -11,7 +11,6 @@ abstract class Common implements
     EventWrapper transformOutput(Object input,
                                  EventWrapper originalMuleEvent) {
         def jsonString = getJsonOutput(input)
-        // TODO: Fix other cases that use 'content-type' to supply media type instead
         def messageProps = [
                 'http.status': '200'
         ]
