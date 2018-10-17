@@ -77,7 +77,7 @@ class BaseJunitTest implements
             log.info 'Using existing Mule app...'
         }
         if (newBridgeNeeded) {
-            mockingConfiguration = new MockingConfiguration(this.keepListenersOnForTheseFlows())
+            mockingConfiguration = new MockingConfiguration(proposedTestingConfig)
             try {
                 runtimeBridge = deployApplication(muleEngineContainer,
                                                   proposedTestingConfig,
@@ -105,7 +105,7 @@ class BaseJunitTest implements
                 flowName,
                 closure)
     }
-    
+
     def mockRestHttpCall(String connectorName,
                          @DelegatesTo(HttpRequestResponseChoice) Closure closure) {
         mockRestHttpCall(mockingConfiguration,

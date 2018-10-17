@@ -1,14 +1,17 @@
 package com.avioconsulting.mule.testing.mulereplacements
 
+import com.avioconsulting.mule.testing.junit.TestingConfiguration
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapperImpl
 
 class MockingConfiguration {
     private final Map<String, MuleMessageTransformer> mocks = [:]
-    private final List<String> keepListenersOnForTheseFlows
+    private final Map<String, Integer> keepListenersOnForTheseFlows
     Object runtimeBridgeMuleSide
 
-    MockingConfiguration(List<String> keepListenersOnForTheseFlows) {
-        this.keepListenersOnForTheseFlows = keepListenersOnForTheseFlows
+    MockingConfiguration(TestingConfiguration testingConfiguration) {
+        this.keepListenersOnForTheseFlows = testingConfiguration.keepListenersOnForTheseFlows.collectEntries { flowName ->
+            [flowName, 1]
+        }
     }
 
     def clearMocks() {
@@ -51,7 +54,7 @@ class MockingConfiguration {
     }
 
     boolean shouldFlowListenerBeEnabled(String flowName) {
-        keepListenersOnForTheseFlows.contains(flowName)
+        keepListenersOnForTheseFlows.containsKey(flowName)
     }
 
     Object getErrorTypeRepository() {
