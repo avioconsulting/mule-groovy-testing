@@ -30,7 +30,7 @@ public class MuleRegistryListener implements DeploymentListener {
         RuntimeBridgeMuleSide bridge = new RuntimeBridgeMuleSide(registry);
         this.runtimeBridges.put(artifactName, bridge);
         bridge.setBatchNotifyListener(this.batchListeners.get(artifactName));
-        // it's handy for our mocking config to have access to the runtime bridge object
+        // our mocking setup can't function without access to the runtime bridge
         Object mockingConfiguration = mockingConfigurations.get(artifactName);
         try {
             Class<?> mockingConfigClass = mockingConfiguration.getClass();
