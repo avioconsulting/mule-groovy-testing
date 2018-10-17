@@ -2,7 +2,9 @@ package com.avioconsulting.mule.testing.mulereplacements
 
 import com.avioconsulting.mule.testing.junit.TestingConfiguration
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapperImpl
+import groovy.util.logging.Log4j2
 
+@Log4j2
 class MockingConfiguration {
     private final Map<String, MuleMessageTransformer> mocks = [:]
     private final Map<String, Integer> keepListenersOnForTheseFlows
@@ -54,7 +56,15 @@ class MockingConfiguration {
     }
 
     boolean shouldFlowListenerBeEnabled(String flowName) {
-        keepListenersOnForTheseFlows.containsKey(flowName)
+        def keepListenerOn = keepListenersOnForTheseFlows.containsKey(flowName)
+        if (keepListenerOn) {
+            log.info "Keeping listener enabled for flow '{}' per test class configuration",
+                     flowName
+        } else {
+            log.info "Disabling listener for flow '{}' per test class configuration",
+                     flowName
+        }
+        keepListenerOn
     }
 
     Object getErrorTypeRepository() {
