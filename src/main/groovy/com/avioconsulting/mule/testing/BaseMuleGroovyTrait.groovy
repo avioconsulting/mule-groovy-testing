@@ -167,24 +167,31 @@ trait BaseMuleGroovyTrait {
             // compatible than direct shell invocation
             logger.info 'ClassLoader model/artifact descriptor have not been built yet, running maven against POM {} to generate one',
                         mavenPomPath
-            def mavenInvokeRequest = new DefaultInvocationRequest()
-            mavenInvokeRequest.setPomFile(mavenPomPath)
-            // this will trigger Mule's Maven plugin to populate both mule-artifact.json with all the config files/exports/etc.
-            // and generate the classloader model
-            mavenInvokeRequest.setGoals(['generate-test-sources'])
-            def mavenInvoker = new DefaultInvoker()
-            try {
-                mavenInvoker.execute(mavenInvokeRequest)
-            }
-            catch (e) {
-                def exception = new Exception("Unable to call Maven!\nNOTE: This requires a normal Maven install on your machine. You cannot use the version of Maven bundled inside Studio. See below for common IDE instructions.\n---------\nStudio/Eclipse: Window->Preferences->Java->Installed JREs->highlight the JRE->Edit, then paste in -Dmaven.home=yourMavenHomeDirectory into 'Default VM arguments'.\n---------\nIntelliJ: Run Menu->Edit Configurations->Templates->Junit, then paste in -Dmaven.home=yourMavenHomeDirectory into 'VM options'. You might need to re-create any existing Run Configurations.\n---------",
-                                              e)
-                throw exception
-            }
+            generateUsingMaven()
             assert classLoaderModelFile.exists(): 'Somehow we successfully ran a Maven compile but did not generate a classloader model.'
             digestFile.write(sha256)
         } else {
             logger.info 'already up to date classLoader model on filesystem'
+        }
+    }
+
+    private void generateUsingMaven() {
+        def mavenInvokeRequest = new DefaultInvocationRequest()
+        mavenInvokeRequest.setPomFile(mavenPomPath)
+        // this will trigger Mule's Maven plugin to populate both mule-artifact.json with all the config files/exports/etc.
+        // and generate the classloader model
+        mavenInvokeRequest.setGoals(['generate-test-sources'])
+        def mavenInvoker = new DefaultInvoker()
+        try {
+            def result = mavenInvoker.execute(mavenInvokeRequest)
+            if (result.exitCode != 0) {
+                throw new Exception('Successfully located Maven executable but unable to use Maven to generate classloader model/artifact descriptor. This is likely a problem with your POM or your project. Examine the output for what might be wrong.')
+            }
+        }
+        catch (IllegalStateException e) {
+            def exception = new Exception("Unable to call Maven!\nNOTE: This requires a normal Maven install on your machine. You cannot use the version of Maven bundled inside Studio. See below for common IDE instructions.\n---------\nStudio/Eclipse: Window->Preferences->Java->Installed JREs->highlight the JRE->Edit, then paste in -Dmaven.home=yourMavenHomeDirectory into 'Default VM arguments'.\n---------\nIntelliJ: Run Menu->Edit Configurations->Templates->Junit, then paste in -Dmaven.home=yourMavenHomeDirectory into 'VM options'. You might need to re-create any existing Run Configurations.\n---------",
+                                          e)
+            throw exception
         }
     }
 
