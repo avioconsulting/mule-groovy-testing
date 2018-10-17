@@ -99,8 +99,7 @@ trait BaseMuleGroovyTrait {
     BaseEngineConfig getBaseEngineConfig() {
         new BaseEngineConfig('4.1.2')
     }
-
-    // TODO: Figure out how to do this w/ Mule 4
+    
     List<String> keepListenersOnForTheseFlows() {
         []
     }
