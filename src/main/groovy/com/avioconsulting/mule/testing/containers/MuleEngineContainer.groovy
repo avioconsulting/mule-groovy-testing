@@ -115,7 +115,7 @@ class MuleEngineContainer {
         app.dispose()
         container.deploymentService.undeploy(app.artifactName)
     }
-    
+
     RuntimeBridgeTestSide deployApplication(String artifactName,
                                             URI application,
                                             MockingConfiguration mockingConfiguration,

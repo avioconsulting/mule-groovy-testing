@@ -15,7 +15,10 @@ import com.avioconsulting.mule.testing.payloadvalidators.SOAPPayloadValidator
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 import org.apache.commons.io.FileUtils
+import org.apache.commons.lang.SystemUtils
 import org.apache.logging.log4j.Logger
+
+import java.security.MessageDigest
 
 // basic idea here is to have a trait that could be mixed in to any type of testing framework situation
 // this trait should be stateless
@@ -99,7 +102,7 @@ trait BaseMuleGroovyTrait {
     BaseEngineConfig getBaseEngineConfig() {
         new BaseEngineConfig('4.1.2')
     }
-    
+
     List<String> keepListenersOnForTheseFlows() {
         []
     }
@@ -108,8 +111,12 @@ trait BaseMuleGroovyTrait {
         [:]
     }
 
+    File getProjectDirectory() {
+        new File('.')
+    }
+
     File getBuildOutputDirectory() {
-        new File('target')
+        new File(projectDirectory, 'target')
     }
 
     List<File> outputDirsToCopy() {
@@ -132,8 +139,41 @@ trait BaseMuleGroovyTrait {
         new File(metaInfDirectory, 'mule-artifact')
     }
 
+    File getMavenPomDirectory() {
+        projectDirectory
+    }
+
     File getMavenPomPath() {
-        new File('pom.xml')
+        new File(mavenPomDirectory, 'pom.xml')
+    }
+
+    def regenerateClassLoaderModelAndArtifactDescriptor() {
+        def digest = MessageDigest.getInstance('SHA-256')
+        digest.update(mavenPomPath.text.bytes)
+        def sha256 = Base64.encoder.encodeToString(digest.digest())
+        def digestFile = new File(buildOutputDirectory, 'pom.xml.sha256')
+        def needUpdate = (!digestFile.exists()) || digestFile.text != sha256
+        if (needUpdate) {
+            def mvnExecutable = SystemUtils.IS_OS_WINDOWS ? 'mvn.cmd' : 'mvn'
+            logger.info 'ClassLoader model/artifact descriptor have not been built yet, running {} against POM {} to generate one',
+                        mvnExecutable,
+                        mavenPomPath
+            def processBuilder = new ProcessBuilder(mvnExecutable,
+                                                    '-f',
+                                                    mavenPomPath.absolutePath,
+                                                    'clean',
+                                                    'compile')
+            def process = processBuilder.start()
+            process.inputStream.eachLine { println it }
+            assert process.waitFor() == 0
+            digestFile.write(sha256)
+        } else {
+            logger.info 'already up to date classLoader model on filesystem'
+        }
+    }
+
+    File getClassLoaderModelFile() {
+        new File(muleArtifactDirectory, 'classloader-model.json')
     }
 
     /**
@@ -141,7 +181,7 @@ trait BaseMuleGroovyTrait {
      * @return
      */
     Map getClassLoaderModel() {
-        def file = new File(muleArtifactDirectory, 'classloader-model.json')
+        def file = classLoaderModelFile
         assert file.exists(): "Could not find ${file}. Has the Mule Maven plugin built your project yet. If you are not going to create this file, override getClassLoaderModel"
         new JsonSlurper().parse(file) as Map
     }
