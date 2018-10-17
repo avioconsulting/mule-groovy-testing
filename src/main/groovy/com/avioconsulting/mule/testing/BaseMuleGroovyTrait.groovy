@@ -152,6 +152,7 @@ trait BaseMuleGroovyTrait {
         def isMavenRun = System.getProperty('sun.java.command').contains('surefire')
         if (isMavenRun) {
             assert classLoaderModelFile.exists(): "Expected ${classLoaderModelFile} to already exist because we are running from Maven but it does not. Has the Mule Maven plugin run?"
+            // the odds are very low that a Maven based run will not have already generated our files
             logger.info 'Skipping classloader model regenerate because we are running in Maven'
             return
         }
