@@ -31,9 +31,16 @@ public class RuntimeBridgeMuleSide {
     private final Registry registry;
     private final List<CompletableFuture<Void>> streamCompletionCallbacks = new ArrayList<>();
     private GroovyTestingBatchNotifyListener batchNotifyListener;
+    private final CursorStreamProviderFactory cursorStreamProviderFactory;
 
-    public RuntimeBridgeMuleSide(Registry registry) {
+    RuntimeBridgeMuleSide(Registry registry) {
         this.registry = registry;
+        Optional<StreamingManager> streamingManagerOptional = registry.lookupByType(StreamingManager.class);
+        if (!streamingManagerOptional.isPresent()) {
+            throw new RuntimeException("Cannot get streaming manager!");
+        }
+        StreamingManager streamingManager = streamingManagerOptional.get();
+        cursorStreamProviderFactory = streamingManager.forBytes().getDefaultCursorProviderFactory();
     }
 
     public Object lookupByName(String flowName) {
@@ -67,17 +74,12 @@ public class RuntimeBridgeMuleSide {
 
     public Object getMuleStreamCursor(Object muleEvent,
                                       InputStream stream) {
-        // TODO: See if we can hold on to these and speed lookup?
-        Optional<StreamingManager> streamingManagerOptional = registry.lookupByName("_muleStreamingManager");
-        if (!streamingManagerOptional.isPresent()) {
-            throw new RuntimeException("Cannot get streaming manager!");
+
+        if (!cursorStreamProviderFactory.accepts(stream)) {
+            throw new RuntimeException("Factory won't accept our stream!");
         }
-        StreamingManager mgr = streamingManagerOptional.get();
-        CursorStreamProviderFactory factory = mgr.forBytes().getDefaultCursorProviderFactory();
-        if (!factory.accepts(stream)) {
-            throw new RuntimeException("Factory won't accept it!");
-        }
-        return factory.of(getCoreEvent(muleEvent), stream);
+        return cursorStreamProviderFactory.of(getCoreEvent(muleEvent),
+                                              stream);
     }
 
     private static CoreEvent getCoreEvent(Object muleEvent) {
