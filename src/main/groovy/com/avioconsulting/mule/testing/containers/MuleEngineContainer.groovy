@@ -35,9 +35,6 @@ class MuleEngineContainer {
                 log.info "Removing ${muleHomeDirectory.absolutePath}"
                 muleHomeDirectory.deleteDir()
             }
-            // TODO: Do we need this still?
-            System.setProperty('mule.mode.embedded',
-                               'true')
             // mule won't start without a log4j2 config
             def log4jResource = MuleEngineContainer.getResourceAsStream('/log4j2-for-mule-home.xml')
             assert log4jResource
