@@ -56,7 +56,7 @@ class MuleEngineContainer {
             def mavenClientProvider = MavenClientProvider.discoverProvider(DefaultEmbeddedContainerBuilder.classLoader)
             def m2Directory = new File(System.getProperty('user.home'), '.m2')
             def repo = new File(m2Directory, 'repository')
-            assert repo.exists() : "Repo directory ${repo} should have been created already!"
+            repo.mkdirs()
             // the Aether Maven client is not very sophisticated. It attempts to use the 1st profile in settings.xml
             // Therefore we include our dependencies in the testing framework's POM and then rely
             // on Maven to download them before this code even runs. thus forcing offline mode
