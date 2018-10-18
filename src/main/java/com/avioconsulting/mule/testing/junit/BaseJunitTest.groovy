@@ -18,7 +18,7 @@ import org.junit.runner.RunWith
 // takes BaseMuleGroovyTrait and adds JUnit lifecycle/state
 @Log4j2
 @RunWith(MuleGroovyJunitRunner)
-class BaseJunitTest implements
+abstract class BaseJunitTest implements
         BaseMuleGroovyTrait {
     private static Map cachedClassLoaderModel
     static TestState testState = new TestState()
