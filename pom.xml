@@ -96,10 +96,30 @@
             <version>${mule.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.mulesoft.mule.runtime.modules</groupId>
-            <artifactId>mule-module-batch-ee</artifactId>
+            <groupId>com.mulesoft.mule.distributions</groupId>
+            <artifactId>mule-runtime-impl-bom</artifactId>
             <version>${mule.version}</version>
         </dependency>
+        <!-- Stuff to work around the Mule embedded/Aether client's limitations -->
+        <dependency>
+            <groupId>javax.mail</groupId>
+            <artifactId>mail</artifactId>
+            <version>1.4.3</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpcore</artifactId>
+            <version>4.4.6</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mule.distributions</groupId>
+            <artifactId>mule-module-embedded-impl-bom</artifactId>
+            <version>${mule.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+        <!-- End Aether client limitations -->
         <dependency>
             <groupId>org.apache.maven.shared</groupId>
             <artifactId>maven-invoker</artifactId>
