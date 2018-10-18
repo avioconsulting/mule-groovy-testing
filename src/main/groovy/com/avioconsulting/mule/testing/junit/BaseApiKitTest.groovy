@@ -47,8 +47,8 @@ abstract class BaseApiKitTest extends
                            port as String)
         properties.put('http.listener.config', 'test-http-listener-config')
         // by convention, assume this
-        properties.put('skip.apikit.validation', 'false')
-        properties.put('return.validation.failures', 'true')
+        properties.put('skip.apikit.validation', false)
+        properties.put('return.validation.failures', true)
         properties
     }
 

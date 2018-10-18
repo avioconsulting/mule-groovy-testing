@@ -84,11 +84,10 @@ trait BaseMuleGroovyTrait {
                 FileUtils.copyDirectory(dir,
                                         appSourceDir)
             }
-            def properties = new Properties(testingConfiguration.startupProperties)
             muleEngineContainer.deployApplication(artifactName,
                                                   appSourceDir.toURI(),
                                                   mockingConfiguration,
-                                                  properties)
+                                                  testingConfiguration.startupPropertiesAsJavaUtilProps)
         }
         finally {
             FileUtils.deleteDirectory(appSourceDir)
