@@ -53,6 +53,7 @@ class MessageWrapperImpl implements
     String getMessageAsString() {
         def value = valueInsideTypedValue
         def klass = value.getClass().name
+        // this is what repeatable streams look like
         if (klass.contains('ManagedCursorStreamProvider')) {
             def cursor = value.openCursor()
             try {
@@ -62,7 +63,9 @@ class MessageWrapperImpl implements
             finally {
                 cursor.close()
             }
-        } else if (InputStream.isAssignableFrom(value.getClass())) {
+        }
+        // this is what non repeatable streams look like
+        else if (InputStream.isAssignableFrom(value.getClass())) {
             return value.text
         } else if (klass == String.name) {
             return value
