@@ -8,8 +8,8 @@ import com.avioconsulting.mule.testing.dsl.mocking.HttpRequestResponseChoice
 import com.avioconsulting.mule.testing.dsl.mocking.SOAPFormatter
 import com.avioconsulting.mule.testing.dsl.mocking.StandardRequestResponse
 import com.avioconsulting.mule.testing.dsl.mocking.sfdc.Choice
-import com.avioconsulting.mule.testing.mulereplacements.MockingConfiguration
-import com.avioconsulting.mule.testing.mulereplacements.RuntimeBridgeTestSide
+import com.avioconsulting.mule.testing.muleinterfaces.MockingConfiguration
+import com.avioconsulting.mule.testing.muleinterfaces.RuntimeBridgeTestSide
 import groovy.json.JsonSlurper
 import groovy.util.logging.Log4j2
 import org.apache.logging.log4j.Logger

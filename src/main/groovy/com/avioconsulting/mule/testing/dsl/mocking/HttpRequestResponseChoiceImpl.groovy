@@ -1,7 +1,7 @@
 package com.avioconsulting.mule.testing.dsl.mocking
 
-import com.avioconsulting.mule.testing.mulereplacements.IFetchClassLoaders
-import com.avioconsulting.mule.testing.mulereplacements.wrappers.connectors.HttpRequesterInfo
+import com.avioconsulting.mule.testing.muleinterfaces.IFetchClassLoaders
+import com.avioconsulting.mule.testing.muleinterfaces.wrappers.connectors.HttpRequesterInfo
 import com.avioconsulting.mule.testing.transformers.TransformerChain
 import com.avioconsulting.mule.testing.transformers.http.HttpClosureCurrier
 import com.avioconsulting.mule.testing.transformers.http.HttpConnectorErrorTransformer

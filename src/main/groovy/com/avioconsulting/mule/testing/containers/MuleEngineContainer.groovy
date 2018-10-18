@@ -1,8 +1,8 @@
 package com.avioconsulting.mule.testing.containers
 
-import com.avioconsulting.mule.testing.mulereplacements.MockingConfiguration
-import com.avioconsulting.mule.testing.mulereplacements.MuleRegistryListener
-import com.avioconsulting.mule.testing.mulereplacements.RuntimeBridgeTestSide
+import com.avioconsulting.mule.testing.muleinterfaces.MockingConfiguration
+import com.avioconsulting.mule.testing.muleinterfaces.MuleRegistryListener
+import com.avioconsulting.mule.testing.muleinterfaces.RuntimeBridgeTestSide
 import groovy.util.logging.Log4j2
 import org.apache.commons.io.FileUtils
 import org.mule.maven.client.api.MavenClient

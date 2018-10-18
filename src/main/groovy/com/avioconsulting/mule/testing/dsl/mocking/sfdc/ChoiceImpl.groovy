@@ -2,8 +2,8 @@ package com.avioconsulting.mule.testing.dsl.mocking.sfdc
 
 import com.avioconsulting.mule.testing.InvokerEventFactory
 import com.avioconsulting.mule.testing.mocks.DsqlMock
-import com.avioconsulting.mule.testing.mulereplacements.MuleMessageTransformer
-import com.avioconsulting.mule.testing.mulereplacements.wrappers.ConnectorInfo
+import com.avioconsulting.mule.testing.muleinterfaces.MuleMessageTransformer
+import com.avioconsulting.mule.testing.muleinterfaces.wrappers.ConnectorInfo
 import com.avioconsulting.mule.testing.transformers.sfdc.UpsertTransformer
 import org.mule.runtime.core.api.MuleContext
 

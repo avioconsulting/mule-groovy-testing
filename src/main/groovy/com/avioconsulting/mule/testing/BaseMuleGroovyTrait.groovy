@@ -8,9 +8,9 @@ import com.avioconsulting.mule.testing.dsl.mocking.*
 import com.avioconsulting.mule.testing.dsl.mocking.sfdc.Choice
 import com.avioconsulting.mule.testing.dsl.mocking.sfdc.ChoiceImpl
 import com.avioconsulting.mule.testing.junit.TestingConfiguration
-import com.avioconsulting.mule.testing.mulereplacements.MockingConfiguration
-import com.avioconsulting.mule.testing.mulereplacements.RuntimeBridgeTestSide
-import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
+import com.avioconsulting.mule.testing.muleinterfaces.MockingConfiguration
+import com.avioconsulting.mule.testing.muleinterfaces.RuntimeBridgeTestSide
+import com.avioconsulting.mule.testing.muleinterfaces.wrappers.EventWrapper
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 import org.apache.commons.io.FileUtils

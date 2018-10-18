@@ -1,8 +1,8 @@
 package com.avioconsulting.mule.testing.dsl.mocking
 
-import com.avioconsulting.mule.testing.mulereplacements.IFetchClassLoaders
-import com.avioconsulting.mule.testing.mulereplacements.MuleMessageTransformer
-import com.avioconsulting.mule.testing.mulereplacements.wrappers.CustomErrorWrapperException
+import com.avioconsulting.mule.testing.muleinterfaces.IFetchClassLoaders
+import com.avioconsulting.mule.testing.muleinterfaces.MuleMessageTransformer
+import com.avioconsulting.mule.testing.muleinterfaces.wrappers.CustomErrorWrapperException
 import com.avioconsulting.mule.testing.transformers.http.WsConsumerConnectorErrorTransformer
 import com.avioconsulting.mule.testing.transformers.xml.XMLMessageBuilder
 import groovy.xml.DOMBuilder

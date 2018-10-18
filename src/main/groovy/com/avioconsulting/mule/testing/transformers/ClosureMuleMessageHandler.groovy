@@ -1,6 +1,6 @@
 package com.avioconsulting.mule.testing.transformers
 
-import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
+import com.avioconsulting.mule.testing.muleinterfaces.wrappers.EventWrapper
 
 trait ClosureMuleMessageHandler {
     Closure withMuleEvent(Closure closure,

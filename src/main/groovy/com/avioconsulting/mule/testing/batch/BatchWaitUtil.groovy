@@ -1,7 +1,7 @@
 package com.avioconsulting.mule.testing.batch
 
-import com.avioconsulting.mule.testing.mulereplacements.RuntimeBridgeTestSide
-import com.avioconsulting.mule.testing.mulereplacements.wrappers.BatchJobResultWrapper
+import com.avioconsulting.mule.testing.muleinterfaces.RuntimeBridgeTestSide
+import com.avioconsulting.mule.testing.muleinterfaces.wrappers.BatchJobResultWrapper
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 

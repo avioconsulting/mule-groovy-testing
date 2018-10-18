@@ -1,9 +1,9 @@
 package com.avioconsulting.mule.testing.dsl.mocking
 
-import com.avioconsulting.mule.testing.mulereplacements.MuleMessageTransformer
-import com.avioconsulting.mule.testing.mulereplacements.wrappers.ConnectorInfo
-import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
-import com.avioconsulting.mule.testing.mulereplacements.wrappers.ReturnWrapper
+import com.avioconsulting.mule.testing.muleinterfaces.MuleMessageTransformer
+import com.avioconsulting.mule.testing.muleinterfaces.wrappers.ConnectorInfo
+import com.avioconsulting.mule.testing.muleinterfaces.wrappers.EventWrapper
+import com.avioconsulting.mule.testing.muleinterfaces.wrappers.ReturnWrapper
 import com.avioconsulting.mule.testing.transformers.ClosureCurrier
 import com.avioconsulting.mule.testing.transformers.InputTransformer
 import com.avioconsulting.mule.testing.transformers.OutputTransformer

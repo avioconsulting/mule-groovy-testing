@@ -1,8 +1,8 @@
 package com.avioconsulting.mule.testing.junit
 
 import com.avioconsulting.mule.testing.containers.MuleEngineContainer
-import com.avioconsulting.mule.testing.mulereplacements.MockingConfiguration
-import com.avioconsulting.mule.testing.mulereplacements.RuntimeBridgeTestSide
+import com.avioconsulting.mule.testing.muleinterfaces.MockingConfiguration
+import com.avioconsulting.mule.testing.muleinterfaces.RuntimeBridgeTestSide
 import groovy.util.logging.Log4j2
 import org.apache.logging.log4j.CloseableThreadContext
 

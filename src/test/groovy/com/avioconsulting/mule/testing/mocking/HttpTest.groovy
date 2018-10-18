@@ -2,9 +2,9 @@ package com.avioconsulting.mule.testing.mocking
 
 import com.avioconsulting.mule.testing.OverrideConfigList
 import com.avioconsulting.mule.testing.junit.BaseJunitTest
-import com.avioconsulting.mule.testing.mulereplacements.wrappers.MessageWrapper
-import com.avioconsulting.mule.testing.mulereplacements.wrappers.ReturnWrapper
-import com.avioconsulting.mule.testing.mulereplacements.wrappers.connectors.HttpRequesterInfo
+import com.avioconsulting.mule.testing.muleinterfaces.wrappers.MessageWrapper
+import com.avioconsulting.mule.testing.muleinterfaces.wrappers.ReturnWrapper
+import com.avioconsulting.mule.testing.muleinterfaces.wrappers.connectors.HttpRequesterInfo
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 import groovy.util.logging.Log4j2

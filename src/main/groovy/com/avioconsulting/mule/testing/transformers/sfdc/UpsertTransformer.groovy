@@ -2,9 +2,9 @@ package com.avioconsulting.mule.testing.transformers.sfdc
 
 import com.avioconsulting.mule.testing.InvokerEventFactory
 import com.avioconsulting.mule.testing.dsl.mocking.sfdc.UpsertResponseUtil
-import com.avioconsulting.mule.testing.mulereplacements.MuleMessageTransformer
-import com.avioconsulting.mule.testing.mulereplacements.wrappers.ConnectorInfo
-import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
+import com.avioconsulting.mule.testing.muleinterfaces.MuleMessageTransformer
+import com.avioconsulting.mule.testing.muleinterfaces.wrappers.ConnectorInfo
+import com.avioconsulting.mule.testing.muleinterfaces.wrappers.EventWrapper
 
 class UpsertTransformer implements
         MuleMessageTransformer {

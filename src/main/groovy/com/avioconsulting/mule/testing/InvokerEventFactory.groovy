@@ -1,6 +1,6 @@
 package com.avioconsulting.mule.testing
 
-import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
+import com.avioconsulting.mule.testing.muleinterfaces.wrappers.EventWrapper
 
 interface InvokerEventFactory {
     EventWrapper getMuleEventWithPayload(Object payload,

@@ -1,6 +1,6 @@
 package com.avioconsulting.mule.testing.transformers.xml
 
-import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
+import com.avioconsulting.mule.testing.muleinterfaces.wrappers.EventWrapper
 
 class XMLMessageBuilder {
     private static final String XML_MEDIA_TYPE = 'application/xml'

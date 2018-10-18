@@ -3,8 +3,8 @@ package com.avioconsulting.mule.testing.junit
 import com.avioconsulting.mule.testing.OpenPortLocator
 import com.avioconsulting.mule.testing.dsl.invokers.FlowRunner
 import com.avioconsulting.mule.testing.dsl.invokers.FlowRunnerImpl
-import com.avioconsulting.mule.testing.mulereplacements.HttpAttributeBuilder
-import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
+import com.avioconsulting.mule.testing.muleinterfaces.HttpAttributeBuilder
+import com.avioconsulting.mule.testing.muleinterfaces.wrappers.EventWrapper
 
 abstract class BaseApiKitTest extends
         BaseJunitTest implements

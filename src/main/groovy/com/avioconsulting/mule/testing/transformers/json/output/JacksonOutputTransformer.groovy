@@ -1,6 +1,6 @@
 package com.avioconsulting.mule.testing.transformers.json.output
 
-import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
+import com.avioconsulting.mule.testing.muleinterfaces.wrappers.EventWrapper
 import com.avioconsulting.mule.testing.transformers.OutputTransformer
 import com.fasterxml.jackson.databind.ObjectMapper
 

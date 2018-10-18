@@ -2,8 +2,8 @@ package com.avioconsulting.mule.testing.mocking
 
 import com.avioconsulting.mule.testing.OverrideConfigList
 import com.avioconsulting.mule.testing.junit.BaseJunitTest
-import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
-import com.avioconsulting.mule.testing.mulereplacements.wrappers.MessageWrapper
+import com.avioconsulting.mule.testing.muleinterfaces.wrappers.EventWrapper
+import com.avioconsulting.mule.testing.muleinterfaces.wrappers.MessageWrapper
 import groovy.json.JsonOutput
 import org.junit.Test
 

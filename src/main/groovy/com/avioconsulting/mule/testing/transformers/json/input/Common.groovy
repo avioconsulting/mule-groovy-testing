@@ -1,7 +1,7 @@
 package com.avioconsulting.mule.testing.transformers.json.input
 
-import com.avioconsulting.mule.testing.mulereplacements.wrappers.ConnectorInfo
-import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
+import com.avioconsulting.mule.testing.muleinterfaces.wrappers.ConnectorInfo
+import com.avioconsulting.mule.testing.muleinterfaces.wrappers.EventWrapper
 import com.avioconsulting.mule.testing.transformers.InputTransformer
 
 abstract class Common<T extends ConnectorInfo> implements

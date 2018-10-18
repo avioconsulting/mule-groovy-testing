@@ -3,7 +3,7 @@ package com.avioconsulting.mule.testing.invocation
 import com.avioconsulting.mule.testing.OverrideConfigList
 import com.avioconsulting.mule.testing.SampleJacksonInput
 import com.avioconsulting.mule.testing.junit.BaseJunitTest
-import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
+import com.avioconsulting.mule.testing.muleinterfaces.wrappers.EventWrapper
 import org.junit.Test
 
 import static groovy.test.GroovyAssert.shouldFail

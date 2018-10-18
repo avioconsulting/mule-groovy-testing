@@ -3,7 +3,7 @@ package com.avioconsulting.mule.testing.mocking
 import com.avioconsulting.mule.testing.OverrideConfigList
 import com.avioconsulting.mule.testing.SampleJacksonInput
 import com.avioconsulting.mule.testing.junit.BaseJunitTest
-import com.avioconsulting.mule.testing.mulereplacements.wrappers.connectors.HttpRequesterInfo
+import com.avioconsulting.mule.testing.muleinterfaces.wrappers.connectors.HttpRequesterInfo
 import org.junit.Test
 
 import static org.hamcrest.Matchers.*

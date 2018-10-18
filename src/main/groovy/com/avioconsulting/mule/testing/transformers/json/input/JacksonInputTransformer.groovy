@@ -1,6 +1,6 @@
 package com.avioconsulting.mule.testing.transformers.json.input
 
-import com.avioconsulting.mule.testing.mulereplacements.wrappers.ConnectorInfo
+import com.avioconsulting.mule.testing.muleinterfaces.wrappers.ConnectorInfo
 import com.fasterxml.jackson.databind.ObjectMapper
 
 class JacksonInputTransformer<T extends ConnectorInfo> extends

@@ -1,10 +1,10 @@
 package com.avioconsulting.mule.testing.transformers.http
 
-import com.avioconsulting.mule.testing.mulereplacements.IFetchClassLoaders
-import com.avioconsulting.mule.testing.mulereplacements.MuleMessageTransformer
-import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
-import com.avioconsulting.mule.testing.mulereplacements.wrappers.ModuleExceptionWrapper
-import com.avioconsulting.mule.testing.mulereplacements.wrappers.connectors.HttpRequesterInfo
+import com.avioconsulting.mule.testing.muleinterfaces.IFetchClassLoaders
+import com.avioconsulting.mule.testing.muleinterfaces.MuleMessageTransformer
+import com.avioconsulting.mule.testing.muleinterfaces.wrappers.EventWrapper
+import com.avioconsulting.mule.testing.muleinterfaces.wrappers.ModuleExceptionWrapper
+import com.avioconsulting.mule.testing.muleinterfaces.wrappers.connectors.HttpRequesterInfo
 import com.avioconsulting.mule.testing.transformers.IHaveStateToReset
 
 import java.util.concurrent.TimeoutException
