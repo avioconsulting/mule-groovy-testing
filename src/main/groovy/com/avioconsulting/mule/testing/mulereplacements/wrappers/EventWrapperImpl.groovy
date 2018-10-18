@@ -21,7 +21,7 @@ class EventWrapperImpl implements
         this.runtimeBridgeMuleSide = runtimeBridgeMuleSide
     }
 
-    EventWrapper withNewPayload(MessageWrapperImpl newMessage) {
+    private EventWrapper withNewMessage(MessageWrapperImpl newMessage) {
         def muleMsg = newMessage.muleMessage
         if (isInterceptionEvent()) {
             // mocks can't return new events, they have to mutate, so we'll mutate the message
@@ -45,7 +45,7 @@ class EventWrapperImpl implements
         def message = new MessageWrapperImpl(payload,
                                              runtimeBridgeMuleSide,
                                              mediaType)
-        withNewPayload(message)
+        withNewMessage(message)
     }
 
     @Override
@@ -63,7 +63,7 @@ class EventWrapperImpl implements
                                              runtimeBridgeMuleSide,
                                              'application/java',
                                              attributes)
-        withNewPayload(message)
+        withNewMessage(message)
     }
 
     @Override
@@ -74,7 +74,7 @@ class EventWrapperImpl implements
                                              runtimeBridgeMuleSide,
                                              mediaType,
                                              attributes)
-        withNewPayload(message)
+        withNewMessage(message)
     }
 
     @Override
@@ -97,7 +97,7 @@ class EventWrapperImpl implements
                                              mediaType,
                                              attributes)
         }
-        withNewPayload(message)
+        withNewMessage(message)
     }
 
     private boolean isInterceptionEvent() {
@@ -138,7 +138,7 @@ class EventWrapperImpl implements
                                              runtimeBridgeMuleSide,
                                              this.message.mimeType,
                                              attributes)
-        withNewPayload(message)
+        withNewMessage(message)
     }
 
     Object getNativeMuleEvent() {
