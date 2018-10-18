@@ -18,7 +18,8 @@ class XMLMessageBuilder {
             case MessageType.Mule41Stream:
                 return rewriteEvent.withNewStreamingPayload(xmlPayload,
                                                             XML_MEDIA_TYPE,
-                                                            messageProps)
+                                                            messageProps,
+                                                            true)
             case MessageType.Soap:
                 return rewriteEvent.withSoapPayload(xmlPayload,
                                                     messageProps)

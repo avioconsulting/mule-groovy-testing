@@ -80,14 +80,23 @@ class EventWrapperImpl implements
     @Override
     EventWrapper withNewStreamingPayload(String payload,
                                          String mediaType,
-                                         Map attributes) {
+                                         Map attributes,
+                                         boolean useRepeatableStream) {
         def stream = new ByteArrayInputStream(payload.bytes)
-        def streamProvider = runtimeBridgeMuleSide.getMuleStreamCursor(this.nativeEvent,
-                                                                       stream)
-        def message = new MessageWrapperImpl(streamProvider,
+        MessageWrapperImpl message
+        if (useRepeatableStream) {
+            def streamProvider = runtimeBridgeMuleSide.getMuleStreamCursor(this.nativeEvent,
+                                                                           stream)
+            message = new MessageWrapperImpl(streamProvider,
                                              runtimeBridgeMuleSide,
                                              mediaType,
                                              attributes)
+        } else {
+            message = new MessageWrapperImpl(stream,
+                                             runtimeBridgeMuleSide,
+                                             mediaType,
+                                             attributes)
+        }
         withNewPayload(message)
     }
 

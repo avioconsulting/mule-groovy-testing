@@ -8,4 +8,6 @@ interface JsonInvoker {
     def inputOnly(inputObject)
 
     def outputOnly(Class outputClass)
+
+    def nonRepeatableStream()
 }

@@ -57,6 +57,12 @@ class JsonInvokerImpl implements
         outputOnly = true
     }
 
+    @Override
+    def nonRepeatableStream() {
+        transformBeforeCallingFlow.nonRepeatableStream()
+        return null
+    }
+
     private setInputTransformer(inputObject) {
         assert !(inputObject instanceof Class): 'Use outputOnly if a only an output class is being supplied!'
         this.inputObject = inputObject

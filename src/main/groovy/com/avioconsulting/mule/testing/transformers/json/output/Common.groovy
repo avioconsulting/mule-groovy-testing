@@ -5,8 +5,13 @@ import com.avioconsulting.mule.testing.transformers.OutputTransformer
 
 abstract class Common implements
         OutputTransformer {
+    private boolean useRepeatableStream = true
 
     abstract String getJsonOutput(input)
+
+    def nonRepeatableStream() {
+        this.useRepeatableStream = false
+    }
 
     EventWrapper transformOutput(Object input,
                                  EventWrapper originalMuleEvent) {
@@ -16,6 +21,7 @@ abstract class Common implements
         ]
         originalMuleEvent.withNewStreamingPayload(jsonString,
                                                   'application/json',
-                                                  messageProps)
+                                                  messageProps,
+                                                  this.useRepeatableStream)
     }
 }

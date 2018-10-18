@@ -38,6 +38,25 @@ class JsonTest extends
     }
 
     @Test
+    void non_repeatable_stream() {
+        // arrange
+        def input = new SampleJacksonInput()
+        input.foobar = 123
+
+        // act
+        def result = runFlow('non-repeatable-stream-test') {
+            json {
+                inputPayload(input)
+                nonRepeatableStream()
+            }
+        }
+
+        // assert
+        assertThat result,
+                   is(nullValue())
+    }
+
+    @Test
     void jackson_no_return_type() {
         // arrange
 

@@ -24,5 +24,6 @@ interface EventWrapper {
 
     EventWrapper withNewStreamingPayload(String payload,
                                          String mediaType,
-                                         Map attributes)
+                                         Map attributes,
+                                         boolean useRepeatableStream)
 }
