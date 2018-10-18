@@ -2,7 +2,6 @@ package com.avioconsulting.mule.testing.dsl.invokers
 
 import com.avioconsulting.mule.testing.InvokerEventFactory
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
-import com.avioconsulting.mule.testing.payloadvalidators.IPayloadValidator
 
 class JavaInvokerImpl implements
         JavaInvoker,
@@ -28,14 +27,5 @@ class JavaInvokerImpl implements
 
     def transformOutput(EventWrapper event) {
         event.message.valueInsideTypedValue
-    }
-
-    Invoker withNewPayloadValidator(IPayloadValidator validator) {
-        // java side doesn't do payload validation
-        return this
-    }
-
-    IPayloadValidator getPayloadValidator() {
-        return null
     }
 }

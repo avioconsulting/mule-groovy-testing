@@ -2,7 +2,6 @@ package com.avioconsulting.mule.testing.dsl.mocking
 
 import com.avioconsulting.mule.testing.mulereplacements.IFetchClassLoaders
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.connectors.HttpRequesterInfo
-import com.avioconsulting.mule.testing.payloadvalidators.HttpRequestPayloadValidator
 import com.avioconsulting.mule.testing.transformers.TransformerChain
 import com.avioconsulting.mule.testing.transformers.http.HttpClosureCurrier
 import com.avioconsulting.mule.testing.transformers.http.HttpConnectorErrorTransformer
@@ -18,8 +17,7 @@ class HttpRequestResponseChoiceImpl extends
     private final HttpConnectorErrorTransformer httpConnectorErrorTransformer
 
     HttpRequestResponseChoiceImpl(IFetchClassLoaders fetchAppClassLoader) {
-        super(new HttpRequestPayloadValidator(),
-              new HttpClosureCurrier(),
+        super(new HttpClosureCurrier(),
               'HTTP Request Mock')
         httpValidationTransformer = new HttpValidationTransformer()
         httpGetTransformer = new HttpGetTransformer()

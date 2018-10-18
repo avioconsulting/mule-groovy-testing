@@ -11,7 +11,6 @@ import com.avioconsulting.mule.testing.junit.TestingConfiguration
 import com.avioconsulting.mule.testing.mulereplacements.MockingConfiguration
 import com.avioconsulting.mule.testing.mulereplacements.RuntimeBridgeTestSide
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
-import com.avioconsulting.mule.testing.payloadvalidators.SOAPPayloadValidator
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 import org.apache.commons.io.FileUtils
@@ -364,9 +363,7 @@ trait BaseMuleGroovyTrait {
                      RuntimeBridgeTestSide bridge,
                      String connectorName,
                      @DelegatesTo(SOAPFormatter) Closure closure) {
-        def payloadValidator = new SOAPPayloadValidator()
-        def soapFormatter = new SOAPFormatterImpl(payloadValidator,
-                                                  bridge)
+        def soapFormatter = new SOAPFormatterImpl(bridge)
         def code = closure.rehydrate(soapFormatter, this, this)
         code.resolveStrategy = Closure.DELEGATE_ONLY
         code()

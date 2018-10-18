@@ -20,6 +20,11 @@ output application/json
             </ee:message>
         </ee:transform>
     </flow>
+    <flow name="non-repeatable-stream-test">
+        <!-- Logger will consume payload so we should see null on the flip side -->
+        <logger message="#[payload]"
+                level="INFO"/>
+    </flow>
 
     <flow name="noInputTest">
         <ee:transform doc:name="Transform Message">
@@ -49,10 +54,6 @@ payload map {
 
     <flow name="emptyPayloadTest">
         <set-payload value=""/>
-    </flow>
-
-    <flow name="wrongContentTypeTest">
-        <set-payload value='{"wrong": 123}' mimeType="application/json"/>
     </flow>
 
     <!-- some Mule transports return this -->

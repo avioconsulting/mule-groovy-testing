@@ -3,9 +3,7 @@ package com.avioconsulting.mule.testing.dsl.invokers
 import com.avioconsulting.mule.testing.InvokerEventFactory
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.FlowWrapper
-import com.avioconsulting.mule.testing.payloadvalidators.IPayloadValidator
 import com.avioconsulting.mule.testing.transformers.InputTransformer
-import com.avioconsulting.mule.testing.transformers.OutputTransformer
 import com.avioconsulting.mule.testing.transformers.StringInputTransformer
 import com.avioconsulting.mule.testing.transformers.json.input.JacksonInputTransformer
 import com.avioconsulting.mule.testing.transformers.json.output.JacksonOutputTransformer
@@ -13,40 +11,32 @@ import com.avioconsulting.mule.testing.transformers.json.output.JacksonOutputTra
 class JsonInvokerImpl implements
         JsonInvoker,
         Invoker {
-    private OutputTransformer transformBeforeCallingFlow
+    private JacksonOutputTransformer transformBeforeCallingFlow
     private InputTransformer transformAfterCallingFlow
     private inputObject
     private boolean outputOnly
     private boolean inputOnly
-    private final IPayloadValidator initialPayloadValidator
     private final InvokerEventFactory invokerEventFactory
     private final FlowWrapper flow
 
-    JsonInvokerImpl(IPayloadValidator initialPayloadValidator,
-                    InvokerEventFactory invokerEventFactory,
+    JsonInvokerImpl(InvokerEventFactory invokerEventFactory,
                     FlowWrapper flow) {
         this.flow = flow
         this.invokerEventFactory = invokerEventFactory
-        this.initialPayloadValidator = initialPayloadValidator
         this.outputOnly = false
         this.inputOnly = false
     }
 
-    IPayloadValidator getPayloadValidator() {
-        initialPayloadValidator
-    }
-
     def inputPayload(Object inputObject) {
         setInputTransformer(inputObject)
-        transformAfterCallingFlow = new JacksonInputTransformer(initialPayloadValidator,
-                                                                [Map, Map[]])
+        transformAfterCallingFlow = new JacksonInputTransformer([Map, Map[]])
     }
 
     def inputPayload(Object inputObject,
                      Class outputClass) {
         setInputTransformer(inputObject)
         if (outputClass == String) {
-            transformAfterCallingFlow = new StringInputTransformer(initialPayloadValidator)
+            transformAfterCallingFlow = new StringInputTransformer()
         } else {
             setJacksonOutputTransformer(outputClass)
         }
@@ -58,8 +48,7 @@ class JsonInvokerImpl implements
     }
 
     private void setJacksonOutputTransformer(Class outputClass) {
-        transformAfterCallingFlow = new JacksonInputTransformer(initialPayloadValidator,
-                                                                outputClass)
+        transformAfterCallingFlow = new JacksonInputTransformer(outputClass)
     }
 
     def outputOnly(Class outputClass) {
@@ -94,11 +83,5 @@ class JsonInvokerImpl implements
         assert transformAfterCallingFlow
         transformAfterCallingFlow.transformInput(event,
                                                  flow)
-    }
-
-    Invoker withNewPayloadValidator(IPayloadValidator validator) {
-        new JsonInvokerImpl(validator,
-                            invokerEventFactory,
-                            flow)
     }
 }

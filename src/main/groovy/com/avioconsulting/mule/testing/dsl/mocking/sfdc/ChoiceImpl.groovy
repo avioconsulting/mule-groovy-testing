@@ -4,7 +4,6 @@ import com.avioconsulting.mule.testing.InvokerEventFactory
 import com.avioconsulting.mule.testing.mocks.DsqlMock
 import com.avioconsulting.mule.testing.mulereplacements.MuleMessageTransformer
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.ConnectorInfo
-import com.avioconsulting.mule.testing.payloadvalidators.ListGenericPayloadValidator
 import com.avioconsulting.mule.testing.transformers.sfdc.UpsertTransformer
 import org.mule.runtime.core.api.MuleContext
 
@@ -31,10 +30,8 @@ class ChoiceImpl<T extends ConnectorInfo> implements
     }
 
     def query(Closure closure) {
-        def validator = new ListGenericPayloadValidator(Map)
         this.mock = new DsqlMock(muleContext,
                                  closure,
-                                 validator,
                                  eventFactory)
         return null
     }

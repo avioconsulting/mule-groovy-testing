@@ -2,7 +2,6 @@ package com.avioconsulting.mule.testing.dsl.invokers
 
 
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
-import com.avioconsulting.mule.testing.payloadvalidators.IPayloadValidator
 import com.avioconsulting.mule.testing.transformers.xml.JAXBMarshalHelper
 import com.avioconsulting.mule.testing.transformers.xml.XMLMessageBuilder
 
@@ -27,16 +26,5 @@ abstract class SoapInvokerBaseImpl implements
     @Override
     def transformOutput(EventWrapper event) {
         jaxbHelper.unmarshal(event)
-    }
-
-    @Override
-    Invoker withNewPayloadValidator(IPayloadValidator validator) {
-        // TODO: Deal with this and getPayloadValidator
-        this
-    }
-
-    @Override
-    IPayloadValidator getPayloadValidator() {
-        return null
     }
 }

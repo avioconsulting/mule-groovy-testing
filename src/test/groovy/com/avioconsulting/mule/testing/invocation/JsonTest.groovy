@@ -190,25 +190,6 @@ class JsonTest extends
     }
 
     @Test
-    void stringPayload_Set_Wrong() {
-        // arrange
-
-        // act
-        def result = shouldFail {
-            runFlow('wrongContentTypeTest') {
-                json {
-                    inputPayload([:], String)
-                }
-            }
-        }
-
-        // assert
-        assertThat result.message,
-                   is(equalTo(
-                           "Expected Content-Type to be of type [text/plain, */*, (not set)] but it actually was application/json. This happened while calling your flow. Ensure your flow's DataWeaves or set-payloads set the mimeType you expect."))
-    }
-
-    @Test
     void nullPayloadTest() {
         // arrange
 

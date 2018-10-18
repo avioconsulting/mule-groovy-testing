@@ -1,7 +1,6 @@
 package com.avioconsulting.mule.testing.transformers.json.input
 
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.ConnectorInfo
-import com.avioconsulting.mule.testing.payloadvalidators.IPayloadValidator
 import com.fasterxml.jackson.databind.ObjectMapper
 
 class JacksonInputTransformer<T extends ConnectorInfo> extends
@@ -9,15 +8,11 @@ class JacksonInputTransformer<T extends ConnectorInfo> extends
     def mapper = new ObjectMapper()
     private final List<Class> inputClasses
 
-    JacksonInputTransformer(IPayloadValidator<T> payloadValidator,
-                            List<Class> inputClasses) {
-        super(payloadValidator)
+    JacksonInputTransformer(List<Class> inputClasses) {
         this.inputClasses = inputClasses
     }
 
-    JacksonInputTransformer(IPayloadValidator<T> payloadValidator,
-                            Class inputClass) {
-        super(payloadValidator)
+    JacksonInputTransformer(Class inputClass) {
         this.inputClasses = [inputClass]
     }
 

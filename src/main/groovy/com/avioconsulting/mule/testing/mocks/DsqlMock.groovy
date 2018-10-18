@@ -4,7 +4,6 @@ import com.avioconsulting.mule.testing.InvokerEventFactory
 import com.avioconsulting.mule.testing.mulereplacements.MuleMessageTransformer
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.ConnectorInfo
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
-import com.avioconsulting.mule.testing.payloadvalidators.IPayloadValidator
 
 class DsqlMock<T extends ConnectorInfo> implements
         MuleMessageTransformer<T> {
@@ -13,14 +12,11 @@ class DsqlMock<T extends ConnectorInfo> implements
         DsqlMock.classLoader.loadClass('org.mule.devkit.internal.dsql.DsqlMelParserUtils')
     }()
     private final Closure closure
-    private final IPayloadValidator payloadValidator
     private final InvokerEventFactory eventFactory
 
     DsqlMock(Closure closure,
-             IPayloadValidator payloadValidator,
              InvokerEventFactory eventFactory) {
         this.eventFactory = eventFactory
-        this.payloadValidator = payloadValidator
         this.closure = closure
     }
 

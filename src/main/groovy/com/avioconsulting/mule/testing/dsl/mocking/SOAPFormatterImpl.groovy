@@ -3,7 +3,6 @@ package com.avioconsulting.mule.testing.dsl.mocking
 import com.avioconsulting.mule.testing.mulereplacements.IFetchClassLoaders
 import com.avioconsulting.mule.testing.mulereplacements.MuleMessageTransformer
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.CustomErrorWrapperException
-import com.avioconsulting.mule.testing.payloadvalidators.IPayloadValidator
 import com.avioconsulting.mule.testing.transformers.http.WsConsumerConnectorErrorTransformer
 import com.avioconsulting.mule.testing.transformers.xml.XMLMessageBuilder
 import groovy.xml.DOMBuilder
@@ -27,10 +26,8 @@ class SOAPFormatterImpl extends
     private WsConsumerConnectorErrorTransformer httpConnectorErrorTransformer
     private final IFetchClassLoaders fetchAppClassLoader
 
-    SOAPFormatterImpl(IPayloadValidator payloadValidator,
-                      IFetchClassLoaders fetchAppClassLoader) {
-        super(payloadValidator,
-              'SOAP/WS Consumer Mock',
+    SOAPFormatterImpl(IFetchClassLoaders fetchAppClassLoader) {
+        super('SOAP/WS Consumer Mock',
               XMLMessageBuilder.MessageType.Soap)
         this.fetchAppClassLoader = fetchAppClassLoader
     }
@@ -86,11 +83,5 @@ class SOAPFormatterImpl extends
             return httpConnectorErrorTransformer
         }
         return super.transformer
-    }
-
-    @Override
-    IFormatter withNewPayloadValidator(IPayloadValidator validator) {
-        new SOAPFormatterImpl(validator,
-                              fetchAppClassLoader)
     }
 }

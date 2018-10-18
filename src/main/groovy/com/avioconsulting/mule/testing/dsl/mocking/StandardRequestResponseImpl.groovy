@@ -2,24 +2,20 @@ package com.avioconsulting.mule.testing.dsl.mocking
 
 
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.ConnectorInfo
-import com.avioconsulting.mule.testing.payloadvalidators.IPayloadValidator
 import com.avioconsulting.mule.testing.transformers.ClosureCurrier
 import com.avioconsulting.mule.testing.transformers.TransformerChain
 
 abstract class StandardRequestResponseImpl<T extends ConnectorInfo> implements
         StandardRequestResponse {
-    protected final IPayloadValidator initialPayloadValidator
     protected IFormatter formatter
     private Closure closure
     private final ClosureCurrier closureCurrier
     private final String requestResponseUse
 
-    StandardRequestResponseImpl(IPayloadValidator initialPayloadValidator,
-                                ClosureCurrier closureCurrier,
+    StandardRequestResponseImpl(ClosureCurrier closureCurrier,
                                 String requestResponseUse) {
         this.requestResponseUse = requestResponseUse
         this.closureCurrier = closureCurrier
-        this.initialPayloadValidator = initialPayloadValidator
     }
 
     TransformerChain<T> getTransformer() {
@@ -32,21 +28,18 @@ abstract class StandardRequestResponseImpl<T extends ConnectorInfo> implements
     }
 
     def json(@DelegatesTo(JsonFormatter) Closure closure) {
-        formatter = new JsonFormatterImpl(initialPayloadValidator,
-                                          closureCurrier)
+        formatter = new JsonFormatterImpl(closureCurrier)
         this.closure = closure
     }
 
     def xml(@DelegatesTo(XMLFormatter) Closure closure) {
-        formatter = new XMLFormatterImpl(initialPayloadValidator,
-                                         requestResponseUse)
+        formatter = new XMLFormatterImpl(requestResponseUse)
         this.closure = closure
     }
 
     @Override
     def raw(@DelegatesTo(RawFormatter) Closure closure) {
-        formatter = new RawFormatterImpl<T>(initialPayloadValidator,
-                                            closureCurrier)
+        formatter = new RawFormatterImpl<T>(closureCurrier)
         this.closure = closure
     }
 }

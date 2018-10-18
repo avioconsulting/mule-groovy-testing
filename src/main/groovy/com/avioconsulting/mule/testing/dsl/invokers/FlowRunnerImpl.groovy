@@ -4,7 +4,6 @@ import com.avioconsulting.mule.testing.InvokerEventFactory
 import com.avioconsulting.mule.testing.mulereplacements.RuntimeBridgeTestSide
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapper
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.FlowWrapper
-import com.avioconsulting.mule.testing.payloadvalidators.ListenerPayloadValidator
 
 class FlowRunnerImpl implements
         FlowRunner,
@@ -28,8 +27,7 @@ class FlowRunnerImpl implements
     }
 
     def json(@DelegatesTo(JsonInvoker) Closure closure) {
-        def jsonInvoker = new JsonInvokerImpl(new ListenerPayloadValidator(),
-                                              invokerEventFactory,
+        def jsonInvoker = new JsonInvokerImpl(invokerEventFactory,
                                               flow)
         invoker = jsonInvoker
         this.closure = closure
