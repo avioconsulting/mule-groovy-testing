@@ -43,17 +43,12 @@ class MessageWrapperImpl implements
 
     @Override
     Object getValueInsideTypedValue() {
-        unwrapTypedValue(this.payload)
-    }
-
-    // TODO: Refactor: Should we be using this outside of here
-    @Deprecated()
-    static Object unwrapTypedValue(Object payload) {
+        def payload = this.payload
         assert payload != null
         assert payload.getClass().name == TYPED_VALUE_CLASS_NAME
         payload.value
     }
-
+    
     // TODO: Refactor: Should we be using this outside of here
     @Deprecated()
     static boolean isPayloadStreaming(Object payload) {
