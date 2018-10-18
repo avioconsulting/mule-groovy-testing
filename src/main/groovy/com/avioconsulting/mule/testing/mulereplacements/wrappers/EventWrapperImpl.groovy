@@ -4,7 +4,7 @@ class EventWrapperImpl implements
         EventWrapper {
     protected final MessageWrapper message
     protected final Object nativeEvent
-    private final Object runtimeBridgeMuleSide
+    protected final Object runtimeBridgeMuleSide
 
     EventWrapperImpl(Object nativeEvent,
                      Object runtimeBridgeMuleSide) {
@@ -13,26 +13,16 @@ class EventWrapperImpl implements
         this.nativeEvent = nativeEvent
     }
 
-    private EventWrapperImpl(Object existingNativeEvent,
-                             MessageWrapper newMessageWrapper,
-                             Object runtimeBridgeMuleSide) {
+    protected EventWrapperImpl(Object existingNativeEvent,
+                               MessageWrapper newMessageWrapper,
+                               Object runtimeBridgeMuleSide) {
         this.nativeEvent = existingNativeEvent
         this.message = newMessageWrapper
         this.runtimeBridgeMuleSide = runtimeBridgeMuleSide
     }
 
-    private EventWrapper withNewMessage(MessageWrapperImpl newMessage) {
+    protected EventWrapper withNewMessage(MessageWrapperImpl newMessage) {
         def muleMsg = newMessage.muleMessage
-        if (isInterceptionEvent()) {
-            // mocks can't return new events, they have to mutate, so we'll mutate the message
-            // inside the underlying event
-            this.nativeEvent.message(muleMsg)
-            // you can't read .message of the mock native event and see the new message (it will be the original one)
-            // so we have to pass it along ourselves to the private constructor above
-            return new EventWrapperImpl(this.nativeEvent,
-                                        newMessage,
-                                        runtimeBridgeMuleSide)
-        }
         def muleEvent = runtimeBridgeMuleSide.getEventFromOldEvent(muleMsg,
                                                                    this.nativeEvent)
         new EventWrapperImpl(muleEvent,
@@ -100,10 +90,6 @@ class EventWrapperImpl implements
         withNewMessage(message)
     }
 
-    private boolean isInterceptionEvent() {
-        nativeEvent.class.name.contains('InterceptionEvent')
-    }
-
     @Override
     MessageWrapper getMessage() {
         message
@@ -122,7 +108,6 @@ class EventWrapperImpl implements
     @Override
     EventWrapper withVariable(String variableName,
                               Object value) {
-        assert !isInterceptionEvent(): 'Have not implemented this'
         def msg = this.message as MessageWrapperImpl
         def muleEvent = runtimeBridgeMuleSide.getEventFromOldEvent(msg.muleMessage,
                                                                    this.nativeEvent,

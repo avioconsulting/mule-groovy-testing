@@ -1,7 +1,7 @@
 package com.avioconsulting.mule.testing.mulereplacements
 
 import com.avioconsulting.mule.testing.junit.TestingConfiguration
-import com.avioconsulting.mule.testing.mulereplacements.wrappers.EventWrapperImpl
+import com.avioconsulting.mule.testing.mulereplacements.wrappers.InterceptEventWrapperImpl
 import groovy.util.logging.Log4j2
 import org.apache.logging.log4j.CloseableThreadContext
 
@@ -46,8 +46,8 @@ class MockingConfiguration {
         def params = (parameters as Map).collectEntries { key, value ->
             [key, value.resolveValue()]
         }
-        def event = new EventWrapperImpl(interceptionEvent,
-                                         this.runtimeBridgeMuleSide)
+        def event = new InterceptEventWrapperImpl(interceptionEvent,
+                                                  this.runtimeBridgeMuleSide)
         def factory = new ConnectorInfoFactory()
         def connectorInfo = factory.getConnectorInfo(componentLocation.fileName.get() as String,
                                                      connectorName,
