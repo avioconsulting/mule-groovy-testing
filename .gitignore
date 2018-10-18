@@ -1,8 +1,6 @@
 /.idea
-/.gradle
-/build
-/out
+/*.iml
+/target
 /catalog
-/pom.xml
 /.mule
 rebasepush.sh
