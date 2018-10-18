@@ -27,8 +27,8 @@ class EventWrapperImpl implements
             // mocks can't return new events, they have to mutate, so we'll mutate the message
             // inside the underlying event
             this.nativeEvent.message(muleMsg)
-            // you can't read .message of the mock native event and see the new message so we have to pass it along
-            // ourselves to the private constructor above
+            // you can't read .message of the mock native event and see the new message (it will be the original one)
+            // so we have to pass it along ourselves to the private constructor above
             return new EventWrapperImpl(this.nativeEvent,
                                         newMessage,
                                         runtimeBridgeMuleSide)
