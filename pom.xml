@@ -81,7 +81,11 @@
                 <version>2.19.1</version>
                 <configuration>
                     <systemPropertyVariables>
+                        <!-- normally we would not run Maven to generate a classloader model
+                        but we can't generate one from this POM because this is not a packaged
+                        Mule app -->
                         <testForTheTests>true</testForTheTests>
+                        <!-- Allows plugin to use the Maven version we are running with  -->
                         <maven.home>${maven.home}</maven.home>
                     </systemPropertyVariables>
                 </configuration>
