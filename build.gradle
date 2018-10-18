@@ -97,18 +97,13 @@ clean {
 
 dependencies {
     def muleVersion = '4.1.2'
-    compile "com.mulesoft.mule.runtime:mule-core-ee:${muleVersion}"
-    ['deployment', 'launcher'].each { module ->
-        compile "org.mule.runtime:mule-module-${module}:${muleVersion}"
-    }
-    compile("org.mule.distributions:mule-module-embedded-impl:${muleVersion}") {
-        exclude module: 'mule-runtime-impl-bom'
-    }
+    compile("org.mule.distributions:mule-module-embedded-impl:${muleVersion}")
+    compile "com.mulesoft.mule.distributions:mule-runtime-impl-bom:${muleVersion}"
     // unlike almost every other module, the batch module does NOT need to be added to a project POM
     // so we have to add it here otherwise it will not be available on the classpath when we run it
     compile group: 'com.mulesoft.mule.runtime.modules',
-             name: 'mule-module-batch-ee',
-             version: muleVersion
+            name: 'mule-module-batch-ee',
+            version: muleVersion
     compile 'xalan:xalan:2.7.2'
     // 3.9.1 is bundled with this Groovy version
     compile 'org.codehaus.groovy:groovy-all:2.4.4'

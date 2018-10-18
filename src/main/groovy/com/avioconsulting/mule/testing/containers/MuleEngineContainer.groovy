@@ -57,11 +57,12 @@ class MuleEngineContainer {
             // TODO: No hard coding, use Maven settings file??
             def repo = new File('/Users/brady/.m2/repository')
             assert repo.exists()
+            // the Aether Maven client is not very sophisticated. It attempts to use the 1st profile in settings.xml
+            // Therefore we include our dependencies in the testing framework's POM and then rely
+            // on Maven to download them before this code even runs. thus forcing offline mode
             def mavenConfig = MavenConfiguration.newMavenConfigurationBuilder()
                     .localMavenRepositoryLocation(repo)
                     .offlineMode(true)
-            // TODO: hard coding
-                    .userSettingsLocation(new File('/Users/brady/.m2/settings.xml'))
                     .build()
             def mavenClient = mavenClientProvider.createMavenClient(mavenConfig)
             def classLoaderFactory = new MavenContainerClassLoaderFactory(mavenClient)
