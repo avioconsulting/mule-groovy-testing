@@ -13,6 +13,7 @@ class TestState {
     private MockingConfiguration mockingConfiguration
     private RuntimeBridgeTestSide runtimeBridge
     private final Map<TestingConfiguration, Integer> failedConfigurations = [:]
+    private final List<String> newConfigs = []
 
     MockingConfiguration getMockingConfiguration() {
         return mockingConfiguration
@@ -71,6 +72,7 @@ class TestState {
                 log.info 'Using existing Mule app...'
             }
             if (newBridgeNeeded) {
+                newConfigs << test.getClass().getName()
                 mockingConfiguration = new MockingConfiguration(proposedTestingConfig)
                 try {
                     runtimeBridge = test.deployApplication(muleEngineContainer,
@@ -94,6 +96,9 @@ class TestState {
         if (muleEngineContainer) {
             muleEngineContainer.shutdown()
             muleEngineContainer = null
+            log.info 'Shutdown Mule, started up a total of {} apps. List of tests: {}',
+                     newConfigs.size(),
+                     newConfigs
         }
     }
 }
