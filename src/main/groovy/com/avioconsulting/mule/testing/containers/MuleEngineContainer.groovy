@@ -14,6 +14,7 @@ import org.mule.runtime.module.embedded.api.Product
 import org.mule.runtime.module.embedded.internal.DefaultEmbeddedContainerBuilder
 import org.mule.runtime.module.embedded.internal.MavenContainerClassLoaderFactory
 import org.mule.runtime.module.embedded.internal.classloading.JdkOnlyClassLoaderFactory
+import org.mule.runtime.module.launcher.MuleContainer
 
 @Log4j2
 class MuleEngineContainer {
@@ -83,8 +84,7 @@ class MuleEngineContainer {
             registryListener = null
             try {
                 Thread.currentThread().contextClassLoader = containerClassLoader
-                // TODO: Hard coded name?
-                def containerKlass = containerClassLoader.loadClass("org.mule.runtime.module.launcher.MuleContainer")
+                def containerKlass = containerClassLoader.loadClass(MuleContainer.name)
                 container = containerKlass.newInstance()
                 container.start(false)
                 def registryListenerKlass = containerClassLoader.loadClass(MuleRegistryListener.name)
