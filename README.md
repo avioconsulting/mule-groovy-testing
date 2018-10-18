@@ -5,27 +5,26 @@ This testing framework is a more powerful approach than MUnit but sits on top of
 Here is what's currently supported:
 
 * Invoking flows via JSON/Java
-* Invoking APIKit flows via the apikit router
+* Invoking SOAP and REST APIKit flows using the router
 * Mocking SOAP connectors (WS consumer) and handling JAXB marshal/unmarshal
 * Mocking RESTful HTTP request calls that either use XML or JSON and handling JAXB/Jackson respectively
 * Mocking VM Puts
-* Validate content type and HTTP status codes automatically
-* Handle streaming payloads (vs. not)
+* Validate HTTP status codes automatically
+* Call flows with non-repeatable streams
 * Limited HTTP connector usage validation (query params, path, verbs, URI params)
-* Invoking SalesForce upsert and query
-* Easily mock any DQL/Devkit based connector
 * Automatically loads Mule config files from mule-deploy.properties but allows substituting
 
 Differences from MUnit:
-* Full power of Groovy language
+* Full power of Groovy/Java language
 * Allow validation of HTTP query parameters, path names
 * Allow validation of DQL based queries
 
 What hasn't been done yet/TODOs:
 
+* Automatically detect whether a flow being invoked has an HTTP listener with non-repeatable streams turned on and use a non repeatable stream in that case
+* Invoking SalesForce upsert and query (DQL not supported in Studio 7 yet)
+* Easily mock any DQL/Devkit based connector
 * Boilerplate code from queue-error-strategies, how to test that
-* Also it might be useful to detect if a filter is used with a transactional listener and if so, fail a test if it's not a message filter and the filter does not use 'onUnAccepted' (acknowledged Mule bug)
-* Compare maven dependencies with engine directory and spot loader overrides problems
 * Mocking DB (you probably shouldn't do this anyways, better to spin up a DB in a Docker container if possible)
 
 # Setting up your project
