@@ -5,4 +5,6 @@ interface JsonFormatter {
 
     def whenCalledWith(Class inputClass,
                        Closure closure)
+
+    def nonRepeatableStream()
 }

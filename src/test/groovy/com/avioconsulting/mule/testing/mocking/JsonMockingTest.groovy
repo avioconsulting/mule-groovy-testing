@@ -6,8 +6,7 @@ import com.avioconsulting.mule.testing.junit.BaseJunitTest
 import com.avioconsulting.mule.testing.mulereplacements.wrappers.connectors.HttpRequesterInfo
 import org.junit.Test
 
-import static org.hamcrest.Matchers.equalTo
-import static org.hamcrest.Matchers.is
+import static org.hamcrest.Matchers.*
 import static org.junit.Assert.assertThat
 
 class JsonMockingTest extends
@@ -43,6 +42,33 @@ class JsonMockingTest extends
         assertThat result,
                    is(equalTo([reply_key: 457]))
     }
+
+    @Test
+    void non_repeatable_stream() {
+        // arrange
+        mockRestHttpCall('SomeSystem Call') {
+            json {
+                whenCalledWith { Map incoming ->
+                    [reply: 456]
+                }
+                nonRepeatableStream()
+            }
+        }
+        // TODO: document in README
+        // TODO: maybe, if mock interceptor allows, detect auto??
+
+        // act
+        def result = runFlow('restRequest_nonRepeatableStream') {
+            json {
+                inputPayload([foo: 123])
+            }
+        }
+
+        // assert
+        assertThat result,
+                   is(nullValue())
+    }
+
 
     @Test
     void queryParams_returns_map() {

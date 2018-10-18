@@ -12,6 +12,7 @@ class JsonFormatterImpl<T extends ConnectorInfo> implements
         IFormatter {
     private MuleMessageTransformer<T> transformer
     private final ClosureCurrier<T> closureCurrier
+    private JacksonOutputTransformer outputTransformer
 
     JsonFormatterImpl(ClosureCurrier<T> closureCurrier) {
         this.closureCurrier = closureCurrier
@@ -19,21 +20,28 @@ class JsonFormatterImpl<T extends ConnectorInfo> implements
 
     def whenCalledWith(Closure closure) {
         def input = new JacksonInputTransformer<T>(Map)
-        def output = new JacksonOutputTransformer()
+        outputTransformer = new JacksonOutputTransformer()
         this.transformer = new StandardTransformer<T>(closure,
                                                       closureCurrier,
                                                       input,
-                                                      output)
+                                                      outputTransformer)
     }
 
     def whenCalledWith(Class inputClass,
                        Closure closure) {
         def input = new JacksonInputTransformer<T>(inputClass)
-        def output = new JacksonOutputTransformer()
+        outputTransformer = new JacksonOutputTransformer()
         this.transformer = new StandardTransformer<T>(closure,
                                                       closureCurrier,
                                                       input,
-                                                      output)
+                                                      outputTransformer)
+    }
+
+    @Override
+    def nonRepeatableStream() {
+        assert outputTransformer : 'Do not call nonRepeatableStream before whenCalledWith'
+        outputTransformer.nonRepeatableStream()
+        return null
     }
 
     MuleMessageTransformer<T> getTransformer() {
