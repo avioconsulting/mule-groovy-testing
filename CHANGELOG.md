@@ -1,3 +1,10 @@
+# 2.0
+(for Mule 4.1)
+* First release
+
+# 1.0
+(for Mule 3.x)
+
 # 1.0.26
 * Tolerate an unaltered SOAP request payload (which is javax.xml.stream.XMLStreamReader, was preventing a test from executing successfully)
 
