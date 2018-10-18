@@ -96,7 +96,7 @@ class TestState {
         if (muleEngineContainer) {
             muleEngineContainer.shutdown()
             muleEngineContainer = null
-            log.info 'Shutdown Mule, started up a total of {} apps. List of tests: {}',
+            log.info 'Shutdown Mule, started up a total of {} apps. List of tests that started apps: {}',
                      newConfigs.size(),
                      newConfigs
         }
