@@ -35,12 +35,6 @@
             <version>${app.runtime}</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>org.mule.distributions</groupId>
-            <artifactId>mule-module-embedded-impl</artifactId>
-            <version>${app.runtime}</version>
-            <scope>test</scope>
-        </dependency>
         <!-- End Gradle dupes -->
         <dependency>
             <groupId>org.mule.connectors</groupId>
