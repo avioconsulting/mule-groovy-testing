@@ -4,7 +4,6 @@ class MessageWrapperImpl implements
         MessageWrapper {
     static final String TYPED_VALUE_CLASS_NAME = 'org.mule.runtime.api.metadata.TypedValue'
     private final Object muleMessage
-    private final Object payload
 
     /**
      *
@@ -26,12 +25,10 @@ class MessageWrapperImpl implements
             messageBuilder = messageBuilder.attributesValue(attributes)
         }
         this.muleMessage = messageBuilder.build()
-        this.payload = payload
     }
 
     MessageWrapperImpl(Object nativeMuleMessage) {
         this.muleMessage = nativeMuleMessage
-        this.payload = nativeMuleMessage.payload
     }
 
     Object getMuleMessage() {
@@ -40,7 +37,8 @@ class MessageWrapperImpl implements
 
     @Override
     Object getPayload() {
-        this.payload
+        // Mule will wrap our payload in a typed value. We'd like to have consistent access
+        this.muleMessage.payload
     }
 
     @Override
@@ -89,7 +87,7 @@ class MessageWrapperImpl implements
     }
 
     private def getDataType() {
-        muleMessage.payload.dataType
+        payload.dataType
     }
 
     @Override
