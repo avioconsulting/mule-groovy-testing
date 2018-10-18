@@ -200,6 +200,12 @@
             <artifactId>groovy-all</artifactId>
             <version>${groovy.compiler.version}</version>
         </dependency>
+        <!-- for FilenameFinder -->
+        <dependency>
+            <groupId>org.apache.ant</groupId>
+            <artifactId>ant</artifactId>
+            <version>1.9.7</version>
+        </dependency>
         <!--
         // this used to be included when the app under test had the SOAP APIKit Router in it
         // in 4.x, this is no longer the case. Since the dependency graph for wsdl4j is relatively
