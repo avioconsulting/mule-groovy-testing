@@ -48,14 +48,6 @@ class MessageWrapperImpl implements
         assert payload.getClass().name == TYPED_VALUE_CLASS_NAME
         payload.value
     }
-    
-    // TODO: Refactor: Should we be using this outside of here
-    @Deprecated()
-    static boolean isPayloadStreaming(Object payload) {
-        assert payload != null
-        assert payload.getClass().name == TYPED_VALUE_CLASS_NAME
-        payload.dataType.isStreamType()
-    }
 
     @Override
     String getMessageAsString() {
