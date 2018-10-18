@@ -1,4 +1,4 @@
-package com.avioconsulting.mule.testing.containers
+package com.avioconsulting.mule.testing.muleinterfaces.containers
 
 import com.avioconsulting.mule.testing.muleinterfaces.MockingConfiguration
 import com.avioconsulting.mule.testing.muleinterfaces.MuleRegistryListener

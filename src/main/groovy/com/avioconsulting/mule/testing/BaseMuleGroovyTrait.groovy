@@ -1,8 +1,8 @@
 package com.avioconsulting.mule.testing
 
 import com.avioconsulting.mule.testing.batch.BatchWaitUtil
-import com.avioconsulting.mule.testing.containers.BaseEngineConfig
-import com.avioconsulting.mule.testing.containers.MuleEngineContainer
+import com.avioconsulting.mule.testing.muleinterfaces.containers.BaseEngineConfig
+import com.avioconsulting.mule.testing.muleinterfaces.containers.MuleEngineContainer
 import com.avioconsulting.mule.testing.dsl.invokers.*
 import com.avioconsulting.mule.testing.dsl.mocking.*
 import com.avioconsulting.mule.testing.dsl.mocking.sfdc.Choice

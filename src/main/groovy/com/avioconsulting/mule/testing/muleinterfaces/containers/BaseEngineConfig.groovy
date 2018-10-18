@@ -1,4 +1,4 @@
-package com.avioconsulting.mule.testing.containers
+package com.avioconsulting.mule.testing.muleinterfaces.containers
 
 import groovy.transform.Immutable
 
