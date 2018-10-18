@@ -9,7 +9,7 @@ import static org.hamcrest.Matchers.is
 import static org.junit.Assert.assertThat
 
 @Log4j2
-class MuleDeployPropertiesTest implements // not inheriting basejunit test because we don't want to start/stop for this test
+class ArtifactDescriptorFileSubTest implements // not inheriting basejunit test because we don't want to start/stop for this test
         BaseMuleGroovyTrait {
     @Override
     File getMuleArtifactPath() {
