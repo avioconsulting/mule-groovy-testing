@@ -8,7 +8,6 @@
     <packaging>mule-application</packaging>
 
     <properties>
-        <app.runtime>4.1.2</app.runtime>
         <mule.maven.plugin.version>3.1.6</mule.maven.plugin.version>
     </properties>
 
@@ -33,7 +32,7 @@
         <dependency>
             <groupId>com.mulesoft.mule.distributions</groupId>
             <artifactId>mule-runtime-impl-bom</artifactId>
-            <version>4.1.2</version>
+            <version>${app.runtime}</version>
             <scope>test</scope>
         </dependency>
         <dependency>

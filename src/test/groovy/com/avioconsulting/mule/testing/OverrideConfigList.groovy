@@ -32,6 +32,12 @@ trait OverrideConfigList {
         result
     }
 
+    Properties getPropertiesForMavenGeneration() {
+        new Properties([
+                'app.runtime': getBaseEngineConfig().muleVersion
+        ])
+    }
+
     Map getMuleArtifactJson() {
         def configs = substituteConfigResources(getConfigResources())
         [
@@ -39,7 +45,7 @@ trait OverrideConfigList {
                 secureProperties                : [],
                 redeploymentEnabled             : true,
                 name                            : 'tests_for_the_test',
-                minMuleVersion                  : '4.1.2',
+                minMuleVersion                  : getBaseEngineConfig().muleVersion,
                 requiredProduct                 : 'MULE_EE',
                 classLoaderModelLoaderDescriptor: [
                         id        : 'mule',

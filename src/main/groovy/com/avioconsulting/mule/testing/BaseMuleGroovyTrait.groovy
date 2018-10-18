@@ -1,8 +1,6 @@
 package com.avioconsulting.mule.testing
 
 import com.avioconsulting.mule.testing.batch.BatchWaitUtil
-import com.avioconsulting.mule.testing.muleinterfaces.containers.BaseEngineConfig
-import com.avioconsulting.mule.testing.muleinterfaces.containers.MuleEngineContainer
 import com.avioconsulting.mule.testing.dsl.invokers.*
 import com.avioconsulting.mule.testing.dsl.mocking.*
 import com.avioconsulting.mule.testing.dsl.mocking.sfdc.Choice
@@ -10,6 +8,8 @@ import com.avioconsulting.mule.testing.dsl.mocking.sfdc.ChoiceImpl
 import com.avioconsulting.mule.testing.junit.TestingConfiguration
 import com.avioconsulting.mule.testing.muleinterfaces.MockingConfiguration
 import com.avioconsulting.mule.testing.muleinterfaces.RuntimeBridgeTestSide
+import com.avioconsulting.mule.testing.muleinterfaces.containers.BaseEngineConfig
+import com.avioconsulting.mule.testing.muleinterfaces.containers.MuleEngineContainer
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.EventWrapper
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
@@ -197,8 +197,7 @@ trait BaseMuleGroovyTrait {
                             context,
                             mavenPomPath
                 generateUsingMaven()
-            }
-            else {
+            } else {
                 logger.info 'ClassLoader model already triggered Maven run so no need to run Maven to build artifact descriptor'
             }
             assert artifactDescFile.exists(): 'Somehow we successfully ran a Maven compile but did not generate an artifact descriptor.'
@@ -237,9 +236,18 @@ trait BaseMuleGroovyTrait {
         Base64.encoder.encodeToString(digest.digest())
     }
 
+    // if the maven generate needs properties
+    Properties getPropertiesForMavenGeneration() {
+        null
+    }
+
     private void generateUsingMaven() {
         def mavenInvokeRequest = new DefaultInvocationRequest()
         mavenInvokeRequest.setPomFile(mavenPomPath)
+        def mavenProps = propertiesForMavenGeneration
+        if (mavenProps) {
+            mavenInvokeRequest.setProperties(mavenProps)
+        }
         // this will trigger Mule's Maven plugin to populate both mule-artifact.json with all the config files/exports/etc.
         // and generate the classloader model
         mavenInvokeRequest.setGoals(['generate-test-sources'])
