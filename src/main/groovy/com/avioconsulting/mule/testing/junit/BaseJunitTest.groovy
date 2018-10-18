@@ -21,12 +21,25 @@ import org.junit.runner.RunWith
 class BaseJunitTest implements
         BaseMuleGroovyTrait {
     private static Map cachedClassLoaderModel
-    MockingConfiguration mockingConfiguration
-    RuntimeBridgeTestSide runtimeBridge
+    static TestState testState = new TestState()
+
+    MockingConfiguration getMockingConfiguration() {
+        testState.mockingConfiguration
+    }
+
+    RuntimeBridgeTestSide getRuntimeBridge() {
+        testState.runtimeBridge
+    }
 
     @Override
     Logger getLogger() {
         this.log
+    }
+
+    // by using the constructor, we can have our setup stuff run before each test
+    // which clarifies the output a bit when trying to examine each test
+    BaseJunitTest() {
+        testState.startMule(this)
     }
 
     Map getClassLoaderModel() {
