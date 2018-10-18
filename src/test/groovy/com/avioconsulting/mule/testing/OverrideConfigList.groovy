@@ -8,6 +8,13 @@ trait OverrideConfigList {
         new File('src/test/resources/maven')
     }
 
+    File getClassesDirectory() {
+        // this is used to get a list of possible config files for detecting whether we need to have Mule's Maven plugin build
+        // a new artifact descriptor. Since this is not a traditional project, our
+        // config files aren't copied around the build cycle as much. We'll just use where all of our files are
+        new File('src/test/resources')
+    }
+
     List<File> outputDirsToCopy() {
         def getResourcePath = { Class klass, String file ->
             def resource = klass.getResource(file)

@@ -139,6 +139,10 @@ trait BaseMuleGroovyTrait {
         new File(metaInfDirectory, 'mule-artifact')
     }
 
+    File getSkinnyMuleArtifactDescriptorPath() {
+        new File(projectDirectory, 'mule-artifact.json')
+    }
+
     File getMavenPomDirectory() {
         projectDirectory
     }
@@ -147,25 +151,77 @@ trait BaseMuleGroovyTrait {
         new File(mavenPomDirectory, 'pom.xml')
     }
 
+    File getClassesDirectory() {
+        new File(buildOutputDirectory, 'classes')
+    }
+
     def regenerateClassLoaderModelAndArtifactDescriptor() {
         def isMavenRun = System.getProperty('sun.java.command').contains('surefire')
         if (isMavenRun) {
             assert classLoaderModelFile.exists(): "Expected ${classLoaderModelFile} to already exist because we are running from Maven but it does not. Has the Mule Maven plugin run?"
             // the odds are very low that a Maven based run will not have already generated our files
-            logger.info 'Skipping classloader model regenerate because we are running in Maven'
+            logger.info 'Skipping classloader model/artifact descriptor regenerate because we are running in Maven'
             return
         }
-        logger.info 'Continuing with classloader regenerate since we are probably running from an IDE'
-        def digest = MessageDigest.getInstance('SHA-256')
-        digest.update(mavenPomPath.text.bytes)
-        def sha256 = Base64.encoder.encodeToString(digest.digest())
+        def updated = regenerateClassLoaderModel()
+        regenerateArtifactDescriptor(updated)
+    }
+
+    // the basic one in source control projects is not enough to run because it does not include the config file listing
+    // that is derived by Mule's Maven plugin. To avoid the expensive invocation of that plugin though
+    // we can hash the contents of the artifact descriptor we do have (in source control) along with all the config files
+    // we can see and get a pretty good idea if the developer either
+    // A) added a config file since the last run OR
+    // B) changed something in mule-artifact.json (like properties, etc.)
+    private void regenerateArtifactDescriptor(boolean mavenRunAlreadyDone) {
+        def file = skinnyMuleArtifactDescriptorPath
+        assert file.exists(): "Expected your project to contain at least a basic artifact descriptor at ${file}"
+        def artifactDescriptorHashMap = new JsonSlurper().parse(file) as Map
+        def classesPath = classesDirectory.absoluteFile.toPath()
+        def allConfigFiles = new FileNameFinder().getFileNames(classesDirectory.absolutePath, '**/*.xml').collect { filename ->
+            // relative in case code is moved around on machine
+            classesPath.relativize(new File(filename).toPath()).toString()
+        } as List<String>
+        artifactDescriptorHashMap.configs = allConfigFiles
+        def sha256 = hashString(JsonOutput.toJson(artifactDescriptorHashMap))
+        def digestFile = new File(buildOutputDirectory, 'mule-artifact.json.sha256')
+        def artifactDescFile = new File(muleArtifactDirectory, 'mule-artifact.json')
+        def needUpdate = (!digestFile.exists()) || digestFile.text != sha256 || !artifactDescFile.exists()
+        if (needUpdate) {
+            // if we do an update for the classloader model, our artifact descriptor will already be taken care of
+            if (!mavenRunAlreadyDone) {
+                def context = artifactDescFile.exists() ? 'has been built but is out of date' :
+                        'has not been built'
+                // not the cleanest way in the world, but it avoids lots of coupling. and it's more cross platform
+                // compatible than direct shell invocation
+                logger.info 'Artifact descriptor {}, running maven against POM {} to generate one',
+                            context,
+                            mavenPomPath
+                generateUsingMaven()
+            }
+            else {
+                logger.info 'ClassLoader model already triggered Maven run so no need to run Maven to build artifact descriptor'
+            }
+            assert artifactDescFile.exists(): 'Somehow we successfully ran a Maven compile but did not generate an artifact descriptor.'
+            digestFile.write(sha256)
+        } else {
+            logger.info 'already up to date artifact descriptor on filesystem'
+        }
+    }
+
+    private boolean regenerateClassLoaderModel() {
+        // our classloader model is pretty closely tied to the POM
+        def sha256 = hashString(mavenPomPath.text)
         def digestFile = new File(buildOutputDirectory, 'pom.xml.sha256')
         def classLoaderModelFile = getClassLoaderModelFile() as File
         def needUpdate = (!digestFile.exists()) || digestFile.text != sha256 || !classLoaderModelFile.exists()
         if (needUpdate) {
+            def context = classLoaderModelFile.exists() ? 'has been built but is out of date' :
+                    'has not been built'
             // not the cleanest way in the world, but it avoids lots of coupling. and it's more cross platform
             // compatible than direct shell invocation
-            logger.info 'ClassLoader model/artifact descriptor have not been built yet, running maven against POM {} to generate one',
+            logger.info 'ClassLoader model descriptor {}, running maven against POM {} to generate one',
+                        context,
                         mavenPomPath
             generateUsingMaven()
             assert classLoaderModelFile.exists(): 'Somehow we successfully ran a Maven compile but did not generate a classloader model.'
@@ -173,6 +229,13 @@ trait BaseMuleGroovyTrait {
         } else {
             logger.info 'already up to date classLoader model on filesystem'
         }
+        needUpdate
+    }
+
+    private String hashString(String text) {
+        def digest = MessageDigest.getInstance('SHA-256')
+        digest.update(text.bytes)
+        Base64.encoder.encodeToString(digest.digest())
     }
 
     private void generateUsingMaven() {

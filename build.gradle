@@ -116,7 +116,7 @@ dependencies {
     // simple, will just include it here even for test library consumers that are using
     // REST only and not SOAP
     compile 'wsdl4j:wsdl4j:1.6.3'
-    testCompile 'org.apache.ant:ant:1.9.7'
+    runtime 'org.apache.ant:ant:1.9.7'
     compile group: 'org.apache.maven.shared', name: 'maven-invoker', version: '3.0.1'
 }
 
