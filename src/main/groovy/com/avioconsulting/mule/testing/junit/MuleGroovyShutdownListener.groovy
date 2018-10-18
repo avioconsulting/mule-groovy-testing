@@ -7,6 +7,6 @@ class MuleGroovyShutdownListener extends
         RunListener {
     @Override
     void testRunFinished(Result result) throws Exception {
-        BaseJunitTest.shutdownMule()
+        BaseJunitTest.testState.shutdownMule()
     }
 }

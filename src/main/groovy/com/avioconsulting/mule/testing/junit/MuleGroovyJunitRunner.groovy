@@ -1,10 +1,13 @@
 package com.avioconsulting.mule.testing.junit
 
+
+import groovy.util.logging.Log4j2
 import org.junit.runner.notification.RunNotifier
 import org.junit.runners.BlockJUnit4ClassRunner
 import org.junit.runners.model.FrameworkMethod
 import org.junit.runners.model.InitializationError
 
+@Log4j2
 class MuleGroovyJunitRunner extends
         BlockJUnit4ClassRunner {
     static boolean listenerSetup = false
@@ -12,6 +15,7 @@ class MuleGroovyJunitRunner extends
     MuleGroovyJunitRunner(Class<?> klass) throws InitializationError {
         super(klass)
     }
+
 
     @Override
     protected void runChild(FrameworkMethod method,

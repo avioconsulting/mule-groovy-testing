@@ -225,10 +225,6 @@ trait BaseMuleGroovyTrait {
         map
     }
 
-    String getArtifactName() {
-        muleArtifactJson.name
-    }
-
     List<String> getConfigResources() {
         // if null, framework will use list from artifact descriptor
         null

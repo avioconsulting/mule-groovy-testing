@@ -22,9 +22,6 @@ trait OverrideConfigList {
                 srcResourcesPath,
                 tstResourcesPath
         ]
-        def logger = getLogger()
-        logger.info 'Using outputdirs {} for test',
-                    result
         result
     }
 
