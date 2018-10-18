@@ -25,17 +25,6 @@
     </build>
 
     <dependencies>
-        <!-- This is only here because our tests for the tests need the .m2 repo seeded with
-         dependencies. Since our main build is via gradle, that won't happen. The maven
-         build run with this file to generate the classloader model, etc. will
-         take care of it though. See MuleEngineContainer-->
-        <dependency>
-            <groupId>com.mulesoft.mule.distributions</groupId>
-            <artifactId>mule-runtime-impl-bom</artifactId>
-            <version>${app.runtime}</version>
-            <scope>test</scope>
-        </dependency>
-        <!-- End Gradle dupes -->
         <dependency>
             <groupId>org.mule.connectors</groupId>
             <artifactId>mule-http-connector</artifactId>
