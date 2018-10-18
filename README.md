@@ -10,7 +10,7 @@ Here is what's currently supported:
 * Mocking RESTful HTTP request calls that either use XML or JSON and handling JAXB/Jackson respectively
 * Mocking VM Puts
 * Validate HTTP status codes automatically
-* Call flows with non-repeatable streams
+* Call flows with non-repeatable streams and instruct HTTP request mocks with JSON to use non-repeatable streams
 * Limited HTTP connector usage validation (query params, path, verbs, URI params)
 * Automatically loads Mule config files from mule-deploy.properties but allows substituting
 
@@ -22,6 +22,7 @@ Differences from MUnit:
 What hasn't been done yet/TODOs:
 
 * Automatically detect whether a flow being invoked has an HTTP listener with non-repeatable streams turned on and use a non repeatable stream in that case
+* Automatically detect whether an HTTP requester being mocked has non-repeatable streams turned on and use a non repeatable stream in that case
 * Invoking SalesForce upsert and query (DQL not supported in Studio 7 yet)
 * Easily mock any DQL/Devkit based connector
 * Boilerplate code from queue-error-strategies, how to test that

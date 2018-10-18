@@ -54,7 +54,6 @@ class JsonMockingTest extends
                 nonRepeatableStream()
             }
         }
-        // TODO: document in README
         // TODO: maybe, if mock interceptor allows, detect auto??
 
         // act
