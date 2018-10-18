@@ -181,6 +181,11 @@
                 </exclusion>
             </exclusions>
         </dependency>
+        <!--
+        // this used to be included when the app under test had the SOAP APIKit Router in it
+        // in 4.x, this is no longer the case. Since the dependency graph for wsdl4j is relatively
+        // simple, will just include it here even for test library consumers that are using
+        // REST only and not SOAP -->
         <dependency>
             <groupId>wsdl4j</groupId>
             <artifactId>wsdl4j</artifactId>
