@@ -36,11 +36,12 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.mule.module</groupId>
-            <artifactId>mule-java-module</artifactId>
-            <classifier>mule-plugin</classifier>
-            <version>1.1.1</version>
+            <groupId>org.mule.distributions</groupId>
+            <artifactId>mule-module-embedded-impl</artifactId>
+            <version>${app.runtime}</version>
+            <scope>test</scope>
         </dependency>
+        <!-- End Gradle dupes -->
         <dependency>
             <groupId>org.mule.connectors</groupId>
             <artifactId>mule-http-connector</artifactId>
@@ -81,6 +82,12 @@
 
     <repositories>
         <repository>
+            <id>maven-central</id>
+            <name>maven central</name>
+            <url>http://central.maven.org/maven2/</url>
+            <layout>default</layout>
+        </repository>
+        <repository>
             <id>anypoint-exchange</id>
             <name>Anypoint Exchange</name>
             <url>https://maven.anypoint.mulesoft.com/api/v1/maven</url>
@@ -90,6 +97,13 @@
             <id>mulesoft-releases</id>
             <name>MuleSoft Releases Repository</name>
             <url>https://repository.mulesoft.org/releases/</url>
+            <layout>default</layout>
+        </repository>
+        <!-- for staxutils -->
+        <repository>
+            <id>mulesoft-public</id>
+            <name>Mulesoft public repo</name>
+            <url>https://repository.mulesoft.org/nexus/content/repositories/public</url>
             <layout>default</layout>
         </repository>
         <repository>
