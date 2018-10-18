@@ -17,8 +17,6 @@ class JsonTest extends
         ['simple_json_test.xml']
     }
 
-    // TODO: Should we add a non-repeatable stream test??
-
     @Test
     void jackson() {
         // arrange

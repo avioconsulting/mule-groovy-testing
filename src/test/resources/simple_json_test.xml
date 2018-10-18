@@ -22,7 +22,7 @@ output application/json
     </flow>
     <flow name="non-repeatable-stream-test">
         <!-- Logger will consume payload so we should see null on the flip side -->
-        <logger message="#[payload]"
+        <logger message="consuming stream with this log message: #[payload]"
                 level="INFO"/>
     </flow>
 

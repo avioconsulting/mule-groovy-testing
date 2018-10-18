@@ -77,6 +77,8 @@ class MessageWrapperImpl implements
             finally {
                 cursor.close()
             }
+        } else if (InputStream.isAssignableFrom(value.getClass())) {
+            return value.text
         } else if (klass == String.name) {
             return value
         } else if (value == null) {
