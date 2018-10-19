@@ -26,17 +26,23 @@ class FilterOutNonTestingExtensionsClassLoader extends
             def stuffToRemove = all.findAll() { resource ->
                 filters.any { filter -> resource.toString().contains(filter) }
             }
-            def prettyDisplay = stuffToRemove.collect { url ->
-                def filePortion = url.file
-                // these are resources being used to locate extensions in JARs, make our log message
-                // more concise by just showing the JAR filename
-                def fullPath = filePortion[0..filePortion.indexOf('!/META-INF')-1]
-                new File(fullPath).name
-            }
             log.info 'Filtering out the following Mule extensions because we should not need them for unit tests {}',
-                     prettyDisplay
-            return Collections.enumeration(all - stuffToRemove)
+                     getPrettyList(stuffToRemove)
+            def enabledExtensions = all - stuffToRemove
+            log.info 'Will enable/return extensions: {}',
+                     getPrettyList(enabledExtensions)
+            return Collections.enumeration(enabledExtensions)
         }
         return raw
+    }
+
+    private static List<String> getPrettyList(List<URL> urls) {
+        urls.collect { url ->
+            def filePortion = url.file
+            // these are resources being used to locate extensions in JARs, make our log message
+            // more concise by just showing the JAR filename
+            def fullPath = filePortion[0..filePortion.indexOf('!/META-INF') - 1]
+            new File(fullPath).name
+        }
     }
 }
