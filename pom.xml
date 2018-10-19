@@ -173,13 +173,19 @@
         <!--
             Aether (a Java "maven client", is used by the Mule container to figure out the classpath to run the engine from.
             The problem with Aether, or how Aether is used, is that it's extremely limited when it comes to which
-            remote repositories to use, credentials for those repositories, etc.
+            remote repositories to use, credentials for those repositories, and also
+            seems to resolve dependencies differently than Maven does.
 
             In order to workaround its limitations, we declare all of those dependencies here. This way maven,
             when fetching this testing framework, will fetch everything required.
 
             Then we can force Mule's MavenClient Aether to run in offline mode and just look at the local repo.
         -->
+
+        <!-- org/mule/runtime/mule/4.1.3/mule-4.1.3.pom insists on 1.4.3
+         DW depends on 1.4.7.
+         Maven/IntelliJ selects 1.4.7, Aether selects 1.4.3.
+         -->
         <dependency>
             <groupId>javax.mail</groupId>
             <artifactId>mail</artifactId>
