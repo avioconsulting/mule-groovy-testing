@@ -56,14 +56,17 @@ class MuleEngineContainer {
             def mavenClientProvider = MavenClientProvider.discoverProvider(DefaultEmbeddedContainerBuilder.classLoader)
             def m2Directory = new File(System.getProperty('user.home'), '.m2')
             def repo = new File(m2Directory, 'repository')
-            repo.mkdirs()
+            // because we run in offline model, see pom.xml
+            assert repo.exists() : "If your local Maven repo directory. ${repo}, does not already exist by now, we will not be able to run anyways"
             // the Aether Maven client is not very sophisticated. It attempts to use the 1st profile in settings.xml
             // Therefore we include our dependencies in the testing framework's POM and then rely
             // on Maven to download them before this code even runs. thus forcing offline mode
             def mavenConfig = MavenConfiguration.newMavenConfigurationBuilder()
                     .localMavenRepositoryLocation(repo)
+                    // see pom.xml for why we are doing this
                     .offlineMode(true)
                     .build()
+            // Mule uses this Maven client to derive its classpath from the local ~/.m2/repository directory
             def mavenClient = mavenClientProvider.createMavenClient(mavenConfig)
             def classLoaderFactory = new MavenContainerClassLoaderFactory(mavenClient)
             def services = classLoaderFactory.getServices(engineConfig.muleVersion,

@@ -4,6 +4,10 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.avioconsulting.mule</groupId>
     <artifactId>testing</artifactId>
+    <!-- Since the framework has to bring along the engine with it (see below), making this dependency explicit.
+     The testing framework will then be 4.1.3.1, 4.1.3.2, then when an engine upgrade happens,
+     4.1.4.1
+     -->
     <version>${mule.version}.1</version>
     <packaging>jar</packaging>
 
@@ -154,17 +158,28 @@
     </build>
 
     <dependencies>
+        <!-- Needed for the container that we use to run Mule. -->
         <dependency>
             <groupId>org.mule.distributions</groupId>
             <artifactId>mule-module-embedded-impl</artifactId>
             <version>${mule.version}</version>
         </dependency>
+        <!-- Brings along a few other items -->
         <dependency>
             <groupId>com.mulesoft.mule.distributions</groupId>
             <artifactId>mule-runtime-impl-bom</artifactId>
             <version>${mule.version}</version>
         </dependency>
-        <!-- Stuff to work around the Mule embedded/Aether client's limitations -->
+        <!--
+            Aether (a Java "maven client", is used by the Mule container to figure out the classpath to run the engine from.
+            The problem with Aether, or how Aether is used, is that it's extremely limited when it comes to which
+            remote repositories to use, credentials for those repositories, etc.
+
+            In order to workaround its limitations, we declare all of those dependencies here. This way maven,
+            when fetching this testing framework, will fetch everything required.
+
+            Then we can force Mule's MavenClient Aether to run in offline mode and just look at the local repo.
+        -->
         <dependency>
             <groupId>javax.mail</groupId>
             <artifactId>mail</artifactId>
