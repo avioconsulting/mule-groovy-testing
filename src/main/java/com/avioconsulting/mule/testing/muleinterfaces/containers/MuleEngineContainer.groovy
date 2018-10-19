@@ -69,7 +69,9 @@ class MuleEngineContainer {
             def services = classLoaderFactory.getServices(engineConfig.muleVersion,
                                                           Product.MULE_EE)
             def servicesDir = new File(muleHomeDirectory, 'services')
-            services.each { svcUrl ->
+            services.findAll { svc ->
+                !svc.toString().contains('api-gateway-contract-service')
+            }.each { svcUrl ->
                 FileUtils.copyFileToDirectory(new File(svcUrl.toURI()),
                                               servicesDir)
             }
@@ -80,6 +82,7 @@ class MuleEngineContainer {
             def containerClassLoader = createEmbeddedImplClassLoader(containerModulesClassLoader,
                                                                      mavenClient,
                                                                      engineConfig.muleVersion)
+            containerClassLoader = new FilterOutNonTestingExtensionsClassLoader(containerClassLoader)
             // work around this - https://jira.apache.org/jira/browse/LOG4J2-2152
             def preserve = Thread.currentThread().contextClassLoader
             registryListener = null
