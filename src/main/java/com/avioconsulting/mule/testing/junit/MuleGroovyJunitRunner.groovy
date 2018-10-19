@@ -16,15 +16,27 @@ class MuleGroovyJunitRunner extends
         super(klass)
     }
 
-
     @Override
     protected void runChild(FrameworkMethod method,
                             RunNotifier notifier) {
         // this method is called for every test, so only do this once
         if (!listenerSetup) {
             listenerSetup = true
-            notifier.addListener(new MuleGroovyShutdownListener())
+            if (System.getProperty('sun.java.command')
+                    .contains('org.eclipse.jdt.internal.junit.runner.RemoteTestRunner')) {
+                log.info 'Since tests are being run via Eclipse, have to use JVM shutdown hook to shutdown Mule. Eclipse Junit runner otherwise will shutdown Mule after every test class'
+                Runtime.runtime.addShutdownHook(new Thread() {
+                    @Override
+                    void run() {
+                        BaseJunitTest.testState.shutdownMule()
+                    }
+                })
+            } else {
+                log.info 'Using JUnit testRunFinished to shut down Mule (on IntellIj or Maven)'
+                notifier.addListener(new MuleGroovyShutdownListener())
+            }
         }
+
         super.runChild(method, notifier)
     }
 }
