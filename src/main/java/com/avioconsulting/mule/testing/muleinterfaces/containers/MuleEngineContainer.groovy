@@ -68,9 +68,13 @@ class MuleEngineContainer {
             def services = classLoaderFactory.getServices(engineConfig.muleVersion,
                                                           Product.MULE_EE)
             def servicesDir = new File(muleHomeDirectory, 'services')
-            services.findAll { svc ->
-                !svc.toString().contains('api-gateway-contract-service')
-            }.each { svcUrl ->
+            if (engineConfig.filterEngineExtensions.contains(BaseEngineConfig.ANALYTICS_PLUGIN)) {
+                services = services.findAll { svc ->
+                    // we don't need this service if we don't have that plugin
+                    !svc.toString().contains('api-gateway-contract-service')
+                }
+            }
+            services.each { svcUrl ->
                 FileUtils.copyFileToDirectory(new File(svcUrl.toURI()),
                                               servicesDir)
             }
