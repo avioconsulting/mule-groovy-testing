@@ -104,7 +104,8 @@ trait BaseMuleGroovyTrait {
         if (version == '${mule.version}') {
             throw new Exception('run mvn clean generate-sources first')
         }
-        new BaseEngineConfig(version)
+        new BaseEngineConfig(version,
+                             BaseEngineConfig.defaultFilters)
     }
 
     List<String> keepListenersOnForTheseFlows() {

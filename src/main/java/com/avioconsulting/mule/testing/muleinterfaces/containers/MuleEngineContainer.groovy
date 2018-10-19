@@ -82,7 +82,9 @@ class MuleEngineContainer {
             def containerClassLoader = createEmbeddedImplClassLoader(containerModulesClassLoader,
                                                                      mavenClient,
                                                                      engineConfig.muleVersion)
-            containerClassLoader = new FilterOutNonTestingExtensionsClassLoader(containerClassLoader)
+            // see FilterOutNonTestingExtensionsClassLoader for why we're doing this
+            containerClassLoader = new FilterOutNonTestingExtensionsClassLoader(containerClassLoader,
+                                                                                engineConfig.filterEngineExtensions)
             // work around this - https://jira.apache.org/jira/browse/LOG4J2-2152
             def preserve = Thread.currentThread().contextClassLoader
             registryListener = null
