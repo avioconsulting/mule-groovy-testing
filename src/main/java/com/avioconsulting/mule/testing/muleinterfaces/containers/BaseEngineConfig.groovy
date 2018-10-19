@@ -9,6 +9,7 @@ class BaseEngineConfig {
     static final List<String> defaultFilters = [
             'mule-module-cluster-ee', // no Hazelcast cluster needed for a unit test
             'mule-module-api-deployment', // don't seem to need this either
-            'mule-module-analytics' // wouldn't need analytics for a test
+            'mule-module-analytics', // wouldn't need analytics for a test
+            'mule-module-plugin' // don't really need to use plugins for tests either
     ]
 }
