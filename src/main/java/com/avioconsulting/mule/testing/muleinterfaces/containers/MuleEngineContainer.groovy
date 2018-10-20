@@ -49,8 +49,18 @@ class MuleEngineContainer {
             }
             appsDir.mkdirs()
             def mavenClientProvider = MavenClientProvider.discoverProvider(DefaultEmbeddedContainerBuilder.classLoader)
-            def m2Directory = new File(System.getProperty('user.home'), '.m2')
-            def repo = new File(m2Directory, 'repository')
+            File repo
+            def mavenRepoLocalSetting = System.getProperty('maven.repo.local')
+            if (mavenRepoLocalSetting) {
+                log.info 'Using overridden M2 repo from -Dmaven.repo.local of {}',
+                         mavenRepoLocalSetting
+                repo = new File(mavenRepoLocalSetting)
+            } else {
+                def m2Directory = new File(System.getProperty('user.home'), '.m2')
+                repo = new File(m2Directory, 'repository')
+                log.info 'Using derived/user home directory Maven repo location of {}',
+                         repo
+            }
             // because we run in offline model, see pom.xml
             assert repo.exists(): "If your local Maven repo directory. ${repo}, does not already exist by now, we will not be able to run anyways"
             // the Aether Maven client is not very sophisticated. It attempts to use the 1st profile in settings.xml
