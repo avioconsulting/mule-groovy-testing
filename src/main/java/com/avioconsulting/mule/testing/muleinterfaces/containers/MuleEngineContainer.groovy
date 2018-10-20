@@ -5,15 +5,10 @@ import com.avioconsulting.mule.testing.muleinterfaces.MuleRegistryListener
 import com.avioconsulting.mule.testing.muleinterfaces.RuntimeBridgeTestSide
 import groovy.util.logging.Log4j2
 import org.apache.commons.io.FileUtils
-import org.mule.maven.client.api.MavenClient
 import org.mule.maven.client.api.MavenClientProvider
-import org.mule.maven.client.api.model.BundleDescriptor
-import org.mule.maven.client.api.model.BundleScope
 import org.mule.maven.client.api.model.MavenConfiguration
 import org.mule.runtime.module.embedded.api.Product
 import org.mule.runtime.module.embedded.internal.DefaultEmbeddedContainerBuilder
-import org.mule.runtime.module.embedded.internal.MavenContainerClassLoaderFactory
-import org.mule.runtime.module.embedded.internal.classloading.JdkOnlyClassLoaderFactory
 import org.mule.runtime.module.launcher.MuleContainer
 
 @Log4j2
@@ -57,41 +52,35 @@ class MuleEngineContainer {
             def m2Directory = new File(System.getProperty('user.home'), '.m2')
             def repo = new File(m2Directory, 'repository')
             // because we run in offline model, see pom.xml
-            assert repo.exists() : "If your local Maven repo directory. ${repo}, does not already exist by now, we will not be able to run anyways"
+            assert repo.exists(): "If your local Maven repo directory. ${repo}, does not already exist by now, we will not be able to run anyways"
             // the Aether Maven client is not very sophisticated. It attempts to use the 1st profile in settings.xml
             // Therefore we include our dependencies in the testing framework's POM and then rely
             // on Maven to download them before this code even runs. thus forcing offline mode
             def mavenConfig = MavenConfiguration.newMavenConfigurationBuilder()
                     .localMavenRepositoryLocation(repo)
-                    // see pom.xml for why we are doing this
+            // see pom.xml for why we are doing this
                     .offlineMode(true)
                     .build()
             // Mule uses this Maven client to derive its classpath from the local ~/.m2/repository directory
             def mavenClient = mavenClientProvider.createMavenClient(mavenConfig)
-            def classLoaderFactory = new MavenContainerClassLoaderFactory(mavenClient)
-            def services = classLoaderFactory.getServices(engineConfig.muleVersion,
-                                                          Product.MULE_EE)
+            log.info 'Building classloader factory'
+            def classLoaderFactory = new OurMavenClassLoaderFactory(mavenClient,
+                                                                    engineConfig,
+                                                                    Product.MULE_EE,
+                                                                    muleHomeDirectory)
             def servicesDir = new File(muleHomeDirectory, 'services')
-            if (engineConfig.filterEngineExtensions.contains(BaseEngineConfig.ANALYTICS_PLUGIN)) {
-                services = services.findAll { svc ->
-                    // we don't need this service if we don't have that plugin
-                    !svc.toString().contains('api-gateway-contract-service')
-                }
-            }
+            def services = classLoaderFactory.services
+            log.info 'Copying services {} to {}',
+                     services,
+                     servicesDir
             services.each { svcUrl ->
                 FileUtils.copyFileToDirectory(new File(svcUrl.toURI()),
                                               servicesDir)
             }
-            def containerModulesClassLoader = classLoaderFactory.create(engineConfig.muleVersion,
-                                                                        Product.MULE_EE,
-                                                                        JdkOnlyClassLoaderFactory.create(),
-                                                                        muleHomeDirectory.toURI().toURL())
-            def containerClassLoader = createEmbeddedImplClassLoader(containerModulesClassLoader,
-                                                                     mavenClient,
-                                                                     engineConfig.muleVersion)
+            def containerModulesClassLoader = classLoaderFactory.classLoader
             // see FilterOutNonTestingExtensionsClassLoader for why we're doing this
-            containerClassLoader = new FilterOutNonTestingExtensionsClassLoader(containerClassLoader,
-                                                                                engineConfig.filterEngineExtensions)
+            def containerClassLoader = new FilterOutNonTestingExtensionsClassLoader(containerModulesClassLoader,
+                                                                                    engineConfig.filterEngineExtensions)
             // work around this - https://jira.apache.org/jira/browse/LOG4J2-2152
             def preserve = Thread.currentThread().contextClassLoader
             registryListener = null
@@ -139,36 +128,6 @@ class MuleEngineContainer {
         def muleSide = registryListener.getRuntimeBridge(artifactName)
         new RuntimeBridgeTestSide(muleSide,
                                   artifactName)
-    }
-
-    private static ClassLoader createEmbeddedImplClassLoader(ClassLoader parentClassLoader,
-                                                             MavenClient mavenClient,
-                                                             String muleVersion) throws MalformedURLException {
-        def embeddedBomDescriptor = new BundleDescriptor.Builder()
-                .setGroupId('org.mule.distributions')
-                .setArtifactId('mule-module-embedded-impl-bom')
-                .setVersion(muleVersion)
-                .setType('pom')
-                .build()
-        def embeddedImplDescriptor = new BundleDescriptor.Builder()
-                .setGroupId('org.mule.distributions')
-                .setArtifactId('mule-module-embedded-impl')
-                .setVersion(muleVersion)
-                .setType('jar')
-                .build()
-        def embeddedBundleImplDescriptor = mavenClient.resolveBundleDescriptor(embeddedImplDescriptor)
-        def embeddedImplDependencies = mavenClient.resolveBundleDescriptorDependencies(false,
-                                                                                       embeddedBomDescriptor)
-        def embeddedUrls = embeddedImplDependencies.findAll { dep ->
-            dep.scope != BundleScope.PROVIDED
-        }.collect { dep ->
-            dep.bundleUri.toURL()
-        }
-        embeddedUrls.add(embeddedBundleImplDescriptor.bundleUri.toURL())
-        // need to be able to at least load our registry listener
-        embeddedUrls.add(MuleRegistryListener.protectionDomain.codeSource.location)
-        new URLClassLoader(embeddedUrls.toArray(new URL[0]),
-                           parentClassLoader)
     }
 
     BaseEngineConfig getEngineConfig() {
