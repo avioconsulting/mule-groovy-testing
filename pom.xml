@@ -170,59 +170,6 @@
             <artifactId>mule-runtime-impl-bom</artifactId>
             <version>${mule.version}</version>
         </dependency>
-        <!--
-            Aether (a Java "maven client", is used by the Mule container to figure out the classpath to run the engine from.
-            The problem with Aether, or how Aether is used, is that it's extremely limited when it comes to which
-            remote repositories to use, credentials for those repositories, and also
-            seems to resolve dependencies differently than Maven does.
-
-            In order to workaround its limitations, we declare all of those dependencies here. This way maven,
-            when fetching this testing framework, will fetch everything required.
-
-            Then we can force Mule's MavenClient Aether to run in offline mode and just look at the local repo.
-        -->
-
-        <!-- org/mule/runtime/mule/4.1.3/mule-4.1.3.pom insists on 1.4.3
-         DW depends on 1.4.7.
-         Maven/IntelliJ selects 1.4.7, Aether selects 1.4.3.
-         -->
-        <dependency>
-            <groupId>javax.mail</groupId>
-            <artifactId>mail</artifactId>
-            <version>1.4.3</version>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpcore</artifactId>
-            <version>4.4.6</version>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
-            <version>4.5.3</version>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.google.code.gson</groupId>
-            <artifactId>gson</artifactId>
-            <version>2.8.1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>jcl-over-slf4j</artifactId>
-            <version>1.7.25</version>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.mule.distributions</groupId>
-            <artifactId>mule-module-embedded-impl-bom</artifactId>
-            <version>${mule.version}</version>
-            <scope>runtime</scope>
-            <type>pom</type>
-        </dependency>
-        <!-- End Aether client limitations -->
         <dependency>
             <groupId>org.apache.maven.shared</groupId>
             <artifactId>maven-invoker</artifactId>
