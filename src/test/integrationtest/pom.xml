@@ -53,7 +53,7 @@
 		 <dependency>
             <groupId>com.avioconsulting.mule</groupId>
             <artifactId>testing</artifactId>
-            <version>${app.runtime}.1</version>
+            <version>${test.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
