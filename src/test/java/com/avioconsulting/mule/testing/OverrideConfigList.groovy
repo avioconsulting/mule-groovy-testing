@@ -34,8 +34,13 @@ trait OverrideConfigList {
 
     Properties getPropertiesForMavenGeneration() {
         new Properties([
-                'app.runtime': getBaseEngineConfig().muleVersion
+                'app.runtime': getMuleVersion()
         ])
+    }
+
+    def getMuleVersion() {
+        // TODO: hard coded
+        '4.1.3'
     }
 
     Map getMuleArtifactJson() {
@@ -45,7 +50,7 @@ trait OverrideConfigList {
                 secureProperties                : [],
                 redeploymentEnabled             : true,
                 name                            : 'tests_for_the_test',
-                minMuleVersion                  : getBaseEngineConfig().muleVersion,
+                minMuleVersion                  : getMuleVersion(),
                 requiredProduct                 : 'MULE_EE',
                 classLoaderModelLoaderDescriptor: [
                         id        : 'mule',

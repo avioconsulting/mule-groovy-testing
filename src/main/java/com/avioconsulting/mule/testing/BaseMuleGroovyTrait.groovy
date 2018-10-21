@@ -99,13 +99,7 @@ trait BaseMuleGroovyTrait {
     }
 
     BaseEngineConfig getBaseEngineConfig() {
-        def stream = BaseMuleGroovyTrait.getResourceAsStream('/META-INF/mule_version.txt')
-        def version = stream.text.trim()
-        if (version == '${mule.version}') {
-            throw new Exception('run mvn clean generate-sources first')
-        }
-        new BaseEngineConfig(version,
-                             BaseEngineConfig.defaultFilters)
+        new BaseEngineConfig(BaseEngineConfig.defaultFilters)
     }
 
     List<String> keepListenersOnForTheseFlows() {

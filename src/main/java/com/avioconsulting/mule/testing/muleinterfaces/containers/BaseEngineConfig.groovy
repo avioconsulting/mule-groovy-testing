@@ -4,7 +4,6 @@ import groovy.transform.Immutable
 
 @Immutable
 class BaseEngineConfig {
-    String muleVersion
     List<String> filterEngineExtensions
     static final String ANALYTICS_PLUGIN = 'mule-module-analytics'
     static final List<String> defaultFilters = [
