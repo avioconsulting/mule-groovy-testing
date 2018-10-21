@@ -12,4 +12,4 @@ ARTIFACT_DIR=temporary_repo/com/avioconsulting/mule/testing/$VERSION
 mkdir -p $ARTIFACT_DIR
 cp -v ../../../target/testing-$VERSION.jar $ARTIFACT_DIR
 cp -v ../../../pom.xml $ARTIFACT_DIR/testing-$VERSION.pom
-mvn -Dmaven.repo.local=temporary_repo clean test
+mvn -Dmaven.repo.local=temporary_repo -Dapp.runtime=$VERSION clean test
