@@ -47,20 +47,24 @@
 				</dependencies>
 			</plugin>
       <plugin>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <version>2.19.1</version>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>1.6.0</version>
+        <executions>
+          <execution>
+            <id>trigger-fetch</id>
+            <goals>
+              <goal>help</goal>
+            </goals>
+            <phase>test-compile</phase>
+          </execution>
+        </executions>
         <dependencies>
-                  <dependency>
-            <groupId>org.mule.distributions</groupId>
-            <artifactId>mule-module-embedded-impl</artifactId>
-            <version>${app.runtime}</version>
-        </dependency>
-        <!-- Brings along a few other items -->
-        <dependency>
-            <groupId>com.mulesoft.mule.distributions</groupId>
-            <artifactId>mule-runtime-impl-bom</artifactId>
-            <version>${app.runtime}</version>
-        </dependency>
+          <dependency>
+            <groupId>com.avioconsulting.mule</groupId>
+            <artifactId>testing</artifactId>
+            <version>${test.version}</version>
+          </dependency>
         </dependencies>
       </plugin>
 		</plugins>
