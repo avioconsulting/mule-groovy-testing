@@ -5,7 +5,6 @@ import com.avioconsulting.mule.testing.muleinterfaces.MuleRegistryListener
 import com.avioconsulting.mule.testing.muleinterfaces.RuntimeBridgeTestSide
 import groovy.util.logging.Log4j2
 import org.apache.commons.io.FileUtils
-import org.mule.runtime.module.embedded.api.Product
 import org.mule.runtime.module.launcher.MuleContainer
 
 @Log4j2
@@ -61,7 +60,6 @@ class MuleEngineContainer {
             assert repo.exists(): "If your local Maven repo directory. ${repo}, does not already exist by now, we will not be able to run anyways"
             log.info 'Building classloader factory'
             def classLoaderFactory = new OurMavenClassLoaderFactory(engineConfig,
-                                                                    Product.MULE_EE,
                                                                     repo,
                                                                     muleHomeDirectory)
             def servicesDir = new File(muleHomeDirectory, 'services')

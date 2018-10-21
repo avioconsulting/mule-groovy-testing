@@ -250,7 +250,7 @@
         "filename": "maven-model-3.3.9.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "org.codehaus.plexus:plexus-utils:3.0.24": {
@@ -260,7 +260,7 @@
         "filename": "plexus-utils-3.0.24.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "org.slf4j:slf4j-api:1.7.25": {
@@ -270,7 +270,7 @@
         "filename": "slf4j-api-1.7.25.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "org.mule.runtime:api-annotations:1.0.1": {
@@ -280,7 +280,7 @@
         "filename": "api-annotations-1.0.1.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "org.mule:mule-maven-client-impl:1.1.2": {
@@ -323,7 +323,7 @@
         "filename": "semver4j-2.0.3.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "org.eclipse.aether:aether-api:1.0.2.v20150114": {
@@ -333,7 +333,7 @@
         "filename": "aether-api-1.0.2.v20150114.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "org.eclipse.aether:aether-util:1.0.2.v20150114": {
@@ -343,7 +343,7 @@
         "filename": "aether-util-1.0.2.v20150114.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "org.eclipse.aether:aether-connector-basic:1.0.2.v20150114": {
@@ -363,7 +363,7 @@
         "filename": "aether-spi-1.0.2.v20150114.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "org.eclipse.aether:aether-transport-file:1.0.2.v20150114": {
@@ -373,7 +373,7 @@
         "filename": "aether-transport-file-1.0.2.v20150114.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "org.eclipse.aether:aether-transport-http:1.0.2.v20150114": {
@@ -393,7 +393,7 @@
         "filename": "jcl-over-slf4j-1.6.2.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "org.apache.httpcomponents:httpclient:4.5.4": {
@@ -414,7 +414,7 @@
         "filename": "httpcore-4.4.7.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "commons-logging:commons-logging:1.2": {
@@ -424,7 +424,7 @@
         "filename": "commons-logging-1.2.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "org.apache.maven:maven-settings-builder:3.3.9": {
@@ -448,7 +448,7 @@
         "filename": "maven-builder-support-3.3.9.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "org.codehaus.plexus:plexus-interpolation:1.21": {
@@ -458,7 +458,7 @@
         "filename": "plexus-interpolation-1.21.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "org.apache.maven:maven-settings:3.3.9": {
@@ -468,7 +468,7 @@
         "filename": "maven-settings-3.3.9.jar",
         "scope": "runtime",
         "dependencies": [
-            
+
         ]
     },
     "org.sonatype.plexus:plexus-sec-dispatcher:1.3": {
@@ -488,7 +488,7 @@
         "filename": "plexus-cipher-1.4.jar",
         "scope": "runtime",
         "dependencies": [
-            
+
         ]
     },
     "org.apache.maven:maven-aether-provider:3.3.9": {
@@ -521,7 +521,7 @@
         "filename": "maven-artifact-3.3.9.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "org.apache.maven:maven-repository-metadata:3.3.9": {
@@ -531,7 +531,7 @@
         "filename": "maven-repository-metadata-3.3.9.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "org.eclipse.aether:aether-impl:1.0.2.v20150114": {
@@ -541,7 +541,7 @@
         "filename": "aether-impl-1.0.2.v20150114.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "com.beust:jcommander:1.69": {
@@ -551,7 +551,7 @@
         "filename": "jcommander-1.69.jar",
         "scope": "runtime",
         "dependencies": [
-            
+
         ]
     },
     "org.eclipse.sisu:org.eclipse.sisu.plexus:0.3.2": {
@@ -561,7 +561,7 @@
         "filename": "org.eclipse.sisu.plexus-0.3.2.jar",
         "scope": "runtime",
         "dependencies": [
-            
+
         ]
     },
     "com.google.code.gson:gson:2.5": {
@@ -571,7 +571,7 @@
         "filename": "gson-2.5.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "com.google.guava:guava:25.1-jre": {
@@ -595,7 +595,7 @@
         "filename": "jsr305-3.0.2.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "org.checkerframework:checker-qual:2.0.0": {
@@ -605,7 +605,7 @@
         "filename": "checker-qual-2.0.0.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "com.google.errorprone:error_prone_annotations:2.1.3": {
@@ -615,7 +615,7 @@
         "filename": "error_prone_annotations-2.1.3.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "com.google.j2objc:j2objc-annotations:1.1": {
@@ -625,7 +625,7 @@
         "filename": "j2objc-annotations-1.1.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "org.codehaus.mojo:animal-sniffer-annotations:1.14": {
@@ -635,7 +635,7 @@
         "filename": "animal-sniffer-annotations-1.14.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "commons-io:commons-io:2.4": {
@@ -645,7 +645,7 @@
         "filename": "commons-io-2.4.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "org.mule.distributions:mule-runtime-impl-bom:4.1.3": {
@@ -867,7 +867,7 @@
         "filename": "mule-classloader-model-3.1.3.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "org.mule.runtime:mule-module-service:4.1.3": {
@@ -877,7 +877,7 @@
         "filename": "mule-module-service-4.1.3.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "org.mule.runtime:mule-module-repository:4.1.3": {
@@ -887,7 +887,7 @@
         "filename": "mule-module-repository-4.1.3.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "org.mule.runtime:mule-module-reboot:4.1.3": {
@@ -897,7 +897,7 @@
         "filename": "mule-module-reboot-4.1.3.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "it.unimi.dsi:fastutil:8.1.1": {
@@ -907,7 +907,7 @@
         "filename": "fastutil-8.1.1.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "org.mule.runtime:mule-module-extensions-support:4.1.3": {
@@ -953,7 +953,7 @@
         "filename": "stringtemplate-3.2.1.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "org.mule.runtime:mule-extensions-api-persistence:1.1.3": {
@@ -973,7 +973,7 @@
         "filename": "mule-metadata-model-persistence-1.1.3.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "org.mule.runtime:mule-module-deployment-model:4.1.3": {
@@ -983,7 +983,7 @@
         "filename": "mule-module-deployment-model-4.1.3.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "org.mule.runtime:mule-module-extensions-soap-support:4.1.3": {
@@ -1003,7 +1003,7 @@
         "filename": "mule-extensions-soap-api-1.1.3.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "org.mule.runtime:mule-module-extensions-spring-support:4.1.3": {
@@ -1026,7 +1026,7 @@
         "filename": "mule-module-tls-4.1.3.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "jboss:javassist:3.7.ga": {
@@ -1036,7 +1036,7 @@
         "filename": "javassist-3.7.ga.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "dom4j:dom4j:1.6.1": {
@@ -1046,7 +1046,7 @@
         "filename": "dom4j-1.6.1.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "jaxen:jaxen:1.1.1": {
@@ -1056,7 +1056,7 @@
         "filename": "jaxen-1.1.1.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "org.mule.runtime:mule-module-extensions-xml-support:4.1.3": {
@@ -1197,7 +1197,7 @@
         "filename": "commons-lang-2.6.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "com.google.code.findbugs:annotations:3.0.0": {
@@ -1207,7 +1207,7 @@
         "filename": "annotations-3.0.0.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "com.fasterxml.jackson.module:jackson-module-jsonSchema:2.9.6": {
@@ -1227,7 +1227,7 @@
         "filename": "validation-api-1.1.0.Final.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "com.github.java-json-tools:json-schema-validator:2.2.8": {
@@ -1269,7 +1269,7 @@
         "filename": "rhino-1.7R4.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "com.github.fge:jackson-coreutils:1.8": {
@@ -1300,7 +1300,7 @@
         "filename": "btf-1.2.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "com.github.fge:uri-template:0.9": {
@@ -1310,7 +1310,7 @@
         "filename": "uri-template-0.9.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "javax.mail:mailapi:1.4.3": {
@@ -1320,7 +1320,7 @@
         "filename": "mailapi-1.4.3.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "com.googlecode.libphonenumber:libphonenumber:8.0.0": {
@@ -1330,7 +1330,7 @@
         "filename": "libphonenumber-8.0.0.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "net.sf.jopt-simple:jopt-simple:5.0.3": {
@@ -1340,7 +1340,7 @@
         "filename": "jopt-simple-5.0.3.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "com.googlecode.juniversalchardet:juniversalchardet:1.0.3": {
@@ -1350,7 +1350,7 @@
         "filename": "juniversalchardet-1.0.3.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "org.apache.ws.xmlschema:xmlschema-core:2.2.1": {
@@ -1360,7 +1360,7 @@
         "filename": "xmlschema-core-2.2.1.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "javax.json:javax.json-api:1.0": {
@@ -1370,7 +1370,7 @@
         "filename": "javax.json-api-1.0.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "org.glassfish:javax.json:1.0.4": {
@@ -1380,7 +1380,7 @@
         "filename": "javax.json-1.0.4.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "org.mule.runtime:mule-module-policy-api:1.1.2": {
@@ -1390,7 +1390,7 @@
         "filename": "mule-module-policy-api-1.1.2.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "org.mule.runtime:mule-module-spring-config:4.1.3": {
@@ -1410,7 +1410,7 @@
         "filename": "spring-aop-4.3.17.RELEASE.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "org.mule.runtime:mule-module-tooling-support:4.1.3": {
@@ -1420,7 +1420,7 @@
         "filename": "mule-module-tooling-support-4.1.3.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "org.mule.runtime:mule-module-global-config:4.1.3": {
@@ -1441,7 +1441,7 @@
         "filename": "config-1.3.1.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "org.mule.runtime:mule-module-container:4.1.3": {
@@ -1451,7 +1451,7 @@
         "filename": "mule-module-container-4.1.3.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "org.mule.runtime:mule-module-logging:4.1.3": {
@@ -1476,7 +1476,7 @@
         "filename": "disruptor-3.3.7.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "org.apache.logging.log4j:log4j-api:2.11.0": {
@@ -1486,7 +1486,7 @@
         "filename": "log4j-api-2.11.0.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "org.apache.logging.log4j:log4j-core:2.11.0": {
@@ -1496,7 +1496,7 @@
         "filename": "log4j-core-2.11.0.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "org.apache.logging.log4j:log4j-slf4j-impl:2.11.0": {
@@ -1506,7 +1506,7 @@
         "filename": "log4j-slf4j-impl-2.11.0.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "org.apache.logging.log4j:log4j-1.2-api:2.11.0": {
@@ -1516,7 +1516,7 @@
         "filename": "log4j-1.2-api-2.11.0.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "org.slf4j:jul-to-slf4j:1.7.25": {
@@ -1526,7 +1526,7 @@
         "filename": "jul-to-slf4j-1.7.25.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "org.mule.runtime:mule-module-license-api:4.1.3": {
@@ -1536,7 +1536,7 @@
         "filename": "mule-module-license-api-4.1.3.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "org.mule.distributions:mule-services-all:4.1.3": {
@@ -1586,7 +1586,7 @@
         "filename": "mule-service-scheduler-1.1.6-mule-service.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "org.mule.services:mule-service-oauth:1.1.2": {
@@ -1596,7 +1596,7 @@
         "filename": "mule-service-oauth-1.1.2-mule-service.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "org.mule.services:mule-service-http:1.1.3": {
@@ -1606,7 +1606,7 @@
         "filename": "mule-service-http-1.1.3-mule-service.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "org.mule.services:mule-service-soap:1.1.7": {
@@ -1616,7 +1616,7 @@
         "filename": "mule-service-soap-1.1.7-mule-service.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "org.mule.services:mule-service-weave:2.1.4": {
@@ -1661,7 +1661,7 @@
         "filename": "scala-library-2.12.4.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "org.mule.weave:runtime:2.1.4": {
@@ -1695,7 +1695,7 @@
         "filename": "wlang-2.1.4.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "org.mule.weave:core:2.1.4": {
@@ -1734,7 +1734,7 @@
         "filename": "spire-macros_2.12-0.14.1.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "org.typelevel:machinist_2.12:0.6.1": {
@@ -1754,7 +1754,7 @@
         "filename": "scala-reflect-2.12.0.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "org.typelevel:algebra_2.12:0.7.0": {
@@ -1774,7 +1774,7 @@
         "filename": "cats-kernel_2.12-0.9.0.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "org.mule.weave:core-modules:2.1.4": {
@@ -1808,7 +1808,7 @@
         "filename": "stax2-api-3.1.4.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "com.fasterxml:aalto-xml:1.0.0": {
@@ -1818,7 +1818,7 @@
         "filename": "aalto-xml-1.0.0.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "javax.mail:mail:1.4.7": {
@@ -1838,7 +1838,7 @@
         "filename": "activation-1.1.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "org.mule.weave:debugger:2.1.4": {
@@ -1848,7 +1848,7 @@
         "filename": "debugger-2.1.4.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "org.mule.weave:yaml-module:2.1.4": {
@@ -1891,7 +1891,7 @@
         "filename": "scalactic_2.12-3.0.1.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "org.mule.weave:mule-tooling-weave:2.1.4": {
@@ -1947,7 +1947,7 @@
         "filename": "macro-compat_2.12-1.1.1.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "org.mule.runtime:mule-service-soap-api:4.1.3": {
@@ -1957,7 +1957,7 @@
         "filename": "mule-service-soap-api-4.1.3.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "org.mule.runtime:mule-service-http-api:4.1.3": {
@@ -1967,7 +1967,7 @@
         "filename": "mule-service-http-api-4.1.3.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "org.mule.runtime:mule-service-oauth-api:4.1.3": {
@@ -1977,7 +1977,7 @@
         "filename": "mule-service-oauth-api-4.1.3.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "org.mule.runtime:mule-core:4.1.3": {
@@ -2043,7 +2043,7 @@
         "filename": "mule-metadata-model-api-1.1.3.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "org.mule.runtime:mule-artifact-declaration:1.1.1": {
@@ -2053,7 +2053,7 @@
         "filename": "mule-artifact-declaration-1.1.1.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "org.mule.runtime:mule-module-dsl-api:1.1.3": {
@@ -2063,7 +2063,7 @@
         "filename": "mule-module-dsl-api-1.1.3.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "org.mule.runtime:mule-extensions-api:1.1.3": {
@@ -2083,7 +2083,7 @@
         "filename": "reactive-streams-1.0.2.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "org.mule.runtime:mule-module-http-policy-api:1.1.2": {
@@ -2093,7 +2093,7 @@
         "filename": "mule-module-http-policy-api-1.1.2.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "org.mule.runtime:mule-metadata-model-xml:1.1.3": {
@@ -2114,7 +2114,7 @@
         "filename": "xmlbeans-2.6.0.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "org.mule.apache:xerces2-xsd11:2.11.3": {
@@ -2124,7 +2124,7 @@
         "filename": "xerces2-xsd11-2.11.3.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "org.mule.runtime:mule-metadata-model-java:1.1.3": {
@@ -2134,7 +2134,7 @@
         "filename": "mule-metadata-model-java-1.1.3.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "org.mule.runtime:mule-message-metadata-model:1.1.3": {
@@ -2144,7 +2144,7 @@
         "filename": "mule-message-metadata-model-1.1.3.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "org.mule.runtime:mule-metadata-model-json:1.1.3": {
@@ -2179,7 +2179,7 @@
         "filename": "json-20160810.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "commons-validator:commons-validator:1.5.1": {
@@ -2199,7 +2199,7 @@
         "filename": "commons-digester-1.8.1.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "commons-beanutils:commons-beanutils:1.9.3": {
@@ -2209,7 +2209,7 @@
         "filename": "commons-beanutils-1.9.3.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "com.github.stephenc.eaio-uuid:uuid:3.4.0": {
@@ -2229,7 +2229,7 @@
         "filename": "grabbag-1.8.1.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "commons-cli:commons-cli:1.2": {
@@ -2239,7 +2239,7 @@
         "filename": "commons-cli-1.2.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "commons-collections:commons-collections:3.2.2": {
@@ -2249,7 +2249,7 @@
         "filename": "commons-collections-3.2.2.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "org.apache.commons:commons-lang3:3.6": {
@@ -2259,7 +2259,7 @@
         "filename": "commons-lang3-3.6.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "commons-pool:commons-pool:1.6": {
@@ -2269,7 +2269,7 @@
         "filename": "commons-pool-1.6.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "javax.transaction:javax.transaction-api:1.2": {
@@ -2279,7 +2279,7 @@
         "filename": "javax.transaction-api-1.2.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "org.apache.geronimo.specs:geronimo-j2ee-connector_1.5_spec:2.0.0": {
@@ -2289,7 +2289,7 @@
         "filename": "geronimo-j2ee-connector_1.5_spec-2.0.0.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "javax.inject:javax.inject:1": {
@@ -2299,7 +2299,7 @@
         "filename": "javax.inject-1.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "org.mule.mvel:mule-mvel2:2.1.9-MULE-016": {
@@ -2309,7 +2309,7 @@
         "filename": "mule-mvel2-2.1.9-MULE-016.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "org.jgrapht:jgrapht-jdk1.5:0.7.3": {
@@ -2319,7 +2319,7 @@
         "filename": "jgrapht-jdk1.5-0.7.3.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "org.reflections:reflections:0.9.10": {
@@ -2329,7 +2329,7 @@
         "filename": "reflections-0.9.10.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "org.mule.projectreactor:reactor-core:3.2.0.M1-MULE-002": {
@@ -2339,7 +2339,7 @@
         "filename": "reactor-core-3.2.0.M1-MULE-002.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "io.projectreactor.addons:reactor-extra:3.1.2.RELEASE": {
@@ -2349,7 +2349,7 @@
         "filename": "reactor-extra-3.1.2.RELEASE.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "org.yaml:snakeyaml:1.18": {
@@ -2359,7 +2359,7 @@
         "filename": "snakeyaml-1.18.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "cglib:cglib-nodep:3.2.6": {
@@ -2369,7 +2369,7 @@
         "filename": "cglib-nodep-3.2.6.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "org.apache.commons:commons-pool2:2.5.0": {
@@ -2379,7 +2379,7 @@
         "filename": "commons-pool2-2.5.0.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "javax.jms:javax.jms-api:2.0.1": {
@@ -2389,7 +2389,7 @@
         "filename": "javax.jms-api-2.0.1.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "net.lingala.zip4j:zip4j:1.3.2": {
@@ -2399,7 +2399,7 @@
         "filename": "zip4j-1.3.2.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "log4j:log4j:1.2.17": {
@@ -2409,7 +2409,7 @@
         "filename": "log4j-1.2.17.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "com.mulesoft.mule.distributions:mule-runtime-impl-bom:4.1.3": {
@@ -2518,7 +2518,7 @@
         "filename": "mule-module-artifact-4.1.3.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "com.mulesoft.licm:licm:2.1.2": {
@@ -2542,7 +2542,7 @@
         "filename": "truelicense-1.29.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "de.schlichtherle:truexml:1.29": {
@@ -2552,7 +2552,7 @@
         "filename": "truexml-1.29.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "opensymphony:propertyset:1.3": {
@@ -2562,7 +2562,7 @@
         "filename": "propertyset-1.3.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "opensymphony:oscore:2.2.4": {
@@ -2572,7 +2572,7 @@
         "filename": "oscore-2.2.4.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "commons-codec:commons-codec:1.3": {
@@ -2582,7 +2582,7 @@
         "filename": "commons-codec-1.3.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "org.aspectj:aspectjrt:1.8.10": {
@@ -2592,7 +2592,7 @@
         "filename": "aspectjrt-1.8.10.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "org.objenesis:objenesis:2.5.1": {
@@ -2602,7 +2602,7 @@
         "filename": "objenesis-2.5.1.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "com.esotericsoftware:kryo-shaded:4.0.1": {
@@ -2622,7 +2622,7 @@
         "filename": "minlog-1.3.0.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "de.javakaffee:kryo-serializers:0.42": {
@@ -2632,7 +2632,7 @@
         "filename": "kryo-serializers-0.42.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "com.mulesoft.mule.runtime.modules:mule-modules-all:4.1.3": {
@@ -2682,7 +2682,7 @@
         "filename": "mule-module-batch-ee-4.1.3.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "com.mulesoft.mule.runtime.modules:mule-module-boot-ee:4.1.3": {
@@ -2702,7 +2702,7 @@
         "filename": "wrapper-3.5.35.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "com.mulesoft.mule.runtime.modules:mule-module-bti-ee:4.1.3": {
@@ -2722,7 +2722,7 @@
         "filename": "mule-btm-2.1.7.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "com.mulesoft.mule.runtime.modules:mule-module-cache-ee:4.1.3": {
@@ -2754,7 +2754,7 @@
         "filename": "spring-core-4.3.17.RELEASE.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "net.sf.ehcache:ehcache-core:2.5.1": {
@@ -2764,7 +2764,7 @@
         "filename": "ehcache-core-2.5.1.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "com.mulesoft.mule.runtime.modules:mule-module-cluster-ee:4.1.3": {
@@ -2788,7 +2788,7 @@
         "filename": "hazelcast-3.9.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "com.hazelcast:hazelcast-client:3.9": {
@@ -2798,7 +2798,7 @@
         "filename": "hazelcast-client-3.9.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "commons-dbutils:commons-dbutils:1.2": {
@@ -2808,7 +2808,7 @@
         "filename": "commons-dbutils-1.2.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "org.mule.mchange:c3p0:0.9.5.2-MULE-001": {
@@ -2828,7 +2828,7 @@
         "filename": "mchange-commons-java-0.2.11.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "com.mulesoft.mule.runtime.modules:mule-module-http-policy:4.1.3": {
@@ -2838,7 +2838,7 @@
         "filename": "mule-module-http-policy-4.1.3.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "com.mulesoft.mule.runtime.modules:mule-module-kryo-serializer-ee:4.1.3": {
@@ -2848,7 +2848,7 @@
         "filename": "mule-module-kryo-serializer-ee-4.1.3.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "com.mulesoft.mule.runtime.modules:mule-module-license-impl-ee:4.1.3": {
@@ -2858,7 +2858,7 @@
         "filename": "mule-module-license-impl-ee-4.1.3.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "com.mulesoft.mule.runtime.modules:mule-module-plugin-ee:4.1.3": {
@@ -2884,7 +2884,7 @@
         "filename": "spring-beans-4.3.17.RELEASE.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "org.glassfish.jersey.core:jersey-common:2.11": {
@@ -2908,7 +2908,7 @@
         "filename": "jersey-guava-2.11.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "org.glassfish.hk2:hk2-api:2.3.0-b05": {
@@ -2928,7 +2928,7 @@
         "filename": "hk2-utils-2.3.0-b05.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "org.glassfish.hk2:hk2-locator:2.3.0-b05": {
@@ -2938,7 +2938,7 @@
         "filename": "hk2-locator-2.3.0-b05.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "org.glassfish.hk2:osgi-resource-locator:1.0.1": {
@@ -2948,7 +2948,7 @@
         "filename": "osgi-resource-locator-1.0.1.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "com.mulesoft.mule.runtime.modules:mule-module-spring-config-ee:4.1.3": {
@@ -2979,7 +2979,7 @@
         "filename": "spring-expression-4.3.17.RELEASE.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "com.mulesoft.mule.runtime.modules:mule-module-tracking-ee:4.1.3": {
@@ -2989,7 +2989,7 @@
         "filename": "mule-module-tracking-ee-4.1.3.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "com.mulesoft.mule.runtime.modules:mule-module-xa-tx-ee:4.1.3": {
@@ -2999,7 +2999,7 @@
         "filename": "mule-module-xa-tx-ee-4.1.3.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "com.mulesoft.mule.distributions:mule-services-all:4.1.3": {
@@ -3021,7 +3021,7 @@
         "filename": "mule-service-http-ee-1.1.3-mule-service.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "com.mulesoft.services:mule-service-weave-ee:2.1.4": {
@@ -3080,7 +3080,7 @@
         "filename": "api-gateway-api-1.1.1.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "com.mulesoft.anypoint:api-gateway-contract-service-api:1.1.1": {
@@ -3090,7 +3090,7 @@
         "filename": "api-gateway-contract-service-api-1.1.1.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "com.mulesoft.anypoint:api-gateway-core:4.1.3": {
@@ -3110,7 +3110,7 @@
         "filename": "mapdb-1.0.6.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "com.mulesoft.anypoint:mule-module-policies:4.1.3": {
@@ -3143,7 +3143,7 @@
         "filename": "jackson-annotations-2.9.0.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "com.github.jknack:handlebars:4.0.6": {
@@ -3163,7 +3163,7 @@
         "filename": "antlr4-runtime-4.5.1-1.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "com.mulesoft.anypoint:mule-module-autodiscovery:4.1.3": {
@@ -3173,7 +3173,7 @@
         "filename": "mule-module-autodiscovery-4.1.3.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "com.mulesoft.anypoint:api-gateway-reflection:4.1.3": {
@@ -3183,7 +3183,7 @@
         "filename": "api-gateway-reflection-4.1.3.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "com.mulesoft.anypoint:mule-module-api-deployment:4.1.3": {
@@ -3193,7 +3193,7 @@
         "filename": "mule-module-api-deployment-4.1.3.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "com.mulesoft.anypoint:api-gateway-client:4.1.3": {
@@ -3215,7 +3215,7 @@
         "filename": "jackson-core-2.9.4.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "joda-time:joda-time:2.9.1": {
@@ -3225,7 +3225,7 @@
         "filename": "joda-time-2.9.1.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "javax.ws.rs:javax.ws.rs-api:2.0": {
@@ -3235,7 +3235,7 @@
         "filename": "javax.ws.rs-api-2.0.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "com.mulesoft.anypoint:mule-module-analytics-gw:4.1.3": {
@@ -3245,7 +3245,7 @@
         "filename": "mule-module-analytics-gw-4.1.3.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "com.mulesoft.anypoint:api-gateway-contract-service:1.0.1": {
@@ -3255,7 +3255,7 @@
         "filename": "api-gateway-contract-service-1.0.1-mule-service.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "org.apache.maven.shared:maven-invoker:3.0.1": {
@@ -3276,7 +3276,7 @@
         "filename": "maven-shared-utils-3.2.1.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "org.codehaus.plexus:plexus-component-annotations:1.7.1": {
@@ -3286,7 +3286,7 @@
         "filename": "plexus-component-annotations-1.7.1.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "org.codehaus.groovy:groovy-all:2.4.15": {
@@ -3296,7 +3296,7 @@
         "filename": "groovy-all-2.4.15.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "org.apache.ant:ant:1.9.7": {
@@ -3316,7 +3316,7 @@
         "filename": "ant-launcher-1.9.7.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "wsdl4j:wsdl4j:1.6.3": {
@@ -3326,7 +3326,7 @@
         "filename": "wsdl4j-1.6.3.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "org.hamcrest:hamcrest-core:1.3": {
@@ -3336,7 +3336,7 @@
         "filename": "hamcrest-core-1.3.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     },
     "junit:junit:4.12": {
@@ -3346,7 +3346,7 @@
         "filename": "junit-4.12.jar",
         "scope": "compile",
         "dependencies": [
-            
+
         ]
     }
 }

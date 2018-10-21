@@ -2,7 +2,6 @@ package com.avioconsulting.mule.testing.muleinterfaces.containers
 
 import com.avioconsulting.mule.testing.muleinterfaces.MuleRegistryListener
 import groovy.json.JsonSlurper
-import org.mule.runtime.module.embedded.api.Product
 import org.mule.runtime.module.embedded.internal.classloading.JdkOnlyClassLoaderFactory
 
 // similar to MavenContainerClassLoaderFactory but do more work up front so that we're not
@@ -14,13 +13,14 @@ class OurMavenClassLoaderFactory {
     private final List<URL> services
 
     OurMavenClassLoaderFactory(BaseEngineConfig engineConfig,
-                               Product product,
                                File repoDirectory,
                                File muleHomeDirectory) {
-        def descriptor = getContainerBomBundleDescriptor(engineConfig.muleVersion,
-                                                         product)
-        def bundleDependencies = getDependencies(descriptor)
-        bundleDependencies = bundleDependencies.sort { d1, d2 ->
+        def dependencyGraph = getDependencyGraph()
+        def eeDeps = flattenDependencies("com.mulesoft.mule.distributions:mule-runtime-impl-bom:${engineConfig.muleVersion}",
+                                         dependencyGraph)
+        def embeddedDeps = flattenDependencies("org.mule.distributions:mule-module-embedded-impl:${engineConfig.muleVersion}",
+                                               dependencyGraph)
+        def bundleDependencies = (eeDeps + embeddedDeps).sort { d1, d2 ->
             if (isPatchDependency(d1)) {
                 return -1
             } else if (isPatchDependency(d2)) {
@@ -51,41 +51,33 @@ class OurMavenClassLoaderFactory {
                                          JdkOnlyClassLoaderFactory.create())
     }
 
-    List<Dependency> getDependencies(String descriptorKey) {
+    Map<String, Dependency> getDependencyGraph() {
         def rawMap = new JsonSlurper().parse(new File('dependencies.json'))
-        def asObjects = rawMap.collectEntries { key, map ->
+        rawMap.collectEntries { key, map ->
             [
                     key,
                     Dependency.parse(key,
                                      map)
             ]
         } as Map<String, Dependency>
-        Map<Dependency, Integer> totals = [:]
-        flattenDependencies(descriptorKey,
-                            asObjects,
-                            totals)
-        totals.keySet().toList()
-
     }
 
-    def flattenDependencies(String key,
-                            Map<String, Dependency> allResults,
-                            Map<Dependency, Integer> totals) {
-        def root = allResults[key]
-        assert root: "Unable to find expected key ${key} in ${allResults}"
-        totals[root] = 1
+    List<Dependency> flattenDependencies(String key,
+                                         Map<String, Dependency> dependencyGraph,
+                                         Map<String, Dependency> totals = [:],
+                                         boolean recurse = false) {
+        def root = dependencyGraph[key]
+        assert root: "Unable to find expected key ${key} in ${dependencyGraph}"
+        totals[key] = root
         root.dependencies.each { depKey ->
-            flattenDependencies(depKey,
-                                allResults,
-                                totals)
+            if (!totals.containsKey(depKey)) {
+                flattenDependencies(depKey,
+                                    dependencyGraph,
+                                    totals,
+                                    true)
+            }
         }
-        totals
-    }
-
-
-    private static String getContainerBomBundleDescriptor(String version,
-                                                          Product product) {
-        "com.mulesoft.mule.distributions:mule-runtime-impl-bom:4.1.3"
+        recurse ? null : totals.values().toList()
     }
 
     private static boolean isPatchDependency(Dependency dependency) {
