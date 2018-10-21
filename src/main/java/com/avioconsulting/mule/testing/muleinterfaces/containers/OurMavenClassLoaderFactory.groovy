@@ -15,12 +15,7 @@ class OurMavenClassLoaderFactory {
     OurMavenClassLoaderFactory(BaseEngineConfig engineConfig,
                                File repoDirectory,
                                File muleHomeDirectory) {
-        def dependencyGraph = getDependencyGraph()
-        def eeDeps = flattenDependencies("com.mulesoft.mule.distributions:mule-runtime-impl-bom:${engineConfig.muleVersion}",
-                                         dependencyGraph)
-        def embeddedDeps = flattenDependencies("org.mule.distributions:mule-module-embedded-impl:${engineConfig.muleVersion}",
-                                               dependencyGraph)
-        def bundleDependencies = (eeDeps + embeddedDeps).sort { d1, d2 ->
+        def bundleDependencies = getDependencyGraph().sort { d1, d2 ->
             if (isPatchDependency(d1)) {
                 return -1
             } else if (isPatchDependency(d2)) {
@@ -30,7 +25,7 @@ class OurMavenClassLoaderFactory {
             }
         }
         def serviceDependencies = bundleDependencies.findAll { dep ->
-            def file = dep.filename
+            def file = dep.filenameRelativeToRepo
             // this may seem weird but it's the best intersection of what
             // MavenContainerClassLoaderFactory does
             file.endsWith('.zip') || file.endsWith('-mule-service.jar')
@@ -51,33 +46,13 @@ class OurMavenClassLoaderFactory {
                                          JdkOnlyClassLoaderFactory.create())
     }
 
-    Map<String, Dependency> getDependencyGraph() {
-        def rawMap = new JsonSlurper().parse(new File('dependencies.json'))
-        rawMap.collectEntries { key, map ->
-            [
-                    key,
-                    Dependency.parse(key,
-                                     map)
-            ]
-        } as Map<String, Dependency>
-    }
-
-    List<Dependency> flattenDependencies(String key,
-                                         Map<String, Dependency> dependencyGraph,
-                                         Map<String, Dependency> totals = [:],
-                                         boolean recurse = false) {
-        def root = dependencyGraph[key]
-        assert root: "Unable to find expected key ${key} in ${dependencyGraph}"
-        totals[key] = root
-        root.dependencies.each { depKey ->
-            if (!totals.containsKey(depKey)) {
-                flattenDependencies(depKey,
-                                    dependencyGraph,
-                                    totals,
-                                    true)
-            }
+    List<Dependency> getDependencyGraph() {
+        def stream = OurMavenClassLoaderFactory.getResourceAsStream('/dependency_resources/dependencies.json')
+        assert stream: 'Run mvn generate-resources as part of your build process'
+        def rawList = new JsonSlurper().parse(stream)
+        rawList.collect { d ->
+            Dependency.parse(d)
         }
-        recurse ? null : totals.values().toList()
     }
 
     private static boolean isPatchDependency(Dependency dependency) {

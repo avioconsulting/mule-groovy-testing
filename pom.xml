@@ -30,6 +30,26 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>com.avioconsulting.mule</groupId>
+                <artifactId>depresolver</artifactId>
+                <version>1.0.0</version>
+                <executions>
+                    <execution>
+                        <id>generate-dep-graph</id>
+                        <goals>
+                            <goal>resolve</goal>
+                        </goals>
+                        <phase>generate-resources</phase>
+                        <configuration>
+                            <requestedDependencies>
+                                <dependency>com.mulesoft.mule.distributions:mule-runtime-impl-bom:${mule.version}</dependency>
+                                <dependency>org.mule.distributions:mule-module-embedded-impl:${mule.version}</dependency>
+                            </requestedDependencies>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <artifactId>maven-source-plugin</artifactId>
                 <version>3.0.1</version>
                 <executions>
