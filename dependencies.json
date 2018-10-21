@@ -1,0 +1,3352 @@
+{
+    "org.mule.distributions:mule-module-embedded-impl:4.1.3": {
+        "groupId": "org.mule.distributions",
+        "artifactId": "mule-module-embedded-impl",
+        "version": "4.1.3",
+        "filename": "mule-module-embedded-impl-4.1.3.jar",
+        "scope": "compile",
+        "dependencies": [
+            "org.mule.runtime:mule-embedded-api:1.1.3",
+            "org.mule:mule-maven-client-api:1.1.2",
+            "org.apache.maven:maven-model:3.3.9",
+            "org.codehaus.plexus:plexus-utils:3.0.24",
+            "org.slf4j:slf4j-api:1.7.25",
+            "org.mule.runtime:api-annotations:1.0.1",
+            "org.mule:mule-maven-client-impl:1.1.2",
+            "com.vdurmont:semver4j:2.0.3",
+            "org.eclipse.aether:aether-api:1.0.2.v20150114",
+            "org.eclipse.aether:aether-util:1.0.2.v20150114",
+            "org.eclipse.aether:aether-connector-basic:1.0.2.v20150114",
+            "org.eclipse.aether:aether-spi:1.0.2.v20150114",
+            "org.eclipse.aether:aether-transport-file:1.0.2.v20150114",
+            "org.eclipse.aether:aether-transport-http:1.0.2.v20150114",
+            "org.slf4j:jcl-over-slf4j:1.6.2",
+            "org.apache.httpcomponents:httpclient:4.5.4",
+            "org.apache.httpcomponents:httpcore:4.4.7",
+            "commons-logging:commons-logging:1.2",
+            "org.apache.maven:maven-settings-builder:3.3.9",
+            "org.apache.maven:maven-builder-support:3.3.9",
+            "org.codehaus.plexus:plexus-interpolation:1.21",
+            "org.apache.maven:maven-settings:3.3.9",
+            "org.sonatype.plexus:plexus-sec-dispatcher:1.3",
+            "org.sonatype.plexus:plexus-cipher:1.4",
+            "org.apache.maven:maven-aether-provider:3.3.9",
+            "org.apache.maven:maven-model-builder:3.3.9",
+            "org.apache.maven:maven-artifact:3.3.9",
+            "org.apache.maven:maven-repository-metadata:3.3.9",
+            "org.eclipse.aether:aether-impl:1.0.2.v20150114",
+            "com.beust:jcommander:1.69",
+            "org.eclipse.sisu:org.eclipse.sisu.plexus:0.3.2",
+            "com.google.code.gson:gson:2.5",
+            "com.google.guava:guava:25.1-jre",
+            "com.google.code.findbugs:jsr305:3.0.2",
+            "org.checkerframework:checker-qual:2.0.0",
+            "com.google.errorprone:error_prone_annotations:2.1.3",
+            "com.google.j2objc:j2objc-annotations:1.1",
+            "org.codehaus.mojo:animal-sniffer-annotations:1.14",
+            "commons-io:commons-io:2.4",
+            "org.mule.distributions:mule-runtime-impl-bom:4.1.3",
+            "org.mule.runtime:mule-modules-all:4.1.3",
+            "org.mule.runtime:mule-module-launcher:4.1.3",
+            "org.mule.runtime:mule-module-deployment:4.1.3",
+            "org.mule.runtime:mule-module-deployment-model-impl:4.1.3",
+            "org.mule.tools.maven:mule-classloader-model:3.1.3",
+            "org.mule.runtime:mule-module-service:4.1.3",
+            "org.mule.runtime:mule-module-repository:4.1.3",
+            "org.mule.runtime:mule-module-reboot:4.1.3",
+            "it.unimi.dsi:fastutil:8.1.1",
+            "org.mule.runtime:mule-module-extensions-support:4.1.3",
+            "org.mule.runtime:mule-extensions-api-dsql:1.1.3",
+            "org.antlr:antlr-runtime:3.5",
+            "org.antlr:stringtemplate:3.2.1",
+            "org.mule.runtime:mule-extensions-api-persistence:1.1.3",
+            "org.mule.runtime:mule-metadata-model-persistence:1.1.3",
+            "org.mule.runtime:mule-module-deployment-model:4.1.3",
+            "org.mule.runtime:mule-module-extensions-soap-support:4.1.3",
+            "org.mule.runtime:mule-extensions-soap-api:1.1.3",
+            "org.mule.runtime:mule-module-extensions-spring-support:4.1.3",
+            "org.mule.runtime:mule-module-tls:4.1.3",
+            "jboss:javassist:3.7.ga",
+            "dom4j:dom4j:1.6.1",
+            "jaxen:jaxen:1.1.1",
+            "org.mule.runtime:mule-module-extensions-xml-support:4.1.3",
+            "org.mule.runtime:mule-metadata-model-catalog:1.1.3",
+            "org.mule.runtime:mule-metadata-model-raml:1.1.3",
+            "org.raml:raml-parser-2:1.0.24",
+            "org.raml:yagi:1.0.24",
+            "commons-lang:commons-lang:2.6",
+            "com.google.code.findbugs:annotations:3.0.0",
+            "com.fasterxml.jackson.module:jackson-module-jsonSchema:2.9.6",
+            "javax.validation:validation-api:1.1.0.Final",
+            "com.github.java-json-tools:json-schema-validator:2.2.8",
+            "com.github.java-json-tools:json-schema-core:1.2.8",
+            "org.mozilla:rhino:1.7R4",
+            "com.github.fge:jackson-coreutils:1.8",
+            "com.github.fge:msg-simple:1.1",
+            "com.github.fge:btf:1.2",
+            "com.github.fge:uri-template:0.9",
+            "javax.mail:mailapi:1.4.3",
+            "com.googlecode.libphonenumber:libphonenumber:8.0.0",
+            "net.sf.jopt-simple:jopt-simple:5.0.3",
+            "com.googlecode.juniversalchardet:juniversalchardet:1.0.3",
+            "org.apache.ws.xmlschema:xmlschema-core:2.2.1",
+            "javax.json:javax.json-api:1.0",
+            "org.glassfish:javax.json:1.0.4",
+            "org.mule.runtime:mule-module-policy-api:1.1.2",
+            "org.mule.runtime:mule-module-spring-config:4.1.3",
+            "org.springframework:spring-aop:4.3.17.RELEASE",
+            "org.mule.runtime:mule-module-tooling-support:4.1.3",
+            "org.mule.runtime:mule-module-global-config:4.1.3",
+            "com.typesafe:config:1.3.1",
+            "org.mule.runtime:mule-module-container:4.1.3",
+            "org.mule.runtime:mule-module-logging:4.1.3",
+            "com.lmax:disruptor:3.3.7",
+            "org.apache.logging.log4j:log4j-api:2.11.0",
+            "org.apache.logging.log4j:log4j-core:2.11.0",
+            "org.apache.logging.log4j:log4j-slf4j-impl:2.11.0",
+            "org.apache.logging.log4j:log4j-1.2-api:2.11.0",
+            "org.slf4j:jul-to-slf4j:1.7.25",
+            "org.mule.runtime:mule-module-license-api:4.1.3",
+            "org.mule.distributions:mule-services-all:4.1.3",
+            "org.mule.services:mule-service-scheduler:1.1.6",
+            "org.mule.services:mule-service-oauth:1.1.2",
+            "org.mule.services:mule-service-http:1.1.3",
+            "org.mule.services:mule-service-soap:1.1.7",
+            "org.mule.services:mule-service-weave:2.1.4",
+            "org.scala-lang:scala-library:2.12.4",
+            "org.mule.weave:runtime:2.1.4",
+            "org.mule.weave:wlang:2.1.4",
+            "org.mule.weave:core:2.1.4",
+            "org.typelevel:spire_2.12:0.14.1",
+            "org.typelevel:spire-macros_2.12:0.14.1",
+            "org.typelevel:machinist_2.12:0.6.1",
+            "org.scala-lang:scala-reflect:2.12.0",
+            "org.typelevel:algebra_2.12:0.7.0",
+            "org.typelevel:cats-kernel_2.12:0.9.0",
+            "org.mule.weave:core-modules:2.1.4",
+            "com.fasterxml.woodstox:woodstox-core:5.0.2",
+            "org.codehaus.woodstox:stax2-api:3.1.4",
+            "com.fasterxml:aalto-xml:1.0.0",
+            "javax.mail:mail:1.4.7",
+            "javax.activation:activation:1.1",
+            "org.mule.weave:debugger:2.1.4",
+            "org.mule.weave:yaml-module:2.1.4",
+            "org.mule.syaml:syaml_2.12:0.1.11",
+            "org.mule.common:scala-common_2.12:0.1.3",
+            "org.scalactic:scalactic_2.12:3.0.1",
+            "org.mule.weave:mule-tooling-weave:2.1.4",
+            "org.mule.weave:parser:2.1.4",
+            "org.parboiled:parboiled_2.12:2.1.4",
+            "com.chuusai:shapeless_2.12:2.3.2",
+            "org.typelevel:macro-compat_2.12:1.1.1",
+            "org.mule.runtime:mule-service-soap-api:4.1.3",
+            "org.mule.runtime:mule-service-http-api:4.1.3",
+            "org.mule.runtime:mule-service-oauth-api:4.1.3",
+            "org.mule.runtime:mule-core:4.1.3",
+            "org.mule.runtime:mule-api:1.1.3",
+            "org.mule.runtime:mule-metadata-model-api:1.1.3",
+            "org.mule.runtime:mule-artifact-declaration:1.1.1",
+            "org.mule.runtime:mule-module-dsl-api:1.1.3",
+            "org.mule.runtime:mule-extensions-api:1.1.3",
+            "org.reactivestreams:reactive-streams:1.0.2",
+            "org.mule.runtime:mule-module-http-policy-api:1.1.2",
+            "org.mule.runtime:mule-metadata-model-xml:1.1.3",
+            "org.apache.xmlbeans:xmlbeans:2.6.0",
+            "org.mule.apache:xerces2-xsd11:2.11.3",
+            "org.mule.runtime:mule-metadata-model-java:1.1.3",
+            "org.mule.runtime:mule-message-metadata-model:1.1.3",
+            "org.mule.runtime:mule-metadata-model-json:1.1.3",
+            "org.everit.json:org.everit.json.schema:1.5.0",
+            "org.json:json:20160810",
+            "commons-validator:commons-validator:1.5.1",
+            "commons-digester:commons-digester:1.8.1",
+            "commons-beanutils:commons-beanutils:1.9.3",
+            "com.github.stephenc.eaio-uuid:uuid:3.4.0",
+            "com.github.stephenc.eaio-grabbag:grabbag:1.8.1",
+            "commons-cli:commons-cli:1.2",
+            "commons-collections:commons-collections:3.2.2",
+            "org.apache.commons:commons-lang3:3.6",
+            "commons-pool:commons-pool:1.6",
+            "javax.transaction:javax.transaction-api:1.2",
+            "org.apache.geronimo.specs:geronimo-j2ee-connector_1.5_spec:2.0.0",
+            "javax.inject:javax.inject:1",
+            "org.mule.mvel:mule-mvel2:2.1.9-MULE-016",
+            "org.jgrapht:jgrapht-jdk1.5:0.7.3",
+            "org.reflections:reflections:0.9.10",
+            "org.mule.projectreactor:reactor-core:3.2.0.M1-MULE-002",
+            "io.projectreactor.addons:reactor-extra:3.1.2.RELEASE",
+            "org.yaml:snakeyaml:1.18",
+            "cglib:cglib-nodep:3.2.6",
+            "org.apache.commons:commons-pool2:2.5.0",
+            "javax.jms:javax.jms-api:2.0.1",
+            "net.lingala.zip4j:zip4j:1.3.2",
+            "log4j:log4j:1.2.17"
+        ]
+    },
+    "org.mule.runtime:mule-embedded-api:1.1.3": {
+        "groupId": "org.mule.runtime",
+        "artifactId": "mule-embedded-api",
+        "version": "1.1.3",
+        "filename": "mule-embedded-api-1.1.3.jar",
+        "scope": "compile",
+        "dependencies": [
+            "org.mule:mule-maven-client-api:1.1.2",
+            "org.apache.maven:maven-model:3.3.9",
+            "org.codehaus.plexus:plexus-utils:3.0.24",
+            "org.slf4j:slf4j-api:1.7.25",
+            "org.mule.runtime:api-annotations:1.0.1",
+            "org.mule:mule-maven-client-impl:1.1.2",
+            "com.vdurmont:semver4j:2.0.3",
+            "org.eclipse.aether:aether-api:1.0.2.v20150114",
+            "org.eclipse.aether:aether-util:1.0.2.v20150114",
+            "org.eclipse.aether:aether-connector-basic:1.0.2.v20150114",
+            "org.eclipse.aether:aether-spi:1.0.2.v20150114",
+            "org.eclipse.aether:aether-transport-file:1.0.2.v20150114",
+            "org.eclipse.aether:aether-transport-http:1.0.2.v20150114",
+            "org.slf4j:jcl-over-slf4j:1.6.2",
+            "org.apache.httpcomponents:httpclient:4.5.4",
+            "org.apache.httpcomponents:httpcore:4.4.7",
+            "commons-logging:commons-logging:1.2",
+            "org.apache.maven:maven-settings-builder:3.3.9",
+            "org.apache.maven:maven-builder-support:3.3.9",
+            "org.codehaus.plexus:plexus-interpolation:1.21",
+            "org.apache.maven:maven-settings:3.3.9",
+            "org.sonatype.plexus:plexus-sec-dispatcher:1.3",
+            "org.sonatype.plexus:plexus-cipher:1.4",
+            "org.apache.maven:maven-aether-provider:3.3.9",
+            "org.apache.maven:maven-model-builder:3.3.9",
+            "org.apache.maven:maven-artifact:3.3.9",
+            "org.apache.maven:maven-repository-metadata:3.3.9",
+            "org.eclipse.aether:aether-impl:1.0.2.v20150114",
+            "com.beust:jcommander:1.69",
+            "org.eclipse.sisu:org.eclipse.sisu.plexus:0.3.2",
+            "com.google.code.gson:gson:2.5",
+            "com.google.guava:guava:25.1-jre",
+            "com.google.code.findbugs:jsr305:3.0.2",
+            "org.checkerframework:checker-qual:2.0.0",
+            "com.google.errorprone:error_prone_annotations:2.1.3",
+            "com.google.j2objc:j2objc-annotations:1.1",
+            "org.codehaus.mojo:animal-sniffer-annotations:1.14",
+            "commons-io:commons-io:2.4"
+        ]
+    },
+    "org.mule:mule-maven-client-api:1.1.2": {
+        "groupId": "org.mule",
+        "artifactId": "mule-maven-client-api",
+        "version": "1.1.2",
+        "filename": "mule-maven-client-api-1.1.2.jar",
+        "scope": "compile",
+        "dependencies": [
+            "org.apache.maven:maven-model:3.3.9",
+            "org.codehaus.plexus:plexus-utils:3.0.24",
+            "org.slf4j:slf4j-api:1.7.25",
+            "org.mule.runtime:api-annotations:1.0.1"
+        ]
+    },
+    "org.apache.maven:maven-model:3.3.9": {
+        "groupId": "org.apache.maven",
+        "artifactId": "maven-model",
+        "version": "3.3.9",
+        "filename": "maven-model-3.3.9.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "org.codehaus.plexus:plexus-utils:3.0.24": {
+        "groupId": "org.codehaus.plexus",
+        "artifactId": "plexus-utils",
+        "version": "3.0.24",
+        "filename": "plexus-utils-3.0.24.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "org.slf4j:slf4j-api:1.7.25": {
+        "groupId": "org.slf4j",
+        "artifactId": "slf4j-api",
+        "version": "1.7.25",
+        "filename": "slf4j-api-1.7.25.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "org.mule.runtime:api-annotations:1.0.1": {
+        "groupId": "org.mule.runtime",
+        "artifactId": "api-annotations",
+        "version": "1.0.1",
+        "filename": "api-annotations-1.0.1.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "org.mule:mule-maven-client-impl:1.1.2": {
+        "groupId": "org.mule",
+        "artifactId": "mule-maven-client-impl",
+        "version": "1.1.2",
+        "filename": "mule-maven-client-impl-1.1.2.jar",
+        "scope": "runtime",
+        "dependencies": [
+            "com.vdurmont:semver4j:2.0.3",
+            "org.eclipse.aether:aether-api:1.0.2.v20150114",
+            "org.eclipse.aether:aether-util:1.0.2.v20150114",
+            "org.eclipse.aether:aether-connector-basic:1.0.2.v20150114",
+            "org.eclipse.aether:aether-spi:1.0.2.v20150114",
+            "org.eclipse.aether:aether-transport-file:1.0.2.v20150114",
+            "org.eclipse.aether:aether-transport-http:1.0.2.v20150114",
+            "org.slf4j:jcl-over-slf4j:1.6.2",
+            "org.apache.httpcomponents:httpclient:4.5.4",
+            "org.apache.httpcomponents:httpcore:4.4.7",
+            "commons-logging:commons-logging:1.2",
+            "org.apache.maven:maven-settings-builder:3.3.9",
+            "org.apache.maven:maven-builder-support:3.3.9",
+            "org.codehaus.plexus:plexus-interpolation:1.21",
+            "org.apache.maven:maven-settings:3.3.9",
+            "org.sonatype.plexus:plexus-sec-dispatcher:1.3",
+            "org.sonatype.plexus:plexus-cipher:1.4",
+            "org.apache.maven:maven-aether-provider:3.3.9",
+            "org.apache.maven:maven-model-builder:3.3.9",
+            "org.apache.maven:maven-artifact:3.3.9",
+            "org.apache.maven:maven-repository-metadata:3.3.9",
+            "org.eclipse.aether:aether-impl:1.0.2.v20150114",
+            "com.beust:jcommander:1.69",
+            "org.eclipse.sisu:org.eclipse.sisu.plexus:0.3.2"
+        ]
+    },
+    "com.vdurmont:semver4j:2.0.3": {
+        "groupId": "com.vdurmont",
+        "artifactId": "semver4j",
+        "version": "2.0.3",
+        "filename": "semver4j-2.0.3.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "org.eclipse.aether:aether-api:1.0.2.v20150114": {
+        "groupId": "org.eclipse.aether",
+        "artifactId": "aether-api",
+        "version": "1.0.2.v20150114",
+        "filename": "aether-api-1.0.2.v20150114.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "org.eclipse.aether:aether-util:1.0.2.v20150114": {
+        "groupId": "org.eclipse.aether",
+        "artifactId": "aether-util",
+        "version": "1.0.2.v20150114",
+        "filename": "aether-util-1.0.2.v20150114.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "org.eclipse.aether:aether-connector-basic:1.0.2.v20150114": {
+        "groupId": "org.eclipse.aether",
+        "artifactId": "aether-connector-basic",
+        "version": "1.0.2.v20150114",
+        "filename": "aether-connector-basic-1.0.2.v20150114.jar",
+        "scope": "compile",
+        "dependencies": [
+            "org.eclipse.aether:aether-spi:1.0.2.v20150114"
+        ]
+    },
+    "org.eclipse.aether:aether-spi:1.0.2.v20150114": {
+        "groupId": "org.eclipse.aether",
+        "artifactId": "aether-spi",
+        "version": "1.0.2.v20150114",
+        "filename": "aether-spi-1.0.2.v20150114.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "org.eclipse.aether:aether-transport-file:1.0.2.v20150114": {
+        "groupId": "org.eclipse.aether",
+        "artifactId": "aether-transport-file",
+        "version": "1.0.2.v20150114",
+        "filename": "aether-transport-file-1.0.2.v20150114.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "org.eclipse.aether:aether-transport-http:1.0.2.v20150114": {
+        "groupId": "org.eclipse.aether",
+        "artifactId": "aether-transport-http",
+        "version": "1.0.2.v20150114",
+        "filename": "aether-transport-http-1.0.2.v20150114.jar",
+        "scope": "compile",
+        "dependencies": [
+            "org.slf4j:jcl-over-slf4j:1.6.2"
+        ]
+    },
+    "org.slf4j:jcl-over-slf4j:1.6.2": {
+        "groupId": "org.slf4j",
+        "artifactId": "jcl-over-slf4j",
+        "version": "1.6.2",
+        "filename": "jcl-over-slf4j-1.6.2.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "org.apache.httpcomponents:httpclient:4.5.4": {
+        "groupId": "org.apache.httpcomponents",
+        "artifactId": "httpclient",
+        "version": "4.5.4",
+        "filename": "httpclient-4.5.4.jar",
+        "scope": "compile",
+        "dependencies": [
+            "org.apache.httpcomponents:httpcore:4.4.7",
+            "commons-logging:commons-logging:1.2"
+        ]
+    },
+    "org.apache.httpcomponents:httpcore:4.4.7": {
+        "groupId": "org.apache.httpcomponents",
+        "artifactId": "httpcore",
+        "version": "4.4.7",
+        "filename": "httpcore-4.4.7.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "commons-logging:commons-logging:1.2": {
+        "groupId": "commons-logging",
+        "artifactId": "commons-logging",
+        "version": "1.2",
+        "filename": "commons-logging-1.2.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "org.apache.maven:maven-settings-builder:3.3.9": {
+        "groupId": "org.apache.maven",
+        "artifactId": "maven-settings-builder",
+        "version": "3.3.9",
+        "filename": "maven-settings-builder-3.3.9.jar",
+        "scope": "runtime",
+        "dependencies": [
+            "org.apache.maven:maven-builder-support:3.3.9",
+            "org.codehaus.plexus:plexus-interpolation:1.21",
+            "org.apache.maven:maven-settings:3.3.9",
+            "org.sonatype.plexus:plexus-sec-dispatcher:1.3",
+            "org.sonatype.plexus:plexus-cipher:1.4"
+        ]
+    },
+    "org.apache.maven:maven-builder-support:3.3.9": {
+        "groupId": "org.apache.maven",
+        "artifactId": "maven-builder-support",
+        "version": "3.3.9",
+        "filename": "maven-builder-support-3.3.9.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "org.codehaus.plexus:plexus-interpolation:1.21": {
+        "groupId": "org.codehaus.plexus",
+        "artifactId": "plexus-interpolation",
+        "version": "1.21",
+        "filename": "plexus-interpolation-1.21.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "org.apache.maven:maven-settings:3.3.9": {
+        "groupId": "org.apache.maven",
+        "artifactId": "maven-settings",
+        "version": "3.3.9",
+        "filename": "maven-settings-3.3.9.jar",
+        "scope": "runtime",
+        "dependencies": [
+            
+        ]
+    },
+    "org.sonatype.plexus:plexus-sec-dispatcher:1.3": {
+        "groupId": "org.sonatype.plexus",
+        "artifactId": "plexus-sec-dispatcher",
+        "version": "1.3",
+        "filename": "plexus-sec-dispatcher-1.3.jar",
+        "scope": "runtime",
+        "dependencies": [
+            "org.sonatype.plexus:plexus-cipher:1.4"
+        ]
+    },
+    "org.sonatype.plexus:plexus-cipher:1.4": {
+        "groupId": "org.sonatype.plexus",
+        "artifactId": "plexus-cipher",
+        "version": "1.4",
+        "filename": "plexus-cipher-1.4.jar",
+        "scope": "runtime",
+        "dependencies": [
+            
+        ]
+    },
+    "org.apache.maven:maven-aether-provider:3.3.9": {
+        "groupId": "org.apache.maven",
+        "artifactId": "maven-aether-provider",
+        "version": "3.3.9",
+        "filename": "maven-aether-provider-3.3.9.jar",
+        "scope": "compile",
+        "dependencies": [
+            "org.apache.maven:maven-model-builder:3.3.9",
+            "org.apache.maven:maven-artifact:3.3.9",
+            "org.apache.maven:maven-repository-metadata:3.3.9",
+            "org.eclipse.aether:aether-impl:1.0.2.v20150114"
+        ]
+    },
+    "org.apache.maven:maven-model-builder:3.3.9": {
+        "groupId": "org.apache.maven",
+        "artifactId": "maven-model-builder",
+        "version": "3.3.9",
+        "filename": "maven-model-builder-3.3.9.jar",
+        "scope": "compile",
+        "dependencies": [
+            "org.apache.maven:maven-artifact:3.3.9"
+        ]
+    },
+    "org.apache.maven:maven-artifact:3.3.9": {
+        "groupId": "org.apache.maven",
+        "artifactId": "maven-artifact",
+        "version": "3.3.9",
+        "filename": "maven-artifact-3.3.9.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "org.apache.maven:maven-repository-metadata:3.3.9": {
+        "groupId": "org.apache.maven",
+        "artifactId": "maven-repository-metadata",
+        "version": "3.3.9",
+        "filename": "maven-repository-metadata-3.3.9.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "org.eclipse.aether:aether-impl:1.0.2.v20150114": {
+        "groupId": "org.eclipse.aether",
+        "artifactId": "aether-impl",
+        "version": "1.0.2.v20150114",
+        "filename": "aether-impl-1.0.2.v20150114.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "com.beust:jcommander:1.69": {
+        "groupId": "com.beust",
+        "artifactId": "jcommander",
+        "version": "1.69",
+        "filename": "jcommander-1.69.jar",
+        "scope": "runtime",
+        "dependencies": [
+            
+        ]
+    },
+    "org.eclipse.sisu:org.eclipse.sisu.plexus:0.3.2": {
+        "groupId": "org.eclipse.sisu",
+        "artifactId": "org.eclipse.sisu.plexus",
+        "version": "0.3.2",
+        "filename": "org.eclipse.sisu.plexus-0.3.2.jar",
+        "scope": "runtime",
+        "dependencies": [
+            
+        ]
+    },
+    "com.google.code.gson:gson:2.5": {
+        "groupId": "com.google.code.gson",
+        "artifactId": "gson",
+        "version": "2.5",
+        "filename": "gson-2.5.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "com.google.guava:guava:25.1-jre": {
+        "groupId": "com.google.guava",
+        "artifactId": "guava",
+        "version": "25.1-jre",
+        "filename": "guava-25.1-jre.jar",
+        "scope": "compile",
+        "dependencies": [
+            "com.google.code.findbugs:jsr305:3.0.2",
+            "org.checkerframework:checker-qual:2.0.0",
+            "com.google.errorprone:error_prone_annotations:2.1.3",
+            "com.google.j2objc:j2objc-annotations:1.1",
+            "org.codehaus.mojo:animal-sniffer-annotations:1.14"
+        ]
+    },
+    "com.google.code.findbugs:jsr305:3.0.2": {
+        "groupId": "com.google.code.findbugs",
+        "artifactId": "jsr305",
+        "version": "3.0.2",
+        "filename": "jsr305-3.0.2.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "org.checkerframework:checker-qual:2.0.0": {
+        "groupId": "org.checkerframework",
+        "artifactId": "checker-qual",
+        "version": "2.0.0",
+        "filename": "checker-qual-2.0.0.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "com.google.errorprone:error_prone_annotations:2.1.3": {
+        "groupId": "com.google.errorprone",
+        "artifactId": "error_prone_annotations",
+        "version": "2.1.3",
+        "filename": "error_prone_annotations-2.1.3.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "com.google.j2objc:j2objc-annotations:1.1": {
+        "groupId": "com.google.j2objc",
+        "artifactId": "j2objc-annotations",
+        "version": "1.1",
+        "filename": "j2objc-annotations-1.1.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "org.codehaus.mojo:animal-sniffer-annotations:1.14": {
+        "groupId": "org.codehaus.mojo",
+        "artifactId": "animal-sniffer-annotations",
+        "version": "1.14",
+        "filename": "animal-sniffer-annotations-1.14.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "commons-io:commons-io:2.4": {
+        "groupId": "commons-io",
+        "artifactId": "commons-io",
+        "version": "2.4",
+        "filename": "commons-io-2.4.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "org.mule.distributions:mule-runtime-impl-bom:4.1.3": {
+        "groupId": "org.mule.distributions",
+        "artifactId": "mule-runtime-impl-bom",
+        "version": "4.1.3",
+        "filename": "mule-runtime-impl-bom-4.1.3.jar",
+        "scope": "compile",
+        "dependencies": [
+            "org.mule.runtime:mule-modules-all:4.1.3",
+            "org.mule.runtime:mule-module-launcher:4.1.3",
+            "org.mule.runtime:mule-module-deployment:4.1.3",
+            "org.mule.runtime:mule-module-deployment-model-impl:4.1.3",
+            "org.mule.tools.maven:mule-classloader-model:3.1.3",
+            "org.mule.runtime:mule-module-service:4.1.3",
+            "org.mule.runtime:mule-module-repository:4.1.3",
+            "org.mule.runtime:mule-module-reboot:4.1.3",
+            "it.unimi.dsi:fastutil:8.1.1",
+            "org.mule.runtime:mule-module-extensions-support:4.1.3",
+            "org.mule.runtime:mule-extensions-api-dsql:1.1.3",
+            "org.antlr:antlr-runtime:3.5",
+            "org.antlr:stringtemplate:3.2.1",
+            "org.mule.runtime:mule-extensions-api-persistence:1.1.3",
+            "org.mule.runtime:mule-metadata-model-persistence:1.1.3",
+            "org.mule.runtime:mule-module-deployment-model:4.1.3",
+            "org.mule.runtime:mule-module-extensions-soap-support:4.1.3",
+            "org.mule.runtime:mule-extensions-soap-api:1.1.3",
+            "org.mule.runtime:mule-module-extensions-spring-support:4.1.3",
+            "org.mule.runtime:mule-module-tls:4.1.3",
+            "jboss:javassist:3.7.ga",
+            "dom4j:dom4j:1.6.1",
+            "jaxen:jaxen:1.1.1",
+            "org.mule.runtime:mule-module-extensions-xml-support:4.1.3",
+            "org.mule.runtime:mule-metadata-model-catalog:1.1.3",
+            "org.mule.runtime:mule-metadata-model-raml:1.1.3",
+            "org.raml:raml-parser-2:1.0.24",
+            "org.raml:yagi:1.0.24",
+            "commons-lang:commons-lang:2.6",
+            "com.google.code.findbugs:annotations:3.0.0",
+            "com.fasterxml.jackson.module:jackson-module-jsonSchema:2.9.6",
+            "javax.validation:validation-api:1.1.0.Final",
+            "com.github.java-json-tools:json-schema-validator:2.2.8",
+            "com.github.java-json-tools:json-schema-core:1.2.8",
+            "org.mozilla:rhino:1.7R4",
+            "com.github.fge:jackson-coreutils:1.8",
+            "com.github.fge:msg-simple:1.1",
+            "com.github.fge:btf:1.2",
+            "com.github.fge:uri-template:0.9",
+            "javax.mail:mailapi:1.4.3",
+            "com.googlecode.libphonenumber:libphonenumber:8.0.0",
+            "net.sf.jopt-simple:jopt-simple:5.0.3",
+            "com.googlecode.juniversalchardet:juniversalchardet:1.0.3",
+            "org.apache.ws.xmlschema:xmlschema-core:2.2.1",
+            "javax.json:javax.json-api:1.0",
+            "org.glassfish:javax.json:1.0.4",
+            "org.mule.runtime:mule-module-policy-api:1.1.2",
+            "org.mule.runtime:mule-module-spring-config:4.1.3",
+            "org.springframework:spring-aop:4.3.17.RELEASE",
+            "org.mule.runtime:mule-module-tooling-support:4.1.3",
+            "org.mule.runtime:mule-module-global-config:4.1.3",
+            "com.typesafe:config:1.3.1",
+            "org.mule.runtime:mule-module-container:4.1.3",
+            "org.mule.runtime:mule-module-logging:4.1.3",
+            "com.lmax:disruptor:3.3.7",
+            "org.apache.logging.log4j:log4j-api:2.11.0",
+            "org.apache.logging.log4j:log4j-core:2.11.0",
+            "org.apache.logging.log4j:log4j-slf4j-impl:2.11.0",
+            "org.apache.logging.log4j:log4j-1.2-api:2.11.0",
+            "org.slf4j:jul-to-slf4j:1.7.25",
+            "org.mule.runtime:mule-module-license-api:4.1.3",
+            "org.mule.distributions:mule-services-all:4.1.3",
+            "org.mule.services:mule-service-scheduler:1.1.6",
+            "org.mule.services:mule-service-oauth:1.1.2",
+            "org.mule.services:mule-service-http:1.1.3",
+            "org.mule.services:mule-service-soap:1.1.7",
+            "org.mule.services:mule-service-weave:2.1.4",
+            "org.scala-lang:scala-library:2.12.4",
+            "org.mule.weave:runtime:2.1.4",
+            "org.mule.weave:wlang:2.1.4",
+            "org.mule.weave:core:2.1.4",
+            "org.typelevel:spire_2.12:0.14.1",
+            "org.typelevel:spire-macros_2.12:0.14.1",
+            "org.typelevel:machinist_2.12:0.6.1",
+            "org.scala-lang:scala-reflect:2.12.0",
+            "org.typelevel:algebra_2.12:0.7.0",
+            "org.typelevel:cats-kernel_2.12:0.9.0",
+            "org.mule.weave:core-modules:2.1.4",
+            "com.fasterxml.woodstox:woodstox-core:5.0.2",
+            "org.codehaus.woodstox:stax2-api:3.1.4",
+            "com.fasterxml:aalto-xml:1.0.0",
+            "javax.mail:mail:1.4.7",
+            "javax.activation:activation:1.1",
+            "org.mule.weave:debugger:2.1.4",
+            "org.mule.weave:yaml-module:2.1.4",
+            "org.mule.syaml:syaml_2.12:0.1.11",
+            "org.mule.common:scala-common_2.12:0.1.3",
+            "org.scalactic:scalactic_2.12:3.0.1",
+            "org.mule.weave:mule-tooling-weave:2.1.4",
+            "org.mule.weave:parser:2.1.4",
+            "org.parboiled:parboiled_2.12:2.1.4",
+            "com.chuusai:shapeless_2.12:2.3.2",
+            "org.typelevel:macro-compat_2.12:1.1.1",
+            "org.mule.runtime:mule-service-soap-api:4.1.3",
+            "org.mule.runtime:mule-service-http-api:4.1.3",
+            "org.mule.runtime:mule-service-oauth-api:4.1.3"
+        ]
+    },
+    "org.mule.runtime:mule-modules-all:4.1.3": {
+        "groupId": "org.mule.runtime",
+        "artifactId": "mule-modules-all",
+        "version": "4.1.3",
+        "filename": "mule-modules-all-4.1.3.pom",
+        "scope": "compile",
+        "dependencies": [
+            "org.mule.runtime:mule-module-launcher:4.1.3",
+            "org.mule.runtime:mule-module-deployment:4.1.3",
+            "org.mule.runtime:mule-module-deployment-model-impl:4.1.3",
+            "org.mule.tools.maven:mule-classloader-model:3.1.3",
+            "org.mule.runtime:mule-module-service:4.1.3",
+            "org.mule.runtime:mule-module-repository:4.1.3",
+            "org.mule.runtime:mule-module-reboot:4.1.3",
+            "it.unimi.dsi:fastutil:8.1.1",
+            "org.mule.runtime:mule-module-extensions-support:4.1.3",
+            "org.mule.runtime:mule-extensions-api-dsql:1.1.3",
+            "org.antlr:antlr-runtime:3.5",
+            "org.antlr:stringtemplate:3.2.1",
+            "org.mule.runtime:mule-extensions-api-persistence:1.1.3",
+            "org.mule.runtime:mule-metadata-model-persistence:1.1.3",
+            "org.mule.runtime:mule-module-deployment-model:4.1.3",
+            "org.mule.runtime:mule-module-extensions-soap-support:4.1.3",
+            "org.mule.runtime:mule-extensions-soap-api:1.1.3",
+            "org.mule.runtime:mule-module-extensions-spring-support:4.1.3",
+            "org.mule.runtime:mule-module-tls:4.1.3",
+            "jboss:javassist:3.7.ga",
+            "dom4j:dom4j:1.6.1",
+            "jaxen:jaxen:1.1.1",
+            "org.mule.runtime:mule-module-extensions-xml-support:4.1.3",
+            "org.mule.runtime:mule-metadata-model-catalog:1.1.3",
+            "org.mule.runtime:mule-metadata-model-raml:1.1.3",
+            "org.raml:raml-parser-2:1.0.24",
+            "org.raml:yagi:1.0.24",
+            "commons-lang:commons-lang:2.6",
+            "com.google.code.findbugs:annotations:3.0.0",
+            "com.fasterxml.jackson.module:jackson-module-jsonSchema:2.9.6",
+            "javax.validation:validation-api:1.1.0.Final",
+            "com.github.java-json-tools:json-schema-validator:2.2.8",
+            "com.github.java-json-tools:json-schema-core:1.2.8",
+            "org.mozilla:rhino:1.7R4",
+            "com.github.fge:jackson-coreutils:1.8",
+            "com.github.fge:msg-simple:1.1",
+            "com.github.fge:btf:1.2",
+            "com.github.fge:uri-template:0.9",
+            "javax.mail:mailapi:1.4.3",
+            "com.googlecode.libphonenumber:libphonenumber:8.0.0",
+            "net.sf.jopt-simple:jopt-simple:5.0.3",
+            "com.googlecode.juniversalchardet:juniversalchardet:1.0.3",
+            "org.apache.ws.xmlschema:xmlschema-core:2.2.1",
+            "javax.json:javax.json-api:1.0",
+            "org.glassfish:javax.json:1.0.4",
+            "org.mule.runtime:mule-module-policy-api:1.1.2",
+            "org.mule.runtime:mule-module-spring-config:4.1.3",
+            "org.springframework:spring-aop:4.3.17.RELEASE",
+            "org.mule.runtime:mule-module-tooling-support:4.1.3",
+            "org.mule.runtime:mule-module-global-config:4.1.3",
+            "com.typesafe:config:1.3.1",
+            "org.mule.runtime:mule-module-container:4.1.3",
+            "org.mule.runtime:mule-module-logging:4.1.3",
+            "com.lmax:disruptor:3.3.7",
+            "org.apache.logging.log4j:log4j-api:2.11.0",
+            "org.apache.logging.log4j:log4j-core:2.11.0",
+            "org.apache.logging.log4j:log4j-slf4j-impl:2.11.0",
+            "org.apache.logging.log4j:log4j-1.2-api:2.11.0",
+            "org.slf4j:jul-to-slf4j:1.7.25",
+            "org.mule.runtime:mule-module-license-api:4.1.3"
+        ]
+    },
+    "org.mule.runtime:mule-module-launcher:4.1.3": {
+        "groupId": "org.mule.runtime",
+        "artifactId": "mule-module-launcher",
+        "version": "4.1.3",
+        "filename": "mule-module-launcher-4.1.3.jar",
+        "scope": "compile",
+        "dependencies": [
+            "org.mule.runtime:mule-module-deployment:4.1.3",
+            "org.mule.runtime:mule-module-deployment-model-impl:4.1.3",
+            "org.mule.tools.maven:mule-classloader-model:3.1.3",
+            "org.mule.runtime:mule-module-service:4.1.3",
+            "org.mule.runtime:mule-module-repository:4.1.3",
+            "org.mule.runtime:mule-module-reboot:4.1.3",
+            "it.unimi.dsi:fastutil:8.1.1"
+        ]
+    },
+    "org.mule.runtime:mule-module-deployment:4.1.3": {
+        "groupId": "org.mule.runtime",
+        "artifactId": "mule-module-deployment",
+        "version": "4.1.3",
+        "filename": "mule-module-deployment-4.1.3.jar",
+        "scope": "compile",
+        "dependencies": [
+            "org.mule.runtime:mule-module-deployment-model-impl:4.1.3",
+            "org.mule.tools.maven:mule-classloader-model:3.1.3",
+            "org.mule.runtime:mule-module-service:4.1.3"
+        ]
+    },
+    "org.mule.runtime:mule-module-deployment-model-impl:4.1.3": {
+        "groupId": "org.mule.runtime",
+        "artifactId": "mule-module-deployment-model-impl",
+        "version": "4.1.3",
+        "filename": "mule-module-deployment-model-impl-4.1.3.jar",
+        "scope": "compile",
+        "dependencies": [
+            "org.mule.tools.maven:mule-classloader-model:3.1.3"
+        ]
+    },
+    "org.mule.tools.maven:mule-classloader-model:3.1.3": {
+        "groupId": "org.mule.tools.maven",
+        "artifactId": "mule-classloader-model",
+        "version": "3.1.3",
+        "filename": "mule-classloader-model-3.1.3.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "org.mule.runtime:mule-module-service:4.1.3": {
+        "groupId": "org.mule.runtime",
+        "artifactId": "mule-module-service",
+        "version": "4.1.3",
+        "filename": "mule-module-service-4.1.3.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "org.mule.runtime:mule-module-repository:4.1.3": {
+        "groupId": "org.mule.runtime",
+        "artifactId": "mule-module-repository",
+        "version": "4.1.3",
+        "filename": "mule-module-repository-4.1.3.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "org.mule.runtime:mule-module-reboot:4.1.3": {
+        "groupId": "org.mule.runtime",
+        "artifactId": "mule-module-reboot",
+        "version": "4.1.3",
+        "filename": "mule-module-reboot-4.1.3.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "it.unimi.dsi:fastutil:8.1.1": {
+        "groupId": "it.unimi.dsi",
+        "artifactId": "fastutil",
+        "version": "8.1.1",
+        "filename": "fastutil-8.1.1.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "org.mule.runtime:mule-module-extensions-support:4.1.3": {
+        "groupId": "org.mule.runtime",
+        "artifactId": "mule-module-extensions-support",
+        "version": "4.1.3",
+        "filename": "mule-module-extensions-support-4.1.3.jar",
+        "scope": "compile",
+        "dependencies": [
+            "org.mule.runtime:mule-extensions-api-dsql:1.1.3",
+            "org.antlr:antlr-runtime:3.5",
+            "org.antlr:stringtemplate:3.2.1",
+            "org.mule.runtime:mule-extensions-api-persistence:1.1.3",
+            "org.mule.runtime:mule-metadata-model-persistence:1.1.3",
+            "org.mule.runtime:mule-module-deployment-model:4.1.3"
+        ]
+    },
+    "org.mule.runtime:mule-extensions-api-dsql:1.1.3": {
+        "groupId": "org.mule.runtime",
+        "artifactId": "mule-extensions-api-dsql",
+        "version": "1.1.3",
+        "filename": "mule-extensions-api-dsql-1.1.3.jar",
+        "scope": "compile",
+        "dependencies": [
+            "org.antlr:antlr-runtime:3.5",
+            "org.antlr:stringtemplate:3.2.1"
+        ]
+    },
+    "org.antlr:antlr-runtime:3.5": {
+        "groupId": "org.antlr",
+        "artifactId": "antlr-runtime",
+        "version": "3.5",
+        "filename": "antlr-runtime-3.5.jar",
+        "scope": "compile",
+        "dependencies": [
+            "org.antlr:stringtemplate:3.2.1"
+        ]
+    },
+    "org.antlr:stringtemplate:3.2.1": {
+        "groupId": "org.antlr",
+        "artifactId": "stringtemplate",
+        "version": "3.2.1",
+        "filename": "stringtemplate-3.2.1.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "org.mule.runtime:mule-extensions-api-persistence:1.1.3": {
+        "groupId": "org.mule.runtime",
+        "artifactId": "mule-extensions-api-persistence",
+        "version": "1.1.3",
+        "filename": "mule-extensions-api-persistence-1.1.3.jar",
+        "scope": "compile",
+        "dependencies": [
+            "org.mule.runtime:mule-metadata-model-persistence:1.1.3"
+        ]
+    },
+    "org.mule.runtime:mule-metadata-model-persistence:1.1.3": {
+        "groupId": "org.mule.runtime",
+        "artifactId": "mule-metadata-model-persistence",
+        "version": "1.1.3",
+        "filename": "mule-metadata-model-persistence-1.1.3.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "org.mule.runtime:mule-module-deployment-model:4.1.3": {
+        "groupId": "org.mule.runtime",
+        "artifactId": "mule-module-deployment-model",
+        "version": "4.1.3",
+        "filename": "mule-module-deployment-model-4.1.3.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "org.mule.runtime:mule-module-extensions-soap-support:4.1.3": {
+        "groupId": "org.mule.runtime",
+        "artifactId": "mule-module-extensions-soap-support",
+        "version": "4.1.3",
+        "filename": "mule-module-extensions-soap-support-4.1.3.jar",
+        "scope": "compile",
+        "dependencies": [
+            "org.mule.runtime:mule-extensions-soap-api:1.1.3"
+        ]
+    },
+    "org.mule.runtime:mule-extensions-soap-api:1.1.3": {
+        "groupId": "org.mule.runtime",
+        "artifactId": "mule-extensions-soap-api",
+        "version": "1.1.3",
+        "filename": "mule-extensions-soap-api-1.1.3.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "org.mule.runtime:mule-module-extensions-spring-support:4.1.3": {
+        "groupId": "org.mule.runtime",
+        "artifactId": "mule-module-extensions-spring-support",
+        "version": "4.1.3",
+        "filename": "mule-module-extensions-spring-support-4.1.3.jar",
+        "scope": "compile",
+        "dependencies": [
+            "org.mule.runtime:mule-module-tls:4.1.3",
+            "jboss:javassist:3.7.ga",
+            "dom4j:dom4j:1.6.1",
+            "jaxen:jaxen:1.1.1"
+        ]
+    },
+    "org.mule.runtime:mule-module-tls:4.1.3": {
+        "groupId": "org.mule.runtime",
+        "artifactId": "mule-module-tls",
+        "version": "4.1.3",
+        "filename": "mule-module-tls-4.1.3.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "jboss:javassist:3.7.ga": {
+        "groupId": "jboss",
+        "artifactId": "javassist",
+        "version": "3.7.ga",
+        "filename": "javassist-3.7.ga.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "dom4j:dom4j:1.6.1": {
+        "groupId": "dom4j",
+        "artifactId": "dom4j",
+        "version": "1.6.1",
+        "filename": "dom4j-1.6.1.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "jaxen:jaxen:1.1.1": {
+        "groupId": "jaxen",
+        "artifactId": "jaxen",
+        "version": "1.1.1",
+        "filename": "jaxen-1.1.1.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "org.mule.runtime:mule-module-extensions-xml-support:4.1.3": {
+        "groupId": "org.mule.runtime",
+        "artifactId": "mule-module-extensions-xml-support",
+        "version": "4.1.3",
+        "filename": "mule-module-extensions-xml-support-4.1.3.jar",
+        "scope": "compile",
+        "dependencies": [
+            "org.mule.runtime:mule-metadata-model-catalog:1.1.3",
+            "org.mule.runtime:mule-metadata-model-raml:1.1.3",
+            "org.raml:raml-parser-2:1.0.24",
+            "org.raml:yagi:1.0.24",
+            "commons-lang:commons-lang:2.6",
+            "com.google.code.findbugs:annotations:3.0.0",
+            "com.fasterxml.jackson.module:jackson-module-jsonSchema:2.9.6",
+            "javax.validation:validation-api:1.1.0.Final",
+            "com.github.java-json-tools:json-schema-validator:2.2.8",
+            "com.github.java-json-tools:json-schema-core:1.2.8",
+            "org.mozilla:rhino:1.7R4",
+            "com.github.fge:jackson-coreutils:1.8",
+            "com.github.fge:msg-simple:1.1",
+            "com.github.fge:btf:1.2",
+            "com.github.fge:uri-template:0.9",
+            "javax.mail:mailapi:1.4.3",
+            "com.googlecode.libphonenumber:libphonenumber:8.0.0",
+            "net.sf.jopt-simple:jopt-simple:5.0.3",
+            "com.googlecode.juniversalchardet:juniversalchardet:1.0.3",
+            "org.apache.ws.xmlschema:xmlschema-core:2.2.1",
+            "javax.json:javax.json-api:1.0",
+            "org.glassfish:javax.json:1.0.4"
+        ]
+    },
+    "org.mule.runtime:mule-metadata-model-catalog:1.1.3": {
+        "groupId": "org.mule.runtime",
+        "artifactId": "mule-metadata-model-catalog",
+        "version": "1.1.3",
+        "filename": "mule-metadata-model-catalog-1.1.3.jar",
+        "scope": "compile",
+        "dependencies": [
+            "org.mule.runtime:mule-metadata-model-raml:1.1.3",
+            "org.raml:raml-parser-2:1.0.24",
+            "org.raml:yagi:1.0.24",
+            "commons-lang:commons-lang:2.6",
+            "com.google.code.findbugs:annotations:3.0.0",
+            "com.fasterxml.jackson.module:jackson-module-jsonSchema:2.9.6",
+            "javax.validation:validation-api:1.1.0.Final",
+            "com.github.java-json-tools:json-schema-validator:2.2.8",
+            "com.github.java-json-tools:json-schema-core:1.2.8",
+            "org.mozilla:rhino:1.7R4",
+            "com.github.fge:jackson-coreutils:1.8",
+            "com.github.fge:msg-simple:1.1",
+            "com.github.fge:btf:1.2",
+            "com.github.fge:uri-template:0.9",
+            "javax.mail:mailapi:1.4.3",
+            "com.googlecode.libphonenumber:libphonenumber:8.0.0",
+            "net.sf.jopt-simple:jopt-simple:5.0.3",
+            "com.googlecode.juniversalchardet:juniversalchardet:1.0.3",
+            "org.apache.ws.xmlschema:xmlschema-core:2.2.1",
+            "javax.json:javax.json-api:1.0",
+            "org.glassfish:javax.json:1.0.4"
+        ]
+    },
+    "org.mule.runtime:mule-metadata-model-raml:1.1.3": {
+        "groupId": "org.mule.runtime",
+        "artifactId": "mule-metadata-model-raml",
+        "version": "1.1.3",
+        "filename": "mule-metadata-model-raml-1.1.3.jar",
+        "scope": "compile",
+        "dependencies": [
+            "org.raml:raml-parser-2:1.0.24",
+            "org.raml:yagi:1.0.24",
+            "commons-lang:commons-lang:2.6",
+            "com.google.code.findbugs:annotations:3.0.0",
+            "com.fasterxml.jackson.module:jackson-module-jsonSchema:2.9.6",
+            "javax.validation:validation-api:1.1.0.Final",
+            "com.github.java-json-tools:json-schema-validator:2.2.8",
+            "com.github.java-json-tools:json-schema-core:1.2.8",
+            "org.mozilla:rhino:1.7R4",
+            "com.github.fge:jackson-coreutils:1.8",
+            "com.github.fge:msg-simple:1.1",
+            "com.github.fge:btf:1.2",
+            "com.github.fge:uri-template:0.9",
+            "javax.mail:mailapi:1.4.3",
+            "com.googlecode.libphonenumber:libphonenumber:8.0.0",
+            "net.sf.jopt-simple:jopt-simple:5.0.3",
+            "com.googlecode.juniversalchardet:juniversalchardet:1.0.3",
+            "org.apache.ws.xmlschema:xmlschema-core:2.2.1",
+            "javax.json:javax.json-api:1.0",
+            "org.glassfish:javax.json:1.0.4"
+        ]
+    },
+    "org.raml:raml-parser-2:1.0.24": {
+        "groupId": "org.raml",
+        "artifactId": "raml-parser-2",
+        "version": "1.0.24",
+        "filename": "raml-parser-2-1.0.24.jar",
+        "scope": "compile",
+        "dependencies": [
+            "org.raml:yagi:1.0.24",
+            "commons-lang:commons-lang:2.6",
+            "com.google.code.findbugs:annotations:3.0.0",
+            "com.fasterxml.jackson.module:jackson-module-jsonSchema:2.9.6",
+            "javax.validation:validation-api:1.1.0.Final",
+            "com.github.java-json-tools:json-schema-validator:2.2.8",
+            "com.github.java-json-tools:json-schema-core:1.2.8",
+            "org.mozilla:rhino:1.7R4",
+            "com.github.fge:jackson-coreutils:1.8",
+            "com.github.fge:msg-simple:1.1",
+            "com.github.fge:btf:1.2",
+            "com.github.fge:uri-template:0.9",
+            "javax.mail:mailapi:1.4.3",
+            "com.googlecode.libphonenumber:libphonenumber:8.0.0",
+            "net.sf.jopt-simple:jopt-simple:5.0.3",
+            "com.googlecode.juniversalchardet:juniversalchardet:1.0.3",
+            "org.apache.ws.xmlschema:xmlschema-core:2.2.1",
+            "javax.json:javax.json-api:1.0",
+            "org.glassfish:javax.json:1.0.4"
+        ]
+    },
+    "org.raml:yagi:1.0.24": {
+        "groupId": "org.raml",
+        "artifactId": "yagi",
+        "version": "1.0.24",
+        "filename": "yagi-1.0.24.jar",
+        "scope": "compile",
+        "dependencies": [
+            "commons-lang:commons-lang:2.6",
+            "com.google.code.findbugs:annotations:3.0.0",
+            "com.fasterxml.jackson.module:jackson-module-jsonSchema:2.9.6",
+            "javax.validation:validation-api:1.1.0.Final"
+        ]
+    },
+    "commons-lang:commons-lang:2.6": {
+        "groupId": "commons-lang",
+        "artifactId": "commons-lang",
+        "version": "2.6",
+        "filename": "commons-lang-2.6.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "com.google.code.findbugs:annotations:3.0.0": {
+        "groupId": "com.google.code.findbugs",
+        "artifactId": "annotations",
+        "version": "3.0.0",
+        "filename": "annotations-3.0.0.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "com.fasterxml.jackson.module:jackson-module-jsonSchema:2.9.6": {
+        "groupId": "com.fasterxml.jackson.module",
+        "artifactId": "jackson-module-jsonSchema",
+        "version": "2.9.6",
+        "filename": "jackson-module-jsonSchema-2.9.6.jar",
+        "scope": "compile",
+        "dependencies": [
+            "javax.validation:validation-api:1.1.0.Final"
+        ]
+    },
+    "javax.validation:validation-api:1.1.0.Final": {
+        "groupId": "javax.validation",
+        "artifactId": "validation-api",
+        "version": "1.1.0.Final",
+        "filename": "validation-api-1.1.0.Final.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "com.github.java-json-tools:json-schema-validator:2.2.8": {
+        "groupId": "com.github.java-json-tools",
+        "artifactId": "json-schema-validator",
+        "version": "2.2.8",
+        "filename": "json-schema-validator-2.2.8.jar",
+        "scope": "compile",
+        "dependencies": [
+            "com.github.java-json-tools:json-schema-core:1.2.8",
+            "org.mozilla:rhino:1.7R4",
+            "com.github.fge:jackson-coreutils:1.8",
+            "com.github.fge:msg-simple:1.1",
+            "com.github.fge:btf:1.2",
+            "com.github.fge:uri-template:0.9",
+            "javax.mail:mailapi:1.4.3",
+            "com.googlecode.libphonenumber:libphonenumber:8.0.0",
+            "net.sf.jopt-simple:jopt-simple:5.0.3"
+        ]
+    },
+    "com.github.java-json-tools:json-schema-core:1.2.8": {
+        "groupId": "com.github.java-json-tools",
+        "artifactId": "json-schema-core",
+        "version": "1.2.8",
+        "filename": "json-schema-core-1.2.8.jar",
+        "scope": "compile",
+        "dependencies": [
+            "org.mozilla:rhino:1.7R4",
+            "com.github.fge:jackson-coreutils:1.8",
+            "com.github.fge:msg-simple:1.1",
+            "com.github.fge:btf:1.2",
+            "com.github.fge:uri-template:0.9"
+        ]
+    },
+    "org.mozilla:rhino:1.7R4": {
+        "groupId": "org.mozilla",
+        "artifactId": "rhino",
+        "version": "1.7R4",
+        "filename": "rhino-1.7R4.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "com.github.fge:jackson-coreutils:1.8": {
+        "groupId": "com.github.fge",
+        "artifactId": "jackson-coreutils",
+        "version": "1.8",
+        "filename": "jackson-coreutils-1.8.jar",
+        "scope": "compile",
+        "dependencies": [
+            "com.github.fge:msg-simple:1.1",
+            "com.github.fge:btf:1.2"
+        ]
+    },
+    "com.github.fge:msg-simple:1.1": {
+        "groupId": "com.github.fge",
+        "artifactId": "msg-simple",
+        "version": "1.1",
+        "filename": "msg-simple-1.1.jar",
+        "scope": "compile",
+        "dependencies": [
+            "com.github.fge:btf:1.2"
+        ]
+    },
+    "com.github.fge:btf:1.2": {
+        "groupId": "com.github.fge",
+        "artifactId": "btf",
+        "version": "1.2",
+        "filename": "btf-1.2.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "com.github.fge:uri-template:0.9": {
+        "groupId": "com.github.fge",
+        "artifactId": "uri-template",
+        "version": "0.9",
+        "filename": "uri-template-0.9.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "javax.mail:mailapi:1.4.3": {
+        "groupId": "javax.mail",
+        "artifactId": "mailapi",
+        "version": "1.4.3",
+        "filename": "mailapi-1.4.3.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "com.googlecode.libphonenumber:libphonenumber:8.0.0": {
+        "groupId": "com.googlecode.libphonenumber",
+        "artifactId": "libphonenumber",
+        "version": "8.0.0",
+        "filename": "libphonenumber-8.0.0.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "net.sf.jopt-simple:jopt-simple:5.0.3": {
+        "groupId": "net.sf.jopt-simple",
+        "artifactId": "jopt-simple",
+        "version": "5.0.3",
+        "filename": "jopt-simple-5.0.3.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "com.googlecode.juniversalchardet:juniversalchardet:1.0.3": {
+        "groupId": "com.googlecode.juniversalchardet",
+        "artifactId": "juniversalchardet",
+        "version": "1.0.3",
+        "filename": "juniversalchardet-1.0.3.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "org.apache.ws.xmlschema:xmlschema-core:2.2.1": {
+        "groupId": "org.apache.ws.xmlschema",
+        "artifactId": "xmlschema-core",
+        "version": "2.2.1",
+        "filename": "xmlschema-core-2.2.1.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "javax.json:javax.json-api:1.0": {
+        "groupId": "javax.json",
+        "artifactId": "javax.json-api",
+        "version": "1.0",
+        "filename": "javax.json-api-1.0.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "org.glassfish:javax.json:1.0.4": {
+        "groupId": "org.glassfish",
+        "artifactId": "javax.json",
+        "version": "1.0.4",
+        "filename": "javax.json-1.0.4.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "org.mule.runtime:mule-module-policy-api:1.1.2": {
+        "groupId": "org.mule.runtime",
+        "artifactId": "mule-module-policy-api",
+        "version": "1.1.2",
+        "filename": "mule-module-policy-api-1.1.2.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "org.mule.runtime:mule-module-spring-config:4.1.3": {
+        "groupId": "org.mule.runtime",
+        "artifactId": "mule-module-spring-config",
+        "version": "4.1.3",
+        "filename": "mule-module-spring-config-4.1.3.jar",
+        "scope": "compile",
+        "dependencies": [
+            "org.springframework:spring-aop:4.3.17.RELEASE"
+        ]
+    },
+    "org.springframework:spring-aop:4.3.17.RELEASE": {
+        "groupId": "org.springframework",
+        "artifactId": "spring-aop",
+        "version": "4.3.17.RELEASE",
+        "filename": "spring-aop-4.3.17.RELEASE.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "org.mule.runtime:mule-module-tooling-support:4.1.3": {
+        "groupId": "org.mule.runtime",
+        "artifactId": "mule-module-tooling-support",
+        "version": "4.1.3",
+        "filename": "mule-module-tooling-support-4.1.3.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "org.mule.runtime:mule-module-global-config:4.1.3": {
+        "groupId": "org.mule.runtime",
+        "artifactId": "mule-module-global-config",
+        "version": "4.1.3",
+        "filename": "mule-module-global-config-4.1.3.jar",
+        "scope": "compile",
+        "dependencies": [
+            "com.typesafe:config:1.3.1",
+            "org.mule.runtime:mule-module-container:4.1.3"
+        ]
+    },
+    "com.typesafe:config:1.3.1": {
+        "groupId": "com.typesafe",
+        "artifactId": "config",
+        "version": "1.3.1",
+        "filename": "config-1.3.1.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "org.mule.runtime:mule-module-container:4.1.3": {
+        "groupId": "org.mule.runtime",
+        "artifactId": "mule-module-container",
+        "version": "4.1.3",
+        "filename": "mule-module-container-4.1.3.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "org.mule.runtime:mule-module-logging:4.1.3": {
+        "groupId": "org.mule.runtime",
+        "artifactId": "mule-module-logging",
+        "version": "4.1.3",
+        "filename": "mule-module-logging-4.1.3.jar",
+        "scope": "compile",
+        "dependencies": [
+            "com.lmax:disruptor:3.3.7",
+            "org.apache.logging.log4j:log4j-api:2.11.0",
+            "org.apache.logging.log4j:log4j-core:2.11.0",
+            "org.apache.logging.log4j:log4j-slf4j-impl:2.11.0",
+            "org.apache.logging.log4j:log4j-1.2-api:2.11.0",
+            "org.slf4j:jul-to-slf4j:1.7.25"
+        ]
+    },
+    "com.lmax:disruptor:3.3.7": {
+        "groupId": "com.lmax",
+        "artifactId": "disruptor",
+        "version": "3.3.7",
+        "filename": "disruptor-3.3.7.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "org.apache.logging.log4j:log4j-api:2.11.0": {
+        "groupId": "org.apache.logging.log4j",
+        "artifactId": "log4j-api",
+        "version": "2.11.0",
+        "filename": "log4j-api-2.11.0.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "org.apache.logging.log4j:log4j-core:2.11.0": {
+        "groupId": "org.apache.logging.log4j",
+        "artifactId": "log4j-core",
+        "version": "2.11.0",
+        "filename": "log4j-core-2.11.0.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "org.apache.logging.log4j:log4j-slf4j-impl:2.11.0": {
+        "groupId": "org.apache.logging.log4j",
+        "artifactId": "log4j-slf4j-impl",
+        "version": "2.11.0",
+        "filename": "log4j-slf4j-impl-2.11.0.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "org.apache.logging.log4j:log4j-1.2-api:2.11.0": {
+        "groupId": "org.apache.logging.log4j",
+        "artifactId": "log4j-1.2-api",
+        "version": "2.11.0",
+        "filename": "log4j-1.2-api-2.11.0.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "org.slf4j:jul-to-slf4j:1.7.25": {
+        "groupId": "org.slf4j",
+        "artifactId": "jul-to-slf4j",
+        "version": "1.7.25",
+        "filename": "jul-to-slf4j-1.7.25.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "org.mule.runtime:mule-module-license-api:4.1.3": {
+        "groupId": "org.mule.runtime",
+        "artifactId": "mule-module-license-api",
+        "version": "4.1.3",
+        "filename": "mule-module-license-api-4.1.3.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "org.mule.distributions:mule-services-all:4.1.3": {
+        "groupId": "org.mule.distributions",
+        "artifactId": "mule-services-all",
+        "version": "4.1.3",
+        "filename": "mule-services-all-4.1.3.pom",
+        "scope": "compile",
+        "dependencies": [
+            "org.mule.services:mule-service-scheduler:1.1.6",
+            "org.mule.services:mule-service-oauth:1.1.2",
+            "org.mule.services:mule-service-http:1.1.3",
+            "org.mule.services:mule-service-soap:1.1.7",
+            "org.mule.services:mule-service-weave:2.1.4",
+            "org.scala-lang:scala-library:2.12.4",
+            "org.mule.weave:runtime:2.1.4",
+            "org.mule.weave:wlang:2.1.4",
+            "org.mule.weave:core:2.1.4",
+            "org.typelevel:spire_2.12:0.14.1",
+            "org.typelevel:spire-macros_2.12:0.14.1",
+            "org.typelevel:machinist_2.12:0.6.1",
+            "org.scala-lang:scala-reflect:2.12.0",
+            "org.typelevel:algebra_2.12:0.7.0",
+            "org.typelevel:cats-kernel_2.12:0.9.0",
+            "org.mule.weave:core-modules:2.1.4",
+            "com.fasterxml.woodstox:woodstox-core:5.0.2",
+            "org.codehaus.woodstox:stax2-api:3.1.4",
+            "com.fasterxml:aalto-xml:1.0.0",
+            "javax.mail:mail:1.4.7",
+            "javax.activation:activation:1.1",
+            "org.mule.weave:debugger:2.1.4",
+            "org.mule.weave:yaml-module:2.1.4",
+            "org.mule.syaml:syaml_2.12:0.1.11",
+            "org.mule.common:scala-common_2.12:0.1.3",
+            "org.scalactic:scalactic_2.12:3.0.1",
+            "org.mule.weave:mule-tooling-weave:2.1.4",
+            "org.mule.weave:parser:2.1.4",
+            "org.parboiled:parboiled_2.12:2.1.4",
+            "com.chuusai:shapeless_2.12:2.3.2",
+            "org.typelevel:macro-compat_2.12:1.1.1"
+        ]
+    },
+    "org.mule.services:mule-service-scheduler:1.1.6": {
+        "groupId": "org.mule.services",
+        "artifactId": "mule-service-scheduler",
+        "version": "1.1.6",
+        "filename": "mule-service-scheduler-1.1.6-mule-service.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "org.mule.services:mule-service-oauth:1.1.2": {
+        "groupId": "org.mule.services",
+        "artifactId": "mule-service-oauth",
+        "version": "1.1.2",
+        "filename": "mule-service-oauth-1.1.2-mule-service.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "org.mule.services:mule-service-http:1.1.3": {
+        "groupId": "org.mule.services",
+        "artifactId": "mule-service-http",
+        "version": "1.1.3",
+        "filename": "mule-service-http-1.1.3-mule-service.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "org.mule.services:mule-service-soap:1.1.7": {
+        "groupId": "org.mule.services",
+        "artifactId": "mule-service-soap",
+        "version": "1.1.7",
+        "filename": "mule-service-soap-1.1.7-mule-service.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "org.mule.services:mule-service-weave:2.1.4": {
+        "groupId": "org.mule.services",
+        "artifactId": "mule-service-weave",
+        "version": "2.1.4",
+        "filename": "mule-service-weave-2.1.4.jar",
+        "scope": "compile",
+        "dependencies": [
+            "org.scala-lang:scala-library:2.12.4",
+            "org.mule.weave:runtime:2.1.4",
+            "org.mule.weave:wlang:2.1.4",
+            "org.mule.weave:core:2.1.4",
+            "org.typelevel:spire_2.12:0.14.1",
+            "org.typelevel:spire-macros_2.12:0.14.1",
+            "org.typelevel:machinist_2.12:0.6.1",
+            "org.scala-lang:scala-reflect:2.12.0",
+            "org.typelevel:algebra_2.12:0.7.0",
+            "org.typelevel:cats-kernel_2.12:0.9.0",
+            "org.mule.weave:core-modules:2.1.4",
+            "com.fasterxml.woodstox:woodstox-core:5.0.2",
+            "org.codehaus.woodstox:stax2-api:3.1.4",
+            "com.fasterxml:aalto-xml:1.0.0",
+            "javax.mail:mail:1.4.7",
+            "javax.activation:activation:1.1",
+            "org.mule.weave:debugger:2.1.4",
+            "org.mule.weave:yaml-module:2.1.4",
+            "org.mule.syaml:syaml_2.12:0.1.11",
+            "org.mule.common:scala-common_2.12:0.1.3",
+            "org.scalactic:scalactic_2.12:3.0.1",
+            "org.mule.weave:mule-tooling-weave:2.1.4",
+            "org.mule.weave:parser:2.1.4",
+            "org.parboiled:parboiled_2.12:2.1.4",
+            "com.chuusai:shapeless_2.12:2.3.2",
+            "org.typelevel:macro-compat_2.12:1.1.1"
+        ]
+    },
+    "org.scala-lang:scala-library:2.12.4": {
+        "groupId": "org.scala-lang",
+        "artifactId": "scala-library",
+        "version": "2.12.4",
+        "filename": "scala-library-2.12.4.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "org.mule.weave:runtime:2.1.4": {
+        "groupId": "org.mule.weave",
+        "artifactId": "runtime",
+        "version": "2.1.4",
+        "filename": "runtime-2.1.4.jar",
+        "scope": "compile",
+        "dependencies": [
+            "org.mule.weave:wlang:2.1.4",
+            "org.mule.weave:core:2.1.4",
+            "org.typelevel:spire_2.12:0.14.1",
+            "org.typelevel:spire-macros_2.12:0.14.1",
+            "org.typelevel:machinist_2.12:0.6.1",
+            "org.scala-lang:scala-reflect:2.12.0",
+            "org.typelevel:algebra_2.12:0.7.0",
+            "org.typelevel:cats-kernel_2.12:0.9.0",
+            "org.mule.weave:core-modules:2.1.4",
+            "com.fasterxml.woodstox:woodstox-core:5.0.2",
+            "org.codehaus.woodstox:stax2-api:3.1.4",
+            "com.fasterxml:aalto-xml:1.0.0",
+            "javax.mail:mail:1.4.7",
+            "javax.activation:activation:1.1",
+            "org.mule.weave:debugger:2.1.4"
+        ]
+    },
+    "org.mule.weave:wlang:2.1.4": {
+        "groupId": "org.mule.weave",
+        "artifactId": "wlang",
+        "version": "2.1.4",
+        "filename": "wlang-2.1.4.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "org.mule.weave:core:2.1.4": {
+        "groupId": "org.mule.weave",
+        "artifactId": "core",
+        "version": "2.1.4",
+        "filename": "core-2.1.4.jar",
+        "scope": "compile",
+        "dependencies": [
+            "org.typelevel:spire_2.12:0.14.1",
+            "org.typelevel:spire-macros_2.12:0.14.1",
+            "org.typelevel:machinist_2.12:0.6.1",
+            "org.scala-lang:scala-reflect:2.12.0",
+            "org.typelevel:algebra_2.12:0.7.0",
+            "org.typelevel:cats-kernel_2.12:0.9.0"
+        ]
+    },
+    "org.typelevel:spire_2.12:0.14.1": {
+        "groupId": "org.typelevel",
+        "artifactId": "spire_2.12",
+        "version": "0.14.1",
+        "filename": "spire_2.12-0.14.1.jar",
+        "scope": "compile",
+        "dependencies": [
+            "org.typelevel:spire-macros_2.12:0.14.1",
+            "org.typelevel:machinist_2.12:0.6.1",
+            "org.scala-lang:scala-reflect:2.12.0",
+            "org.typelevel:algebra_2.12:0.7.0",
+            "org.typelevel:cats-kernel_2.12:0.9.0"
+        ]
+    },
+    "org.typelevel:spire-macros_2.12:0.14.1": {
+        "groupId": "org.typelevel",
+        "artifactId": "spire-macros_2.12",
+        "version": "0.14.1",
+        "filename": "spire-macros_2.12-0.14.1.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "org.typelevel:machinist_2.12:0.6.1": {
+        "groupId": "org.typelevel",
+        "artifactId": "machinist_2.12",
+        "version": "0.6.1",
+        "filename": "machinist_2.12-0.6.1.jar",
+        "scope": "compile",
+        "dependencies": [
+            "org.scala-lang:scala-reflect:2.12.0"
+        ]
+    },
+    "org.scala-lang:scala-reflect:2.12.0": {
+        "groupId": "org.scala-lang",
+        "artifactId": "scala-reflect",
+        "version": "2.12.0",
+        "filename": "scala-reflect-2.12.0.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "org.typelevel:algebra_2.12:0.7.0": {
+        "groupId": "org.typelevel",
+        "artifactId": "algebra_2.12",
+        "version": "0.7.0",
+        "filename": "algebra_2.12-0.7.0.jar",
+        "scope": "compile",
+        "dependencies": [
+            "org.typelevel:cats-kernel_2.12:0.9.0"
+        ]
+    },
+    "org.typelevel:cats-kernel_2.12:0.9.0": {
+        "groupId": "org.typelevel",
+        "artifactId": "cats-kernel_2.12",
+        "version": "0.9.0",
+        "filename": "cats-kernel_2.12-0.9.0.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "org.mule.weave:core-modules:2.1.4": {
+        "groupId": "org.mule.weave",
+        "artifactId": "core-modules",
+        "version": "2.1.4",
+        "filename": "core-modules-2.1.4.jar",
+        "scope": "compile",
+        "dependencies": [
+            "com.fasterxml.woodstox:woodstox-core:5.0.2",
+            "org.codehaus.woodstox:stax2-api:3.1.4",
+            "com.fasterxml:aalto-xml:1.0.0",
+            "javax.mail:mail:1.4.7",
+            "javax.activation:activation:1.1"
+        ]
+    },
+    "com.fasterxml.woodstox:woodstox-core:5.0.2": {
+        "groupId": "com.fasterxml.woodstox",
+        "artifactId": "woodstox-core",
+        "version": "5.0.2",
+        "filename": "woodstox-core-5.0.2.jar",
+        "scope": "compile",
+        "dependencies": [
+            "org.codehaus.woodstox:stax2-api:3.1.4"
+        ]
+    },
+    "org.codehaus.woodstox:stax2-api:3.1.4": {
+        "groupId": "org.codehaus.woodstox",
+        "artifactId": "stax2-api",
+        "version": "3.1.4",
+        "filename": "stax2-api-3.1.4.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "com.fasterxml:aalto-xml:1.0.0": {
+        "groupId": "com.fasterxml",
+        "artifactId": "aalto-xml",
+        "version": "1.0.0",
+        "filename": "aalto-xml-1.0.0.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "javax.mail:mail:1.4.7": {
+        "groupId": "javax.mail",
+        "artifactId": "mail",
+        "version": "1.4.7",
+        "filename": "mail-1.4.7.jar",
+        "scope": "compile",
+        "dependencies": [
+            "javax.activation:activation:1.1"
+        ]
+    },
+    "javax.activation:activation:1.1": {
+        "groupId": "javax.activation",
+        "artifactId": "activation",
+        "version": "1.1",
+        "filename": "activation-1.1.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "org.mule.weave:debugger:2.1.4": {
+        "groupId": "org.mule.weave",
+        "artifactId": "debugger",
+        "version": "2.1.4",
+        "filename": "debugger-2.1.4.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "org.mule.weave:yaml-module:2.1.4": {
+        "groupId": "org.mule.weave",
+        "artifactId": "yaml-module",
+        "version": "2.1.4",
+        "filename": "yaml-module-2.1.4.jar",
+        "scope": "compile",
+        "dependencies": [
+            "org.mule.syaml:syaml_2.12:0.1.11",
+            "org.mule.common:scala-common_2.12:0.1.3",
+            "org.scalactic:scalactic_2.12:3.0.1"
+        ]
+    },
+    "org.mule.syaml:syaml_2.12:0.1.11": {
+        "groupId": "org.mule.syaml",
+        "artifactId": "syaml_2.12",
+        "version": "0.1.11",
+        "filename": "syaml_2.12-0.1.11.jar",
+        "scope": "compile",
+        "dependencies": [
+            "org.mule.common:scala-common_2.12:0.1.3",
+            "org.scalactic:scalactic_2.12:3.0.1"
+        ]
+    },
+    "org.mule.common:scala-common_2.12:0.1.3": {
+        "groupId": "org.mule.common",
+        "artifactId": "scala-common_2.12",
+        "version": "0.1.3",
+        "filename": "scala-common_2.12-0.1.3.jar",
+        "scope": "compile",
+        "dependencies": [
+            "org.scalactic:scalactic_2.12:3.0.1"
+        ]
+    },
+    "org.scalactic:scalactic_2.12:3.0.1": {
+        "groupId": "org.scalactic",
+        "artifactId": "scalactic_2.12",
+        "version": "3.0.1",
+        "filename": "scalactic_2.12-3.0.1.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "org.mule.weave:mule-tooling-weave:2.1.4": {
+        "groupId": "org.mule.weave",
+        "artifactId": "mule-tooling-weave",
+        "version": "2.1.4",
+        "filename": "mule-tooling-weave-2.1.4.jar",
+        "scope": "compile",
+        "dependencies": [
+            "org.mule.weave:parser:2.1.4",
+            "org.parboiled:parboiled_2.12:2.1.4",
+            "com.chuusai:shapeless_2.12:2.3.2",
+            "org.typelevel:macro-compat_2.12:1.1.1"
+        ]
+    },
+    "org.mule.weave:parser:2.1.4": {
+        "groupId": "org.mule.weave",
+        "artifactId": "parser",
+        "version": "2.1.4",
+        "filename": "parser-2.1.4.jar",
+        "scope": "compile",
+        "dependencies": [
+            "org.parboiled:parboiled_2.12:2.1.4",
+            "com.chuusai:shapeless_2.12:2.3.2",
+            "org.typelevel:macro-compat_2.12:1.1.1"
+        ]
+    },
+    "org.parboiled:parboiled_2.12:2.1.4": {
+        "groupId": "org.parboiled",
+        "artifactId": "parboiled_2.12",
+        "version": "2.1.4",
+        "filename": "parboiled_2.12-2.1.4.jar",
+        "scope": "compile",
+        "dependencies": [
+            "com.chuusai:shapeless_2.12:2.3.2",
+            "org.typelevel:macro-compat_2.12:1.1.1"
+        ]
+    },
+    "com.chuusai:shapeless_2.12:2.3.2": {
+        "groupId": "com.chuusai",
+        "artifactId": "shapeless_2.12",
+        "version": "2.3.2",
+        "filename": "shapeless_2.12-2.3.2.jar",
+        "scope": "compile",
+        "dependencies": [
+            "org.typelevel:macro-compat_2.12:1.1.1"
+        ]
+    },
+    "org.typelevel:macro-compat_2.12:1.1.1": {
+        "groupId": "org.typelevel",
+        "artifactId": "macro-compat_2.12",
+        "version": "1.1.1",
+        "filename": "macro-compat_2.12-1.1.1.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "org.mule.runtime:mule-service-soap-api:4.1.3": {
+        "groupId": "org.mule.runtime",
+        "artifactId": "mule-service-soap-api",
+        "version": "4.1.3",
+        "filename": "mule-service-soap-api-4.1.3.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "org.mule.runtime:mule-service-http-api:4.1.3": {
+        "groupId": "org.mule.runtime",
+        "artifactId": "mule-service-http-api",
+        "version": "4.1.3",
+        "filename": "mule-service-http-api-4.1.3.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "org.mule.runtime:mule-service-oauth-api:4.1.3": {
+        "groupId": "org.mule.runtime",
+        "artifactId": "mule-service-oauth-api",
+        "version": "4.1.3",
+        "filename": "mule-service-oauth-api-4.1.3.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "org.mule.runtime:mule-core:4.1.3": {
+        "groupId": "org.mule.runtime",
+        "artifactId": "mule-core",
+        "version": "4.1.3",
+        "filename": "mule-core-4.1.3.jar",
+        "scope": "compile",
+        "dependencies": [
+            "org.mule.runtime:mule-api:1.1.3",
+            "org.mule.runtime:mule-metadata-model-api:1.1.3",
+            "org.mule.runtime:mule-artifact-declaration:1.1.1",
+            "org.mule.runtime:mule-module-dsl-api:1.1.3",
+            "org.mule.runtime:mule-extensions-api:1.1.3",
+            "org.reactivestreams:reactive-streams:1.0.2",
+            "org.mule.runtime:mule-module-http-policy-api:1.1.2",
+            "org.mule.runtime:mule-metadata-model-xml:1.1.3",
+            "org.apache.xmlbeans:xmlbeans:2.6.0",
+            "org.mule.apache:xerces2-xsd11:2.11.3",
+            "org.mule.runtime:mule-metadata-model-java:1.1.3",
+            "org.mule.runtime:mule-message-metadata-model:1.1.3",
+            "org.mule.runtime:mule-metadata-model-json:1.1.3",
+            "org.everit.json:org.everit.json.schema:1.5.0",
+            "org.json:json:20160810",
+            "commons-validator:commons-validator:1.5.1",
+            "commons-digester:commons-digester:1.8.1",
+            "commons-beanutils:commons-beanutils:1.9.3",
+            "com.github.stephenc.eaio-uuid:uuid:3.4.0",
+            "com.github.stephenc.eaio-grabbag:grabbag:1.8.1",
+            "commons-cli:commons-cli:1.2",
+            "commons-collections:commons-collections:3.2.2",
+            "org.apache.commons:commons-lang3:3.6",
+            "commons-pool:commons-pool:1.6",
+            "javax.transaction:javax.transaction-api:1.2",
+            "org.apache.geronimo.specs:geronimo-j2ee-connector_1.5_spec:2.0.0",
+            "javax.inject:javax.inject:1",
+            "org.mule.mvel:mule-mvel2:2.1.9-MULE-016",
+            "org.jgrapht:jgrapht-jdk1.5:0.7.3",
+            "org.reflections:reflections:0.9.10",
+            "org.mule.projectreactor:reactor-core:3.2.0.M1-MULE-002",
+            "io.projectreactor.addons:reactor-extra:3.1.2.RELEASE",
+            "org.yaml:snakeyaml:1.18",
+            "cglib:cglib-nodep:3.2.6",
+            "org.apache.commons:commons-pool2:2.5.0",
+            "javax.jms:javax.jms-api:2.0.1"
+        ]
+    },
+    "org.mule.runtime:mule-api:1.1.3": {
+        "groupId": "org.mule.runtime",
+        "artifactId": "mule-api",
+        "version": "1.1.3",
+        "filename": "mule-api-1.1.3.jar",
+        "scope": "compile",
+        "dependencies": [
+            "org.mule.runtime:mule-metadata-model-api:1.1.3",
+            "org.mule.runtime:mule-artifact-declaration:1.1.1"
+        ]
+    },
+    "org.mule.runtime:mule-metadata-model-api:1.1.3": {
+        "groupId": "org.mule.runtime",
+        "artifactId": "mule-metadata-model-api",
+        "version": "1.1.3",
+        "filename": "mule-metadata-model-api-1.1.3.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "org.mule.runtime:mule-artifact-declaration:1.1.1": {
+        "groupId": "org.mule.runtime",
+        "artifactId": "mule-artifact-declaration",
+        "version": "1.1.1",
+        "filename": "mule-artifact-declaration-1.1.1.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "org.mule.runtime:mule-module-dsl-api:1.1.3": {
+        "groupId": "org.mule.runtime",
+        "artifactId": "mule-module-dsl-api",
+        "version": "1.1.3",
+        "filename": "mule-module-dsl-api-1.1.3.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "org.mule.runtime:mule-extensions-api:1.1.3": {
+        "groupId": "org.mule.runtime",
+        "artifactId": "mule-extensions-api",
+        "version": "1.1.3",
+        "filename": "mule-extensions-api-1.1.3.jar",
+        "scope": "compile",
+        "dependencies": [
+            "org.reactivestreams:reactive-streams:1.0.2"
+        ]
+    },
+    "org.reactivestreams:reactive-streams:1.0.2": {
+        "groupId": "org.reactivestreams",
+        "artifactId": "reactive-streams",
+        "version": "1.0.2",
+        "filename": "reactive-streams-1.0.2.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "org.mule.runtime:mule-module-http-policy-api:1.1.2": {
+        "groupId": "org.mule.runtime",
+        "artifactId": "mule-module-http-policy-api",
+        "version": "1.1.2",
+        "filename": "mule-module-http-policy-api-1.1.2.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "org.mule.runtime:mule-metadata-model-xml:1.1.3": {
+        "groupId": "org.mule.runtime",
+        "artifactId": "mule-metadata-model-xml",
+        "version": "1.1.3",
+        "filename": "mule-metadata-model-xml-1.1.3.jar",
+        "scope": "compile",
+        "dependencies": [
+            "org.apache.xmlbeans:xmlbeans:2.6.0",
+            "org.mule.apache:xerces2-xsd11:2.11.3"
+        ]
+    },
+    "org.apache.xmlbeans:xmlbeans:2.6.0": {
+        "groupId": "org.apache.xmlbeans",
+        "artifactId": "xmlbeans",
+        "version": "2.6.0",
+        "filename": "xmlbeans-2.6.0.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "org.mule.apache:xerces2-xsd11:2.11.3": {
+        "groupId": "org.mule.apache",
+        "artifactId": "xerces2-xsd11",
+        "version": "2.11.3",
+        "filename": "xerces2-xsd11-2.11.3.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "org.mule.runtime:mule-metadata-model-java:1.1.3": {
+        "groupId": "org.mule.runtime",
+        "artifactId": "mule-metadata-model-java",
+        "version": "1.1.3",
+        "filename": "mule-metadata-model-java-1.1.3.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "org.mule.runtime:mule-message-metadata-model:1.1.3": {
+        "groupId": "org.mule.runtime",
+        "artifactId": "mule-message-metadata-model",
+        "version": "1.1.3",
+        "filename": "mule-message-metadata-model-1.1.3.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "org.mule.runtime:mule-metadata-model-json:1.1.3": {
+        "groupId": "org.mule.runtime",
+        "artifactId": "mule-metadata-model-json",
+        "version": "1.1.3",
+        "filename": "mule-metadata-model-json-1.1.3.jar",
+        "scope": "compile",
+        "dependencies": [
+            "org.everit.json:org.everit.json.schema:1.5.0",
+            "org.json:json:20160810",
+            "commons-validator:commons-validator:1.5.1",
+            "commons-digester:commons-digester:1.8.1"
+        ]
+    },
+    "org.everit.json:org.everit.json.schema:1.5.0": {
+        "groupId": "org.everit.json",
+        "artifactId": "org.everit.json.schema",
+        "version": "1.5.0",
+        "filename": "org.everit.json.schema-1.5.0.jar",
+        "scope": "compile",
+        "dependencies": [
+            "org.json:json:20160810",
+            "commons-validator:commons-validator:1.5.1",
+            "commons-digester:commons-digester:1.8.1"
+        ]
+    },
+    "org.json:json:20160810": {
+        "groupId": "org.json",
+        "artifactId": "json",
+        "version": "20160810",
+        "filename": "json-20160810.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "commons-validator:commons-validator:1.5.1": {
+        "groupId": "commons-validator",
+        "artifactId": "commons-validator",
+        "version": "1.5.1",
+        "filename": "commons-validator-1.5.1.jar",
+        "scope": "compile",
+        "dependencies": [
+            "commons-digester:commons-digester:1.8.1"
+        ]
+    },
+    "commons-digester:commons-digester:1.8.1": {
+        "groupId": "commons-digester",
+        "artifactId": "commons-digester",
+        "version": "1.8.1",
+        "filename": "commons-digester-1.8.1.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "commons-beanutils:commons-beanutils:1.9.3": {
+        "groupId": "commons-beanutils",
+        "artifactId": "commons-beanutils",
+        "version": "1.9.3",
+        "filename": "commons-beanutils-1.9.3.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "com.github.stephenc.eaio-uuid:uuid:3.4.0": {
+        "groupId": "com.github.stephenc.eaio-uuid",
+        "artifactId": "uuid",
+        "version": "3.4.0",
+        "filename": "uuid-3.4.0.jar",
+        "scope": "compile",
+        "dependencies": [
+            "com.github.stephenc.eaio-grabbag:grabbag:1.8.1"
+        ]
+    },
+    "com.github.stephenc.eaio-grabbag:grabbag:1.8.1": {
+        "groupId": "com.github.stephenc.eaio-grabbag",
+        "artifactId": "grabbag",
+        "version": "1.8.1",
+        "filename": "grabbag-1.8.1.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "commons-cli:commons-cli:1.2": {
+        "groupId": "commons-cli",
+        "artifactId": "commons-cli",
+        "version": "1.2",
+        "filename": "commons-cli-1.2.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "commons-collections:commons-collections:3.2.2": {
+        "groupId": "commons-collections",
+        "artifactId": "commons-collections",
+        "version": "3.2.2",
+        "filename": "commons-collections-3.2.2.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "org.apache.commons:commons-lang3:3.6": {
+        "groupId": "org.apache.commons",
+        "artifactId": "commons-lang3",
+        "version": "3.6",
+        "filename": "commons-lang3-3.6.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "commons-pool:commons-pool:1.6": {
+        "groupId": "commons-pool",
+        "artifactId": "commons-pool",
+        "version": "1.6",
+        "filename": "commons-pool-1.6.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "javax.transaction:javax.transaction-api:1.2": {
+        "groupId": "javax.transaction",
+        "artifactId": "javax.transaction-api",
+        "version": "1.2",
+        "filename": "javax.transaction-api-1.2.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "org.apache.geronimo.specs:geronimo-j2ee-connector_1.5_spec:2.0.0": {
+        "groupId": "org.apache.geronimo.specs",
+        "artifactId": "geronimo-j2ee-connector_1.5_spec",
+        "version": "2.0.0",
+        "filename": "geronimo-j2ee-connector_1.5_spec-2.0.0.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "javax.inject:javax.inject:1": {
+        "groupId": "javax.inject",
+        "artifactId": "javax.inject",
+        "version": "1",
+        "filename": "javax.inject-1.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "org.mule.mvel:mule-mvel2:2.1.9-MULE-016": {
+        "groupId": "org.mule.mvel",
+        "artifactId": "mule-mvel2",
+        "version": "2.1.9-MULE-016",
+        "filename": "mule-mvel2-2.1.9-MULE-016.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "org.jgrapht:jgrapht-jdk1.5:0.7.3": {
+        "groupId": "org.jgrapht",
+        "artifactId": "jgrapht-jdk1.5",
+        "version": "0.7.3",
+        "filename": "jgrapht-jdk1.5-0.7.3.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "org.reflections:reflections:0.9.10": {
+        "groupId": "org.reflections",
+        "artifactId": "reflections",
+        "version": "0.9.10",
+        "filename": "reflections-0.9.10.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "org.mule.projectreactor:reactor-core:3.2.0.M1-MULE-002": {
+        "groupId": "org.mule.projectreactor",
+        "artifactId": "reactor-core",
+        "version": "3.2.0.M1-MULE-002",
+        "filename": "reactor-core-3.2.0.M1-MULE-002.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "io.projectreactor.addons:reactor-extra:3.1.2.RELEASE": {
+        "groupId": "io.projectreactor.addons",
+        "artifactId": "reactor-extra",
+        "version": "3.1.2.RELEASE",
+        "filename": "reactor-extra-3.1.2.RELEASE.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "org.yaml:snakeyaml:1.18": {
+        "groupId": "org.yaml",
+        "artifactId": "snakeyaml",
+        "version": "1.18",
+        "filename": "snakeyaml-1.18.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "cglib:cglib-nodep:3.2.6": {
+        "groupId": "cglib",
+        "artifactId": "cglib-nodep",
+        "version": "3.2.6",
+        "filename": "cglib-nodep-3.2.6.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "org.apache.commons:commons-pool2:2.5.0": {
+        "groupId": "org.apache.commons",
+        "artifactId": "commons-pool2",
+        "version": "2.5.0",
+        "filename": "commons-pool2-2.5.0.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "javax.jms:javax.jms-api:2.0.1": {
+        "groupId": "javax.jms",
+        "artifactId": "javax.jms-api",
+        "version": "2.0.1",
+        "filename": "javax.jms-api-2.0.1.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "net.lingala.zip4j:zip4j:1.3.2": {
+        "groupId": "net.lingala.zip4j",
+        "artifactId": "zip4j",
+        "version": "1.3.2",
+        "filename": "zip4j-1.3.2.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "log4j:log4j:1.2.17": {
+        "groupId": "log4j",
+        "artifactId": "log4j",
+        "version": "1.2.17",
+        "filename": "log4j-1.2.17.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "com.mulesoft.mule.distributions:mule-runtime-impl-bom:4.1.3": {
+        "groupId": "com.mulesoft.mule.distributions",
+        "artifactId": "mule-runtime-impl-bom",
+        "version": "4.1.3",
+        "filename": "mule-runtime-impl-bom-4.1.3.jar",
+        "scope": "compile",
+        "dependencies": [
+            "com.mulesoft.mule.runtime:mule-core-ee:4.1.3",
+            "org.mule.runtime:mule-module-artifact:4.1.3",
+            "com.mulesoft.licm:licm:2.1.2",
+            "de.schlichtherle:truelicense:1.29",
+            "de.schlichtherle:truexml:1.29",
+            "opensymphony:propertyset:1.3",
+            "opensymphony:oscore:2.2.4",
+            "commons-codec:commons-codec:1.3",
+            "org.aspectj:aspectjrt:1.8.10",
+            "org.objenesis:objenesis:2.5.1",
+            "com.esotericsoftware:kryo-shaded:4.0.1",
+            "com.esotericsoftware:minlog:1.3.0",
+            "de.javakaffee:kryo-serializers:0.42",
+            "com.mulesoft.mule.runtime.modules:mule-modules-all:4.1.3",
+            "com.mulesoft.mule.runtime.modules:mule-module-batch-ee:4.1.3",
+            "com.mulesoft.mule.runtime.modules:mule-module-boot-ee:4.1.3",
+            "tanukisoft:wrapper:3.5.35",
+            "com.mulesoft.mule.runtime.modules:mule-module-bti-ee:4.1.3",
+            "org.mule.btm:mule-btm:2.1.7",
+            "com.mulesoft.mule.runtime.modules:mule-module-cache-ee:4.1.3",
+            "org.springframework:spring-context-support:4.3.17.RELEASE",
+            "org.springframework:spring-core:4.3.17.RELEASE",
+            "net.sf.ehcache:ehcache-core:2.5.1",
+            "com.mulesoft.mule.runtime.modules:mule-module-cluster-ee:4.1.3",
+            "com.hazelcast:hazelcast:3.9",
+            "com.hazelcast:hazelcast-client:3.9",
+            "commons-dbutils:commons-dbutils:1.2",
+            "org.mule.mchange:c3p0:0.9.5.2-MULE-001",
+            "com.mchange:mchange-commons-java:0.2.11",
+            "com.mulesoft.mule.runtime.modules:mule-module-http-policy:4.1.3",
+            "com.mulesoft.mule.runtime.modules:mule-module-kryo-serializer-ee:4.1.3",
+            "com.mulesoft.mule.runtime.modules:mule-module-license-impl-ee:4.1.3",
+            "com.mulesoft.mule.runtime.modules:mule-module-plugin-ee:4.1.3",
+            "org.springframework:spring-beans:4.3.17.RELEASE",
+            "org.glassfish.jersey.core:jersey-common:2.11",
+            "org.glassfish.jersey.bundles.repackaged:jersey-guava:2.11",
+            "org.glassfish.hk2:hk2-api:2.3.0-b05",
+            "org.glassfish.hk2:hk2-utils:2.3.0-b05",
+            "org.glassfish.hk2:hk2-locator:2.3.0-b05",
+            "org.glassfish.hk2:osgi-resource-locator:1.0.1",
+            "com.mulesoft.mule.runtime.modules:mule-module-spring-config-ee:4.1.3",
+            "org.springframework:spring-context:4.3.17.RELEASE",
+            "org.springframework:spring-expression:4.3.17.RELEASE",
+            "com.mulesoft.mule.runtime.modules:mule-module-tracking-ee:4.1.3",
+            "com.mulesoft.mule.runtime.modules:mule-module-xa-tx-ee:4.1.3",
+            "com.mulesoft.mule.distributions:mule-services-all:4.1.3",
+            "com.mulesoft.mule.services:mule-service-http-ee:1.1.3",
+            "com.mulesoft.services:mule-service-weave-ee:2.1.4",
+            "org.mule.services:mule-service-weave:2.1.4",
+            "com.mulesoft.mule.distributions:api-gateway-bom-impl:4.1.3",
+            "com.mulesoft.mule.distributions:api-gateway-bom-api:4.1.3",
+            "com.mulesoft.anypoint:api-gateway-api:1.1.1",
+            "com.mulesoft.anypoint:api-gateway-contract-service-api:1.1.1",
+            "com.mulesoft.anypoint:api-gateway-core:4.1.3",
+            "org.mapdb:mapdb:1.0.6",
+            "com.mulesoft.anypoint:mule-module-policies:4.1.3",
+            "com.fasterxml.jackson.core:jackson-databind:2.9.4",
+            "com.fasterxml.jackson.core:jackson-annotations:2.9.0",
+            "com.github.jknack:handlebars:4.0.6",
+            "org.antlr:antlr4-runtime:4.5.1-1",
+            "com.mulesoft.anypoint:mule-module-autodiscovery:4.1.3",
+            "com.mulesoft.anypoint:api-gateway-reflection:4.1.3",
+            "com.mulesoft.anypoint:mule-module-api-deployment:4.1.3",
+            "com.mulesoft.anypoint:api-gateway-client:4.1.3",
+            "com.fasterxml.jackson.core:jackson-core:2.9.4",
+            "joda-time:joda-time:2.9.1",
+            "javax.ws.rs:javax.ws.rs-api:2.0",
+            "com.mulesoft.anypoint:mule-module-analytics-gw:4.1.3",
+            "com.mulesoft.anypoint:api-gateway-contract-service:1.0.1"
+        ]
+    },
+    "com.mulesoft.mule.runtime:mule-core-ee:4.1.3": {
+        "groupId": "com.mulesoft.mule.runtime",
+        "artifactId": "mule-core-ee",
+        "version": "4.1.3",
+        "filename": "mule-core-ee-4.1.3.jar",
+        "scope": "compile",
+        "dependencies": [
+            "org.mule.runtime:mule-module-artifact:4.1.3",
+            "com.mulesoft.licm:licm:2.1.2",
+            "de.schlichtherle:truelicense:1.29",
+            "de.schlichtherle:truexml:1.29",
+            "opensymphony:propertyset:1.3",
+            "opensymphony:oscore:2.2.4",
+            "commons-codec:commons-codec:1.3",
+            "org.aspectj:aspectjrt:1.8.10",
+            "org.objenesis:objenesis:2.5.1",
+            "com.esotericsoftware:kryo-shaded:4.0.1",
+            "com.esotericsoftware:minlog:1.3.0",
+            "de.javakaffee:kryo-serializers:0.42"
+        ]
+    },
+    "org.mule.runtime:mule-module-artifact:4.1.3": {
+        "groupId": "org.mule.runtime",
+        "artifactId": "mule-module-artifact",
+        "version": "4.1.3",
+        "filename": "mule-module-artifact-4.1.3.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "com.mulesoft.licm:licm:2.1.2": {
+        "groupId": "com.mulesoft.licm",
+        "artifactId": "licm",
+        "version": "2.1.2",
+        "filename": "licm-2.1.2.jar",
+        "scope": "compile",
+        "dependencies": [
+            "de.schlichtherle:truelicense:1.29",
+            "de.schlichtherle:truexml:1.29",
+            "opensymphony:propertyset:1.3",
+            "opensymphony:oscore:2.2.4",
+            "commons-codec:commons-codec:1.3"
+        ]
+    },
+    "de.schlichtherle:truelicense:1.29": {
+        "groupId": "de.schlichtherle",
+        "artifactId": "truelicense",
+        "version": "1.29",
+        "filename": "truelicense-1.29.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "de.schlichtherle:truexml:1.29": {
+        "groupId": "de.schlichtherle",
+        "artifactId": "truexml",
+        "version": "1.29",
+        "filename": "truexml-1.29.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "opensymphony:propertyset:1.3": {
+        "groupId": "opensymphony",
+        "artifactId": "propertyset",
+        "version": "1.3",
+        "filename": "propertyset-1.3.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "opensymphony:oscore:2.2.4": {
+        "groupId": "opensymphony",
+        "artifactId": "oscore",
+        "version": "2.2.4",
+        "filename": "oscore-2.2.4.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "commons-codec:commons-codec:1.3": {
+        "groupId": "commons-codec",
+        "artifactId": "commons-codec",
+        "version": "1.3",
+        "filename": "commons-codec-1.3.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "org.aspectj:aspectjrt:1.8.10": {
+        "groupId": "org.aspectj",
+        "artifactId": "aspectjrt",
+        "version": "1.8.10",
+        "filename": "aspectjrt-1.8.10.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "org.objenesis:objenesis:2.5.1": {
+        "groupId": "org.objenesis",
+        "artifactId": "objenesis",
+        "version": "2.5.1",
+        "filename": "objenesis-2.5.1.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "com.esotericsoftware:kryo-shaded:4.0.1": {
+        "groupId": "com.esotericsoftware",
+        "artifactId": "kryo-shaded",
+        "version": "4.0.1",
+        "filename": "kryo-shaded-4.0.1.jar",
+        "scope": "compile",
+        "dependencies": [
+            "com.esotericsoftware:minlog:1.3.0"
+        ]
+    },
+    "com.esotericsoftware:minlog:1.3.0": {
+        "groupId": "com.esotericsoftware",
+        "artifactId": "minlog",
+        "version": "1.3.0",
+        "filename": "minlog-1.3.0.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "de.javakaffee:kryo-serializers:0.42": {
+        "groupId": "de.javakaffee",
+        "artifactId": "kryo-serializers",
+        "version": "0.42",
+        "filename": "kryo-serializers-0.42.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "com.mulesoft.mule.runtime.modules:mule-modules-all:4.1.3": {
+        "groupId": "com.mulesoft.mule.runtime.modules",
+        "artifactId": "mule-modules-all",
+        "version": "4.1.3",
+        "filename": "mule-modules-all-4.1.3.pom",
+        "scope": "compile",
+        "dependencies": [
+            "com.mulesoft.mule.runtime.modules:mule-module-batch-ee:4.1.3",
+            "com.mulesoft.mule.runtime.modules:mule-module-boot-ee:4.1.3",
+            "tanukisoft:wrapper:3.5.35",
+            "com.mulesoft.mule.runtime.modules:mule-module-bti-ee:4.1.3",
+            "org.mule.btm:mule-btm:2.1.7",
+            "com.mulesoft.mule.runtime.modules:mule-module-cache-ee:4.1.3",
+            "org.springframework:spring-context-support:4.3.17.RELEASE",
+            "org.springframework:spring-core:4.3.17.RELEASE",
+            "net.sf.ehcache:ehcache-core:2.5.1",
+            "com.mulesoft.mule.runtime.modules:mule-module-cluster-ee:4.1.3",
+            "com.hazelcast:hazelcast:3.9",
+            "com.hazelcast:hazelcast-client:3.9",
+            "commons-dbutils:commons-dbutils:1.2",
+            "org.mule.mchange:c3p0:0.9.5.2-MULE-001",
+            "com.mchange:mchange-commons-java:0.2.11",
+            "com.mulesoft.mule.runtime.modules:mule-module-http-policy:4.1.3",
+            "com.mulesoft.mule.runtime.modules:mule-module-kryo-serializer-ee:4.1.3",
+            "com.mulesoft.mule.runtime.modules:mule-module-license-impl-ee:4.1.3",
+            "com.mulesoft.mule.runtime.modules:mule-module-plugin-ee:4.1.3",
+            "org.springframework:spring-beans:4.3.17.RELEASE",
+            "org.glassfish.jersey.core:jersey-common:2.11",
+            "org.glassfish.jersey.bundles.repackaged:jersey-guava:2.11",
+            "org.glassfish.hk2:hk2-api:2.3.0-b05",
+            "org.glassfish.hk2:hk2-utils:2.3.0-b05",
+            "org.glassfish.hk2:hk2-locator:2.3.0-b05",
+            "org.glassfish.hk2:osgi-resource-locator:1.0.1",
+            "com.mulesoft.mule.runtime.modules:mule-module-spring-config-ee:4.1.3",
+            "org.springframework:spring-context:4.3.17.RELEASE",
+            "org.springframework:spring-expression:4.3.17.RELEASE",
+            "com.mulesoft.mule.runtime.modules:mule-module-tracking-ee:4.1.3",
+            "com.mulesoft.mule.runtime.modules:mule-module-xa-tx-ee:4.1.3"
+        ]
+    },
+    "com.mulesoft.mule.runtime.modules:mule-module-batch-ee:4.1.3": {
+        "groupId": "com.mulesoft.mule.runtime.modules",
+        "artifactId": "mule-module-batch-ee",
+        "version": "4.1.3",
+        "filename": "mule-module-batch-ee-4.1.3.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "com.mulesoft.mule.runtime.modules:mule-module-boot-ee:4.1.3": {
+        "groupId": "com.mulesoft.mule.runtime.modules",
+        "artifactId": "mule-module-boot-ee",
+        "version": "4.1.3",
+        "filename": "mule-module-boot-ee-4.1.3.jar",
+        "scope": "compile",
+        "dependencies": [
+            "tanukisoft:wrapper:3.5.35"
+        ]
+    },
+    "tanukisoft:wrapper:3.5.35": {
+        "groupId": "tanukisoft",
+        "artifactId": "wrapper",
+        "version": "3.5.35",
+        "filename": "wrapper-3.5.35.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "com.mulesoft.mule.runtime.modules:mule-module-bti-ee:4.1.3": {
+        "groupId": "com.mulesoft.mule.runtime.modules",
+        "artifactId": "mule-module-bti-ee",
+        "version": "4.1.3",
+        "filename": "mule-module-bti-ee-4.1.3.jar",
+        "scope": "compile",
+        "dependencies": [
+            "org.mule.btm:mule-btm:2.1.7"
+        ]
+    },
+    "org.mule.btm:mule-btm:2.1.7": {
+        "groupId": "org.mule.btm",
+        "artifactId": "mule-btm",
+        "version": "2.1.7",
+        "filename": "mule-btm-2.1.7.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "com.mulesoft.mule.runtime.modules:mule-module-cache-ee:4.1.3": {
+        "groupId": "com.mulesoft.mule.runtime.modules",
+        "artifactId": "mule-module-cache-ee",
+        "version": "4.1.3",
+        "filename": "mule-module-cache-ee-4.1.3.jar",
+        "scope": "compile",
+        "dependencies": [
+            "org.springframework:spring-context-support:4.3.17.RELEASE",
+            "org.springframework:spring-core:4.3.17.RELEASE",
+            "net.sf.ehcache:ehcache-core:2.5.1"
+        ]
+    },
+    "org.springframework:spring-context-support:4.3.17.RELEASE": {
+        "groupId": "org.springframework",
+        "artifactId": "spring-context-support",
+        "version": "4.3.17.RELEASE",
+        "filename": "spring-context-support-4.3.17.RELEASE.jar",
+        "scope": "compile",
+        "dependencies": [
+            "org.springframework:spring-core:4.3.17.RELEASE"
+        ]
+    },
+    "org.springframework:spring-core:4.3.17.RELEASE": {
+        "groupId": "org.springframework",
+        "artifactId": "spring-core",
+        "version": "4.3.17.RELEASE",
+        "filename": "spring-core-4.3.17.RELEASE.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "net.sf.ehcache:ehcache-core:2.5.1": {
+        "groupId": "net.sf.ehcache",
+        "artifactId": "ehcache-core",
+        "version": "2.5.1",
+        "filename": "ehcache-core-2.5.1.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "com.mulesoft.mule.runtime.modules:mule-module-cluster-ee:4.1.3": {
+        "groupId": "com.mulesoft.mule.runtime.modules",
+        "artifactId": "mule-module-cluster-ee",
+        "version": "4.1.3",
+        "filename": "mule-module-cluster-ee-4.1.3.jar",
+        "scope": "compile",
+        "dependencies": [
+            "com.hazelcast:hazelcast:3.9",
+            "com.hazelcast:hazelcast-client:3.9",
+            "commons-dbutils:commons-dbutils:1.2",
+            "org.mule.mchange:c3p0:0.9.5.2-MULE-001",
+            "com.mchange:mchange-commons-java:0.2.11"
+        ]
+    },
+    "com.hazelcast:hazelcast:3.9": {
+        "groupId": "com.hazelcast",
+        "artifactId": "hazelcast",
+        "version": "3.9",
+        "filename": "hazelcast-3.9.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "com.hazelcast:hazelcast-client:3.9": {
+        "groupId": "com.hazelcast",
+        "artifactId": "hazelcast-client",
+        "version": "3.9",
+        "filename": "hazelcast-client-3.9.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "commons-dbutils:commons-dbutils:1.2": {
+        "groupId": "commons-dbutils",
+        "artifactId": "commons-dbutils",
+        "version": "1.2",
+        "filename": "commons-dbutils-1.2.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "org.mule.mchange:c3p0:0.9.5.2-MULE-001": {
+        "groupId": "org.mule.mchange",
+        "artifactId": "c3p0",
+        "version": "0.9.5.2-MULE-001",
+        "filename": "c3p0-0.9.5.2-MULE-001.jar",
+        "scope": "compile",
+        "dependencies": [
+            "com.mchange:mchange-commons-java:0.2.11"
+        ]
+    },
+    "com.mchange:mchange-commons-java:0.2.11": {
+        "groupId": "com.mchange",
+        "artifactId": "mchange-commons-java",
+        "version": "0.2.11",
+        "filename": "mchange-commons-java-0.2.11.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "com.mulesoft.mule.runtime.modules:mule-module-http-policy:4.1.3": {
+        "groupId": "com.mulesoft.mule.runtime.modules",
+        "artifactId": "mule-module-http-policy",
+        "version": "4.1.3",
+        "filename": "mule-module-http-policy-4.1.3.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "com.mulesoft.mule.runtime.modules:mule-module-kryo-serializer-ee:4.1.3": {
+        "groupId": "com.mulesoft.mule.runtime.modules",
+        "artifactId": "mule-module-kryo-serializer-ee",
+        "version": "4.1.3",
+        "filename": "mule-module-kryo-serializer-ee-4.1.3.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "com.mulesoft.mule.runtime.modules:mule-module-license-impl-ee:4.1.3": {
+        "groupId": "com.mulesoft.mule.runtime.modules",
+        "artifactId": "mule-module-license-impl-ee",
+        "version": "4.1.3",
+        "filename": "mule-module-license-impl-ee-4.1.3.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "com.mulesoft.mule.runtime.modules:mule-module-plugin-ee:4.1.3": {
+        "groupId": "com.mulesoft.mule.runtime.modules",
+        "artifactId": "mule-module-plugin-ee",
+        "version": "4.1.3",
+        "filename": "mule-module-plugin-ee-4.1.3.jar",
+        "scope": "compile",
+        "dependencies": [
+            "org.springframework:spring-beans:4.3.17.RELEASE",
+            "org.glassfish.jersey.core:jersey-common:2.11",
+            "org.glassfish.jersey.bundles.repackaged:jersey-guava:2.11",
+            "org.glassfish.hk2:hk2-api:2.3.0-b05",
+            "org.glassfish.hk2:hk2-utils:2.3.0-b05",
+            "org.glassfish.hk2:hk2-locator:2.3.0-b05",
+            "org.glassfish.hk2:osgi-resource-locator:1.0.1"
+        ]
+    },
+    "org.springframework:spring-beans:4.3.17.RELEASE": {
+        "groupId": "org.springframework",
+        "artifactId": "spring-beans",
+        "version": "4.3.17.RELEASE",
+        "filename": "spring-beans-4.3.17.RELEASE.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "org.glassfish.jersey.core:jersey-common:2.11": {
+        "groupId": "org.glassfish.jersey.core",
+        "artifactId": "jersey-common",
+        "version": "2.11",
+        "filename": "jersey-common-2.11.jar",
+        "scope": "compile",
+        "dependencies": [
+            "org.glassfish.jersey.bundles.repackaged:jersey-guava:2.11",
+            "org.glassfish.hk2:hk2-api:2.3.0-b05",
+            "org.glassfish.hk2:hk2-utils:2.3.0-b05",
+            "org.glassfish.hk2:hk2-locator:2.3.0-b05",
+            "org.glassfish.hk2:osgi-resource-locator:1.0.1"
+        ]
+    },
+    "org.glassfish.jersey.bundles.repackaged:jersey-guava:2.11": {
+        "groupId": "org.glassfish.jersey.bundles.repackaged",
+        "artifactId": "jersey-guava",
+        "version": "2.11",
+        "filename": "jersey-guava-2.11.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "org.glassfish.hk2:hk2-api:2.3.0-b05": {
+        "groupId": "org.glassfish.hk2",
+        "artifactId": "hk2-api",
+        "version": "2.3.0-b05",
+        "filename": "hk2-api-2.3.0-b05.jar",
+        "scope": "compile",
+        "dependencies": [
+            "org.glassfish.hk2:hk2-utils:2.3.0-b05"
+        ]
+    },
+    "org.glassfish.hk2:hk2-utils:2.3.0-b05": {
+        "groupId": "org.glassfish.hk2",
+        "artifactId": "hk2-utils",
+        "version": "2.3.0-b05",
+        "filename": "hk2-utils-2.3.0-b05.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "org.glassfish.hk2:hk2-locator:2.3.0-b05": {
+        "groupId": "org.glassfish.hk2",
+        "artifactId": "hk2-locator",
+        "version": "2.3.0-b05",
+        "filename": "hk2-locator-2.3.0-b05.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "org.glassfish.hk2:osgi-resource-locator:1.0.1": {
+        "groupId": "org.glassfish.hk2",
+        "artifactId": "osgi-resource-locator",
+        "version": "1.0.1",
+        "filename": "osgi-resource-locator-1.0.1.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "com.mulesoft.mule.runtime.modules:mule-module-spring-config-ee:4.1.3": {
+        "groupId": "com.mulesoft.mule.runtime.modules",
+        "artifactId": "mule-module-spring-config-ee",
+        "version": "4.1.3",
+        "filename": "mule-module-spring-config-ee-4.1.3.jar",
+        "scope": "compile",
+        "dependencies": [
+            "org.springframework:spring-context:4.3.17.RELEASE",
+            "org.springframework:spring-expression:4.3.17.RELEASE"
+        ]
+    },
+    "org.springframework:spring-context:4.3.17.RELEASE": {
+        "groupId": "org.springframework",
+        "artifactId": "spring-context",
+        "version": "4.3.17.RELEASE",
+        "filename": "spring-context-4.3.17.RELEASE.jar",
+        "scope": "compile",
+        "dependencies": [
+            "org.springframework:spring-expression:4.3.17.RELEASE"
+        ]
+    },
+    "org.springframework:spring-expression:4.3.17.RELEASE": {
+        "groupId": "org.springframework",
+        "artifactId": "spring-expression",
+        "version": "4.3.17.RELEASE",
+        "filename": "spring-expression-4.3.17.RELEASE.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "com.mulesoft.mule.runtime.modules:mule-module-tracking-ee:4.1.3": {
+        "groupId": "com.mulesoft.mule.runtime.modules",
+        "artifactId": "mule-module-tracking-ee",
+        "version": "4.1.3",
+        "filename": "mule-module-tracking-ee-4.1.3.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "com.mulesoft.mule.runtime.modules:mule-module-xa-tx-ee:4.1.3": {
+        "groupId": "com.mulesoft.mule.runtime.modules",
+        "artifactId": "mule-module-xa-tx-ee",
+        "version": "4.1.3",
+        "filename": "mule-module-xa-tx-ee-4.1.3.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "com.mulesoft.mule.distributions:mule-services-all:4.1.3": {
+        "groupId": "com.mulesoft.mule.distributions",
+        "artifactId": "mule-services-all",
+        "version": "4.1.3",
+        "filename": "mule-services-all-4.1.3.pom",
+        "scope": "compile",
+        "dependencies": [
+            "com.mulesoft.mule.services:mule-service-http-ee:1.1.3",
+            "com.mulesoft.services:mule-service-weave-ee:2.1.4",
+            "org.mule.services:mule-service-weave:2.1.4"
+        ]
+    },
+    "com.mulesoft.mule.services:mule-service-http-ee:1.1.3": {
+        "groupId": "com.mulesoft.mule.services",
+        "artifactId": "mule-service-http-ee",
+        "version": "1.1.3",
+        "filename": "mule-service-http-ee-1.1.3-mule-service.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "com.mulesoft.services:mule-service-weave-ee:2.1.4": {
+        "groupId": "com.mulesoft.services",
+        "artifactId": "mule-service-weave-ee",
+        "version": "2.1.4",
+        "filename": "mule-service-weave-ee-2.1.4-mule-service.jar",
+        "scope": "compile",
+        "dependencies": [
+            "org.mule.services:mule-service-weave:2.1.4"
+        ]
+    },
+    "com.mulesoft.mule.distributions:api-gateway-bom-impl:4.1.3": {
+        "groupId": "com.mulesoft.mule.distributions",
+        "artifactId": "api-gateway-bom-impl",
+        "version": "4.1.3",
+        "filename": "api-gateway-bom-impl-4.1.3.pom",
+        "scope": "compile",
+        "dependencies": [
+            "com.mulesoft.mule.distributions:api-gateway-bom-api:4.1.3",
+            "com.mulesoft.anypoint:api-gateway-api:1.1.1",
+            "com.mulesoft.anypoint:api-gateway-contract-service-api:1.1.1",
+            "com.mulesoft.anypoint:api-gateway-core:4.1.3",
+            "org.mapdb:mapdb:1.0.6",
+            "com.mulesoft.anypoint:mule-module-policies:4.1.3",
+            "com.fasterxml.jackson.core:jackson-databind:2.9.4",
+            "com.fasterxml.jackson.core:jackson-annotations:2.9.0",
+            "com.github.jknack:handlebars:4.0.6",
+            "org.antlr:antlr4-runtime:4.5.1-1",
+            "com.mulesoft.anypoint:mule-module-autodiscovery:4.1.3",
+            "com.mulesoft.anypoint:api-gateway-reflection:4.1.3",
+            "com.mulesoft.anypoint:mule-module-api-deployment:4.1.3",
+            "com.mulesoft.anypoint:api-gateway-client:4.1.3",
+            "com.fasterxml.jackson.core:jackson-core:2.9.4",
+            "joda-time:joda-time:2.9.1",
+            "javax.ws.rs:javax.ws.rs-api:2.0",
+            "com.mulesoft.anypoint:mule-module-analytics-gw:4.1.3",
+            "com.mulesoft.anypoint:api-gateway-contract-service:1.0.1"
+        ]
+    },
+    "com.mulesoft.mule.distributions:api-gateway-bom-api:4.1.3": {
+        "groupId": "com.mulesoft.mule.distributions",
+        "artifactId": "api-gateway-bom-api",
+        "version": "4.1.3",
+        "filename": "api-gateway-bom-api-4.1.3.pom",
+        "scope": "compile",
+        "dependencies": [
+            "com.mulesoft.anypoint:api-gateway-api:1.1.1",
+            "com.mulesoft.anypoint:api-gateway-contract-service-api:1.1.1"
+        ]
+    },
+    "com.mulesoft.anypoint:api-gateway-api:1.1.1": {
+        "groupId": "com.mulesoft.anypoint",
+        "artifactId": "api-gateway-api",
+        "version": "1.1.1",
+        "filename": "api-gateway-api-1.1.1.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "com.mulesoft.anypoint:api-gateway-contract-service-api:1.1.1": {
+        "groupId": "com.mulesoft.anypoint",
+        "artifactId": "api-gateway-contract-service-api",
+        "version": "1.1.1",
+        "filename": "api-gateway-contract-service-api-1.1.1.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "com.mulesoft.anypoint:api-gateway-core:4.1.3": {
+        "groupId": "com.mulesoft.anypoint",
+        "artifactId": "api-gateway-core",
+        "version": "4.1.3",
+        "filename": "api-gateway-core-4.1.3.jar",
+        "scope": "compile",
+        "dependencies": [
+            "org.mapdb:mapdb:1.0.6"
+        ]
+    },
+    "org.mapdb:mapdb:1.0.6": {
+        "groupId": "org.mapdb",
+        "artifactId": "mapdb",
+        "version": "1.0.6",
+        "filename": "mapdb-1.0.6.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "com.mulesoft.anypoint:mule-module-policies:4.1.3": {
+        "groupId": "com.mulesoft.anypoint",
+        "artifactId": "mule-module-policies",
+        "version": "4.1.3",
+        "filename": "mule-module-policies-4.1.3.jar",
+        "scope": "compile",
+        "dependencies": [
+            "com.fasterxml.jackson.core:jackson-databind:2.9.4",
+            "com.fasterxml.jackson.core:jackson-annotations:2.9.0",
+            "com.github.jknack:handlebars:4.0.6",
+            "org.antlr:antlr4-runtime:4.5.1-1"
+        ]
+    },
+    "com.fasterxml.jackson.core:jackson-databind:2.9.4": {
+        "groupId": "com.fasterxml.jackson.core",
+        "artifactId": "jackson-databind",
+        "version": "2.9.4",
+        "filename": "jackson-databind-2.9.4.jar",
+        "scope": "compile",
+        "dependencies": [
+            "com.fasterxml.jackson.core:jackson-annotations:2.9.0"
+        ]
+    },
+    "com.fasterxml.jackson.core:jackson-annotations:2.9.0": {
+        "groupId": "com.fasterxml.jackson.core",
+        "artifactId": "jackson-annotations",
+        "version": "2.9.0",
+        "filename": "jackson-annotations-2.9.0.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "com.github.jknack:handlebars:4.0.6": {
+        "groupId": "com.github.jknack",
+        "artifactId": "handlebars",
+        "version": "4.0.6",
+        "filename": "handlebars-4.0.6.jar",
+        "scope": "compile",
+        "dependencies": [
+            "org.antlr:antlr4-runtime:4.5.1-1"
+        ]
+    },
+    "org.antlr:antlr4-runtime:4.5.1-1": {
+        "groupId": "org.antlr",
+        "artifactId": "antlr4-runtime",
+        "version": "4.5.1-1",
+        "filename": "antlr4-runtime-4.5.1-1.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "com.mulesoft.anypoint:mule-module-autodiscovery:4.1.3": {
+        "groupId": "com.mulesoft.anypoint",
+        "artifactId": "mule-module-autodiscovery",
+        "version": "4.1.3",
+        "filename": "mule-module-autodiscovery-4.1.3.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "com.mulesoft.anypoint:api-gateway-reflection:4.1.3": {
+        "groupId": "com.mulesoft.anypoint",
+        "artifactId": "api-gateway-reflection",
+        "version": "4.1.3",
+        "filename": "api-gateway-reflection-4.1.3.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "com.mulesoft.anypoint:mule-module-api-deployment:4.1.3": {
+        "groupId": "com.mulesoft.anypoint",
+        "artifactId": "mule-module-api-deployment",
+        "version": "4.1.3",
+        "filename": "mule-module-api-deployment-4.1.3.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "com.mulesoft.anypoint:api-gateway-client:4.1.3": {
+        "groupId": "com.mulesoft.anypoint",
+        "artifactId": "api-gateway-client",
+        "version": "4.1.3",
+        "filename": "api-gateway-client-4.1.3.jar",
+        "scope": "compile",
+        "dependencies": [
+            "com.fasterxml.jackson.core:jackson-core:2.9.4",
+            "joda-time:joda-time:2.9.1",
+            "javax.ws.rs:javax.ws.rs-api:2.0"
+        ]
+    },
+    "com.fasterxml.jackson.core:jackson-core:2.9.4": {
+        "groupId": "com.fasterxml.jackson.core",
+        "artifactId": "jackson-core",
+        "version": "2.9.4",
+        "filename": "jackson-core-2.9.4.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "joda-time:joda-time:2.9.1": {
+        "groupId": "joda-time",
+        "artifactId": "joda-time",
+        "version": "2.9.1",
+        "filename": "joda-time-2.9.1.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "javax.ws.rs:javax.ws.rs-api:2.0": {
+        "groupId": "javax.ws.rs",
+        "artifactId": "javax.ws.rs-api",
+        "version": "2.0",
+        "filename": "javax.ws.rs-api-2.0.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "com.mulesoft.anypoint:mule-module-analytics-gw:4.1.3": {
+        "groupId": "com.mulesoft.anypoint",
+        "artifactId": "mule-module-analytics-gw",
+        "version": "4.1.3",
+        "filename": "mule-module-analytics-gw-4.1.3.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "com.mulesoft.anypoint:api-gateway-contract-service:1.0.1": {
+        "groupId": "com.mulesoft.anypoint",
+        "artifactId": "api-gateway-contract-service",
+        "version": "1.0.1",
+        "filename": "api-gateway-contract-service-1.0.1-mule-service.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "org.apache.maven.shared:maven-invoker:3.0.1": {
+        "groupId": "org.apache.maven.shared",
+        "artifactId": "maven-invoker",
+        "version": "3.0.1",
+        "filename": "maven-invoker-3.0.1.jar",
+        "scope": "compile",
+        "dependencies": [
+            "org.apache.maven.shared:maven-shared-utils:3.2.1",
+            "org.codehaus.plexus:plexus-component-annotations:1.7.1"
+        ]
+    },
+    "org.apache.maven.shared:maven-shared-utils:3.2.1": {
+        "groupId": "org.apache.maven.shared",
+        "artifactId": "maven-shared-utils",
+        "version": "3.2.1",
+        "filename": "maven-shared-utils-3.2.1.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "org.codehaus.plexus:plexus-component-annotations:1.7.1": {
+        "groupId": "org.codehaus.plexus",
+        "artifactId": "plexus-component-annotations",
+        "version": "1.7.1",
+        "filename": "plexus-component-annotations-1.7.1.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "org.codehaus.groovy:groovy-all:2.4.15": {
+        "groupId": "org.codehaus.groovy",
+        "artifactId": "groovy-all",
+        "version": "2.4.15",
+        "filename": "groovy-all-2.4.15.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "org.apache.ant:ant:1.9.7": {
+        "groupId": "org.apache.ant",
+        "artifactId": "ant",
+        "version": "1.9.7",
+        "filename": "ant-1.9.7.jar",
+        "scope": "compile",
+        "dependencies": [
+            "org.apache.ant:ant-launcher:1.9.7"
+        ]
+    },
+    "org.apache.ant:ant-launcher:1.9.7": {
+        "groupId": "org.apache.ant",
+        "artifactId": "ant-launcher",
+        "version": "1.9.7",
+        "filename": "ant-launcher-1.9.7.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "wsdl4j:wsdl4j:1.6.3": {
+        "groupId": "wsdl4j",
+        "artifactId": "wsdl4j",
+        "version": "1.6.3",
+        "filename": "wsdl4j-1.6.3.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "org.hamcrest:hamcrest-core:1.3": {
+        "groupId": "org.hamcrest",
+        "artifactId": "hamcrest-core",
+        "version": "1.3",
+        "filename": "hamcrest-core-1.3.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    },
+    "junit:junit:4.12": {
+        "groupId": "junit",
+        "artifactId": "junit",
+        "version": "4.12",
+        "filename": "junit-4.12.jar",
+        "scope": "compile",
+        "dependencies": [
+            
+        ]
+    }
+}

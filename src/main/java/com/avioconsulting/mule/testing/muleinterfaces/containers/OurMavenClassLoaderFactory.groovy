@@ -1,10 +1,7 @@
 package com.avioconsulting.mule.testing.muleinterfaces.containers
 
 import com.avioconsulting.mule.testing.muleinterfaces.MuleRegistryListener
-import org.apache.commons.io.FileUtils
-import org.mule.maven.client.api.MavenClient
-import org.mule.maven.client.api.model.BundleDependency
-import org.mule.maven.client.api.model.BundleDescriptor
+import groovy.json.JsonSlurper
 import org.mule.runtime.module.embedded.api.Product
 import org.mule.runtime.module.embedded.internal.classloading.JdkOnlyClassLoaderFactory
 
@@ -16,14 +13,13 @@ class OurMavenClassLoaderFactory {
     private final ClassLoader classLoader
     private final List<URL> services
 
-    OurMavenClassLoaderFactory(MavenClient mavenClient,
-                               BaseEngineConfig engineConfig,
+    OurMavenClassLoaderFactory(BaseEngineConfig engineConfig,
                                Product product,
+                               File repoDirectory,
                                File muleHomeDirectory) {
         def descriptor = getContainerBomBundleDescriptor(engineConfig.muleVersion,
                                                          product)
-        def bundleDependencies = mavenClient.resolveBundleDescriptorDependencies(false,
-                                                                                 descriptor)
+        def bundleDependencies = getDependencies(descriptor)
         bundleDependencies = bundleDependencies.sort { d1, d2 ->
             if (isPatchDependency(d1)) {
                 return -1
@@ -34,20 +30,20 @@ class OurMavenClassLoaderFactory {
             }
         }
         def serviceDependencies = bundleDependencies.findAll { dep ->
-            def file = FileUtils.toFile(dep.bundleUri.toURL()).path.toLowerCase()
+            def file = dep.filename
             // this may seem weird but it's the best intersection of what
             // MavenContainerClassLoaderFactory does
             file.endsWith('.zip') || file.endsWith('-mule-service.jar')
         }
         def filterAnalyticsPluginEnabled = engineConfig.filterEngineExtensions.contains(BaseEngineConfig.ANALYTICS_PLUGIN)
         services = serviceDependencies.collect { svcDep ->
-            svcDep.bundleUri.toURL()
+            svcDep.getFullFilePath(repoDirectory)
         }
         services.removeAll() { svcUrl ->
             filterAnalyticsPluginEnabled && svcUrl.toString().contains('api-gateway-contract-service')
         }
         def urls = (bundleDependencies - serviceDependencies).collect { dep ->
-            dep.bundleUri.toURL()
+            dep.getFullFilePath(repoDirectory)
         }
         urls.add(new URL(new File(muleHomeDirectory, 'conf').toURI().toString() + '/'))
         urls.add(MuleRegistryListener.protectionDomain.codeSource.location)
@@ -55,17 +51,45 @@ class OurMavenClassLoaderFactory {
                                          JdkOnlyClassLoaderFactory.create())
     }
 
-    private static BundleDescriptor getContainerBomBundleDescriptor(String version,
-                                                                    Product product) {
-        return new BundleDescriptor.Builder()
-                .setGroupId(product == Product.MULE ? 'org.mule.distributions' : 'com.mulesoft.mule.distributions')
-                .setArtifactId(product == Product.MULE ? 'mule-runtime-impl-bom' : 'mule-runtime-impl-bom')
-                .setVersion(version)
-                .setType('pom').build()
+    List<Dependency> getDependencies(String descriptorKey) {
+        def rawMap = new JsonSlurper().parse(new File('dependencies.json'))
+        def asObjects = rawMap.collectEntries { key, map ->
+            [
+                    key,
+                    Dependency.parse(key,
+                                     map)
+            ]
+        } as Map<String, Dependency>
+        Map<Dependency, Integer> totals = [:]
+        flattenDependencies(descriptorKey,
+                            asObjects,
+                            totals)
+        totals.keySet().toList()
+
     }
 
-    private static boolean isPatchDependency(BundleDependency dependency) {
-        def groupId = dependency.descriptor.groupId
+    def flattenDependencies(String key,
+                            Map<String, Dependency> allResults,
+                            Map<Dependency, Integer> totals) {
+        def root = allResults[key]
+        assert root: "Unable to find expected key ${key} in ${allResults}"
+        totals[root] = 1
+        root.dependencies.each { depKey ->
+            flattenDependencies(depKey,
+                                allResults,
+                                totals)
+        }
+        totals
+    }
+
+
+    private static String getContainerBomBundleDescriptor(String version,
+                                                          Product product) {
+        "com.mulesoft.mule.distributions:mule-runtime-impl-bom:4.1.3"
+    }
+
+    private static boolean isPatchDependency(Dependency dependency) {
+        def groupId = dependency.groupId
         return groupId == CE_PATCHES_GROUP_ID || groupId == EE_PATCHES_GROUP_ID
     }
 

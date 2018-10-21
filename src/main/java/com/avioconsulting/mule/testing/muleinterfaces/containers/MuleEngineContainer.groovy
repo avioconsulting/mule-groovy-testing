@@ -5,10 +5,7 @@ import com.avioconsulting.mule.testing.muleinterfaces.MuleRegistryListener
 import com.avioconsulting.mule.testing.muleinterfaces.RuntimeBridgeTestSide
 import groovy.util.logging.Log4j2
 import org.apache.commons.io.FileUtils
-import org.mule.maven.client.api.MavenClientProvider
-import org.mule.maven.client.api.model.MavenConfiguration
 import org.mule.runtime.module.embedded.api.Product
-import org.mule.runtime.module.embedded.internal.DefaultEmbeddedContainerBuilder
 import org.mule.runtime.module.launcher.MuleContainer
 
 @Log4j2
@@ -48,7 +45,6 @@ class MuleEngineContainer {
                 appsDir.deleteDir()
             }
             appsDir.mkdirs()
-            def mavenClientProvider = MavenClientProvider.discoverProvider(DefaultEmbeddedContainerBuilder.classLoader)
             File repo
             def mavenRepoLocalSetting = System.getProperty('maven.repo.local')
             if (mavenRepoLocalSetting) {
@@ -63,20 +59,10 @@ class MuleEngineContainer {
             }
             // because we run in offline model, see pom.xml
             assert repo.exists(): "If your local Maven repo directory. ${repo}, does not already exist by now, we will not be able to run anyways"
-            // the Aether Maven client is not very sophisticated. It attempts to use the 1st profile in settings.xml
-            // Therefore we include our dependencies in the testing framework's POM and then rely
-            // on Maven to download them before this code even runs. thus forcing offline mode
-            def mavenConfig = MavenConfiguration.newMavenConfigurationBuilder()
-                    .localMavenRepositoryLocation(repo)
-            // see pom.xml for why we are doing this
-                    .offlineMode(true)
-                    .build()
-            // Mule uses this Maven client to derive its classpath from the local ~/.m2/repository directory
-            def mavenClient = mavenClientProvider.createMavenClient(mavenConfig)
             log.info 'Building classloader factory'
-            def classLoaderFactory = new OurMavenClassLoaderFactory(mavenClient,
-                                                                    engineConfig,
+            def classLoaderFactory = new OurMavenClassLoaderFactory(engineConfig,
                                                                     Product.MULE_EE,
+                                                                    repo,
                                                                     muleHomeDirectory)
             def servicesDir = new File(muleHomeDirectory, 'services')
             def services = classLoaderFactory.services
