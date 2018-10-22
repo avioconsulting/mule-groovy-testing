@@ -44,6 +44,8 @@
                     <filesets>
                         <fileset>
                             <directory>src/test/resources/maven/target</directory>
+                        </fileset>
+                        <fileset>
                             <directory>.mule</directory>
                         </fileset>
                     </filesets>
