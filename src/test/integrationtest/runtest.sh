@@ -5,12 +5,17 @@ if [ "$VERSION" = "" ]
     exit 1
 fi
 
-set -ex
+set -e
 
 rm -rf temporary_repo
-ARTIFACT_DIR=temporary_repo/com/avioconsulting/mule/testing/$VERSION
-mkdir -p $ARTIFACT_DIR
-cp -v ../../../target/testing-$VERSION.jar $ARTIFACT_DIR
-cp -v ../../../pom.xml $ARTIFACT_DIR/testing-$VERSION.pom
-MULE_VERSION=${VERSION:0:5}
-mvn -Dmaven.repo.local=temporary_repo -Dapp.runtime=$MULE_VERSION -Dtest.version=$VERSION clean test
+ARTIFACT_DIR=com/avioconsulting/mule/testing/$VERSION
+LOCAL_REPO=~/.m2/repository
+mkdir -pv temporary_repo/$ARTIFACT_DIR
+cp -v $LOCAL_REPO/$ARTIFACT_DIR/testing-${VERSION}* temporary_repo/$ARTIFACT_DIR
+
+RESOLVER_ARTIFACT_DIR=com/avioconsulting/mule/depresolver/1.0.0
+mkdir -pv temporary_repo/$RESOLVER_ARTIFACT_DIR
+cp -v $LOCAL_REPO/$RESOLVER_ARTIFACT_DIR/depresolver-1.0.0* temporary_repo/$RESOLVER_ARTIFACT_DIR
+
+set -x
+mvn -Dmaven.repo.local=temporary_repo -Dtest.version=$VERSION clean test
