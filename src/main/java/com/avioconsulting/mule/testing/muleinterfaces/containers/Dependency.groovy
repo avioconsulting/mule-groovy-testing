@@ -5,7 +5,7 @@ import groovy.transform.Immutable
 // mirrors JSON
 @Immutable
 class Dependency {
-    String name, groupId, artifactId, version, filenameRelativeToRepo, scope
+    String name, groupId, artifactId, version, filenameRelativeToRepo
 
     URL getFullFilePath(File repoDirectory) {
         new File(repoDirectory, filenameRelativeToRepo).toURI().toURL()
@@ -16,7 +16,6 @@ class Dependency {
                        stuff['groupId'],
                        stuff['artifactId'],
                        stuff['version'],
-                       stuff['filenameRelativeToRepo'],
-                       stuff['scope'])
+                       stuff['filenameRelativeToRepo'])
     }
 }

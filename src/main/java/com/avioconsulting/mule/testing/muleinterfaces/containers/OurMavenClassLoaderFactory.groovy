@@ -47,8 +47,8 @@ class OurMavenClassLoaderFactory {
     }
 
     List<Dependency> getDependencyGraph() {
-        def stream = OurMavenClassLoaderFactory.getResourceAsStream('/dependency_resources/dependencies.json')
-        assert stream: 'Run mvn generate-resources as part of your build process'
+        def stream = OurMavenClassLoaderFactory.getResourceAsStream('/mule4_embedded_engine/dependencies.json')
+        assert stream: 'Unable to find the /mule4_embedded_engine/dependencies.json resource. Did you forget to use the dependency-resolver-maven-plugin plugin in your pom to generate it?'
         def rawList = new JsonSlurper().parse(stream)
         rawList.collect { d ->
             Dependency.parse(d)
