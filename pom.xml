@@ -142,6 +142,29 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.2.0</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <artifactSet>
+                                <includes>
+                                    <!-- We shade this dependency because we only need
+         JdkOnlyClassLoaderFactory from it-->
+                                    <include>org.mule.runtime:mule-embedded-api</include>
+                                </includes>
+                            </artifactSet>
+                            <minimizeJar>true</minimizeJar>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 
@@ -177,6 +200,8 @@
             <scope>provided</scope>
         </dependency>
         <!-- Begin bootstrap required deps, so can't be provided -->
+        <!-- We shade this dependency because we only need
+         JdkOnlyClassLoaderFactory from it-->
         <dependency>
             <groupId>org.mule.runtime</groupId>
             <artifactId>mule-embedded-api</artifactId>
@@ -197,6 +222,14 @@
             <artifactId>log4j-core</artifactId>
             <version>2.11.0</version>
         </dependency>
+        <!-- Normally slf4j-api would already be included via mule-embedded-api but since
+         we are shading that, we need to explicitly supply it -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.7.25</version>
+        </dependency>
+        <!-- log4j2/async -->
         <dependency>
             <groupId>com.lmax</groupId>
             <artifactId>disruptor</artifactId>
