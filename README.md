@@ -1,6 +1,6 @@
 # Summary
 
-This testing framework is a more powerful approach than MUnit but sits on top of the base Mule MUnit/Java test classes.
+This testing framework is a more powerful approach than MUnit.
 
 Here is what's currently supported:
 
@@ -12,7 +12,7 @@ Here is what's currently supported:
 * Validate HTTP status codes automatically
 * Call flows with non-repeatable streams and instruct HTTP request mocks with JSON to use non-repeatable streams
 * Limited HTTP connector usage validation (query params, path, verbs, URI params)
-* Automatically loads Mule config files from mule-deploy.properties but allows substituting
+* Automatically loads Mule config files from from the artifact descriptor (mule-artifact.json) that Mule derives, but allows substituting
 
 Differences from MUnit:
 * Full power of Groovy/Java language
@@ -34,9 +34,14 @@ What hasn't been done yet/TODOs:
 1. Get this dependency in your .m2 repository
 2. Add Groovy plugins+dependencies to your pom to allow tests to be compiled:
 ```xml
+<properties>
+...
+    <groovy.compiler.version>2.4.15</groovy.compiler.version>
+</properties>
+...
 <plugin>
     <artifactId>maven-compiler-plugin</artifactId>
-    <version>3.1</version>
+    <version>3.6.1</version>
     <configuration>
         <compilerId>groovy-eclipse-compiler</compilerId>
     </configuration>
@@ -44,20 +49,37 @@ What hasn't been done yet/TODOs:
         <dependency>
             <groupId>org.codehaus.groovy</groupId>
             <artifactId>groovy-eclipse-compiler</artifactId>
-            <version>2.9.2-01</version>
+            <version>3.0.0-01</version>
         </dependency>
         <dependency>
             <groupId>org.codehaus.groovy</groupId>
             <artifactId>groovy-eclipse-batch</artifactId>
-            <version>2.4.3-01</version>
+            <version>${groovy.compiler.version}-02</version>
         </dependency>
     </dependencies>
+</plugin>
+<!-- Since Mule 4.x has a different classloading model, this will resolve all of the Mule 4 engine dependencies
+needed to run tests outside of the project AND outside of the testing framework itself. Will use
+${app.runtime} from this project by default -->
+<plugin>
+    <groupId>com.avioconsulting.mule</groupId>
+    <artifactId>dependency-resolver-maven-plugin</artifactId>
+    <version>1.0.0</version>
+    <executions>
+        <execution>
+            <id>generate-dep-graph</id>
+            <goals>
+                <goal>resolve</goal>
+            </goals>
+            <phase>generate-test-resources</phase>
+        </execution>
+    </executions>
 </plugin>
 ...
 <dependencies>
     <dependency>
         <groupId>org.codehaus.groovy</groupId>
-        <artifactId>groovy-all</artifactId>
+        <artifactId>${groovy.compiler.version}</artifactId>
         <version>2.4.3</version>
         <!-- Doesn't need to be deployed in ZIP -->
         <scope>provided</scope>
@@ -70,7 +92,7 @@ What hasn't been done yet/TODOs:
 <dependency>
     <groupId>com.avioconsulting.mule</groupId>
     <artifactId>testing</artifactId>
-    <version>1.0.13</version>
+    <version>2.0.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -96,7 +118,7 @@ What hasn't been done yet/TODOs:
 
 ## Loading
 
-You probably will want to create a base class for your project that extends the `BaseTest` class from this project. If you want to exclude any Mule config files from mule-deploy.properties, you should override the `getConfigResourceSubstitutes` method like shown below.
+You probably will want to create a base class for your project that extends the `BaseJunitTest` class from this project. If you want to exclude any Mule config files from mule-deploy.properties, you should override the `getConfigResourceSubstitutes` method like shown below.
 
 ```groovy
 @Override
@@ -108,7 +130,7 @@ Map<String, String> getConfigResourceSubstitutes() {
 }
 ```
 
-The philosophy here is to 'test' `mule-deploy.properties` to ensure it has the right entries (that's what matters for the real engine) and have test code modify it rather than creating a new set of files to import.
+The philosophy here is to rely on the Mule artifact descriptor, which should have the right entries (that's what matters for the real engine) and have test code modify it rather than creating a new set of files to import.
 
 ## Actual tests
 
@@ -139,7 +161,7 @@ The value add of this framework to achieve that is:
 
 ## Usage
 
-Have your tests extend from `BaseApiKitTest` instead of `BaseTest`. This will require you implement some abstract methods for API name, version, etc.
+Have your tests extend from `BaseApiKitTest` instead of `BaseJunitTest`. This will require you implement some abstract methods for API name, version, etc.
 
 Invoke like this:
 ```groovy

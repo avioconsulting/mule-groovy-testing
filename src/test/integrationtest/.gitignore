@@ -1,0 +1,51 @@
+/temporary_repo
+# ------------------------------------------------------------------------------ #
+# Java defaults (https://github.com/github/gitignore/blob/master/Java.gitignore) #
+# ------------------------------------------------------------------------------ #
+*.class
+
+# Package Files #
+*.jar
+*.war
+*.ear
+
+# ------------------------------------------------------------------------------------------- #
+# Eclipse-specific (https://github.com/github/gitignore/blob/master/Global/Eclipse.gitignore) #
+# ------------------------------------------------------------------------------------------- #
+*.pydevproject
+.metadata
+bin/**
+tmp/**
+tmp/**/*
+*.tmp
+*.bak
+*.swp
+*~.nib
+local.properties
+.settings/
+.loadpath
+# Normally .project should not be versioned but adding Groovy support to an Eclipse project
+# after you import it is a pain. It's much easier to version this
+#.project
+.classpath
+
+# External tool builders
+.externalToolBuilders/
+
+# Locally stored "Eclipse launch configurations"
+*.launch
+
+# CDT-specific
+.cproject
+
+# PDT-specific
+.buildpath
+
+# --------------- #
+# Studio-specific #
+# --------------- #
+target/
+.mule/**
+.mule/**/*
+.DS_Store
+velocity.log

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="cf0c7831-33c8-4638-841e-36aa1da35e38" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="c88e49a2-662c-48cc-9f0e-b5cff1f511e0" >
+		<http:request-connection host="someotherhost" port="${host.port}" />
+	</http:request-config>
+	<flow name="testframeworktestFlow" doc:id="bf58672b-5b04-43b4-839d-368d81034425" >
+		<http:listener doc:name="Listener" doc:id="205fff9b-66b4-495c-96c7-53ba5b1a4743" config-ref="HTTP_Listener_config" path="/"/>
+		<http:request method="GET" doc:name="Make a request" doc:id="d6821005-2483-4fac-ba1c-978144b18e24" config-ref="HTTP_Request_configuration" path="/"/>
+	</flow>
+</mule>
