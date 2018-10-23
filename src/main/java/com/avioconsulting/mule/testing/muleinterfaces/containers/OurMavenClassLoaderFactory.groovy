@@ -1,6 +1,5 @@
 package com.avioconsulting.mule.testing.muleinterfaces.containers
 
-import com.avioconsulting.mule.testing.muleinterfaces.MuleRegistryListener
 import groovy.json.JsonSlurper
 import org.mule.runtime.module.embedded.internal.classloading.JdkOnlyClassLoaderFactory
 
@@ -41,7 +40,8 @@ class OurMavenClassLoaderFactory {
             dep.getFullFilePath(repoDirectory)
         }
         urls.add(new URL(new File(muleHomeDirectory, 'conf').toURI().toString() + '/'))
-        urls.add(MuleRegistryListener.protectionDomain.codeSource.location)
+        // we need ourselves to be resolvable for our bridge classes, etc.
+        urls.add(OurMavenClassLoaderFactory.protectionDomain.codeSource.location)
         classLoader = new URLClassLoader(urls.toArray(new URL[0]),
                                          JdkOnlyClassLoaderFactory.create())
     }

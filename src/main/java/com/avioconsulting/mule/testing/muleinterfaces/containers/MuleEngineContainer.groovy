@@ -1,11 +1,9 @@
 package com.avioconsulting.mule.testing.muleinterfaces.containers
 
 import com.avioconsulting.mule.testing.muleinterfaces.MockingConfiguration
-import com.avioconsulting.mule.testing.muleinterfaces.MuleRegistryListener
 import com.avioconsulting.mule.testing.muleinterfaces.RuntimeBridgeTestSide
 import groovy.util.logging.Log4j2
 import org.apache.commons.io.FileUtils
-import org.mule.runtime.module.launcher.MuleContainer
 
 @Log4j2
 class MuleEngineContainer {
@@ -80,10 +78,10 @@ class MuleEngineContainer {
             registryListener = null
             try {
                 Thread.currentThread().contextClassLoader = containerClassLoader
-                def containerKlass = containerClassLoader.loadClass(MuleContainer.name)
+                def containerKlass = containerClassLoader.loadClass('org.mule.runtime.module.launcher.MuleContainer')
                 container = containerKlass.newInstance()
                 container.start(false)
-                def registryListenerKlass = containerClassLoader.loadClass(MuleRegistryListener.name)
+                def registryListenerKlass = containerClassLoader.loadClass('com.avioconsulting.mule.testing.muleinterfaces.MuleRegistryListener')
                 registryListener = registryListenerKlass.newInstance()
                 container.deploymentService.addDeploymentListener(registryListener)
                 assert container
