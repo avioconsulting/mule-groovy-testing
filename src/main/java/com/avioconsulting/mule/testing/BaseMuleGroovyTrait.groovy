@@ -250,7 +250,7 @@ trait BaseMuleGroovyTrait {
         }
         // this will trigger Mule's Maven plugin to populate both mule-artifact.json with all the config files/exports/etc.
         // and generate the classloader model
-        mavenInvokeRequest.setGoals(['generate-test-sources'])
+        mavenInvokeRequest.setGoals(['generate-test-resources'])
         def mavenInvoker = new DefaultInvoker()
         try {
             def result = mavenInvoker.execute(mavenInvokeRequest)
