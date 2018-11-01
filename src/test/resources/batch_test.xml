@@ -12,6 +12,9 @@ http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee
 http://www.mulesoft.org/schema/mule/batch http://www.mulesoft.org/schema/mule/batch/current/mule-batch.xsd">
     <http:request-config name="SomeSystem" protocol="HTTP" host="localhost" port="443" basePath="/"
                          doc:name="HTTP Request Configuration"/>
+    <flow name="invokesBatchJob">
+        <batch:execute name="theJob"/>
+    </flow>
     <batch:job name="theJob">
         <batch:process-records>
             <batch:step name="theStep">

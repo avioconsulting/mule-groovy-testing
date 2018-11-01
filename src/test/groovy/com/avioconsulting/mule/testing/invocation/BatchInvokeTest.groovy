@@ -56,6 +56,50 @@ class BatchInvokeTest extends BaseJunitTest implements OverrideConfigList {
     }
 
     @Test
+    void wait_for_batch_completion() {
+        // arrange
+        // for cases when a normal flow calls a batch job but we want to wait for the batch jot to
+        // complete since that invocation is asynchronous
+        def items = (1..3).collect {
+            [foo: 123]
+        }
+        def httpCalls = []
+
+        mockRestHttpCall('SomeSystem Call') {
+            json {
+                whenCalledWith { Map incoming ->
+                    httpCalls << incoming
+                }
+            }
+        }
+
+        mockRestHttpCall('SomeSystem Call from Complete') {
+            json {
+                whenCalledWith { Map incoming ->
+                    httpCalls << incoming
+                }
+            }
+        }
+
+        // act
+        waitForBatchCompletion(['theJob']) {
+            runFlow('invokesBatchJob') {
+                java {
+                    inputPayload(items)
+                }
+            }
+        }
+
+        // assert
+        assertThat httpCalls.size(),
+                   is(equalTo(4))
+        assertThat httpCalls[0],
+                   is(equalTo([key: 123]))
+        assertThat httpCalls[3],
+                   is(equalTo([key: -1]))
+    }
+
+    @Test
     void runs_failure_in_steps() {
         // arrange
         def items = (1..3).collect {
@@ -242,7 +286,8 @@ class BatchInvokeTest extends BaseJunitTest implements OverrideConfigList {
         }
 
         // act
-        runBatch('secondJobCallsFirst', ['theJob']) {
+        runBatch('secondJobCallsFirst',
+                 ['theJob']) {
             java {
                 inputPayload(items)
             }
@@ -321,7 +366,8 @@ class BatchInvokeTest extends BaseJunitTest implements OverrideConfigList {
 
         // act
         def result = shouldFail {
-            runBatch('secondJobCallsFirst', ['theJob']) {
+            runBatch('secondJobCallsFirst',
+                     ['theJob']) {
                 java {
                     inputPayload(items)
                 }

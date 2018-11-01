@@ -12,9 +12,16 @@ class BatchWaitUtil {
         this.muleContext = muleContext
     }
 
-    // useUnderlyingExceptions will ignore the "outer failures" from the batch job and will
-    // instead produce the underlying exception that caused the job to fail
-
+    /**
+     *  Registers a listener to catch batch events, then invokes the supplied closure, then
+     *  waits for those jobs to complete
+     *
+     * @param requestedJobsToWaitFor - Which jobs should we wait for
+     * @param throwUnderlyingException - will ignore the "outer failures" from the batch job and will
+     * instead produce the underlying exception that caused the job to fail
+     * @param closure - Put the code that triggers the batch job inside this closure. This method will
+     * register a listener before invoking the closure so it can catch batch events
+     */
     def waitFor(List<String> requestedJobsToWaitFor,
                 boolean throwUnderlyingException,
                 Closure closure) {

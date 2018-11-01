@@ -1,3 +1,6 @@
+# 1.0.28
+* Make `waitForBatchCompletion` available in base JUnit test. Document method signature more clearly
+
 # 1.0.27
 * Improve JAXB logging
 

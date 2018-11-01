@@ -137,4 +137,23 @@ class BaseJunitTest implements BaseMuleGroovyTrait {
                           apiKitFlowName,
                           closure)
     }
+
+    /**
+     *  Registers a listener to catch batch events, then invokes the supplied closure, then
+     *  waits for those jobs to complete
+     *
+     * @param jobsToWaitFor - Which jobs should we wait for
+     * @param throwUnderlyingException - will ignore the "outer failures" from the batch job and will
+     * instead produce the underlying exception that caused the job to fail
+     * @param closure - Put the code that triggers the batch job inside this closure. This method will
+     * register a listener before invoking the closure so it can catch batch events
+     */
+    def waitForBatchCompletion(List<String> jobsToWaitFor = null,
+                               boolean throwUnderlyingException = false,
+                               Closure closure) {
+        waitForBatchCompletion(muleContext,
+                               jobsToWaitFor,
+                               throwUnderlyingException,
+                               closure)
+    }
 }
