@@ -3,8 +3,8 @@ node {
          checkout([
             $class: 'GitSCM',
             branches: scm.branches,
-            extensions: scm.extensions + [[$class: 'CleanCheckout']],
-            userRemoteConfigs: scm.userRemoteConfigs
+            extensions: [[$class: 'CleanCheckout']],
+            userRemoteConfigs: []
           ])
     }
 
