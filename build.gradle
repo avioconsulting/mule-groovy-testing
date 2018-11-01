@@ -22,16 +22,26 @@ sourceSets {
 sourceCompatibility = 1.8
 
 def getMavenCreds = { String id ->
-    def m2Dir = new File(System.getProperty('user.home'), '.m2')
-    def settingsXmlPath = new File(m2Dir, 'settings.xml')
-    assert settingsXmlPath.exists()
+    File settingsXmlPath
+    def viaEnv = System.getenv('MVN_SETTINGS')
+    if (viaEnv) {
+        settingsXmlPath = new File(viaEnv)
+    } else {
+        def m2Dir = new File(System.getProperty('user.home'),
+                             '.m2')
+        settingsXmlPath = new File(m2Dir,
+                                   'settings.xml')
+    }
+    assert settingsXmlPath.exists() : "Settings XML file not found at ${settingsXmlPath}"
     def xmlNode = new XmlParser().parse(settingsXmlPath.absolutePath)
     def serverCreds = xmlNode.servers.server.find { node -> node.id.text() == id }
-    assert serverCreds != null
-    [user: serverCreds.username.text(), password: serverCreds.password.text()]
+    assert serverCreds != null : "Expected server entry in Maven config with ID ${id}"
+    def username = serverCreds.username.text()
+    println "Using username ${username} for Maven repo access"
+    [user: username, password: serverCreds.password.text()]
 }
 
-def eeCreds = getMavenCreds('avio-mule-ee-releases')
+def eeCreds = getMavenCreds('avio-releases')
 
 repositories {
     mavenCentral()
@@ -80,7 +90,8 @@ uploadArchives {
     }
 }
 
-task sourcesJar(type: Jar, dependsOn: classes) {
+task sourcesJar(type: Jar,
+                dependsOn: classes) {
     classifier = 'sources'
     from sourceSets.main.allSource
 }
@@ -91,34 +102,56 @@ artifacts {
 
 dependencies {
     def muleVersion = '3.9.1'
-    compile group: 'com.mulesoft.muleesb', name: 'mule-core-ee', version: muleVersion
+    compile group: 'com.mulesoft.muleesb',
+            name: 'mule-core-ee',
+            version: muleVersion
     ['devkit-support', 'client', 'json'].each { mod ->
         compile "org.mule.modules:mule-module-${mod}:${muleVersion}"
     }
-    compile group: 'com.mulesoft.muleesb.modules', name: 'mule-module-batch-ee', version: muleVersion
+    compile group: 'com.mulesoft.muleesb.modules',
+            name: 'mule-module-batch-ee',
+            version: muleVersion
     compile 'xalan:xalan:2.7.2'
     // 3.9.1 is bundled with this Groovy version
     compile 'org.codehaus.groovy:groovy-all:2.4.4'
     testCompile 'org.hamcrest:hamcrest-library:1.3'
-    compile group: 'junit', name: 'junit', version: '4.11'
+    compile group: 'junit',
+            name: 'junit',
+            version: '4.11'
     testCompile 'org.apache.ant:ant:1.9.7'
     testCompile('org.mule.modules:mule-module-sfdc:8.3.0') {
         // older version of xmlbeans interferes with newer one from mule-module-ws
-        exclude group: 'org.apache.xmlbeans', module: 'xmlbeans'
+        exclude group: 'org.apache.xmlbeans',
+                module: 'xmlbeans'
     }
-    testRuntime(group: 'com.mulesoft.weave', name: 'mule-plugin-weave', version: muleVersion) {
+    testRuntime(group: 'com.mulesoft.weave',
+                name: 'mule-plugin-weave',
+                version: muleVersion) {
         // older version of xmlbeans interferes with newer one from mule-module-ws
-        exclude group: 'org.apache.xmlbeans', module: 'xmlbeans'
+        exclude group: 'org.apache.xmlbeans',
+                module: 'xmlbeans'
     }
-    testRuntime group: 'org.mule.transports', name: 'mule-transport-http', version: muleVersion
-    testRuntime group: 'org.mule.transports', name: 'mule-transport-vm', version: muleVersion
-    testCompile group: 'org.mule.modules', name: 'mule-module-ws', version: muleVersion
-    testRuntime group: 'org.mule.modules', name: 'mule-module-apikit', version: muleVersion
-    testRuntime group: 'org.mule.modules', name: 'mule-module-apikit-soap', version: '1.0.3'
+    testRuntime group: 'org.mule.transports',
+                name: 'mule-transport-http',
+                version: muleVersion
+    testRuntime group: 'org.mule.transports',
+                name: 'mule-transport-vm',
+                version: muleVersion
+    testCompile group: 'org.mule.modules',
+                name: 'mule-module-ws',
+                version: muleVersion
+    testRuntime group: 'org.mule.modules',
+                name: 'mule-module-apikit',
+                version: muleVersion
+    testRuntime group: 'org.mule.modules',
+                name: 'mule-module-apikit-soap',
+                version: '1.0.3'
     // our tests do not actually depend on WMQ, but having a library here with an external dependency
     // that's not in Maven/Gradle (and not in the classpath) exposes a problem that will occur
     // if you try and run tests from Studio or another IDE where every Mule server lib is on
     // the classpath
     // see GroovyTestingArtifactContext for more details
-    testRuntime group: 'com.mulesoft.muleesb.transports', name: 'mule-transport-wmq-ee', version: muleVersion
+    testRuntime group: 'com.mulesoft.muleesb.transports',
+                name: 'mule-transport-wmq-ee',
+                version: muleVersion
 }
