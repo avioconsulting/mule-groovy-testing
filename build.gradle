@@ -32,10 +32,10 @@ def getMavenCreds = { String id ->
         settingsXmlPath = new File(m2Dir,
                                    'settings.xml')
     }
-    assert settingsXmlPath.exists() : "Settings XML file not found at ${settingsXmlPath}"
+    assert settingsXmlPath.exists(): "Settings XML file not found at ${settingsXmlPath}"
     def xmlNode = new XmlParser().parse(settingsXmlPath.absolutePath)
     def serverCreds = xmlNode.servers.server.find { node -> node.id.text() == id }
-    assert serverCreds != null : "Expected server entry in Maven config with ID ${id}"
+    assert serverCreds != null: "Expected server entry in Maven config with ID ${id}"
     def username = serverCreds.username.text()
     println "Using username ${username} for Maven repo access"
     [user: username, password: serverCreds.password.text()]
@@ -130,6 +130,11 @@ dependencies {
         // older version of xmlbeans interferes with newer one from mule-module-ws
         exclude group: 'org.apache.xmlbeans',
                 module: 'xmlbeans'
+        // Normally Maven/weave will result in using stax2-api 3.1.4. But a transitive dependency
+        // of dataweave in Gradle can result in us using 4.0.0, which is not compatible with woodstox
+        // and breaks our SOAP unit tests
+        exclude group: 'org.codehaus.woodstox',
+                module: 'stax2-api'
     }
     testRuntime group: 'org.mule.transports',
                 name: 'mule-transport-http',
