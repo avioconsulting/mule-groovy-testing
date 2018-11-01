@@ -1,11 +1,6 @@
 node {
     stage('Checkout') {
-         checkout([
-            $class: 'GitSCM',
-            branches: scm.branches,
-            extensions: [[$class: 'CleanCheckout']],
-            userRemoteConfigs: []
-          ])
+         checkout scm
     }
 
     stage('Build and deploy') {
