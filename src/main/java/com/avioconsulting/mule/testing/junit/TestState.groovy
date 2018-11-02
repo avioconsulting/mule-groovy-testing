@@ -1,8 +1,8 @@
 package com.avioconsulting.mule.testing.junit
 
-import com.avioconsulting.mule.testing.muleinterfaces.containers.MuleEngineContainer
 import com.avioconsulting.mule.testing.muleinterfaces.MockingConfiguration
 import com.avioconsulting.mule.testing.muleinterfaces.RuntimeBridgeTestSide
+import com.avioconsulting.mule.testing.muleinterfaces.containers.MuleEngineContainer
 import groovy.util.logging.Log4j2
 import org.apache.logging.log4j.CloseableThreadContext
 
@@ -37,6 +37,15 @@ class TestState {
                 muleEngineContainer.shutdown()
                 muleEngineContainer = test.createMuleEngineContainer(proposedConfig)
             }
+        }
+    }
+
+    void undeployExistingApps() {
+        if (muleEngineContainer && runtimeBridge) {
+            log.info 'Undeploying existing app {}',
+                     runtimeBridge.artifactName
+            muleEngineContainer.undeployApplication(runtimeBridge)
+            runtimeBridge = null
         }
     }
 
