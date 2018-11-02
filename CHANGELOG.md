@@ -1,5 +1,11 @@
 # 2.0
 (for Mule 4.1)
+
+# 2.0.1
+* Fix issue with no connector projects
+* Add ability to stop apps
+
+# 2.0.0
 * First release
 
 # 1.0
