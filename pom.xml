@@ -317,6 +317,12 @@
             </snapshots>
         </pluginRepository>
         <pluginRepository>
+            <id>avio-releases</id>
+            <name>AVIO Releases Repository</name>
+            <url>https://devops.avioconsulting.com/nexus/repository/avio-releases/</url>
+            <layout>default</layout>
+        </pluginRepository>
+        <pluginRepository>
             <id>groovy</id>
             <name>Groovy</name>
             <layout>default</layout>
