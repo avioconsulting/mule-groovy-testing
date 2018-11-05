@@ -22,6 +22,14 @@ public class MuleRegistryListener implements DeploymentListener {
         this.batchListeners = new HashMap<>();
     }
 
+    @Override
+    public void onUndeploymentStart(String artifactName) {
+        // we should clean up after ourselves
+        runtimeBridges.remove(artifactName);
+        mockingConfigurations.remove(artifactName);
+        batchListeners.remove(artifactName);
+    }
+
     // this will run after onArtifactCreated and will allow our test code to use
     // the registry to get ahold of certain Mule objects (like running flows, etc.)
     @Override
