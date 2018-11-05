@@ -32,31 +32,42 @@ trait BaseMuleGroovyTrait {
     static File join(Object... paths) {
         assert paths[0] instanceof File
         paths.inject { acc, file ->
-            new File(acc, file)
+            new File(acc,
+                     file)
         }
+    }
+
+    // will be what shows up in app.name/MuleConfiguration.getId(), etc.
+    String getUniqueArtifactName(TestingConfiguration testingConfiguration) {
+        def muleArtifact = testingConfiguration.artifactModel
+        // ensure some uniqueness
+        "${muleArtifact.name}:${testingConfiguration.hashCode()}"
     }
 
     RuntimeBridgeTestSide deployApplication(MuleEngineContainer muleEngineContainer,
                                             TestingConfiguration testingConfiguration,
                                             MockingConfiguration mockingConfiguration) {
-        def muleArtifact = testingConfiguration.artifactModel
-        // will ensure some uniqueness
-        def artifactName = "${muleArtifact.name}:${testingConfiguration.hashCode()}"
+        def artifactName = getUniqueArtifactName(testingConfiguration)
         def appSourceDir = new File(muleEngineContainer.muleHomeDirectory,
                                     artifactName)
         appSourceDir.mkdirs()
         try {
-            def metaInfDir = join(appSourceDir, 'META-INF')
-            def muleArtifactDir = join(metaInfDir, 'mule-artifact')
+            def metaInfDir = join(appSourceDir,
+                                  'META-INF')
+            def muleArtifactDir = join(metaInfDir,
+                                       'mule-artifact')
             muleArtifactDir.mkdirs()
-            def classLoaderFile = join(muleArtifactDir, 'classloader-model.json')
+            def classLoaderFile = join(muleArtifactDir,
+                                       'classloader-model.json')
             def classLoaderModel = testingConfiguration.classLoaderModel
             def logger = getLogger()
             def classLoaderModelJson = JsonOutput.prettyPrint(JsonOutput.toJson(classLoaderModel))
             logger.info 'Using classloader model {}',
                         classLoaderModelJson
             classLoaderFile.text = classLoaderModelJson
-            def artifactJson = join(muleArtifactDir, 'mule-artifact.json')
+            def artifactJson = join(muleArtifactDir,
+                                    'mule-artifact.json')
+            def muleArtifact = testingConfiguration.artifactModel
             def muleArtifactJson = JsonOutput.prettyPrint(JsonOutput.toJson(muleArtifact))
             logger.info 'Using Mule artifact descriptor {}',
                         muleArtifactJson
@@ -73,7 +84,8 @@ trait BaseMuleGroovyTrait {
                                           destMavenPath)
             def sourceRepositoryDirectory = new File(testingConfiguration.repositoryDirectory)
             if (sourceRepositoryDirectory.exists()) {
-                def targetRepositoryDirectory = join(appSourceDir, 'repository')
+                def targetRepositoryDirectory = join(appSourceDir,
+                                                     'repository')
                 FileUtils.copyDirectory(sourceRepositoryDirectory,
                                         targetRepositoryDirectory)
             }
@@ -115,31 +127,38 @@ trait BaseMuleGroovyTrait {
     }
 
     File getBuildOutputDirectory() {
-        new File(projectDirectory, 'target')
+        new File(projectDirectory,
+                 'target')
     }
 
     List<File> outputDirsToCopy() {
         def build = buildOutputDirectory
         [
-                new File(build, 'classes'),
-                new File(build, 'test-classes')
+                new File(build,
+                         'classes'),
+                new File(build,
+                         'test-classes')
         ]
     }
 
     File getRepositoryDirectory() {
-        new File(buildOutputDirectory, 'repository')
+        new File(buildOutputDirectory,
+                 'repository')
     }
 
     File getMetaInfDirectory() {
-        new File(buildOutputDirectory, 'META-INF')
+        new File(buildOutputDirectory,
+                 'META-INF')
     }
 
     File getMuleArtifactDirectory() {
-        new File(metaInfDirectory, 'mule-artifact')
+        new File(metaInfDirectory,
+                 'mule-artifact')
     }
 
     File getSkinnyMuleArtifactDescriptorPath() {
-        new File(projectDirectory, 'mule-artifact.json')
+        new File(projectDirectory,
+                 'mule-artifact.json')
     }
 
     File getMavenPomDirectory() {
@@ -147,11 +166,13 @@ trait BaseMuleGroovyTrait {
     }
 
     File getMavenPomPath() {
-        new File(mavenPomDirectory, 'pom.xml')
+        new File(mavenPomDirectory,
+                 'pom.xml')
     }
 
     File getClassesDirectory() {
-        new File(buildOutputDirectory, 'classes')
+        new File(buildOutputDirectory,
+                 'classes')
     }
 
     def regenerateClassLoaderModelAndArtifactDescriptor() {
@@ -177,14 +198,17 @@ trait BaseMuleGroovyTrait {
         assert file.exists(): "Expected your project to contain at least a basic artifact descriptor at ${file}"
         def artifactDescriptorHashMap = new JsonSlurper().parse(file) as Map
         def classesPath = classesDirectory.absoluteFile.toPath()
-        def allConfigFiles = new FileNameFinder().getFileNames(classesDirectory.absolutePath, '**/*.xml').collect { filename ->
+        def allConfigFiles = new FileNameFinder().getFileNames(classesDirectory.absolutePath,
+                                                               '**/*.xml').collect { filename ->
             // relative in case code is moved around on machine
             classesPath.relativize(new File(filename).toPath()).toString()
         } as List<String>
         artifactDescriptorHashMap.configs = allConfigFiles
         def sha256 = hashString(JsonOutput.toJson(artifactDescriptorHashMap))
-        def digestFile = new File(buildOutputDirectory, 'mule-artifact.json.sha256')
-        def artifactDescFile = new File(muleArtifactDirectory, 'mule-artifact.json')
+        def digestFile = new File(buildOutputDirectory,
+                                  'mule-artifact.json.sha256')
+        def artifactDescFile = new File(muleArtifactDirectory,
+                                        'mule-artifact.json')
         def needUpdate = (!digestFile.exists()) || digestFile.text != sha256 || !artifactDescFile.exists()
         if (needUpdate) {
             // if we do an update for the classloader model, our artifact descriptor will already be taken care of
@@ -210,7 +234,8 @@ trait BaseMuleGroovyTrait {
     private boolean regenerateClassLoaderModel() {
         // our classloader model is pretty closely tied to the POM
         def sha256 = hashString(mavenPomPath.text)
-        def digestFile = new File(buildOutputDirectory, 'pom.xml.sha256')
+        def digestFile = new File(buildOutputDirectory,
+                                  'pom.xml.sha256')
         def classLoaderModelFile = getClassLoaderModelFile() as File
         def needUpdate = (!digestFile.exists()) || digestFile.text != sha256 || !classLoaderModelFile.exists()
         if (needUpdate) {
@@ -266,7 +291,8 @@ trait BaseMuleGroovyTrait {
     }
 
     File getClassLoaderModelFile() {
-        new File(muleArtifactDirectory, 'classloader-model.json')
+        new File(muleArtifactDirectory,
+                 'classloader-model.json')
     }
 
     /**
@@ -280,7 +306,8 @@ trait BaseMuleGroovyTrait {
     }
 
     File getMuleArtifactPath() {
-        new File(muleArtifactDirectory, 'mule-artifact.json')
+        new File(muleArtifactDirectory,
+                 'mule-artifact.json')
     }
 
     Map getMuleArtifactJson() {
@@ -314,7 +341,9 @@ trait BaseMuleGroovyTrait {
         def runner = new FlowRunnerImpl(bridge,
                                         flow,
                                         flowName)
-        def code = closure.rehydrate(runner, this, this)
+        def code = closure.rehydrate(runner,
+                                     this,
+                                     this)
         code.resolveStrategy = Closure.DELEGATE_ONLY
         code()
         def outputEvent = runFlow(bridge,
@@ -331,7 +360,9 @@ trait BaseMuleGroovyTrait {
                                                 apiKitFlowName,
                                                 operation,
                                                 bridge)
-        def code = closure.rehydrate(invoker, this, this)
+        def code = closure.rehydrate(invoker,
+                                     this,
+                                     this)
         code.resolveStrategy = Closure.DELEGATE_ONLY
         code()
         def event = invoker.event
@@ -352,7 +383,9 @@ trait BaseMuleGroovyTrait {
                                boolean throwUnderlyingException = false,
                                Closure closure) {
         def batchWaitUtil = new BatchWaitUtil(bridge)
-        batchWaitUtil.waitFor(jobsToWaitFor, throwUnderlyingException, closure)
+        batchWaitUtil.waitFor(jobsToWaitFor,
+                              throwUnderlyingException,
+                              closure)
     }
 
     def runBatch(RuntimeBridgeTestSide bridge,
@@ -364,7 +397,9 @@ trait BaseMuleGroovyTrait {
         def runner = new FlowRunnerImpl(bridge,
                                         flow,
                                         batchName)
-        def code = closure.rehydrate(runner, this, this)
+        def code = closure.rehydrate(runner,
+                                     this,
+                                     this)
         code.resolveStrategy = Closure.DELEGATE_ONLY
         code()
         waitForBatchCompletion(bridge,
@@ -381,7 +416,9 @@ trait BaseMuleGroovyTrait {
                          String connectorName,
                          @DelegatesTo(HttpRequestResponseChoice) Closure closure) {
         def formatterChoice = new HttpRequestResponseChoiceImpl(bridge)
-        def code = closure.rehydrate(formatterChoice, this, this)
+        def code = closure.rehydrate(formatterChoice,
+                                     this,
+                                     this)
         code.resolveStrategy = Closure.DELEGATE_ONLY
         code()
         mockingConfiguration.addMock(connectorName,
@@ -393,7 +430,9 @@ trait BaseMuleGroovyTrait {
                       String connectorName,
                       @DelegatesTo(StandardRequestResponse) Closure closure) {
         def formatterChoice = new VMRequestResponseChoiceImpl()
-        def code = closure.rehydrate(formatterChoice, this, this)
+        def code = closure.rehydrate(formatterChoice,
+                                     this,
+                                     this)
         code.resolveStrategy = Closure.DELEGATE_ONLY
         code()
         mockingConfiguration.addMock(connectorName,
@@ -405,7 +444,9 @@ trait BaseMuleGroovyTrait {
                     String connectorName,
                     @DelegatesTo(StandardRequestResponse) Closure closure) {
         def formatterChoice = new GenericRequestResponseChoiceImpl()
-        def code = closure.rehydrate(formatterChoice, this, this)
+        def code = closure.rehydrate(formatterChoice,
+                                     this,
+                                     this)
         code.resolveStrategy = Closure.DELEGATE_ONLY
         code()
         mockingConfiguration.addMock(connectorName,
@@ -418,7 +459,9 @@ trait BaseMuleGroovyTrait {
                            @DelegatesTo(Choice) Closure closure) {
         def choice = new ChoiceImpl(muleContext,
                                     muleContext)
-        def code = closure.rehydrate(choice, this, this)
+        def code = closure.rehydrate(choice,
+                                     this,
+                                     this)
         code.resolveStrategy = Closure.DELEGATE_ONLY
         code()
         mockingConfiguration.addMock(connectorName,
@@ -430,7 +473,9 @@ trait BaseMuleGroovyTrait {
                      String connectorName,
                      @DelegatesTo(SOAPFormatter) Closure closure) {
         def soapFormatter = new SOAPFormatterImpl(bridge)
-        def code = closure.rehydrate(soapFormatter, this, this)
+        def code = closure.rehydrate(soapFormatter,
+                                     this,
+                                     this)
         code.resolveStrategy = Closure.DELEGATE_ONLY
         code()
         mockingConfiguration.addMock(connectorName,

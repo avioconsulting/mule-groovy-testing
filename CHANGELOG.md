@@ -4,6 +4,7 @@
 # 2.0.1
 * Fix issue with no connector projects
 * Add ability to stop apps
+* Allow changing the artifact name
 
 # 2.0.0
 * First release
