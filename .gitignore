@@ -3,5 +3,4 @@
 /target
 /catalog
 /.mule
-rebasepush.sh
 /dependency-reduced-pom.xml
