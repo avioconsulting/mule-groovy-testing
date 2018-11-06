@@ -40,7 +40,7 @@ trait OverrideConfigList {
 
     def getMuleVersion() {
         // TODO: hard coded
-        '4.1.3'
+        '4.1.4'
     }
 
     Map getMuleArtifactJson() {
