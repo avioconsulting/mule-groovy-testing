@@ -61,6 +61,7 @@ trait BaseMuleGroovyTrait {
                                        'classloader-model.json')
             def classLoaderModel = testingConfiguration.classLoaderModel
             def logger = getLogger()
+            classLoaderModel = filterDomainFromClassLoaderModel(classLoaderModel)
             def classLoaderModelJson = JsonOutput.prettyPrint(JsonOutput.toJson(classLoaderModel))
             logger.info 'Using classloader model {}',
                         classLoaderModelJson
@@ -308,6 +309,20 @@ trait BaseMuleGroovyTrait {
     File getMuleArtifactPath() {
         new File(muleArtifactDirectory,
                  'mule-artifact.json')
+    }
+
+    // domains are trickier to deal with here. for now, we just won't load them
+    def filterDomainFromClassLoaderModel(Map classLoaderModel) {
+        def dependencies = classLoaderModel.dependencies
+        def domains = dependencies.findAll { dep ->
+            dep.artifactCoordinates.classifier == 'mule-domain'
+        }
+        if (domains.any()) {
+            logger.info 'Removing domain {} from classloader model to make tests simpler',
+                        domains
+        }
+        def leanerDependencies = dependencies - domains
+        return classLoaderModel + [dependencies: leanerDependencies]
     }
 
     Map getMuleArtifactJson() {
