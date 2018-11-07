@@ -34,6 +34,9 @@ trait OverrideConfigList {
 
     Properties getPropertiesForMavenGeneration() {
         new Properties([
+                // src/test/resources/maven/pom.xml does not have a version in it. we use this
+                // to "populate" it so we can share the value with the artifact descriptor
+                // override we have below
                 'app.runtime': getMuleVersion()
         ])
     }
