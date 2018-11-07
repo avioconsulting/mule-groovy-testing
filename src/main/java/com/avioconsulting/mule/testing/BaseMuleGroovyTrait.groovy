@@ -19,6 +19,7 @@ import org.apache.maven.shared.invoker.DefaultInvocationRequest
 import org.apache.maven.shared.invoker.DefaultInvoker
 
 import java.security.MessageDigest
+import java.util.regex.Pattern
 
 // basic idea here is to have a trait that could be mixed in to any type of testing framework situation
 // this trait should be stateless
@@ -267,7 +268,45 @@ trait BaseMuleGroovyTrait {
         null
     }
 
+    def getMavenHomeDirectoryFromPath() {
+        def process = 'mvn --version'.execute()
+        assert process.waitFor() == 0: "Expected mvn --version command to succeed but failed with ${process.err.text}"
+        def output = process.text
+        def matcher = Pattern.compile(/.*Maven home: (.*?)$.*/,
+                                      Pattern.DOTALL | Pattern.MULTILINE).matcher(output)
+        assert matcher.matches(): "Expected to find one Maven home entry in output ${output}"
+        matcher.group(1)
+    }
+
     private void generateUsingMaven() {
+        def mavenHome = System.getProperty('maven.home')
+        def viaSystemProperty = false
+        if (mavenHome) {
+            logger.info 'Generating using Maven from maven.home system property - {}',
+                        mavenHome
+            viaSystemProperty = true
+        } else {
+            mavenHome = getMavenHomeDirectoryFromPath()
+            logger.info 'Generating using Maven from system mvn path - {}',
+                        mavenHome
+        }
+        try {
+            generateUsingMavenWithHome(mavenHome)
+        }
+        catch (e) {
+            if (viaSystemProperty) {
+                mavenHome = getMavenHomeDirectoryFromPath()
+                logger.info "Caught exception '{}' while using Maven from maven.home system property. re-running using maven from system path {}",
+                            e.message,
+                            mavenHome
+                generateUsingMavenWithHome(mavenHome)
+            } else {
+                throw e
+            }
+        }
+    }
+
+    private void generateUsingMavenWithHome(String mavenHome) {
         def mavenInvokeRequest = new DefaultInvocationRequest()
         mavenInvokeRequest.setPomFile(mavenPomPath)
         def mavenProps = propertiesForMavenGeneration
@@ -278,6 +317,7 @@ trait BaseMuleGroovyTrait {
         // and generate the classloader model
         mavenInvokeRequest.setGoals(['generate-test-resources'])
         def mavenInvoker = new DefaultInvoker()
+        mavenInvoker.setMavenHome(new File(mavenHome))
         try {
             def result = mavenInvoker.execute(mavenInvokeRequest)
             if (result.exitCode != 0) {
