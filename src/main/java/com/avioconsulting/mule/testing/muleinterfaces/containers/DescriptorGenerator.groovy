@@ -167,7 +167,9 @@ class DescriptorGenerator {
         }
         // this will trigger Mule's Maven plugin to populate both mule-artifact.json with all the config files/exports/etc.
         // and generate the classloader model
-        mavenInvokeRequest.setGoals(['generate-test-resources'])
+        // we could get that with generate-test-resources but if we do test-compile, we ensure that
+        // the dependency resolver maven plugin output is available
+        mavenInvokeRequest.setGoals(['test-compile'])
         def mavenInvoker = new DefaultInvoker()
         mavenInvoker.setMavenHome(new File(mavenHome))
         try {

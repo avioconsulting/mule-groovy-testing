@@ -3,6 +3,7 @@
 
 # 2.0.3
 * Be more lenient about Maven paths (if we can resolve via a system mvn path, try that)
+* Ensure the mule dependency JSON file for the engine makes it into test-classes if its generated for the first time during our Maven run to build the artifact/classloader descriptor
 
 # 2.0.2
 * Fix issue with domains (For now, will 'remove' the domain from the app when loading)
