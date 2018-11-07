@@ -42,10 +42,10 @@ abstract class BaseJunitTest implements
         testState.startMule(this)
     }
 
+    @Override
     Map getClassLoaderModel() {
         if (!cachedClassLoaderModel) {
-            regenerateClassLoaderModelAndArtifactDescriptor()
-            cachedClassLoaderModel = new JsonSlurper().parse(classLoaderModelFile)
+            cachedClassLoaderModel = BaseMuleGroovyTrait.super.getClassLoaderModel()
         }
         cachedClassLoaderModel
     }
