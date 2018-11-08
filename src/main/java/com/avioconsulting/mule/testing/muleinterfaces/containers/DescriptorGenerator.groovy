@@ -1,5 +1,6 @@
 package com.avioconsulting.mule.testing.muleinterfaces.containers
 
+import com.avioconsulting.mule.testing.EnvironmentDetector
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 import groovy.util.logging.Log4j2
@@ -10,7 +11,7 @@ import java.security.MessageDigest
 import java.util.regex.Pattern
 
 @Log4j2
-class DescriptorGenerator {
+class DescriptorGenerator implements EnvironmentDetector {
     private final File classLoaderModelFile
     private final File skinnyMuleArtifactDescriptorPath
     private final File classesDirectory
@@ -36,8 +37,7 @@ class DescriptorGenerator {
     }
 
     def regenerateClassLoaderModelAndArtifactDescriptor() {
-        def isMavenRun = System.getProperty('sun.java.command').contains('surefire') && !System.getProperty('testForTheTests')
-        if (isMavenRun) {
+        if (isRunViaMavenSurefire() && !System.getProperty('testForTheTests')) {
             assert classLoaderModelFile.exists(): "Expected ${classLoaderModelFile} to already exist because we are running from Maven but it does not. Has the Mule Maven plugin run?"
             // the odds are very low that a Maven based run will not have already generated our files
             log.info 'Skipping classloader model/artifact descriptor regenerate because we are running in Maven'
@@ -78,9 +78,9 @@ class DescriptorGenerator {
                 // not the cleanest way in the world, but it avoids lots of coupling. and it's more cross platform
                 // compatible than direct shell invocation
                 log.info 'Artifact descriptor {}, running maven against POM {} to generate one',
-                            context,
-                            mavenPomPath
-                generateUsingMaven()
+                         context,
+                         mavenPomPath
+                runMaven()
             } else {
                 log.info 'ClassLoader model already triggered Maven run so no need to run Maven to build artifact descriptor'
             }
@@ -103,9 +103,9 @@ class DescriptorGenerator {
             // not the cleanest way in the world, but it avoids lots of coupling. and it's more cross platform
             // compatible than direct shell invocation
             log.info 'ClassLoader model descriptor {}, running maven against POM {} to generate one',
-                        context,
-                        mavenPomPath
-            generateUsingMaven()
+                     context,
+                     mavenPomPath
+            runMaven()
             assert classLoaderModelFile.exists(): 'Somehow we successfully ran a Maven compile but did not generate a classloader model.'
             digestFile.write(sha256)
         } else {
@@ -130,35 +130,49 @@ class DescriptorGenerator {
         matcher.group(1)
     }
 
-    private void generateUsingMaven() {
+    private void runMaven() {
         def mavenHome = System.getProperty('maven.home')
-        def viaSystemProperty = false
-        if (mavenHome) {
-            log.info 'Generating using Maven from maven.home system property - {}',
-                        mavenHome
-            viaSystemProperty = true
-        } else {
-            mavenHome = getMavenHomeDirectoryFromPath()
-            log.info 'Generating using Maven from system mvn path - {}',
-                        mavenHome
+        if (!mavenHome && isEclipse()) {
+            throw new Exception("\n---------Eclipse/Studio does not make the system path available during JUnit runs and you do not have maven.home configured as a system property so we cannot invoke Maven to generate the descriptor. You cannot use the version of Maven bundled inside Studio. To fix this, go to Window->Preferences->Java->Installed JREs->highlight the JRE->Edit, then paste in -Dmaven.home=yourMavenHomeDirectory into 'Default VM arguments'.Y ou might need to re-create any existing Run Configurations.\n---------")
         }
+        def viaSystemProperty = false
+        def attempts = []
         try {
-            generateUsingMavenWithHome(mavenHome)
+            if (mavenHome) {
+                log.info 'Generating using Maven from maven.home system property - {}',
+                         mavenHome
+                viaSystemProperty = true
+                attempts << 'maven.home system property'
+            } else {
+                attempts << 'mvn executable via system path'
+                log.info 'maven.home property was not set, attempting to get mvn from system path'
+                mavenHome = getMavenHomeDirectoryFromPath()
+                log.info 'Generating using Maven from system mvn path - {}',
+                         mavenHome
+            }
+            try {
+                runMavenWithHome(mavenHome)
+            }
+            catch (e) {
+                if (viaSystemProperty) {
+                    attempts << 'mvn executable via system path'
+                    mavenHome = getMavenHomeDirectoryFromPath()
+                    log.info "Caught exception '{}' while using Maven from maven.home system property. This can happen while using IntelliJ's built-in Maven installation. Re-running using maven from system path {}",
+                             e.message,
+                             mavenHome
+                    runMavenWithHome(mavenHome)
+                } else {
+                    throw e
+                }
+            }
         }
         catch (e) {
-            if (viaSystemProperty) {
-                mavenHome = getMavenHomeDirectoryFromPath()
-                log.info "Caught exception '{}' while using Maven from maven.home system property. re-running using maven from system path {}",
-                            e.message,
-                            mavenHome
-                generateUsingMavenWithHome(mavenHome)
-            } else {
-                throw e
-            }
+            throw new Exception("Attempted to locate Maven to generate classloader descriptor via these methods but failed! ${attempts}",
+                                e)
         }
     }
 
-    private void generateUsingMavenWithHome(String mavenHome) {
+    private void runMavenWithHome(String mavenHome) {
         def mavenInvokeRequest = new DefaultInvocationRequest()
         mavenInvokeRequest.setPomFile(mavenPomPath)
         def mavenProps = propertiesForMavenGeneration
@@ -172,16 +186,9 @@ class DescriptorGenerator {
         mavenInvokeRequest.setGoals(['test-compile'])
         def mavenInvoker = new DefaultInvoker()
         mavenInvoker.setMavenHome(new File(mavenHome))
-        try {
-            def result = mavenInvoker.execute(mavenInvokeRequest)
-            if (result.exitCode != 0) {
-                throw new Exception('Successfully located Maven executable but unable to use Maven to generate classloader model/artifact descriptor. This is likely a problem with your POM or your project. Examine the output for what might be wrong.')
-            }
-        }
-        catch (IllegalStateException e) {
-            def exception = new Exception("Unable to call Maven!\nNOTE: This requires a normal Maven install on your machine. You cannot use the version of Maven bundled inside Studio. See below for common IDE instructions.\n---------\nStudio/Eclipse: Window->Preferences->Java->Installed JREs->highlight the JRE->Edit, then paste in -Dmaven.home=yourMavenHomeDirectory into 'Default VM arguments'.\n---------\nIntelliJ: Run Menu->Edit Configurations->Templates->Junit, then paste in -Dmaven.home=yourMavenHomeDirectory into 'VM options'. You might need to re-create any existing Run Configurations.\n---------",
-                                          e)
-            throw exception
+        def result = mavenInvoker.execute(mavenInvokeRequest)
+        if (result.exitCode != 0) {
+            throw new Exception('Successfully located Maven executable but unable to use Maven to generate classloader model/artifact descriptor. This is likely a problem with your POM or your project. Examine the output for what might be wrong.')
         }
     }
 }
