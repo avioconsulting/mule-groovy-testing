@@ -1,6 +1,6 @@
 package com.avioconsulting.mule.testing.muleinterfaces.containers
 
-import groovy.json.JsonSlurper
+
 import org.mule.runtime.module.embedded.internal.classloading.JdkOnlyClassLoaderFactory
 
 // similar to MavenContainerClassLoaderFactory but do more work up front so that we're not
@@ -13,8 +13,9 @@ class OurMavenClassLoaderFactory {
 
     OurMavenClassLoaderFactory(BaseEngineConfig engineConfig,
                                File repoDirectory,
-                               File muleHomeDirectory) {
-        def bundleDependencies = getDependencyGraph().sort { d1, d2 ->
+                               File muleHomeDirectory,
+                               List<Dependency> runtimeDependencyGraph) {
+        def bundleDependencies = runtimeDependencyGraph.sort { d1, d2 ->
             if (isPatchDependency(d1)) {
                 return -1
             } else if (isPatchDependency(d2)) {
@@ -39,20 +40,12 @@ class OurMavenClassLoaderFactory {
         def urls = (bundleDependencies - serviceDependencies).collect { dep ->
             dep.getFullFilePath(repoDirectory)
         }
-        urls.add(new URL(new File(muleHomeDirectory, 'conf').toURI().toString() + '/'))
+        urls.add(new URL(new File(muleHomeDirectory,
+                                  'conf').toURI().toString() + '/'))
         // we need ourselves to be resolvable for our bridge classes, etc.
         urls.add(OurMavenClassLoaderFactory.protectionDomain.codeSource.location)
         classLoader = new URLClassLoader(urls.toArray(new URL[0]),
                                          JdkOnlyClassLoaderFactory.create())
-    }
-
-    List<Dependency> getDependencyGraph() {
-        def stream = OurMavenClassLoaderFactory.getResourceAsStream('/mule4_dependencies.json')
-        assert stream: 'Unable to find the /mule4_dependencies.json resource. Did you forget to use the dependency-resolver-maven-plugin plugin in your pom to generate it?'
-        def rawList = new JsonSlurper().parse(stream)
-        rawList.collect { d ->
-            Dependency.parse(d)
-        }
     }
 
     private static boolean isPatchDependency(Dependency dependency) {

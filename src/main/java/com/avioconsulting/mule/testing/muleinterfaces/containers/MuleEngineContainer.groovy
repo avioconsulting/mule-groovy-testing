@@ -2,6 +2,7 @@ package com.avioconsulting.mule.testing.muleinterfaces.containers
 
 import com.avioconsulting.mule.testing.muleinterfaces.MockingConfiguration
 import com.avioconsulting.mule.testing.muleinterfaces.RuntimeBridgeTestSide
+import groovy.json.JsonSlurper
 import groovy.util.logging.Log4j2
 import org.apache.commons.io.FileUtils
 
@@ -16,58 +17,43 @@ class MuleEngineContainer {
         try {
             this.engineConfig = engineConfig
             muleHomeDirectory = new File('.mule')
+            def muleStartedFile = new File(muleHomeDirectory,
+                                           'mule-started.json')
+            String dependencyJsonText = MuleEngineContainer.getResourceAsStream('/mule4_dependencies.json')?.text
+            assert dependencyJsonText: 'Unable to find the /mule4_dependencies.json resource. Did you forget to use the dependency-resolver-maven-plugin plugin in your pom to generate it?'
+            // don't want old dependency configs to hang around
+            def muleHomeAlreadyBuiltSuccessfully = muleStartedFile.exists() &&
+                    muleStartedFile.text == dependencyJsonText
             System.setProperty('mule.home',
                                muleHomeDirectory.absolutePath)
             System.setProperty('mule.testingMode',
                                'true')
             log.info "Checking for temporary .mule directory at ${muleHomeDirectory.absolutePath}"
             if (muleHomeDirectory.exists()) {
-                log.info "Removing ${muleHomeDirectory.absolutePath}"
-                muleHomeDirectory.deleteDir()
+                if (muleHomeAlreadyBuiltSuccessfully) {
+                    log.info 'Existing directory already exists, cleaning up and will use that one'
+                    def dotMuleDirectory = new File(muleHomeDirectory,
+                                                    '.mule')
+                    dotMuleDirectory.toPath().eachDir { dir ->
+                        // a lot of this state we don't want to reuse but services we probably can
+                        if (dir.getFileName().toString() != 'services') {
+                            dir.deleteDir()
+                        }
+                    }
+                } else {
+                    log.info "Removing ${muleHomeDirectory.absolutePath} because it did not successfully start before"
+                    muleHomeDirectory.deleteDir()
+                }
             }
-            // mule won't start without a log4j2 config
-            def log4jResource = MuleEngineContainer.getResourceAsStream('/log4j2-for-mule-home.xml')
-            assert log4jResource
-            def confDirectory = new File(muleHomeDirectory, 'conf')
-            confDirectory.mkdirs()
-            def targetFile = new File(confDirectory, 'log4j2.xml')
-            targetFile.text = log4jResource.text
-            def domainsDir = new File(muleHomeDirectory, 'domains')
-            domainsDir.mkdirs()
-            // won't start apps without this domain there but it can be empty
-            def defaultDomainDir = new File(domainsDir, 'default')
-            defaultDomainDir.mkdirs()
-            def appsDir = new File(muleHomeDirectory, 'apps')
-            if (appsDir.exists()) {
-                appsDir.deleteDir()
+            if (!muleHomeAlreadyBuiltSuccessfully) {
+                createLoggingAndDomainDirectories()
             }
-            appsDir.mkdirs()
-            File repo
-            def mavenRepoLocalSetting = System.getProperty('maven.repo.local')
-            if (mavenRepoLocalSetting) {
-                log.info 'Using overridden M2 repo from -Dmaven.repo.local of {}',
-                         mavenRepoLocalSetting
-                repo = new File(mavenRepoLocalSetting)
-            } else {
-                def m2Directory = new File(System.getProperty('user.home'), '.m2')
-                repo = new File(m2Directory, 'repository')
-                log.info 'Using derived/user home directory Maven repo location of {}',
-                         repo
-            }
-            // because we run in offline model, see pom.xml
-            assert repo.exists(): "If your local Maven repo directory. ${repo}, does not already exist by now, we will not be able to run anyways"
-            log.info 'Building classloader factory'
-            def classLoaderFactory = new OurMavenClassLoaderFactory(engineConfig,
-                                                                    repo,
-                                                                    muleHomeDirectory)
-            def servicesDir = new File(muleHomeDirectory, 'services')
-            def services = classLoaderFactory.services
-            log.info 'Copying services {} to {}',
-                     services,
-                     servicesDir
-            services.each { svcUrl ->
-                FileUtils.copyFileToDirectory(new File(svcUrl.toURI()),
-                                              servicesDir)
+            // clean out apps regardless of whether our .mule directory is already there
+            createAppsDirectory()
+            def classLoaderFactory = getClassLoaderFactory(engineConfig,
+                                                           dependencyJsonText)
+            if (!muleHomeAlreadyBuiltSuccessfully) {
+                copyServices(classLoaderFactory.services)
             }
             def containerModulesClassLoader = classLoaderFactory.classLoader
             // see FilterOutNonTestingExtensionsClassLoader for why we're doing this
@@ -81,6 +67,7 @@ class MuleEngineContainer {
                 def containerKlass = containerClassLoader.loadClass('org.mule.runtime.module.launcher.MuleContainer')
                 container = containerKlass.newInstance()
                 container.start(false)
+                muleStartedFile.text = dependencyJsonText
                 def registryListenerKlass = containerClassLoader.loadClass('com.avioconsulting.mule.testing.muleinterfaces.MuleRegistryListener')
                 registryListener = registryListenerKlass.newInstance()
                 container.deploymentService.addDeploymentListener(registryListener)
@@ -96,6 +83,74 @@ class MuleEngineContainer {
                       e
             throw e
         }
+    }
+
+    private void copyServices(List<URL> services) {
+        def servicesDir = new File(muleHomeDirectory,
+                                   'services')
+        log.info 'Copying services {} to {}',
+                 services,
+                 servicesDir
+        services.each { svcUrl ->
+            FileUtils.copyFileToDirectory(new File(svcUrl.toURI()),
+                                          servicesDir)
+        }
+    }
+
+    private OurMavenClassLoaderFactory getClassLoaderFactory(BaseEngineConfig engineConfig,
+                                                             String dependencyJsonText) {
+        File repo
+        def mavenRepoLocalSetting = System.getProperty('maven.repo.local')
+        if (mavenRepoLocalSetting) {
+            log.info 'Using overridden M2 repo from -Dmaven.repo.local of {}',
+                     mavenRepoLocalSetting
+            repo = new File(mavenRepoLocalSetting)
+        } else {
+            def m2Directory = new File(System.getProperty('user.home'),
+                                       '.m2')
+            repo = new File(m2Directory,
+                            'repository')
+            log.info 'Using derived/user home directory Maven repo location of {}',
+                     repo
+        }
+        // because we run in offline model, see pom.xml
+        assert repo.exists(): "If your local Maven repo directory. ${repo}, does not already exist by now, we will not be able to run anyways"
+        log.info 'Building classloader factory'
+        def dependencyGraph = new JsonSlurper().parseText(dependencyJsonText).collect { d ->
+            Dependency.parse(d)
+        }
+        new OurMavenClassLoaderFactory(engineConfig,
+                                       repo,
+                                       muleHomeDirectory,
+                                       dependencyGraph)
+    }
+
+    private void createAppsDirectory() {
+        def appsDir = new File(muleHomeDirectory,
+                               'apps')
+        if (appsDir.exists()) {
+            appsDir.deleteDir()
+        }
+        appsDir.mkdirs()
+    }
+
+    private void createLoggingAndDomainDirectories() {
+        // mule won't start without a log4j2 config
+        def log4jResource = MuleEngineContainer.getResourceAsStream('/log4j2-for-mule-home.xml')
+        assert log4jResource
+        def confDirectory = new File(muleHomeDirectory,
+                                     'conf')
+        confDirectory.mkdirs()
+        def targetFile = new File(confDirectory,
+                                  'log4j2.xml')
+        targetFile.text = log4jResource.text
+        def domainsDir = new File(muleHomeDirectory,
+                                  'domains')
+        domainsDir.mkdirs()
+        // won't start apps without this domain there but it can be empty
+        def defaultDomainDir = new File(domainsDir,
+                                        'default')
+        defaultDomainDir.mkdirs()
     }
 
     def shutdown() {
