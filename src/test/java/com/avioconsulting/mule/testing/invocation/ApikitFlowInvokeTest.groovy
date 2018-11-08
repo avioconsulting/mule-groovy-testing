@@ -13,6 +13,21 @@ import static org.junit.Assert.assertThat
 class ApikitFlowInvokeTest extends
         BaseApiKitTest implements
         OverrideConfigList {
+    String getApiNameUnderTest() {
+        'the-APP'
+    }
+
+    String getApiVersionUnderTest() {
+        'v1'
+    }
+
+    List<String> getConfigResources() {
+        [
+                'global-test.xml',
+                'api-the-app-v1.xml'
+        ]
+    }
+
     @Test
     void getConfigResourceSubstitutes_hasCorrectGlobalXmls() {
         // arrange
@@ -109,20 +124,5 @@ class ApikitFlowInvokeTest extends
         // assert
         assertThat result.result,
                    is(equalTo(133))
-    }
-
-    String getApiNameUnderTest() {
-        'the-app'
-    }
-
-    String getApiVersionUnderTest() {
-        'v1'
-    }
-
-    List<String> getConfigResources() {
-        [
-                'global-test.xml',
-                "${fullApiName}.xml".toString()
-        ]
     }
 }

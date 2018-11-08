@@ -15,13 +15,8 @@ abstract class BaseApiKitTest extends
 
     abstract String getApiVersionUnderTest()
 
-    // version friendly convention
-    String getFullApiName() {
-        "api-${apiNameUnderTest}-${apiVersionUnderTest}"
-    }
-
     String getFlowName() {
-        "${fullApiName}-main"
+        "${apiNameUnderTest.toLowerCase()}-main"
     }
 
     // using CloudHub combine friendly convention
@@ -45,10 +40,13 @@ abstract class BaseApiKitTest extends
                     port
         System.setProperty(TEST_PORT_PROPERTY,
                            port as String)
-        properties.put('http.listener.config', 'test-http-listener-config')
+        properties.put('http.listener.config',
+                       'test-http-listener-config')
         // by convention, assume this
-        properties.put('skip.apikit.validation', false)
-        properties.put('return.validation.failures', true)
+        properties.put('skip.apikit.validation',
+                       false)
+        properties.put('return.validation.failures',
+                       true)
         properties
     }
 
@@ -65,7 +63,9 @@ abstract class BaseApiKitTest extends
         def runner = new FlowRunnerImpl(runtimeBridge,
                                         flow,
                                         flowName)
-        def code = closure.rehydrate(runner, this, this)
+        def code = closure.rehydrate(runner,
+                                     this,
+                                     this)
         code.resolveStrategy = Closure.DELEGATE_ONLY
         code()
         def inputEvent = setHttpProps(runner.event,

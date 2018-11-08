@@ -14,9 +14,9 @@ http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/m
                    disableValidations="${skip.apikit.validation}"
                    outboundHeadersMapName="outboundHeaders"
                    httpStatusVarName="httpStatus"/>
-    <flow name="api-the-app-v1-main">
+    <flow name="the-app-main">
         <http:listener config-ref="${http.listener.config}"
-                       path="/the-app/api/v1/*"
+                       path="/the-APP/api/v1/*"
                        doc:name="HTTP">
             <http:response statusCode="#[vars.httpStatus default 200]">
                 <http:headers>#[vars.outboundHeaders default {}]</http:headers>

@@ -5,6 +5,7 @@
 * Be more lenient about Maven paths (if we can resolve via a system mvn path, try that)
 * Ensure the mule dependency JSON file for the engine makes it into test-classes if its generated for the first time during our Maven run to build the artifact/classloader descriptor
 * Reuse the .mule directory/engine setup when possible to reduce repetitive file copying
+* Use simpler REST APIKit invocation convention. The previous one was based on a convention that sort of works against Design Center defaults.
 
 # 2.0.2
 * Fix issue with domains (For now, will 'remove' the domain from the app when loading)
