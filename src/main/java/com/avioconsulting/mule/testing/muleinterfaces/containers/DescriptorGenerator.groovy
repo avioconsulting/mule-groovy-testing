@@ -133,7 +133,7 @@ class DescriptorGenerator implements EnvironmentDetector {
     private void runMaven() {
         def mavenHome = System.getProperty('maven.home')
         if (!mavenHome && isEclipse()) {
-            throw new Exception("\n---------Eclipse/Studio does not make the system path available during JUnit runs and you do not have maven.home configured as a system property so we cannot invoke Maven to generate the descriptor. You cannot use the version of Maven bundled inside Studio. To fix this, go to Window->Preferences->Java->Installed JREs->highlight the JRE->Edit, then paste in -Dmaven.home=yourMavenHomeDirectory into 'Default VM arguments'.Y ou might need to re-create any existing Run Configurations.\n---------")
+            throw new Exception("\n---------Eclipse/Studio does not make the system path available during JUnit runs and you do not have maven.home configured as a system property so we cannot invoke Maven to generate the descriptor. You cannot use the version of Maven bundled inside Studio. To fix this, go to Window->Preferences->Java->Installed JREs->highlight the JRE->Edit, then paste in -Dmaven.home=yourMavenHomeDirectory into 'Default VM arguments'.\n---------")
         }
         def viaSystemProperty = false
         def attempts = []
