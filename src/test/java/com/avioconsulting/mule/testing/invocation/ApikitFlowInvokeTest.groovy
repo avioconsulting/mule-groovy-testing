@@ -23,33 +23,8 @@ class ApikitFlowInvokeTest extends
 
     List<String> getConfigResources() {
         [
-                'global-test.xml',
                 'api-the-app-v1.xml'
         ]
-    }
-
-    @Test
-    void getConfigResourceSubstitutes_hasCorrectGlobalXmls() {
-        // arrange
-
-        // act
-        def result = this.configResourceSubstitutes
-
-        // assert
-        assertThat result,
-                   is(equalTo(['global.xml': 'global-test.xml']))
-    }
-
-    @Test
-    void propertySetWithListenerConfig() {
-        // arrange
-
-        // act
-        def props = getStartUpProperties()
-
-        // assert
-        assertThat props.get('http.listener.config') as String,
-                   is(equalTo('test-http-listener-config'))
     }
 
     @Test
@@ -59,9 +34,11 @@ class ApikitFlowInvokeTest extends
         input.foobar = 123
 
         // act
-        def result = runApiKitFlow('POST', '/resources') {
+        def result = runApiKitFlow('POST',
+                                   '/resources') {
             json {
-                inputPayload(input, SampleJacksonOutput)
+                inputPayload(input,
+                             SampleJacksonOutput)
             }
         } as SampleJacksonOutput
 
@@ -76,7 +53,8 @@ class ApikitFlowInvokeTest extends
 
         // act
         def result = shouldFail {
-            runApiKitFlow('POST', '/resources') {
+            runApiKitFlow('POST',
+                          '/resources') {
                 json {
                     inputPayload([howdy: 123])
                 }
@@ -93,7 +71,8 @@ class ApikitFlowInvokeTest extends
         // arrange
 
         // act
-        def result = runApiKitFlow('GET', '/resources/2') {
+        def result = runApiKitFlow('GET',
+                                   '/resources/2') {
             json {
                 outputOnly(SampleJacksonOutput)
             }

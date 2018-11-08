@@ -74,7 +74,6 @@ class ListenersDisabledTest extends
     @Override
     List<String> getConfigResources() {
         [
-                'global-test.xml',
                 'listener-enabledisable-test.xml'
         ]
     }

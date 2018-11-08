@@ -154,10 +154,8 @@ The value add of this framework to achieve that is:
 
 ## Assumptions
 
-1. Your HTTP listeners' config-ref is set to `${http.listener.config}`
-1. HTTP listener config is in `global.xml`. If not, this can be overriden (see `getConfigResourceSubstitutes` in `BaseApiKitTest`)
 1. HTTP listener path like this: `/app-name/api/v1/*` where `app-name` is the value from `getApiNameUnderTest` (you supply this when you extend `BaseApiKitTest`) and `v1` is the value of `getApiVersionUnderTest`.
-1. A main flow name (Studio derives this from the RAML filename) like this: `api-app-name-v1-main`. 
+1. A main flow name (Studio derives this from the RAML filename) like this: `app-name-main`. 
 
 ## Usage
 

@@ -1,6 +1,6 @@
 package com.avioconsulting.mule.testing.junit
 
-import com.avioconsulting.mule.testing.OpenPortLocator
+
 import com.avioconsulting.mule.testing.dsl.invokers.FlowRunner
 import com.avioconsulting.mule.testing.dsl.invokers.FlowRunnerImpl
 import com.avioconsulting.mule.testing.muleinterfaces.HttpAttributeBuilder
@@ -9,8 +9,6 @@ import com.avioconsulting.mule.testing.muleinterfaces.wrappers.EventWrapper
 abstract class BaseApiKitTest extends
         BaseJunitTest implements
         HttpAttributeBuilder {
-    private static final String TEST_PORT_PROPERTY = 'avio.test.http.port'
-
     abstract String getApiNameUnderTest()
 
     abstract String getApiVersionUnderTest()
@@ -24,35 +22,12 @@ abstract class BaseApiKitTest extends
         '/' + [apiNameUnderTest, 'api', apiVersionUnderTest, '*'].join('/')
     }
 
-    static int getChosenHttpPort() {
-        // avoid duplicate ports
-        Integer.parseInt(System.getProperty(TEST_PORT_PROPERTY))
-    }
-
     @Override
     Map getStartUpProperties() {
-        def properties = super.getStartUpProperties()
-        // have to have the listener running to use apikit
-        // http listener gets go
-        // ing before the properties object this method creates has had its values take effect
-        def port = OpenPortLocator.httpPort
-        logger.info 'Using open port {} for HTTP listener',
-                    port
-        System.setProperty(TEST_PORT_PROPERTY,
-                           port as String)
-        properties.put('http.listener.config',
-                       'test-http-listener-config')
-        // by convention, assume this
-        properties.put('skip.apikit.validation',
-                       false)
-        properties.put('return.validation.failures',
-                       true)
-        properties
-    }
-
-    @Override
-    Map<String, String> getConfigResourceSubstitutes() {
-        ['global.xml': 'global-test.xml']
+        super.getStartUpProperties() + [
+                'skip.apikit.validation'   : 'false',
+                'eturn.validation.failures': 'true'
+        ]
     }
 
     def runApiKitFlow(String httpMethod,
@@ -82,14 +57,17 @@ abstract class BaseApiKitTest extends
                                       String method,
                                       String path,
                                       Map queryParams) {
-        def port = Integer.parseInt(System.getProperty(TEST_PORT_PROPERTY))
+        // unless the sources/listeners are enabled (not required for apikit in Mule 4, unlike Mule 3)
+        // then the listener config never tries to actually bind to the port. therefore the port
+        // does not matter
+        def portNumberDoesNotMatter = 9999
         def attributes = getHttpListenerAttributes(httpListenerPath,
                                                    method,
                                                    path,
                                                    queryParams,
                                                    runtimeBridge,
                                                    event.message.mimeType,
-                                                   port)
+                                                   portNumberDoesNotMatter)
         logger.info 'APIkit flow invocation: simulating HTTP listener using attributes: {}',
                     attributes
         event.withNewAttributes(attributes)

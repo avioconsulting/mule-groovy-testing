@@ -21,15 +21,11 @@ trait OverrideConfigList {
             assert resource
             new File(resource.toURI()).toPath().parent.toFile()
         }
-        def srcResourcesPath = getResourcePath(BaseMuleGroovyTrait,
-                                               '/global-test.xml')
         def tstResourcesPath = getResourcePath(OverrideConfigList,
                                                '/http_test.xml')
-        def result = [
-                srcResourcesPath,
+        [
                 tstResourcesPath
         ]
-        result
     }
 
     Properties getPropertiesForMavenGeneration() {

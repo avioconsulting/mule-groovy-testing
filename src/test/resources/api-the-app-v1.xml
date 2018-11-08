@@ -9,13 +9,19 @@
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
 http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd">
+    <http:listener-config name="test-http-listener-config"
+                          doc:name="HTTP Listener Configuration">
+        <http:listener-connection host="localhost" port="9999"/>
+    </http:listener-config>
+    
     <apikit:config name="api-the-app-v1-config"
                    raml="api-the-app-v1.raml"
                    disableValidations="${skip.apikit.validation}"
                    outboundHeadersMapName="outboundHeaders"
                    httpStatusVarName="httpStatus"/>
+
     <flow name="the-app-main">
-        <http:listener config-ref="${http.listener.config}"
+        <http:listener config-ref="test-http-listener-config"
                        path="/the-APP/api/v1/*"
                        doc:name="HTTP">
             <http:response statusCode="#[vars.httpStatus default 200]">
