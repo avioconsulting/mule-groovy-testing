@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns="http://www.mulesoft.org/schema/mule/core"
+      xmlns:java="http://www.mulesoft.org/schema/mule/java"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/java http://www.mulesoft.org/schema/mule/java/current/mule-java.xsd">
+    <flow name="javaFlow">
+        <java:invoke-static class="com.avioconsulting.mule.testing.invocation.LogStuff"
+                            method="isDebugEnabled()"/>
+    </flow>
+</mule>

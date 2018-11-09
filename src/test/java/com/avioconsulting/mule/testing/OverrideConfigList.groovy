@@ -54,7 +54,9 @@ trait OverrideConfigList {
                 classLoaderModelLoaderDescriptor: [
                         id        : 'mule',
                         attributes: [
-                                exportedPackages : [],
+                                exportedPackages : [
+                                        'com.avioconsulting.mule.testing.invocation'
+                                ],
                                 // if we don't export resources, we can't load them off the classpath
                                 exportedResources: [
                                         'soap/test.wsdl',
