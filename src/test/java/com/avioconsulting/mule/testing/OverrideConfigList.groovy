@@ -59,6 +59,7 @@ trait OverrideConfigList {
                                 ],
                                 // if we don't export resources, we can't load them off the classpath
                                 exportedResources: [
+                                        'log4j2.xml',
                                         'soap/test.wsdl',
                                         'soap/SOAPTest_v1.xsd'
                                 ]

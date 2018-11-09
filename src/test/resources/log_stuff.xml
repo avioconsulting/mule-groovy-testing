@@ -7,6 +7,8 @@
 http://www.mulesoft.org/schema/mule/java http://www.mulesoft.org/schema/mule/java/current/mule-java.xsd">
     <flow name="javaFlow">
         <java:invoke-static class="com.avioconsulting.mule.testing.invocation.LogStuff"
+                            method="logStuff()"/>
+        <java:invoke-static class="com.avioconsulting.mule.testing.invocation.LogStuff"
                             method="isDebugEnabled()"/>
     </flow>
 </mule>
