@@ -20,7 +20,7 @@ class LogStuffTest extends
         // arrange
 
         // act
-        def result = runFlow('javaFlow') {
+        def result = runFlow('listenerFlow') {
             java {
                 inputPayload(null)
             }
