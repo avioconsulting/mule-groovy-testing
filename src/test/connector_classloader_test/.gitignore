@@ -1,0 +1,6 @@
+/.idea
+/*.iml
+/target
+/catalog
+/.mule
+/dependency-reduced-pom.xml
