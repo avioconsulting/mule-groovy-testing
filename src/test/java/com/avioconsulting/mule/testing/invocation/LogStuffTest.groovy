@@ -1,5 +1,6 @@
 package com.avioconsulting.mule.testing.invocation
 
+import com.avioconsulting.mule.testing.BaseMuleGroovyTrait
 import com.avioconsulting.mule.testing.OverrideConfigList
 import com.avioconsulting.mule.testing.junit.BaseJunitTest
 import org.junit.Test
@@ -15,16 +16,23 @@ class LogStuffTest extends
         ['log_stuff.xml']
     }
 
+    @Override
+    List<String> keepListenersOnForTheseFlows() {
+        ['listenerFlow']
+    }
+
     @Test
     void debugs_right() {
         // arrange
 
         // act
-        def result = runFlow('listenerFlow') {
-            java {
-                inputPayload(null)
-            }
-        }
+//        def result = runFlow('listenerFlow') {
+//            java {
+//                inputPayload(null)
+//            }
+//        }
+        println 'http://localhost:8081'.toURL().text
+
 
         // assert
         assertThat result,
