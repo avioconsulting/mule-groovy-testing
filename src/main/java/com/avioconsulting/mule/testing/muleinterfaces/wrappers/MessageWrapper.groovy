@@ -9,5 +9,7 @@ interface MessageWrapper {
 
     String getMessageAsString()
 
+    List getMessageIteratorAsList()
+
     String getMimeType()
 }

@@ -45,12 +45,16 @@ public class SomeOperation {
 
     @MediaType("text/plain")
     public PagingProvider<Conn, String> staticlist() {
+        final List<Integer> done = new ArrayList<>();
         return new PagingProvider<Conn, String>() {
             @Override
             public List<String> getPage(Conn conn) {
                 ArrayList<String> list = new ArrayList<>();
-                list.add("item1");
-                list.add("item2");
+                if (done.isEmpty()) {
+                    list.add("item1");
+                    list.add("item2");
+                    done.add(1);
+                }
                 return list;
             }
 

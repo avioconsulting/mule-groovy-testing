@@ -17,4 +17,8 @@ http://www.mulesoft.org/schema/mule/connector-test-classpath http://www.mulesoft
     <flow name="classLoaderTest">
         <connector-test:classloadertest config-ref="Connector_test_classpath_Config"/>
     </flow>
+
+    <flow name="cursorIteratorStreamTest">
+        <connector-test:staticlist config-ref="Connector_test_classpath_Config"/>
+    </flow>
 </mule>

@@ -49,6 +49,23 @@ class MessageWrapperImpl implements
         payload.value
     }
 
+    List getMessageIteratorAsList() {
+        def value = valueInsideTypedValue
+        def klass = value.getClass().name
+        // this is what repeatable streams look like
+        if (klass.contains('ManagedCursorIteratorProvider')) {
+            def cursor = value.openCursor() as Iterator
+            try {
+                return cursor.toList()
+            }
+            finally {
+                cursor.close()
+            }
+        } else {
+            throw new Exception("Do not know how to handle payload of type ${klass}! This method can only be used with iterator/page types")
+        }
+    }
+
     @Override
     String getMessageAsString() {
         def value = valueInsideTypedValue
