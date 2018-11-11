@@ -107,6 +107,7 @@ public class MockingProcessorInterceptor implements ProcessorInterceptor {
         // therefore we effectively reverse what ReactiveAroundInterceptorAdapter does here during our execution
 
         // we only need to do this when we are NOT mocking and are running the real connector
+        // this will run the 'real' connector inside the app's classloader
         return withContextClassLoader(this.appClassLoader,
                                       action::proceed);
     }
