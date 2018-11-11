@@ -17,17 +17,21 @@ public class SomeOperation {
     public PagingProvider<Conn, String> classloadertest() {
         String threadBeforePaging = "id: " + Thread.currentThread().getId() + " name: " + Thread.currentThread().getName();
         String classLoaderBeforePaging = Thread.currentThread().getContextClassLoader().toString();
+        final List<Integer> done = new ArrayList<>();
         return new PagingProvider<Conn, String>() {
             @Override
             public List<String> getPage(Conn conn) {
                 Executor executor = new Executor();
                 ArrayList<String> list = new ArrayList<>();
-                list.add("our debug enabled " + logger.isDebugEnabled());
-                logger.info("executor level is " + executor.doExecute());
-                logger.info("name of the thread now is " + "id: " + Thread.currentThread().getId() + " name: " + Thread.currentThread().getName());
-                logger.info("name of the thread before paging is " + threadBeforePaging);
-                list.add("the classloader before paging is " + classLoaderBeforePaging);
-                list.add("the classloader now is " + Thread.currentThread().getContextClassLoader());
+                if (done.isEmpty()) {
+                    list.add("our debug enabled " + logger.isDebugEnabled());
+                    logger.info("executor level is " + executor.doExecute());
+                    logger.info("name of the thread now is " + "id: " + Thread.currentThread().getId() + " name: " + Thread.currentThread().getName());
+                    logger.info("name of the thread before paging is " + threadBeforePaging);
+                    list.add("the classloader before paging is " + classLoaderBeforePaging);
+                    list.add("the classloader now is " + Thread.currentThread().getContextClassLoader());
+                    done.add(1);
+                }
                 return list;
             }
 
