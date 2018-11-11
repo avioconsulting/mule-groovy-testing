@@ -6,12 +6,25 @@ import groovy.json.JsonSlurper
 import groovy.util.logging.Log4j2
 import org.apache.commons.io.FileUtils
 
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.ThreadFactory
+
+import static java.util.concurrent.Executors.newSingleThreadExecutor
+
 @Log4j2
 class MuleEngineContainer {
     private final BaseEngineConfig engineConfig
     private final Object container
     private final Object registryListener
     private final File muleHomeDirectory
+    private final ExecutorService executorService = newSingleThreadExecutor(new ThreadFactory() {
+        @Override
+        Thread newThread(Runnable r) {
+            new Thread(r,
+                       'Embedded')
+        }
+    })
+    private containerClassLoader
 
     MuleEngineContainer(BaseEngineConfig engineConfig) {
         try {
@@ -57,18 +70,21 @@ class MuleEngineContainer {
             }
             def containerModulesClassLoader = classLoaderFactory.classLoader
             // see FilterOutNonTestingExtensionsClassLoader for why we're doing this
-            def containerClassLoader = new FilterOutNonTestingExtensionsClassLoader(containerModulesClassLoader,
-                                                                                    engineConfig.filterEngineExtensions)
-            // work around this - https://jira.apache.org/jira/browse/LOG4J2-2152
+            containerClassLoader = new FilterOutNonTestingExtensionsClassLoader(containerModulesClassLoader,
+                                                                                engineConfig.filterEngineExtensions)
+// work around this - https://jira.apache.org/jira/browse/LOG4J2-2152
             def preserve = Thread.currentThread().contextClassLoader
             registryListener = null
             try {
-                Thread.currentThread().contextClassLoader = containerClassLoader
-                def containerKlass = containerClassLoader.loadClass('org.mule.runtime.module.launcher.MuleContainer')
+                Thread.currentThread().contextClassLoader = this.containerClassLoader
+                def containerKlass = this.containerClassLoader.loadClass('org.mule.runtime.module.launcher.MuleContainer')
                 container = containerKlass.newInstance()
-                container.start(false)
+                def future = executorService.submit {
+                    container.start(false)
+                }
+                future.get()
                 muleStartedFile.text = dependencyJsonText
-                def registryListenerKlass = containerClassLoader.loadClass('com.avioconsulting.mule.testing.muleinterfaces.MuleRegistryListener')
+                def registryListenerKlass = this.containerClassLoader.loadClass('com.avioconsulting.mule.testing.muleinterfaces.MuleRegistryListener')
                 registryListener = registryListenerKlass.newInstance()
                 container.deploymentService.addDeploymentListener(registryListener)
                 assert container
@@ -169,8 +185,18 @@ class MuleEngineContainer {
         // have to do this before we deploy to catch the event
         registryListener.setMockingConfiguration(artifactName,
                                                  mockingConfiguration)
-        container.deploymentService.deploy(application,
-                                           properties)
+        def preserve = Thread.currentThread().contextClassLoader
+        try {
+            Thread.currentThread().contextClassLoader = this.containerClassLoader
+            def future = executorService.submit {
+                container.deploymentService.deploy(application,
+                                                   properties)
+            }
+            future.get()
+        }
+        finally {
+            Thread.currentThread().contextClassLoader = preserve
+        }
         // this we have to do after the deployment
         def muleSide = registryListener.getRuntimeBridge(artifactName)
         new RuntimeBridgeTestSide(muleSide,

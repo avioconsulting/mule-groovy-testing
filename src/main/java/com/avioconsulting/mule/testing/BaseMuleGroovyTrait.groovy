@@ -38,7 +38,8 @@ trait BaseMuleGroovyTrait {
     String getUniqueArtifactName(TestingConfiguration testingConfiguration) {
         def muleArtifact = testingConfiguration.artifactModel
         // ensure some uniqueness
-        "${muleArtifact.name}:${testingConfiguration.hashCode()}"
+        muleArtifact.name
+        //"${muleArtifact.name}:${testingConfiguration.hashCode()}"
     }
 
     RuntimeBridgeTestSide deployApplication(MuleEngineContainer muleEngineContainer,

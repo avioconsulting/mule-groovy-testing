@@ -60,14 +60,14 @@ public class MuleRegistryListener implements DeploymentListener {
     public void onArtifactCreated(String artifactName,
                                   CustomizationService custSvc) {
         Object mockingConfiguration = mockingConfigurations.get(artifactName);
-        custSvc.registerCustomServiceImpl("muleGroovyTestingProcessorIntFactory",
-                                          new MockingProcessorInterceptorFactory(mockingConfiguration));
-        custSvc.overrideDefaultServiceImpl(ComponentInitialStateManager.SERVICE_ID,
-                                           new SourceDisableManager(mockingConfiguration));
-        GroovyTestingBatchNotifyListener batchListener = new GroovyTestingBatchNotifyListener();
-        this.batchListeners.put(artifactName, batchListener);
-        custSvc.registerCustomServiceImpl("muleGroovyBatchListener",
-                                          batchListener);
+//        custSvc.registerCustomServiceImpl("muleGroovyTestingProcessorIntFactory",
+//                                          new MockingProcessorInterceptorFactory(mockingConfiguration));
+//        custSvc.overrideDefaultServiceImpl(ComponentInitialStateManager.SERVICE_ID,
+//                                           new SourceDisableManager(mockingConfiguration));
+//        GroovyTestingBatchNotifyListener batchListener = new GroovyTestingBatchNotifyListener();
+//        this.batchListeners.put(artifactName, batchListener);
+//        custSvc.registerCustomServiceImpl("muleGroovyBatchListener",
+//                                          batchListener);
     }
 
     public RuntimeBridgeMuleSide getRuntimeBridge(String artifactName) {
