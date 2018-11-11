@@ -24,6 +24,10 @@ class MuleEngineContainer {
             // don't want old dependency configs to hang around
             def muleHomeAlreadyBuiltSuccessfully = muleStartedFile.exists() &&
                     muleStartedFile.text == dependencyJsonText
+            if (engineConfig.verboseExceptions) {
+                System.setProperty('mule.verbose.exceptions',
+                                   'true')
+            }
             System.setProperty('mule.home',
                                muleHomeDirectory.absolutePath)
             System.setProperty('mule.testingMode',

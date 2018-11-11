@@ -1,31 +1,8 @@
 package com.avioconsulting.mule.testing
 // allow us to avoid the overhead of setting up mule-deploy-props-test-artifact.json for each test
 trait OverrideConfigList {
-    File getProjectDirectory() {
-        // putting this here because it's a @Before hook on the cheap
-        System.setProperty('mule.verbose.exceptions',
-                           'true')
-        new File('src/test/resources/maven')
-    }
-
-    File getClassesDirectory() {
-        // this is used to get a list of possible config files for detecting whether we need to have Mule's Maven plugin build
-        // a new artifact descriptor. Since this is not a traditional project, our
-        // config files aren't copied around the build cycle as much. We'll just use where all of our files are
-        new File('src/test/resources')
-    }
-
-    List<File> outputDirsToCopy() {
-        def getResourcePath = { Class klass, String file ->
-            def resource = klass.getResource(file)
-            assert resource
-            new File(resource.toURI()).toPath().parent.toFile()
-        }
-        def tstResourcesPath = getResourcePath(OverrideConfigList,
-                                               '/http_test.xml')
-        [
-                tstResourcesPath
-        ]
+    boolean isUseVerboseExceptions() {
+        true
     }
 
     Properties getPropertiesForMavenGeneration() {

@@ -108,8 +108,13 @@ trait BaseMuleGroovyTrait {
         [:]
     }
 
+    boolean isUseVerboseExceptions() {
+        false
+    }
+
     BaseEngineConfig getBaseEngineConfig() {
         new BaseEngineConfig(BaseEngineConfig.defaultFilters,
+                             isUseVerboseExceptions(),
                              getSchedulerConfig())
     }
 

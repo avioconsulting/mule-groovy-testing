@@ -5,6 +5,7 @@ import groovy.transform.Immutable
 @Immutable
 class BaseEngineConfig {
     List<String> filterEngineExtensions
+    boolean verboseExceptions
     Map<String, String> schedulerConfiguration
     static final String ANALYTICS_PLUGIN = 'mule-module-analytics'
     static final List<String> defaultFilters = [
