@@ -5,6 +5,7 @@ import groovy.transform.Immutable
 @Immutable
 class BaseEngineConfig {
     List<String> filterEngineExtensions
+    Map<String, String> schedulerConfiguration
     static final String ANALYTICS_PLUGIN = 'mule-module-analytics'
     static final List<String> defaultFilters = [
             'mule-module-cluster-ee', // no Hazelcast cluster needed for a unit test
