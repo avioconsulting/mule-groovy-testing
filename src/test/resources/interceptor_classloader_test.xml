@@ -1,31 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <mule xmlns="http://www.mulesoft.org/schema/mule/core"
-      xmlns:http="http://www.mulesoft.org/schema/mule/http"
       xmlns:connector-test="http://www.mulesoft.org/schema/mule/connector-test-classpath"
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
-http://www.mulesoft.org/schema/mule/connector-test-classpath http://www.mulesoft.org/schema/mule/connector-test-classpath/current/mule-connector-test-classpath.xsd
-http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
-    <http:listener-config name="HTTP_Listener_config">
-        <http:listener-connection host="0.0.0.0" port="8081" />
-    </http:listener-config>
-
+http://www.mulesoft.org/schema/mule/connector-test-classpath http://www.mulesoft.org/schema/mule/connector-test-classpath/current/mule-connector-test-classpath.xsd">
     <connector-test:config name="Connector_test_classpath_Config">
         <connector-test:connection>
-            <reconnection >
-                <reconnect-forever />
+            <reconnection>
+                <reconnect-forever/>
             </reconnection>
-            <pooling-profile />
+            <pooling-profile/>
         </connector-test:connection>
     </connector-test:config>
 
-    <flow name="listenerFlow">
-        <http:listener config-ref="HTTP_Listener_config" path="/"/>
-        <flow-ref name="childFlow"/>
-    </flow>
-
-    <flow name="childFlow">
-        <connector-test:foo config-ref="Connector_test_classpath_Config"/>
+    <flow name="classLoaderTest">
+        <connector-test:classloadertest config-ref="Connector_test_classpath_Config"/>
     </flow>
 </mule>

@@ -17,14 +17,13 @@ class InterceptorClassLoaderTest extends
         ['interceptor_classloader_test.xml']
     }
 
-
     @Test
     void proper_classloader_interceptor() {
         // arrange
 
         // act
         Object result
-        runFlow('listenerFlow') {
+        runFlow('classLoaderTest') {
             java {
                 inputPayload(null)
             }
