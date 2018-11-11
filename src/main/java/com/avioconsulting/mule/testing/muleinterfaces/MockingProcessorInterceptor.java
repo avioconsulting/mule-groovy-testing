@@ -100,7 +100,15 @@ public class MockingProcessorInterceptor implements ProcessorInterceptor {
         // in its doAround method changes the thread context classloader to the one that loaded the interceptor
         // class. The problem with that is it causes problems with non-mocked connectors that
         // have paged/streaming operations because they expect the app (or region, not sure about this) classloader
-        // to be current context classloader when they actually execute.
+        // to be current context classloader when they actually execute. the problem manifests itself one way
+        // in that loggers will 'forget' the log4j (impl and test) config of the app during this execution
+        // and instead rely on the engine's .conf directory config, which effectively prevents debug logging
+        // since that config file is not changeable by apps using this framework
+
+        // One option would be to load this interceptor/interceptor factory with the app's classloader. the problem
+        // there is it's in this framework (not in the app)
+
+        // therefore we effectively reverse what ReactiveAroundInterceptorAdapter does here during our execution
         return withContextClassLoader(this.appClassLoader,
                                       () -> doAround(location,
                                                      parameters,
