@@ -60,6 +60,8 @@ public class MuleRegistryListener implements DeploymentListener {
     public void onArtifactCreated(String artifactName,
                                   CustomizationService custSvc) {
         Object mockingConfiguration = mockingConfigurations.get(artifactName);
+        // see MockingProcessorInterceptor for why we are doing this. At this point in the lifecycle,
+        // this classloader is the MuleApplicationClassLoader
         ClassLoader appClassLoader = Thread.currentThread().getContextClassLoader();
         MockingProcessorInterceptorFactory interceptorFactory = new MockingProcessorInterceptorFactory(mockingConfiguration,
                                                                                                        appClassLoader);
