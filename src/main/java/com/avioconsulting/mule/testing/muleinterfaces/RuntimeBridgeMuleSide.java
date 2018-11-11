@@ -31,16 +31,16 @@ public class RuntimeBridgeMuleSide {
     private final Registry registry;
     private final List<CompletableFuture<Void>> streamCompletionCallbacks = new ArrayList<>();
     private GroovyTestingBatchNotifyListener batchNotifyListener;
-    //private final CursorStreamProviderFactory cursorStreamProviderFactory;
+    private final CursorStreamProviderFactory cursorStreamProviderFactory;
 
     RuntimeBridgeMuleSide(Registry registry) {
         this.registry = registry;
-//        Optional<StreamingManager> streamingManagerOptional = registry.lookupByType(StreamingManager.class);
-//        if (!streamingManagerOptional.isPresent()) {
-//            throw new RuntimeException("Cannot get streaming manager!");
-//        }
-//        StreamingManager streamingManager = streamingManagerOptional.get();
-//        cursorStreamProviderFactory = streamingManager.forBytes().getDefaultCursorProviderFactory();
+        Optional<StreamingManager> streamingManagerOptional = registry.lookupByType(StreamingManager.class);
+        if (!streamingManagerOptional.isPresent()) {
+            throw new RuntimeException("Cannot get streaming manager!");
+        }
+        StreamingManager streamingManager = streamingManagerOptional.get();
+        cursorStreamProviderFactory = streamingManager.forBytes().getDefaultCursorProviderFactory();
     }
 
     public Object lookupByName(String flowName) {
@@ -74,12 +74,11 @@ public class RuntimeBridgeMuleSide {
 
     public Object getMuleStreamCursor(Object muleEvent,
                                       InputStream stream) {
-throw new RuntimeException("not implemented");
-//        if (!cursorStreamProviderFactory.accepts(stream)) {
-//            throw new RuntimeException("Factory won't accept our stream!");
-//        }
-//        return cursorStreamProviderFactory.of(getCoreEvent(muleEvent),
-//                                              stream);
+        if (!cursorStreamProviderFactory.accepts(stream)) {
+            throw new RuntimeException("Factory won't accept our stream!");
+        }
+        return cursorStreamProviderFactory.of(getCoreEvent(muleEvent),
+                                              stream);
     }
 
     private static CoreEvent getCoreEvent(Object muleEvent) {
@@ -105,15 +104,15 @@ throw new RuntimeException("not implemented");
     public Object getNewEvent(Object muleMessage,
                               Object flowObj) {
         Flow flow = (Flow) flowObj;
-        //CompletableFuture<Void> externalCompletionCallback = new CompletableFuture<>();
-        //this.streamCompletionCallbacks.add(externalCompletionCallback);
+        CompletableFuture<Void> externalCompletionCallback = new CompletableFuture<>();
+        this.streamCompletionCallbacks.add(externalCompletionCallback);
         // without the completion callback, any streams in the payload will be closed when the flow under test 'completes'
         // which will make it impossible to get at the payload
         ComponentLocation location = (ComponentLocation) flow.getAnnotation(COMPONENT_LOCATION);
         EventContext context = new DefaultEventContext(flow,
                                                        location,
                                                        null,
-                                                       Optional.empty());
+                                                       Optional.of(externalCompletionCallback));
         return CoreEvent.builder(context)
                 .message((Message) muleMessage)
                 .build();
