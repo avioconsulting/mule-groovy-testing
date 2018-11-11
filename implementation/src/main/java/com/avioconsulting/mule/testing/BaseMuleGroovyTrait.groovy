@@ -60,8 +60,8 @@ trait BaseMuleGroovyTrait {
             def logger = getLogger()
             classLoaderModel = filterDomainFromClassLoaderModel(classLoaderModel)
             def classLoaderModelJson = JsonOutput.prettyPrint(JsonOutput.toJson(classLoaderModel))
-            logger.info 'Using classloader model {}',
-                        classLoaderModelJson
+            logger.debug 'Using classloader model {}',
+                         classLoaderModelJson
             classLoaderFile.text = classLoaderModelJson
             def artifactJson = join(muleArtifactDir,
                                     'mule-artifact.json')
