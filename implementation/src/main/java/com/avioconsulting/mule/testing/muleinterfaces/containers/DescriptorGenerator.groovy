@@ -37,7 +37,7 @@ class DescriptorGenerator implements EnvironmentDetector {
     }
 
     def regenerateClassLoaderModelAndArtifactDescriptor() {
-        if (isRunViaMavenSurefire() && !System.getProperty('testForTheTests')) {
+        if (isRunViaMavenSurefire()) {
             assert classLoaderModelFile.exists(): "Expected ${classLoaderModelFile} to already exist because we are running from Maven but it does not. Has the Mule Maven plugin run?"
             // the odds are very low that a Maven based run will not have already generated our files
             log.info 'Skipping classloader model/artifact descriptor regenerate because we are running in Maven'
