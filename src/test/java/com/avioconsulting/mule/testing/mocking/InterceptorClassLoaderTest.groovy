@@ -1,38 +1,37 @@
-package com.avioconsulting.mule.testing.invocation
+package com.avioconsulting.mule.testing.mocking
 
-import com.avioconsulting.mule.testing.BaseMuleGroovyTrait
+
 import com.avioconsulting.mule.testing.OverrideConfigList
 import com.avioconsulting.mule.testing.junit.BaseJunitTest
+import com.avioconsulting.mule.testing.muleinterfaces.wrappers.EventWrapper
 import org.junit.Test
 
 import static org.hamcrest.Matchers.equalTo
 import static org.hamcrest.Matchers.is
 import static org.junit.Assert.assertThat
 
-class LogStuffTest extends
+class InterceptorClassLoaderTest extends
         BaseJunitTest implements
         OverrideConfigList {
     List<String> getConfigResources() {
-        ['log_stuff.xml']
+        ['interceptor_classloader_test.xml']
     }
 
-    @Override
-    List<String> keepListenersOnForTheseFlows() {
-        ['listenerFlow']
-    }
 
     @Test
-    void debugs_right() {
+    void proper_classloader_interceptor() {
         // arrange
 
         // act
-//        def result = runFlow('listenerFlow') {
-//            java {
-//                inputPayload(null)
-//            }
-//        }
-        println 'http://localhost:8081'.toURL().text
-
+        Object result
+        runFlow('listenerFlow') {
+            java {
+                inputPayload(null)
+            }
+            withOutputEvent { EventWrapper event ->
+                result = event.messageAsString
+            }
+        }
 
         // assert
         assertThat result,

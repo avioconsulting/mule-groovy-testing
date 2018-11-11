@@ -15,20 +15,19 @@ public class SomeOperation {
 
     @MediaType("text/plain")
     public PagingProvider<Conn, String> foo() {
-        String threadBeforePaging = "id: "+Thread.currentThread().getId()+" name: " + Thread.currentThread().getName();
+        String threadBeforePaging = "id: " + Thread.currentThread().getId() + " name: " + Thread.currentThread().getName();
         String classLoaderBeforePaging = Thread.currentThread().getContextClassLoader().toString();
         return new PagingProvider<Conn, String>() {
             @Override
             public List<String> getPage(Conn conn) {
                 Executor executor = new Executor();
                 ArrayList<String> list = new ArrayList<>();
-                System.out.println("hello from foo");
-                System.out.println("our debug enabled " + logger.isDebugEnabled());
-                System.out.println("executor level is " + executor.doExecute());
-                System.out.println("name of the thread now is " + "id: "+Thread.currentThread().getId()+" name: " + Thread.currentThread().getName());
-                System.out.println("name of the thread before paging is " + threadBeforePaging);
-                System.out.println("the classloader before paging is " + classLoaderBeforePaging);
-                System.out.println("the classloader now is " + Thread.currentThread().getContextClassLoader());
+                list.add("our debug enabled " + logger.isDebugEnabled());
+                logger.info("executor level is " + executor.doExecute());
+                logger.info("name of the thread now is " + "id: " + Thread.currentThread().getId() + " name: " + Thread.currentThread().getName());
+                logger.info("name of the thread before paging is " + threadBeforePaging);
+                list.add("the classloader before paging is " + classLoaderBeforePaging);
+                list.add("the classloader now is " + Thread.currentThread().getContextClassLoader());
                 return list;
             }
 
