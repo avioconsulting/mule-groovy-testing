@@ -91,11 +91,7 @@ public class MockingProcessorInterceptor implements ProcessorInterceptor {
         }
     }
 
-    @Override
-    public CompletableFuture<InterceptionEvent> around(ComponentLocation location,
-                                                       Map<String, ProcessorParameterValue> parameters,
-                                                       InterceptionEvent event,
-                                                       InterceptionAction action) {
+    private CompletableFuture<InterceptionEvent> doProceed(InterceptionAction action) {
         // for some reason, org.mule.runtime.core.internal.processor.interceptor.ReactiveAroundInterceptorAdapter
         // in its doAround method changes the thread context classloader to the one that loaded the interceptor
         // class. The problem with that is it causes problems with non-mocked connectors that
@@ -109,25 +105,25 @@ public class MockingProcessorInterceptor implements ProcessorInterceptor {
         // there is it's in this framework (not in the app)
 
         // therefore we effectively reverse what ReactiveAroundInterceptorAdapter does here during our execution
+
+        // we only need to do this when we are NOT mocking and are running the real connector
         return withContextClassLoader(this.appClassLoader,
-                                      () -> doAround(location,
-                                                     parameters,
-                                                     event,
-                                                     action));
+                                      action::proceed);
     }
 
-    private CompletableFuture<InterceptionEvent> doAround(ComponentLocation location,
-                                                          Map<String, ProcessorParameterValue> parameters,
-                                                          InterceptionEvent event,
-                                                          InterceptionAction action) {
+    @Override
+    public CompletableFuture<InterceptionEvent> around(ComponentLocation location,
+                                                       Map<String, ProcessorParameterValue> parameters,
+                                                       InterceptionEvent event,
+                                                       InterceptionAction action) {
         if (!parameters.containsKey(CONNECTOR_NAME_PARAMETER)) {
-            return action.proceed();
+            return doProceed(action);
         }
 
         String connectorName = parameters.get(CONNECTOR_NAME_PARAMETER).providedValue();
 
         if (!isMockEnabled(connectorName)) {
-            return action.proceed();
+            return doProceed(action);
         }
 
         try {
