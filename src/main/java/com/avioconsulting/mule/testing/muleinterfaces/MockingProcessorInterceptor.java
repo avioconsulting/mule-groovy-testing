@@ -22,15 +22,20 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
+import static org.mule.runtime.core.api.util.ClassUtils.withContextClassLoader;
+
 public class MockingProcessorInterceptor implements ProcessorInterceptor {
     private static final String CONNECTOR_NAME_PARAMETER = "doc:name";
     private final Method isMockEnabledMethod;
     private final Method doMockInvocationMethod;
     private final Method getErrorTypeRepositoryMethod;
     private final Object mockingConfiguration;
+    private final ClassLoader appClassLoader;
 
-    MockingProcessorInterceptor(Object mockingConfiguration) {
+    MockingProcessorInterceptor(Object mockingConfiguration,
+                                ClassLoader appClassLoader) {
         this.mockingConfiguration = mockingConfiguration;
+        this.appClassLoader = appClassLoader;
         try {
             Class<?> mockingConfigClass = mockingConfiguration.getClass();
             this.isMockEnabledMethod = mockingConfigClass.getDeclaredMethod("isMocked",
@@ -91,6 +96,22 @@ public class MockingProcessorInterceptor implements ProcessorInterceptor {
                                                        Map<String, ProcessorParameterValue> parameters,
                                                        InterceptionEvent event,
                                                        InterceptionAction action) {
+        // for some reason, org.mule.runtime.core.internal.processor.interceptor.ReactiveAroundInterceptorAdapter
+        // in its doAround method changes the thread context classloader to the one that loaded the interceptor
+        // class. The problem with that is it causes problems with non-mocked connectors that
+        // have paged/streaming operations because they expect the app (or region, not sure about this) classloader
+        // to be current context classloader when they actually execute.
+        return withContextClassLoader(this.appClassLoader,
+                                      () -> doAround(location,
+                                                     parameters,
+                                                     event,
+                                                     action));
+    }
+
+    private CompletableFuture<InterceptionEvent> doAround(ComponentLocation location,
+                                                          Map<String, ProcessorParameterValue> parameters,
+                                                          InterceptionEvent event,
+                                                          InterceptionAction action) {
         if (!parameters.containsKey(CONNECTOR_NAME_PARAMETER)) {
             return action.proceed();
         }
