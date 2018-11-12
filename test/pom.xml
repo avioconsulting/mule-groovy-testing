@@ -17,15 +17,6 @@
         <mule.maven.plugin.version>3.1.6</mule.maven.plugin.version>
     </properties>
 
-    <distributionManagement>
-        <repository>
-            <id>avio-releases</id>
-            <name>AVIO Releases Repository</name>
-            <url>https://devops.avioconsulting.com/nexus/repository/avio-releases/</url>
-            <layout>default</layout>
-        </repository>
-    </distributionManagement>
-
     <build>
         <plugins>
             <plugin>
