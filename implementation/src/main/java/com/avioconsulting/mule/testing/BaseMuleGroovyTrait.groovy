@@ -114,8 +114,7 @@ trait BaseMuleGroovyTrait {
 
     BaseEngineConfig getBaseEngineConfig() {
         new BaseEngineConfig(BaseEngineConfig.defaultFilters,
-                             isUseVerboseExceptions(),
-                             getSchedulerConfig())
+                             isUseVerboseExceptions())
     }
 
     List<String> keepListenersOnForTheseFlows() {
@@ -240,23 +239,6 @@ trait BaseMuleGroovyTrait {
         }
         map.configs = substituteConfigResources(map.configs as List<String>)
         map
-    }
-
-    Map<String, String> getSchedulerConfig() {
-        // scheduler can be misleading. It's not just for polling. It controls how work is lined up, etc.
-        [
-                // this should not constrain the tests but should use less resources by default
-                'cpuLight.threadPool.size'     : 1,
-                'cpuIntensive.threadPool.size' : 1,
-                // default values, just quieting warnings during Mule startup
-                'gracefulShutdownTimeout'      : 15000,
-                'cpuLight.workQueue.size'      : 0,
-                'io.threadPool.maxSize'        : 688,
-                'io.threadPool.threadKeepAlive': 30000,
-                'cpuIntensive.workQueue.size'  : 1024
-        ].collectEntries { key, value ->
-            ["org.mule.runtime.scheduler.${key}", value]
-        } as Map<String, String>
     }
 
     List<String> getConfigResources() {

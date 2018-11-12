@@ -54,7 +54,6 @@ class MuleEngineContainer {
                                              'conf')
                 confDirectory.mkdirs()
                 createLoggingAndDomainDirectories(confDirectory)
-                createSchedulingConfig(confDirectory)
             }
             // clean out apps regardless of whether our .mule directory is already there
             createAppsDirectory()
@@ -91,17 +90,6 @@ class MuleEngineContainer {
                       e
             throw e
         }
-    }
-
-    private void createSchedulingConfig(File confDirectory) {
-        def schedulerConfigFile = new File(confDirectory,
-                                           'scheduler-pools.conf')
-        def stringIfiedMap = engineConfig.schedulerConfiguration.collectEntries { k, v ->
-            [k.toString(), v.toString()]
-        }
-        def props = new Properties(stringIfiedMap)
-        props.store(new FileOutputStream(schedulerConfigFile),
-                    'From our test')
     }
 
     private void copyServices(List<URL> services) {
