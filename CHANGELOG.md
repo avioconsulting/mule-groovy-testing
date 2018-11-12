@@ -7,6 +7,7 @@
 * Reuse the .mule directory/engine setup when possible to reduce repetitive file copying
 * Use simpler REST APIKit invocation convention. The previous one was based on a convention that sort of works against Design Center defaults.
 * REST APIKit in Mule 4.x does not require an actual HTTP listener bind port, so removed all of the open port locating code
+* Fixed issue that mock interceptor was causing with classloaders that manifested itself on paged connectors
 
 # 2.0.2
 * Fix issue with domains (For now, will 'remove' the domain from the app when loading)
