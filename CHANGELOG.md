@@ -1,3 +1,6 @@
+# 1.0.29
+* Line up exactly with 3.9.1's Groovy lib
+
 # 1.0.28
 * Make `waitForBatchCompletion` available in base JUnit test. Document method signature more clearly
 
