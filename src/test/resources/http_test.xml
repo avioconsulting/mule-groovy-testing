@@ -21,6 +21,7 @@ http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/jso
     key: payload.foo
 }]]></dw:set-payload>
         </dw:transform-message>
+        <set-variable variableName="foobar" value="howdy"/>
         <set-property propertyName="Content-Type" value="application/json"/>
         <http:request config-ref="SomeSystem" path="/some_path" method="POST" doc:name="SomeSystem Call"/>
         <dw:transform-message doc:name="Transform Message">

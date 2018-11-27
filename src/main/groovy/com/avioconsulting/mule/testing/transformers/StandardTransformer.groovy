@@ -9,6 +9,7 @@ class StandardTransformer implements MuleMessageTransformer {
     private final InputTransformer inputTransformer
     private final Closure closure
     private final ClosureCurrier closureCurrier
+    private final ClosureCurrier eventCurrier
 
     StandardTransformer(Closure closure,
                         ClosureCurrier closureCurrier,
@@ -18,20 +19,35 @@ class StandardTransformer implements MuleMessageTransformer {
         this.closure = closure
         this.inputTransformer = inputTransformer
         this.outputTransformer = outputTransformer
+        this.eventCurrier = new ClosureCurrierEvent()
     }
 
     MuleEvent transform(MuleEvent muleEvent,
                         MessageProcessor messageProcessor) {
-        // if they're only requesting optional curried values (e.g. HTTP requestor params)
-        // then we don't want to call their closure with an input value
-        def onlyCurriedArgument = closureCurrier.isOnlyArgumentToBeCurried(closure)
         def curried = closureCurrier.curryClosure(closure,
                                                   muleEvent,
                                                   messageProcessor)
+        curried = this.eventCurrier.curryClosure(curried,
+                                                 muleEvent,
+                                                 messageProcessor)
         def input = inputTransformer.transformInput(muleEvent,
                                                     messageProcessor)
-        def result = onlyCurriedArgument ? curried() : curried(input)
+        def result = invokeClosure(curried,
+                                   input)
         outputTransformer.transformOutput(result,
                                           muleEvent)
+    }
+
+    private def invokeClosure(Closure closure,
+                              input) {
+        def types = closure.parameterTypes
+        def paramTypesSize = types.size()
+        if (paramTypesSize == 0) {
+            return closure()
+        }
+        if (paramTypesSize == 1) {
+            return closure(input)
+        }
+        throw new RuntimeException("Expected a closure with only 1 remaining, non curried argument, but saw ${types}")
     }
 }

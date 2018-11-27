@@ -7,11 +7,6 @@ import org.mule.module.http.internal.request.DefaultHttpRequester
 
 class HttpClosureCurrier implements ClosureCurrier<DefaultHttpRequester> {
     @Override
-    boolean isOnlyArgumentToBeCurried(Closure closure) {
-        closure.parameterTypes.size() == 1 && shouldCurry(closure)
-    }
-
-    @Override
     Closure curryClosure(Closure closure,
                          MuleEvent muleEvent,
                          DefaultHttpRequester messageProcessor) {
@@ -29,7 +24,8 @@ class HttpClosureCurrier implements ClosureCurrier<DefaultHttpRequester> {
     }
 
     private boolean shouldCurry(Closure closure) {
-        closure.parameterTypes.last() == HttpRequestInfo
+        def types = closure.parameterTypes
+        types.any() && types.last() == HttpRequestInfo
     }
 
     private static Map getQueryParams(MuleEvent muleEvent,

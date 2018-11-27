@@ -3,14 +3,12 @@ package com.avioconsulting.mule.testing.transformers.xml
 import com.avioconsulting.mule.testing.EventFactory
 import com.avioconsulting.mule.testing.mulereplacements.MuleMessageTransformer
 import com.avioconsulting.mule.testing.payloadvalidators.IPayloadValidator
-import com.avioconsulting.mule.testing.transformers.ClosureMuleMessageHandler
 import groovy.util.logging.Log4j2
 import org.mule.api.MuleEvent
 import org.mule.api.processor.MessageProcessor
 
 @Log4j2
-class XMLJAXBTransformer extends XMLTransformer implements MuleMessageTransformer,
-        ClosureMuleMessageHandler {
+class XMLJAXBTransformer extends XMLTransformer implements MuleMessageTransformer {
     private final Closure closure
     private final JAXBMarshalHelper helper
 
@@ -38,10 +36,10 @@ class XMLJAXBTransformer extends XMLTransformer implements MuleMessageTransforme
         } else {
             strongTypedPayload = helper.unmarshal(payload)
         }
-
-        def forMuleMsg = withMuleEvent(this.closure,
-                                       event)
-        def reply = forMuleMsg(strongTypedPayload)
+        def closure = handleMuleEvent(closure,
+                                      event,
+                                      messageProcessor)
+        def reply = closure(strongTypedPayload)
 
         StringReader reader
         if (reply instanceof File) {

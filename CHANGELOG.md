@@ -1,3 +1,6 @@
+# 1.0.30
+* Curry `MuleEvent` arguments in all mock closures, not just HTTP
+
 # 1.0.29
 * Line up exactly with 3.9.1's Groovy lib
 

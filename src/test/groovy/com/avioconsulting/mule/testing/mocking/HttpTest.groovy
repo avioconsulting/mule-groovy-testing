@@ -9,6 +9,7 @@ import groovy.json.JsonSlurper
 import groovy.util.logging.Log4j2
 import org.junit.Test
 import org.mule.api.MessagingException
+import org.mule.api.MuleEvent
 import org.mule.module.http.internal.request.DefaultHttpRequester
 
 import java.util.concurrent.TimeoutException
@@ -80,6 +81,40 @@ class HttpTest extends BaseJunitTest implements OverrideConfigList {
     }
 
     @Test
+    void mocksProperly_raw_with_mule_event() {
+        // arrange
+        def stuff = null
+        MuleEvent actualEvent = null
+        mockRestHttpCall('SomeSystem Call') {
+            raw {
+                whenCalledWith { Object incoming,
+                                 MuleEvent event ->
+                    stuff = incoming
+                    actualEvent = event
+                    new ByteArrayInputStream(JsonOutput.toJson([reply: 456]).bytes)
+                }
+            }
+        }
+
+        // act
+        def result = runFlow('restRequest') {
+            json {
+                inputPayload([foo: 123])
+            }
+        }
+
+        // assert
+        assertThat stuff,
+                   is(instanceOf(InputStream))
+        assertThat new JsonSlurper().parse(stuff),
+                   is(equalTo([key: 123]))
+        assertThat result,
+                   is(equalTo([reply_key: 457]))
+        assertThat actualEvent.getFlowVariable('foobar') as String,
+                   is(equalTo('howdy'))
+    }
+
+    @Test
     void mocksProperlyWithChoice() {
         // arrange
         def stuff = null
@@ -126,7 +161,8 @@ class HttpTest extends BaseJunitTest implements OverrideConfigList {
         def result = shouldFail {
             runFlow('restRequestContentTypeNotSet') {
                 json {
-                    inputPayload(input, JacksonOutput)
+                    inputPayload(input,
+                                 JacksonOutput)
                 }
             }
         }
@@ -158,7 +194,8 @@ class HttpTest extends BaseJunitTest implements OverrideConfigList {
         // act
         def result = runFlow('restRequestContentTypeNotSet') {
             json {
-                inputPayload(input, JacksonOutput)
+                inputPayload(input,
+                             JacksonOutput)
             }
 
             disableContentTypeCheck()
@@ -193,7 +230,8 @@ class HttpTest extends BaseJunitTest implements OverrideConfigList {
         def result = shouldFail {
             runFlow('restRequestContentTypeNotSetForMock') {
                 json {
-                    inputPayload(input, JacksonOutput)
+                    inputPayload(input,
+                                 JacksonOutput)
                 }
             }
         }
@@ -226,7 +264,8 @@ class HttpTest extends BaseJunitTest implements OverrideConfigList {
         // act
         def result = runFlow('restRequestContentTypeNotSetForMock') {
             json {
-                inputPayload(input, JacksonOutput)
+                inputPayload(input,
+                             JacksonOutput)
             }
         } as JacksonOutput
 
