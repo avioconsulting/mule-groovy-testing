@@ -1,6 +1,9 @@
 # 2.0
 (for Mule 4.1)
 
+# 2.0.4
+* Windows issue with app names
+
 # 2.0.3
 * Be more lenient about Maven paths (if we can resolve via a system mvn path, try that)
 * Ensure the mule dependency JSON file for the engine makes it into test-classes if its generated for the first time during our Maven run to build the artifact/classloader descriptor

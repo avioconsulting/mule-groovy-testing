@@ -37,8 +37,12 @@ trait BaseMuleGroovyTrait {
     // will be what shows up in app.name/MuleConfiguration.getId(), etc.
     String getUniqueArtifactName(TestingConfiguration testingConfiguration) {
         def muleArtifact = testingConfiguration.artifactModel
+        def artifactName = muleArtifact.name as String
+        assert artifactName.findAll(':').size() == 2 : "Expected mule artifact name '${artifactName}' to be of format groupId:artifactName:version"
+        def parts = artifactName.split(':')
+        def nameOnly = parts[1]
         // ensure some uniqueness
-        "${muleArtifact.name}:${testingConfiguration.hashCode()}"
+        "${nameOnly}:${testingConfiguration.hashCode()}"
     }
 
     RuntimeBridgeTestSide deployApplication(MuleEngineContainer muleEngineContainer,

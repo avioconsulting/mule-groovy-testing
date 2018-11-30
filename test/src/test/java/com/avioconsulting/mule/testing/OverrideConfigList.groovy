@@ -25,7 +25,7 @@ trait OverrideConfigList {
                 configs                         : configs,
                 secureProperties                : [],
                 redeploymentEnabled             : true,
-                name                            : 'tests_for_the_test',
+                name                            : 'com.avioconsulting.mule:tests_for_the_test:1.0.0',
                 minMuleVersion                  : getMuleVersion(),
                 requiredProduct                 : 'MULE_EE',
                 classLoaderModelLoaderDescriptor: [
