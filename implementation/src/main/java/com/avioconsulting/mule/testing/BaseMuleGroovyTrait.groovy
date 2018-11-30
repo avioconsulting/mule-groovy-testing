@@ -42,7 +42,7 @@ trait BaseMuleGroovyTrait {
         def parts = artifactName.split(':')
         def nameOnly = parts[1]
         // ensure some uniqueness
-        "${nameOnly}:${testingConfiguration.hashCode()}"
+        "${nameOnly}-${testingConfiguration.hashCode()}"
     }
 
     RuntimeBridgeTestSide deployApplication(MuleEngineContainer muleEngineContainer,
