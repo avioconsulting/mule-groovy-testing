@@ -21,9 +21,6 @@ class MuleEngineContainer {
                                            'mule-started.json')
             String dependencyJsonText = MuleEngineContainer.getResourceAsStream('/mule4_dependencies.json')?.text
             assert dependencyJsonText: 'Unable to find the /mule4_dependencies.json resource. Did you forget to use the dependency-resolver-maven-plugin plugin in your pom to generate it?'
-            // don't want old dependency configs to hang around
-            def muleHomeAlreadyBuiltSuccessfully = muleStartedFile.exists() &&
-                    muleStartedFile.text == dependencyJsonText
             if (engineConfig.verboseExceptions) {
                 System.setProperty('mule.verbose.exceptions',
                                    'true')
@@ -34,34 +31,18 @@ class MuleEngineContainer {
                                'true')
             log.info "Checking for temporary .mule directory at ${muleHomeDirectory.absolutePath}"
             if (muleHomeDirectory.exists()) {
-                if (muleHomeAlreadyBuiltSuccessfully) {
-                    log.info 'Existing directory already exists, cleaning up and will use that one'
-                    def dotMuleDirectory = new File(muleHomeDirectory,
-                                                    '.mule')
-                    dotMuleDirectory.toPath().eachDir { dir ->
-                        // a lot of this state we don't want to reuse but services we probably can
-                        if (dir.getFileName().toString() != 'services') {
-                            dir.deleteDir()
-                        }
-                    }
-                } else {
-                    log.info "Removing ${muleHomeDirectory.absolutePath} because it did not successfully start before"
-                    muleHomeDirectory.deleteDir()
-                }
+                log.info "Removing ${muleHomeDirectory.absolutePath} to ensure clean state"
+                FileUtils.deleteDirectory(muleHomeDirectory)
             }
-            if (!muleHomeAlreadyBuiltSuccessfully) {
-                def confDirectory = new File(muleHomeDirectory,
-                                             'conf')
-                confDirectory.mkdirs()
-                createLoggingAndDomainDirectories(confDirectory)
-            }
+            def confDirectory = new File(muleHomeDirectory,
+                                         'conf')
+            confDirectory.mkdirs()
+            createLoggingAndDomainDirectories(confDirectory)
             // clean out apps regardless of whether our .mule directory is already there
             createAppsDirectory()
             def classLoaderFactory = getClassLoaderFactory(engineConfig,
                                                            dependencyJsonText)
-            if (!muleHomeAlreadyBuiltSuccessfully) {
-                copyServices(classLoaderFactory.services)
-            }
+            copyServices(classLoaderFactory.services)
             def containerModulesClassLoader = classLoaderFactory.classLoader
             // see FilterOutNonTestingExtensionsClassLoader for why we're doing this
             def containerClassLoader = new FilterOutNonTestingExtensionsClassLoader(containerModulesClassLoader,

@@ -1,6 +1,9 @@
 # 2.0
 (for Mule 4.1)
 
+# 2.0.5
+* To avoid possible state issues with the .mule directory, just clear it out with every test run
+
 # 2.0.4
 * Windows issue with app names
 
