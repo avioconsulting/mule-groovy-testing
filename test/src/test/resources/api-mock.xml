@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:module-hello="http://www.mulesoft.org/schema/mule/module-hello"
+      xmlns="http://www.mulesoft.org/schema/mule/core"
+      xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/module-hello http://www.mulesoft.org/schema/mule/module-hello/current/mule-module-hello.xsd">
+    <flow name="fooFlow">
+        <module-hello:set-payload-echo doc:name="Set payload echo"
+                                       inputParam="howdy"/>
+    </flow>
+</mule>

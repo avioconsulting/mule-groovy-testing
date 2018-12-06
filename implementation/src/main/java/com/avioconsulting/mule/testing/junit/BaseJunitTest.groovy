@@ -10,7 +10,6 @@ import com.avioconsulting.mule.testing.dsl.mocking.StandardRequestResponse
 import com.avioconsulting.mule.testing.dsl.mocking.sfdc.Choice
 import com.avioconsulting.mule.testing.muleinterfaces.MockingConfiguration
 import com.avioconsulting.mule.testing.muleinterfaces.RuntimeBridgeTestSide
-import groovy.json.JsonSlurper
 import groovy.util.logging.Log4j2
 import org.apache.logging.log4j.Logger
 import org.junit.runner.RunWith
@@ -95,6 +94,14 @@ abstract class BaseJunitTest implements
                            runtimeBridge,
                            connectorName,
                            closure)
+    }
+
+    def mockApiCall(String connectorName,
+                    Closure closure) {
+        mockApiCall(mockingConfiguration,
+                    runtimeBridge,
+                    connectorName,
+                    closure)
     }
 
     def runBatch(String batchName,

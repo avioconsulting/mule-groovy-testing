@@ -334,6 +334,13 @@ trait BaseMuleGroovyTrait {
         }
     }
 
+    def mockApiCall(MockingConfiguration mockingConfiguration,
+                    RuntimeBridgeTestSide bridge,
+                    String connectorName,
+                    Closure closure) {
+
+    }
+
     def mockRestHttpCall(MockingConfiguration mockingConfiguration,
                          RuntimeBridgeTestSide bridge,
                          String connectorName,
