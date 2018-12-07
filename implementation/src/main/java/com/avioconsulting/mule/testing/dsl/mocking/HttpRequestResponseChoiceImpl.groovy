@@ -6,7 +6,6 @@ import com.avioconsulting.mule.testing.transformers.TransformerChain
 import com.avioconsulting.mule.testing.transformers.http.HttpConnectorErrorTransformer
 import com.avioconsulting.mule.testing.transformers.http.HttpGetTransformer
 import com.avioconsulting.mule.testing.transformers.http.HttpValidationTransformer
-import com.avioconsulting.mule.testing.transformers.http.MuleToHttpTransformer
 
 class HttpRequestResponseChoiceImpl extends
         StandardRequestResponseImpl<HttpRequesterInfo>
@@ -24,18 +23,13 @@ class HttpRequestResponseChoiceImpl extends
     }
 
     TransformerChain<HttpRequesterInfo> getTransformer() {
-        def code = closure.rehydrate(formatter,
-                                     this,
-                                     this)
-        code.resolveStrategy = Closure.DELEGATE_ONLY
-        code()
-        def transformer = new MuleToHttpTransformer()
+        // ensure this is done last to trigger 'validation' on the mock's reply
+        def transformerChain = super.transformer
         // HTTP GET operations need to 'erase' payload before any attempts to deserialize the payload, etc.
-        transformer.addTransformer(httpGetTransformer)
-        // TODO: add formatter in
-        transformer.addTransformer(httpValidationTransformer)
-        transformer.addTransformer(httpConnectorErrorTransformer)
-        transformer
+        transformerChain.prependTransformer(httpGetTransformer)
+        transformerChain.addTransformer(httpValidationTransformer)
+        transformerChain.addTransformer(httpConnectorErrorTransformer)
+        transformerChain
     }
 
     def setHttpReturnCode(Integer code) {
