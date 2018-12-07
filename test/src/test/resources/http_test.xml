@@ -94,6 +94,36 @@ output application/json
             </ee:message>
         </ee:transform>
     </flow>
+    <flow name="restRequestFromToFlowVar">
+        <ee:transform doc:name="Transform Message">
+            <ee:variables>
+                <ee:set-variable variableName="stuff"><![CDATA[%dw 2.0
+output application/json
+---
+{
+    key: payload.foo
+}]]></ee:set-variable>
+            </ee:variables>
+        </ee:transform>
+        <http:request config-ref="SomeSystem"
+                      path="/some_path"
+                      method="POST"
+                      doc:name="SomeSystem Call"
+                      target="theOutput">
+            <http:body><![CDATA[#[vars.stuff]]]></http:body>
+        </http:request>
+        <ee:transform doc:name="Transform Message">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+    // each of our 3 operations should be preserved (original payload, 1st DW, and HTTP)
+    reply_key: vars.theOutput.reply + 1 + payload.foo + vars.stuff.key
+}]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+    </flow>
     <flow name="restRequest_nonRepeatableStream">
         <ee:transform doc:name="Transform Message">
             <ee:message>
