@@ -27,4 +27,13 @@ class SoapConsumerInfo extends
     String getUri() {
         uri
     }
+
+    @Override
+    String getIncomingBody() {
+        def value = parameters['message'].body
+        if (value instanceof InputStream) {
+            return value.text
+        }
+        throw new Exception("Do not understand type ${value.getClass()}!")
+    }
 }

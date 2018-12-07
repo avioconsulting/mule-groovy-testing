@@ -3,7 +3,6 @@ package com.avioconsulting.mule.testing.dsl.invokers
 import com.avioconsulting.mule.testing.InvokerEventFactory
 import com.avioconsulting.mule.testing.muleinterfaces.RuntimeBridgeTestSide
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.EventWrapper
-import com.avioconsulting.mule.testing.muleinterfaces.wrappers.FlowWrapper
 import com.avioconsulting.mule.testing.transformers.xml.XMLMessageBuilder
 import groovy.util.logging.Log4j2
 
@@ -12,14 +11,14 @@ class SoapOperationFlowInvokerImpl extends
         SoapInvokerBaseImpl {
     private final String flowName
     private final InvokerEventFactory eventFactory
-    private final FlowWrapper flow
 
     SoapOperationFlowInvokerImpl(InvokerEventFactory eventFactory,
                                  RuntimeBridgeTestSide runtimeBridgeTestSide,
                                  String flowName) {
+        super(flowName,
+              runtimeBridgeTestSide)
         this.eventFactory = eventFactory
         this.flowName = flowName
-        flow = runtimeBridgeTestSide.getFlow(flowName)
     }
 
     EventWrapper getEvent() {

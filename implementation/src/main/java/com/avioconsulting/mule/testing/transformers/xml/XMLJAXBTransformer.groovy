@@ -27,7 +27,8 @@ class XMLJAXBTransformer<T extends ConnectorInfo> extends
 
     EventWrapper transform(EventWrapper event,
                            ConnectorInfo connectorInfo) {
-        def strongTypedPayload = helper.unmarshal(event)
+        def strongTypedPayload = helper.unmarshal(event,
+                                                  connectorInfo)
         def forMuleMsg = withMuleEvent(this.closure,
                                        event)
         def reply = forMuleMsg(strongTypedPayload)

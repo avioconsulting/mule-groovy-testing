@@ -21,16 +21,16 @@ class SoapApikitInvokerImpl extends
     private final String flowName
     private final InvokerEventFactory eventFactory
     private final RuntimeBridgeTestSide runtimeBridgeTestSide
-    private final FlowWrapper flow
 
     SoapApikitInvokerImpl(InvokerEventFactory eventFactory,
                           String flowName,
                           String operation,
                           RuntimeBridgeTestSide runtimeBridgeTestSide) {
+        super(flowName,
+              runtimeBridgeTestSide)
         this.runtimeBridgeTestSide = runtimeBridgeTestSide
         this.eventFactory = eventFactory
         this.flowName = flowName
-        flow = runtimeBridgeTestSide.getFlow(flowName)
         soapAction = deriveSoapAction(this.flow,
                                       operation,
                                       runtimeBridgeTestSide)
