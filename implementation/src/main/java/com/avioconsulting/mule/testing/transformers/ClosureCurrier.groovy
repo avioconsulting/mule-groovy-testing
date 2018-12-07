@@ -16,7 +16,10 @@ class ClosureCurrier<T extends ConnectorInfo> {
     private static Closure doCurry(Closure closure,
                                    Object object) {
         def parameterTypes = closure.parameterTypes
-        if (parameterTypes.any() && parameterTypes.last().isAssignableFrom(object.getClass())) {
+        def lastParameter = parameterTypes.any() ? parameterTypes.last() : null
+        // we don't want to curry events or message processors into closure arguments w/ no type
+        // because the test user probably hasn't intended to grab the event or connector info in the case
+        if (!lastParameter?.equals(Object) && lastParameter?.isAssignableFrom(object.getClass())) {
             closure = closure.rcurry(object)
         }
         closure
