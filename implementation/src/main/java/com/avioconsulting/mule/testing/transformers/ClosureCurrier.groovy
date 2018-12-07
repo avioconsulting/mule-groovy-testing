@@ -15,7 +15,8 @@ class ClosureCurrier<T extends ConnectorInfo> {
 
     private static Closure doCurry(Closure closure,
                                    Object object) {
-        if (closure.parameterTypes.last().isAssignableFrom(object.getClass())) {
+        def parameterTypes = closure.parameterTypes
+        if (parameterTypes.any() && parameterTypes.last().isAssignableFrom(object.getClass())) {
             closure = closure.rcurry(object)
         }
         closure
