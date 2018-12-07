@@ -61,7 +61,7 @@ output application/json
 output application/json
 ---
 {
-    reply_key: vars.stuff.reply + 1
+    reply_key: vars.stuff.reply + 1 + payload.key
 }]]></ee:set-payload>
             </ee:message>
         </ee:transform>

@@ -99,8 +99,9 @@ class HttpTest extends
         // assert
         assertThat stuff,
                    is(equalTo([key: 123]))
-        assertThat result,
-                   is(equalTo([reply_key: 457]))
+        assertThat 'original payload of 123 + 456 from our mock + 1 in the DW',
+                   result,
+                   is(equalTo([reply_key: 580]))
     }
 
     @Test
