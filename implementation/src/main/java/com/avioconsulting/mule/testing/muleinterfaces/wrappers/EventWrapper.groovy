@@ -13,17 +13,21 @@ interface EventWrapper {
     EventWrapper withNewAttributes(attributes)
 
     EventWrapper withNewPayload(Object payload,
+                                ConnectorInfo connectorInfo,
                                 String mediaType)
 
     EventWrapper withSoapPayload(String xmlPayload,
+                                 ConnectorInfo connectorInfo,
                                  Map attributes)
 
     EventWrapper withNewPayload(Object payload,
                                 String mediaType,
+                                ConnectorInfo connectorInfo,
                                 Map attributes)
 
     EventWrapper withNewStreamingPayload(String payload,
                                          String mediaType,
                                          Map attributes,
+                                         ConnectorInfo connectorInfo,
                                          boolean useRepeatableStream)
 }
