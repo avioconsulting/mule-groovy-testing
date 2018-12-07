@@ -141,30 +141,10 @@ public class MockingProcessorInterceptor implements ProcessorInterceptor {
                                                        Map<String, ProcessorParameterValue> parameters,
                                                        InterceptionEvent event,
                                                        InterceptionAction action) {
-        // if we're calling an API using Exchange "derived" XML SDK calls, this will be a processor chain
-        // but we can't get the name of the connector when the actual mock w/ params/vars runs.
-        // so we map the connector name to the processor chain here, then when this runs again with the processor
-        // chain, we know the name of the 'mock'
-        boolean isModuleCall = false;
-        if (parameters.containsKey(PARAMETER_MODULE_NAME)) {
-            Processor processor = getProcessor(action);
-            if (processor instanceof Component) {
-                String sourceElement = (String) ((Component) processor).getAnnotation(SOURCE_ELEMENT);
-                if (sourceElement != null) {
-                    try {
-                        Document doc = builder.parse(new ByteArrayInputStream(sourceElement.getBytes()));
-                        String docName = doc.getDocumentElement().getAttribute(PARAMETER_CONNECTOR_NAME);
-                        moduleConnectorName.set(docName);
-                        isModuleCall = true;
-                    } catch (Exception e) {
-                        throw new RuntimeException(e);
-                    }
-                }
-            }
-        }
-
-        String connectorName;
-        if (isModuleCall) {
+        String connectorName = getModuleCallName(parameters,
+                                                 action);
+        if (connectorName != null) {
+            moduleConnectorName.set(connectorName);
             // we can't access anything on the module call but the next call inside should give us info
             return doProceed(action);
         }
@@ -172,8 +152,10 @@ public class MockingProcessorInterceptor implements ProcessorInterceptor {
             return doProceed(action);
         } else if (moduleConnectorName.get() != null) {
             connectorName = moduleConnectorName.get();
+            // don't want this to continue past this execution
             moduleConnectorName.remove();
         } else {
+            // the most normal case
             connectorName = parameters.get(PARAMETER_CONNECTOR_NAME).providedValue();
         }
 
@@ -211,6 +193,31 @@ public class MockingProcessorInterceptor implements ProcessorInterceptor {
         } catch (IllegalAccessException e) {
             throw new RuntimeException("Should not have had a reflection problem but did",
                                        e);
+        }
+    }
+
+    private String getModuleCallName(Map<String, ProcessorParameterValue> parameters,
+                                     InterceptionAction action) {
+        // if we're calling an API using Exchange "derived" XML SDK calls, this will be a processor chain
+        // but we can't get the name of the connector when the actual mock w/ params/vars runs.
+        // so we map the connector name to the processor chain here, then when this runs again with the processor
+        // chain, we know the name of the 'mock'
+        if (!parameters.containsKey(PARAMETER_MODULE_NAME)) {
+            return null;
+        }
+        Processor processor = getProcessor(action);
+        if (!(processor instanceof Component)) {
+            return null;
+        }
+        String sourceElement = (String) ((Component) processor).getAnnotation(SOURCE_ELEMENT);
+        if (sourceElement == null) {
+            return null;
+        }
+        try {
+            Document doc = builder.parse(new ByteArrayInputStream(sourceElement.getBytes()));
+            return doc.getDocumentElement().getAttribute(PARAMETER_CONNECTOR_NAME);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 
