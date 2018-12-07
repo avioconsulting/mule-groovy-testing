@@ -55,6 +55,37 @@ class SoapTest extends
                    is(equalTo([result: 'yes!']))
     }
 
+    @Test
+    void mocksProperly_fromFlowVar() {
+        // arrange
+        SOAPTestRequestType mockedRequest = null
+
+        mockSoapCall('A SOAP Call') {
+            whenCalledWithJaxb(SOAPTestRequestType) { SOAPTestRequestType request ->
+                mockedRequest = request
+                def response = new SOAPTestResponseType()
+                response.details = 'yes!'
+                new ObjectFactory().createSOAPTestResponse(response)
+            }
+        }
+
+        // act
+        def result = runFlow('soaptestFlowFromFlowVar') {
+            json {
+                inputPayload([foo: 123])
+            }
+        } as Map
+
+        // assert
+        assert mockedRequest
+        assertThat mockedRequest.title,
+                   is(equalTo("theTitle 123"))
+        assertThat mockedRequest.approvalDate.toString(),
+                   is(equalTo('2017-04-01'))
+        assertThat result,
+                   is(equalTo([result: 'yes!']))
+    }
+
     // allows easy testing with real service
     @Test
     void mocks_properly_real_service() {
@@ -341,7 +372,8 @@ class SoapTest extends
         assertThat result.message,
                    is(startsWith('System.Web.Services.Protocols.SoapException: Server was unable to read request'))
         assertThat soapFaultException.faultCode,
-                   is(equalTo(new QName('http://schemas.xmlsoap.org/soap/envelope/', 'Client')))
+                   is(equalTo(new QName('http://schemas.xmlsoap.org/soap/envelope/',
+                                        'Client')))
         assertThat soapFaultException.subCode,
                    is(equalTo(Optional.empty()))
         def detail = soapFaultException.detail
