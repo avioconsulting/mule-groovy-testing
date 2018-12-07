@@ -7,8 +7,8 @@
       xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/module-hello http://www.mulesoft.org/schema/mule/module-hello/current/mule-module-hello.xsd">
     <flow name="fooFlow">
-        <module-hello:set-payload-echo doc:name="the name of our connector"
-                                       doc:id="b786b52d-042c-4c7b-87dd-1926e29bfc1e"
-                                       inputParam="howdy"/>
+        <module-hello:do-stuff-post doc:name="the name of our connector"
+                                    doc:id="b786b52d-042c-4c7b-87dd-1926e29bfc1e"
+                                    inputParam="howdy"/>
     </flow>
 </mule>
