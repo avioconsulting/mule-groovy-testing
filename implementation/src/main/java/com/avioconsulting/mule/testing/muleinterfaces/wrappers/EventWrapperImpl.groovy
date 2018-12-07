@@ -31,7 +31,14 @@ class EventWrapperImpl implements
 
     @Override
     EventWrapper withNewPayload(Object payload,
+                                ConnectorInfo connectorInfo,
                                 String mediaType) {
+        def targetVariable = connectorInfo.targetFlowVariable
+        if (targetVariable) {
+            return withVariable(targetVariable,
+                                payload,
+                                mediaType)
+        }
         def message = new MessageWrapperImpl(payload,
                                              runtimeBridgeMuleSide,
                                              mediaType)
@@ -40,6 +47,7 @@ class EventWrapperImpl implements
 
     @Override
     EventWrapper withSoapPayload(String xmlPayload,
+                                 ConnectorInfo connectorInfo,
                                  Map attributes) {
         def stream = new ByteArrayInputStream(xmlPayload.bytes)
         def soapOutputPayloadClass = runtimeBridgeMuleSide
@@ -47,8 +55,15 @@ class EventWrapperImpl implements
                 .loadClass('org.mule.runtime.extension.api.soap.SoapOutputPayload')
         def streamTypedValue = runtimeBridgeMuleSide.getSoapTypedValue(stream)
         def soapOutputPayload = soapOutputPayloadClass.newInstance(streamTypedValue,
-                                                                   [:], // attachments
+                                                                   [:],
+                                                                   // attachments
                                                                    [:]) // headers
+        def targetVariable = connectorInfo.targetFlowVariable
+        if (targetVariable) {
+            return withVariable(targetVariable,
+                                soapOutputPayload,
+                                'application/java')
+        }
         def message = new MessageWrapperImpl(soapOutputPayload,
                                              runtimeBridgeMuleSide,
                                              'application/java',
@@ -59,35 +74,35 @@ class EventWrapperImpl implements
     @Override
     EventWrapper withNewPayload(Object payload,
                                 String mediaType,
+                                ConnectorInfo connectorInfo,
                                 Map attributes) {
-        def message = new MessageWrapperImpl(payload,
+        def targetVariable = connectorInfo.targetFlowVariable
+        // if we have a target variable, we should preserve the payload but still update attributes
+        def payloadToUse = targetVariable ? this.message.payload : payload
+        def mediaTypeTouse = targetVariable ? this.message.mimeType : mediaType
+        def message = new MessageWrapperImpl(payloadToUse,
                                              runtimeBridgeMuleSide,
-                                             mediaType,
+                                             mediaTypeTouse,
                                              attributes)
-        withNewMessage(message)
+        def newEvent = withNewMessage(message)
+        targetVariable ? newEvent.withVariable(targetVariable,
+                                               payload,
+                                               mediaType) : newEvent
     }
 
     @Override
     EventWrapper withNewStreamingPayload(String payload,
                                          String mediaType,
                                          Map attributes,
+                                         ConnectorInfo connectorInfo,
                                          boolean useRepeatableStream) {
         def stream = new ByteArrayInputStream(payload.bytes)
-        MessageWrapperImpl message
-        if (useRepeatableStream) {
-            def streamProvider = runtimeBridgeMuleSide.getMuleStreamCursor(this.nativeEvent,
-                                                                           stream)
-            message = new MessageWrapperImpl(streamProvider,
-                                             runtimeBridgeMuleSide,
-                                             mediaType,
-                                             attributes)
-        } else {
-            message = new MessageWrapperImpl(stream,
-                                             runtimeBridgeMuleSide,
-                                             mediaType,
-                                             attributes)
-        }
-        withNewMessage(message)
+        def payloadStream = useRepeatableStream ? runtimeBridgeMuleSide.getMuleStreamCursor(this.nativeEvent,
+                                                                                            stream) : stream
+        withNewPayload(payloadStream,
+                       mediaType,
+                       connectorInfo,
+                       attributes)
     }
 
     @Override
@@ -113,6 +128,20 @@ class EventWrapperImpl implements
                                                                    this.nativeEvent,
                                                                    variableName,
                                                                    value)
+        new EventWrapperImpl(muleEvent,
+                             runtimeBridgeMuleSide)
+    }
+
+    @Override
+    EventWrapper withVariable(String variableName,
+                              Object value,
+                              String mediaType) {
+        def msg = this.message as MessageWrapperImpl
+        def muleEvent = runtimeBridgeMuleSide.getEventFromOldEvent(msg.muleMessage,
+                                                                   this.nativeEvent,
+                                                                   variableName,
+                                                                   value,
+                                                                   mediaType)
         new EventWrapperImpl(muleEvent,
                              runtimeBridgeMuleSide)
     }

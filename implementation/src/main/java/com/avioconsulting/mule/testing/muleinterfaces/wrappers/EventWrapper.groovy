@@ -10,6 +10,10 @@ interface EventWrapper {
     EventWrapper withVariable(String variableName,
                               Object value)
 
+    EventWrapper withVariable(String variableName,
+                              Object value,
+                              String mediaType)
+
     EventWrapper withNewAttributes(attributes)
 
     EventWrapper withNewPayload(Object payload,

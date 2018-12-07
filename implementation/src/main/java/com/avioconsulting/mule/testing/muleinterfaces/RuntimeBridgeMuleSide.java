@@ -72,6 +72,18 @@ public class RuntimeBridgeMuleSide {
                 .build();
     }
 
+    public Object getEventFromOldEvent(Object muleMessage,
+                                       Object oldEvent,
+                                       String variableName,
+                                       Object variableValue,
+                                       String mediaType) {
+        DataType dataType = (DataType) getMediaType(mediaType);
+        return CoreEvent.builder((CoreEvent) oldEvent)
+                .addVariable(variableName, variableValue, dataType)
+                .message((Message) muleMessage)
+                .build();
+    }
+
     public Object getMuleStreamCursor(Object muleEvent,
                                       InputStream stream) {
         if (!cursorStreamProviderFactory.accepts(stream)) {
