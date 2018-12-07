@@ -13,11 +13,8 @@ import javax.xml.parsers.DocumentBuilderFactory
 @Log4j2
 class JAXBMarshalHelper {
     private final JAXBContext jaxbContext
-    private final String helperUse
 
-    JAXBMarshalHelper(Class inputJaxbClass,
-                      String helperUse) {
-        this.helperUse = helperUse
+    JAXBMarshalHelper(Class inputJaxbClass) {
         this.jaxbContext = JAXBContext.newInstance(inputJaxbClass.getPackage().name)
     }
 
@@ -40,8 +37,7 @@ class JAXBMarshalHelper {
             def asString = stringWriter.toString()
             // will pretty print the XML
             asString = XmlUtil.serialize(asString)
-            log.info 'JAXB Marshaller for {}, marshalled a payload of {}',
-                     this.helperUse,
+            log.info 'JAXB marshalled a payload of {}',
                      asString
             asString
         }
@@ -56,8 +52,7 @@ class JAXBMarshalHelper {
                   ConnectorInfo connectorInfo) {
         def unmarshaller = this.jaxbContext.createUnmarshaller()
         def payloadAsStr = connectorInfo.incomingBody ?: event.messageAsString
-        log.info 'JAXB Unmarshaller for {}, received payload of {}',
-                 this.helperUse,
+        log.info 'JAXB Unmarshaller received payload of {}',
                  payloadAsStr
         try {
             def result = unmarshaller.unmarshal(new StringReader(payloadAsStr))

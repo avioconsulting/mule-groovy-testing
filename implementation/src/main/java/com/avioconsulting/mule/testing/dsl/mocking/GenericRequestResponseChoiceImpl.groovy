@@ -4,7 +4,4 @@ import com.avioconsulting.mule.testing.muleinterfaces.wrappers.ConnectorInfo
 
 class GenericRequestResponseChoiceImpl<T extends ConnectorInfo> extends
         StandardRequestResponseImpl<T> {
-    GenericRequestResponseChoiceImpl() {
-        super('Generic Mock')
-    }
 }

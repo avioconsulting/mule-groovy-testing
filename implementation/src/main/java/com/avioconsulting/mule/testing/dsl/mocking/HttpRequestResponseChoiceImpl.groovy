@@ -16,7 +16,7 @@ class HttpRequestResponseChoiceImpl extends
     private final HttpConnectorErrorTransformer httpConnectorErrorTransformer
 
     HttpRequestResponseChoiceImpl(IFetchClassLoaders fetchAppClassLoader) {
-        super('HTTP Request Mock')
+        super()
         httpValidationTransformer = new HttpValidationTransformer()
         httpGetTransformer = new HttpGetTransformer()
         httpConnectorErrorTransformer = new HttpConnectorErrorTransformer(fetchAppClassLoader)

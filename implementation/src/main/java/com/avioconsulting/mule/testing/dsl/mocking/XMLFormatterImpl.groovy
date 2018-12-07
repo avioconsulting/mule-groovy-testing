@@ -11,21 +11,17 @@ class XMLFormatterImpl<T extends ConnectorInfo> implements
         XMLFormatter,
         IFormatter<T> {
     protected MuleMessageTransformer<T> transformer
-    private final String transformerUse
     private final MessageType messageType
 
-    XMLFormatterImpl(String transformerUse,
-                     // most of the time, this should be a sensible default
-                     MessageType messageType = MessageType.Mule41Stream) {
+    XMLFormatterImpl(MessageType messageType = MessageType.Mule41Stream) {
+        // most of the time, this should be a sensible default
         this.messageType = messageType
-        this.transformerUse = transformerUse
     }
 
     def whenCalledWithJaxb(Class inputJaxbClass,
                            Closure closure) {
         transformer = new XMLJAXBTransformer<T>(closure,
                                                 inputJaxbClass,
-                                                transformerUse,
                                                 messageType)
     }
 

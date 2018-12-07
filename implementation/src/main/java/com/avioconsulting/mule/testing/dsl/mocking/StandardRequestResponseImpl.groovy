@@ -10,10 +10,8 @@ abstract class StandardRequestResponseImpl<T extends ConnectorInfo> implements
     protected IFormatter formatter
     private Closure closure
     protected final ClosureCurrier closureCurrier
-    private final String requestResponseUse
 
-    StandardRequestResponseImpl(String requestResponseUse) {
-        this.requestResponseUse = requestResponseUse
+    StandardRequestResponseImpl() {
         this.closureCurrier = new ClosureCurrier<T>()
     }
 
@@ -34,7 +32,7 @@ abstract class StandardRequestResponseImpl<T extends ConnectorInfo> implements
     }
 
     def xml(@DelegatesTo(XMLFormatter) Closure closure) {
-        formatter = new XMLFormatterImpl(requestResponseUse)
+        formatter = new XMLFormatterImpl()
         this.closure = closure
     }
 

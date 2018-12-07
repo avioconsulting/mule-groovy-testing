@@ -17,12 +17,10 @@ class XMLJAXBTransformer<T extends ConnectorInfo> extends
 
     XMLJAXBTransformer(Closure closure,
                        Class inputJaxbClass,
-                       String transformerUse,
                        XMLMessageBuilder.MessageType messageType) {
         this.messageType = messageType
         this.closure = closure
-        this.helper = new JAXBMarshalHelper(inputJaxbClass,
-                                            transformerUse)
+        this.helper = new JAXBMarshalHelper(inputJaxbClass)
     }
 
     EventWrapper transform(EventWrapper event,

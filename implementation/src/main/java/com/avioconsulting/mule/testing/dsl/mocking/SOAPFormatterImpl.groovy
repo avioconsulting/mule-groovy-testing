@@ -27,8 +27,7 @@ class SOAPFormatterImpl extends
     private final IFetchClassLoaders fetchAppClassLoader
 
     SOAPFormatterImpl(IFetchClassLoaders fetchAppClassLoader) {
-        super('SOAP/WS Consumer Mock',
-              XMLMessageBuilder.MessageType.Soap)
+        super(XMLMessageBuilder.MessageType.Soap)
         this.fetchAppClassLoader = fetchAppClassLoader
     }
 
