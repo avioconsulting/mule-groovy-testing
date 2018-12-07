@@ -33,4 +33,21 @@
         </body>
         <output type="any" doc:description="Payload's output"/>
     </operation>
+
+    <operation name="do-stuff-get"
+               doc:description="Makes a get call">
+        <parameters>
+            <parameter name="inputParam" type="string" use="REQUIRED"/>
+        </parameters>
+        <body>
+            <http:request config-ref="httpreq-config"
+                          path="/stuff"
+                          method="GET">
+                <http:query-params>
+                    <![CDATA[#[ { 'created_by': vars['inputParam']}]]]>
+                </http:query-params>
+            </http:request>
+        </body>
+        <output type="any" doc:description="Payload's output"/>
+    </operation>
 </module>

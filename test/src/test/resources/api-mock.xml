@@ -10,8 +10,20 @@
 http://www.mulesoft.org/schema/mule/module-hello http://www.mulesoft.org/schema/mule/module-hello/current/mule-module-hello.xsd">
     <flow name="fooFlow">
         <logger message="calling module" />
-        <module-hello:do-stuff-post doc:name="the name of our connector"
-                                    doc:id="b786b52d-042c-4c7b-87dd-1926e29bfc1e"/>
+        <module-hello:do-stuff-post doc:name="the name of our connector"/>
+        <logger message="done calling module, transforming output to java" />
+        <ee:transform doc:name="Transform Message">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/java
+---
+payload]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+    </flow>
+    <flow name="fooGetFlow">
+        <logger message="calling module" />
+        <module-hello:do-stuff-get doc:name="the name of our connector" inputParam="#[payload]"/>
         <logger message="done calling module, transforming output to java" />
         <ee:transform doc:name="Transform Message">
             <ee:message>
