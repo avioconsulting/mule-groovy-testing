@@ -16,8 +16,8 @@ class SoapConsumerInfo extends
               container,
               parameters)
         def connection = parameters['connection']
-        this.customTransport = connection.transportConfiguration.isPresent()
-        this.uri = connection.client.address
+        this.customTransport = connection.transportConfiguration.getClass().getName().contains('CustomHttpTransportConfiguration')
+        this.uri = connection.info.address
     }
 
     boolean isCustomHttpTransportConfigured() {
