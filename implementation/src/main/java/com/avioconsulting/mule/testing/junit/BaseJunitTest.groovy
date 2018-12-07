@@ -5,6 +5,7 @@ import com.avioconsulting.mule.testing.dsl.invokers.BatchRunner
 import com.avioconsulting.mule.testing.dsl.invokers.FlowRunner
 import com.avioconsulting.mule.testing.dsl.invokers.SoapInvoker
 import com.avioconsulting.mule.testing.dsl.mocking.HttpRequestResponseChoice
+import com.avioconsulting.mule.testing.dsl.mocking.RawFormatter
 import com.avioconsulting.mule.testing.dsl.mocking.SOAPFormatter
 import com.avioconsulting.mule.testing.dsl.mocking.StandardRequestResponse
 import com.avioconsulting.mule.testing.dsl.mocking.sfdc.Choice
@@ -97,7 +98,7 @@ abstract class BaseJunitTest implements
     }
 
     def mockApiCall(String connectorName,
-                    Closure closure) {
+                    @DelegatesTo(RawFormatter) Closure closure) {
         mockApiCall(mockingConfiguration,
                     runtimeBridge,
                     connectorName,

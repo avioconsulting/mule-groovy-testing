@@ -22,9 +22,11 @@ class ApiMockTest extends
         // arrange
         def payload = null
         def params = [:]
-        mockApiCall('Set payload echo') { mockPayload, mockParams ->
-            payload = mockPayload
-            params = mockParams
+        mockApiCall('the name of our connector') {
+            whenCalledWith { mockPayload, mockParams ->
+                payload = mockPayload
+                params = mockParams
+            }
         }
 
         // act
