@@ -39,6 +39,33 @@ output application/json
             </ee:message>
         </ee:transform>
     </flow>
+    <flow name="restRequestToFlowVar">
+        <ee:transform doc:name="Transform Message">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+    key: payload.foo
+}]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+        <http:request config-ref="SomeSystem"
+                      path="/some_path"
+                      method="POST"
+                      doc:name="SomeSystem Call"
+                      target="stuff"/>
+        <ee:transform doc:name="Transform Message">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+    reply_key: vars.stuff.reply + 1
+}]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+    </flow>
     <flow name="restRequestFromFlowVar">
         <ee:transform doc:name="Transform Message">
             <ee:variables>
@@ -54,7 +81,7 @@ output application/json
                       path="/some_path"
                       method="POST"
                       doc:name="SomeSystem Call">
-            <http:body ><![CDATA[#[vars.stuff]]]></http:body>
+            <http:body><![CDATA[#[vars.stuff]]]></http:body>
         </http:request>
         <ee:transform doc:name="Transform Message">
             <ee:message>

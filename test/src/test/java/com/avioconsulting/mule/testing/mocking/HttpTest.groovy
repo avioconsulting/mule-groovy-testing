@@ -79,13 +79,29 @@ class HttpTest extends
     @Test
     void mocks_Properly_target_other_than_payload() {
         // arrange
+        def stuff = null
+        mockRestHttpCall('SomeSystem Call') {
+            json {
+                whenCalledWith { Map incoming ->
+                    stuff = incoming
+                    [reply: 456]
+                }
+            }
+        }
 
         // act
+        def result = runFlow('restRequestToFlowVar') {
+            json {
+                inputPayload([foo: 123])
+            }
+        }
 
         // assert
-        fail 'write the test'
+        assertThat stuff,
+                   is(equalTo([key: 123]))
+        assertThat result,
+                   is(equalTo([reply_key: 457]))
     }
-
 
     @Test
     void mocksProperly_raw() {
