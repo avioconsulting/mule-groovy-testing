@@ -21,11 +21,11 @@ class ApiMockTest extends
     @Test
     void mocks_post() {
         // arrange
-        Object payload = null
+        def mockPayload = null
         mockRestHttpCall('the name of our connector') {
-            api {
-                whenCalledWith { ourPayload ->
-                    payload = ourPayload
+            json {
+                whenCalledWith(String) { String ourPayload ->
+                    mockPayload = ourPayload
                     'new payload'
                 }
             }
@@ -40,10 +40,8 @@ class ApiMockTest extends
 
         // assert
         assertThat 'Parameter key is based on the value inside the module XML, not the call to the module',
-                   payload,
-                   is(equalTo([
-                           value: 'howdy'
-                   ]))
+                   mockPayload,
+                   is(equalTo('nope'))
         assertThat result,
                    is(equalTo('new payload'))
     }

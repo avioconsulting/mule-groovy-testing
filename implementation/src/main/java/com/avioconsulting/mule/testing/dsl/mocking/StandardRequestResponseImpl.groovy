@@ -43,10 +43,4 @@ abstract class StandardRequestResponseImpl<T extends ConnectorInfo> implements
         formatter = new RawFormatterImpl<T>(closureCurrier)
         this.closure = closure
     }
-
-    @Override
-    def api(@DelegatesTo(RawFormatter) Closure closure) {
-        formatter = new ApiFormatterImpl<T>(closureCurrier)
-        this.closure = closure
-    }
 }

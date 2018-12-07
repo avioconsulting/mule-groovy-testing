@@ -6,6 +6,4 @@ interface StandardRequestResponse {
     def xml(@DelegatesTo(XMLFormatter) Closure closure)
 
     def raw(@DelegatesTo(RawFormatter) Closure closure)
-
-    def api(@DelegatesTo(RawFormatter) Closure closure)
 }
