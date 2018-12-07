@@ -97,14 +97,6 @@ abstract class BaseJunitTest implements
                            closure)
     }
 
-    def mockApiCall(String connectorName,
-                    @DelegatesTo(RawFormatter) Closure closure) {
-        mockApiCall(mockingConfiguration,
-                    runtimeBridge,
-                    connectorName,
-                    closure)
-    }
-
     def runBatch(String batchName,
                  List<String> jobsToWaitFor = null,
                  boolean throwUnderlyingException = false,

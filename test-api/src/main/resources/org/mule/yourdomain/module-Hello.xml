@@ -19,7 +19,7 @@
     <operation name="do-stuff-post"
                doc:description="Makes a call">
         <parameters>
-            <parameter name="inputParam" type="string"/>
+            <parameter name="inputParam" type="string" use="REQUIRED" role="PRIMARY"/>
         </parameters>
         <body>
             <http:request config-ref="httpreq-config"

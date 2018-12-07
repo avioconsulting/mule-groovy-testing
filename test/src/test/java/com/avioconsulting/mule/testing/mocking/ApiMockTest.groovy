@@ -19,13 +19,15 @@ class ApiMockTest extends
     }
 
     @Test
-    void mocksProperly() {
+    void mocks_post() {
         // arrange
-        def params = [:]
-        mockApiCall('the name of our connector') {
-            whenCalledWith { Map parameters ->
-                params = parameters
-                'new payload'
+        Object payload = null
+        mockRestHttpCall('the name of our connector') {
+            api {
+                whenCalledWith { ourPayload ->
+                    payload = ourPayload
+                    'new payload'
+                }
             }
         }
 
@@ -38,7 +40,7 @@ class ApiMockTest extends
 
         // assert
         assertThat 'Parameter key is based on the value inside the module XML, not the call to the module',
-                   params,
+                   payload,
                    is(equalTo([
                            value: 'howdy'
                    ]))
@@ -47,7 +49,7 @@ class ApiMockTest extends
     }
 
     @Test
-    void mocksProperly_with_http_request_info() {
+    void mocks_with_http_request_info() {
         // arrange
 
         // act
@@ -57,32 +59,17 @@ class ApiMockTest extends
     }
 
     @Test
-    void mocksProperly_with_event() {
+    void mocks_with_event() {
+    }
+
+    @Test
+    void mocks_get() {
         // arrange
-        def params = [:]
-        mockApiCall('the name of our connector') {
-            whenCalledWith { Map parameters,
-                             EventWrapper event ->
-                params = parameters
-                'new payload'
-            }
-        }
 
         // act
-        def result = runFlow('fooFlow') {
-            java {
-                inputPayload('nope')
-            }
-        }
 
         // assert
-        assertThat 'Parameter key is based on the value inside the module XML, not the call to the module',
-                   params,
-                   is(equalTo([
-                           value: 'howdy'
-                   ]))
-        assertThat result,
-                   is(equalTo('new payload'))
         fail 'write the test'
     }
+
 }

@@ -334,20 +334,6 @@ trait BaseMuleGroovyTrait {
         }
     }
 
-    def mockApiCall(MockingConfiguration mockingConfiguration,
-                    RuntimeBridgeTestSide bridge,
-                    String connectorName,
-                    @DelegatesTo(RawFormatter) Closure closure) {
-        def formatter = new ApiCallFormatterImpl()
-        def code = closure.rehydrate(formatter,
-                                     this,
-                                     this)
-        code.resolveStrategy = Closure.DELEGATE_ONLY
-        code()
-        mockingConfiguration.addMock(connectorName,
-                                     formatter.transformer)
-    }
-
     def mockRestHttpCall(MockingConfiguration mockingConfiguration,
                          RuntimeBridgeTestSide bridge,
                          String connectorName,
