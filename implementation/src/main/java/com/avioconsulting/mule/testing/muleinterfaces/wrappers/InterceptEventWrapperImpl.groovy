@@ -39,6 +39,7 @@ class InterceptEventWrapperImpl extends
     @Override
     Object getVariable(String variableName) {
         // just as described in withNewMessage above, you can't read new flowVars, so if we change, we track it
+        variableOverrides.get(variableName) ?: super.getVariable(variableName)
     }
 
     @Override
