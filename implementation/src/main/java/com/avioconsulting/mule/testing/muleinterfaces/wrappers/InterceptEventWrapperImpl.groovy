@@ -59,7 +59,8 @@ class InterceptEventWrapperImpl extends
     EventWrapper withVariable(String variableName,
                               Object value,
                               String mediaType) {
-        def resolvedMediaType = runtimeBridgeMuleSide.getMediaType(mediaType)
+        def resolvedMediaType = runtimeBridgeMuleSide.getDataType(value,
+                                                                  mediaType)
         this.nativeMuleEvent.addVariable(variableName,
                                          value,
                                          resolvedMediaType)
