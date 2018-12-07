@@ -3,6 +3,7 @@
 
 # 2.0.7 (pending)
 * Fixes for SOAP/WS-Consumer 1.2.1
+* Consistent logging
 
 # 2.0.6
 * Add support for `target` and ensure mocked connectors that have it configured have mocked output sent to the appropriate flow variable. NOTE: `targetValue` is not supported yet

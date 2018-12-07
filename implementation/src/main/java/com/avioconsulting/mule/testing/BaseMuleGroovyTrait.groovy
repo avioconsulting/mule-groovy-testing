@@ -264,15 +264,20 @@ trait BaseMuleGroovyTrait {
         def runner = new FlowRunnerImpl(bridge,
                                         flow,
                                         flowName)
-        def code = closure.rehydrate(runner,
-                                     this,
-                                     this)
-        code.resolveStrategy = Closure.DELEGATE_ONLY
-        code()
-        def outputEvent = runFlow(bridge,
-                                  flowName,
-                                  runner.getEvent())
-        runner.transformOutput(outputEvent)
+        try {
+            def code = closure.rehydrate(runner,
+                                         this,
+                                         this)
+            code.resolveStrategy = Closure.DELEGATE_ONLY
+            code()
+            def outputEvent = runFlow(bridge,
+                                      flowName,
+                                      runner.getEvent())
+            runner.transformOutput(outputEvent)
+        }
+        finally {
+            runner.closeLogContext()
+        }
     }
 
     EventWrapper runSoapApikitFlow(RuntimeBridgeTestSide bridge,
