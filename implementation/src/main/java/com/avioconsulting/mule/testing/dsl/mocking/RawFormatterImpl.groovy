@@ -30,7 +30,8 @@ class RawFormatterImpl<T extends ConnectorInfo> implements
         def output = new OutputTransformer() {
             @Override
             EventWrapper transformOutput(Object inputMessage,
-                                         EventWrapper originalMuleEvent) {
+                                         EventWrapper originalMuleEvent,
+                                         ConnectorInfo connectorInfo) {
                 def payload = inputMessage
                 String mediaType = null
                 if (inputMessage instanceof ReturnWrapper) {
@@ -38,6 +39,7 @@ class RawFormatterImpl<T extends ConnectorInfo> implements
                     mediaType = inputMessage.mediaType
                 }
                 originalMuleEvent.withNewPayload(payload,
+                                                 connectorInfo,
                                                  mediaType)
             }
         }

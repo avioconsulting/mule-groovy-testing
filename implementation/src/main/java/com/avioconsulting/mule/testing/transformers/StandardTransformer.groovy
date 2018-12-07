@@ -32,6 +32,7 @@ class StandardTransformer<T extends ConnectorInfo> implements
                                                     connectorInfo)
         def result = curried.parameterTypes.size() == 0 ? curried() : curried(input)
         outputTransformer.transformOutput(result,
-                                          muleEvent)
+                                          muleEvent,
+                                          connectorInfo)
     }
 }

@@ -78,7 +78,8 @@ class JsonInvokerImpl implements
         } else {
             assert transformBeforeCallingFlow: 'Need to specify a type of JSON serialization (jackson, map)'
             return transformBeforeCallingFlow.transformOutput(this.inputObject,
-                                                              event)
+                                                              event,
+                                                              flow)
         }
     }
 
