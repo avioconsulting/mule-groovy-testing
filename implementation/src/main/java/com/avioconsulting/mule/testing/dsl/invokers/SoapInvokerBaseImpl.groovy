@@ -1,7 +1,8 @@
 package com.avioconsulting.mule.testing.dsl.invokers
 
-
+import com.avioconsulting.mule.testing.muleinterfaces.RuntimeBridgeTestSide
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.EventWrapper
+import com.avioconsulting.mule.testing.muleinterfaces.wrappers.FlowWrapper
 import com.avioconsulting.mule.testing.transformers.xml.JAXBMarshalHelper
 import com.avioconsulting.mule.testing.transformers.xml.XMLMessageBuilder
 
@@ -11,9 +12,12 @@ abstract class SoapInvokerBaseImpl implements
     protected inputObject
     protected final XMLMessageBuilder xmlMessageBuilder
     protected JAXBMarshalHelper jaxbHelper
+    protected final FlowWrapper flow
 
-    SoapInvokerBaseImpl() {
+    SoapInvokerBaseImpl(String flowName,
+                        RuntimeBridgeTestSide runtimeBridgeTestSide) {
         this.xmlMessageBuilder = new XMLMessageBuilder()
+        this.flow = runtimeBridgeTestSide.getFlow(flowName)
     }
 
     @Override
@@ -25,6 +29,7 @@ abstract class SoapInvokerBaseImpl implements
 
     @Override
     def transformOutput(EventWrapper event) {
-        jaxbHelper.unmarshal(event)
+        jaxbHelper.unmarshal(event,
+                             flow)
     }
 }

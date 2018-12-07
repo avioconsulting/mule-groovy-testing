@@ -2,7 +2,9 @@
 set -e
 
 echo "Pushing to general AVIO Nexus"
+pushd implementation
 mvn clean deploy -DskipTests
+popd
 
 echo "Updating AVIO DFW bitbucket repo"
 # AVIO Nexus
@@ -11,7 +13,9 @@ git rebase mule4_1/master
 git push --force
 
 echo "Pushing to AVIO Nexus DFW"
+pushd implementation
 mvn clean deploy -DskipTests
+popd
 
 echo "Now updating DFW customer code"
 git checkout mule4_1/dfw

@@ -10,6 +10,7 @@ class HttpRequesterInfo extends
     private final Map<String, String> headers
     private HttpValidatorWrapper validatorWrapper
     private final String uri
+    private final body
 
     HttpRequesterInfo(String fileName,
                       Integer lineNumber,
@@ -28,6 +29,7 @@ class HttpRequesterInfo extends
         }
         // it's a MultiMap, keep Mule runtime classes away from our tests
         def requestBuilder = parameters['requestBuilder']
+        this.body = requestBuilder.body
         this.queryParams = convertMultiMap(requestBuilder.queryParams) as Map<String, String>
         this.headers = convertMultiMap(requestBuilder.headers) as Map<String, String>
         def uriParams = parameters['client'].defaultUriParameters
@@ -64,5 +66,18 @@ class HttpRequesterInfo extends
 
     String getUri() {
         return uri
+    }
+
+    @Override
+    String getIncomingBody() {
+        // no payloads should be a part of GET
+        if (this.method == 'GET') {
+            return null
+        }
+        def value = this.body.value
+        if (value instanceof InputStream) {
+            return value.text
+        }
+        throw new Exception("Do not understand type ${value.getClass()}!")
     }
 }

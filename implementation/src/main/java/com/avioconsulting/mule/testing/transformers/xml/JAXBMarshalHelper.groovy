@@ -1,5 +1,6 @@
 package com.avioconsulting.mule.testing.transformers.xml
 
+import com.avioconsulting.mule.testing.muleinterfaces.wrappers.ConnectorInfo
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.EventWrapper
 import groovy.util.logging.Log4j2
 import groovy.xml.XmlUtil
@@ -51,9 +52,10 @@ class JAXBMarshalHelper {
         }
     }
 
-    def unmarshal(EventWrapper event) {
+    def unmarshal(EventWrapper event,
+                  ConnectorInfo connectorInfo) {
         def unmarshaller = this.jaxbContext.createUnmarshaller()
-        def payloadAsStr = event.messageAsString
+        def payloadAsStr = connectorInfo.incomingBody ?: event.messageAsString
         log.info 'JAXB Unmarshaller for {}, received payload of {}',
                  this.helperUse,
                  payloadAsStr

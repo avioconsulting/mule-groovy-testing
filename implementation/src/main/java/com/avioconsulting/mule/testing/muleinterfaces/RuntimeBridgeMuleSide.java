@@ -55,6 +55,14 @@ public class RuntimeBridgeMuleSide {
         return MediaType.parse(mediaType);
     }
 
+    public Object getDataType(Object value,
+                              String mediaType) {
+        return DataType.builder()
+                .fromObject(value)
+                .mediaType(mediaType)
+                .build();
+    }
+
     public Object getEventFromOldEvent(Object muleMessage,
                                        Object oldEvent) {
         return CoreEvent.builder((CoreEvent) oldEvent)
@@ -68,6 +76,18 @@ public class RuntimeBridgeMuleSide {
                                        Object variableValue) {
         return CoreEvent.builder((CoreEvent) oldEvent)
                 .addVariable(variableName, variableValue)
+                .message((Message) muleMessage)
+                .build();
+    }
+
+    public Object getEventFromOldEvent(Object muleMessage,
+                                       Object oldEvent,
+                                       String variableName,
+                                       Object variableValue,
+                                       String mediaType) {
+        DataType dataType = (DataType) getMediaType(mediaType);
+        return CoreEvent.builder((CoreEvent) oldEvent)
+                .addVariable(variableName, variableValue, dataType)
                 .message((Message) muleMessage)
                 .build();
     }

@@ -1,6 +1,11 @@
 # 2.0
 (for Mule 4.1)
 
+# 2.0.6
+* Add support for `target` and ensure mocked connectors that have it configured have mocked output sent to the appropriate flow variable. NOTE: `targetValue` is not supported yet
+* Add support for HTTP request and WS Consumer's `body` attribute that allows supplying a request from something besides payload
+* Allow mocking HTTP request connectors that are hidden behind Exchange/Mule 4 modules.
+
 # 2.0.5
 * To avoid possible state issues with the .mule directory, just clear it out with every test run
 

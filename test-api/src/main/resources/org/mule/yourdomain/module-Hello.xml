@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module name="Testing API Mocking Capability"
+        prefix="module-hello"
+        doc:description="This module relies entirely in runtime provided components (no other Plugin dependencies)"
+        xmlns="http://www.mulesoft.org/schema/mule/module"
+        xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+        xmlns:http="http://www.mulesoft.org/schema/mule/http"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.mulesoft.org/schema/mule/module http://www.mulesoft.org/schema/mule/module/current/mule-module.xsd
+           http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+    <http:request-config name="httpreq-config"
+                         basePath="/">
+        <http:request-connection host="foobar"
+                                 protocol="HTTP"
+                                 port="8081">
+        </http:request-connection>
+    </http:request-config>
+
+    <operation name="do-stuff-post"
+               doc:description="Makes a call">
+        <parameters>
+            <parameter name="inputParam" type="string" use="REQUIRED" role="PRIMARY"/>
+        </parameters>
+        <body>
+            <http:request config-ref="httpreq-config"
+                          path="/stuff"
+                          method="POST">
+                <http:body>
+                    <![CDATA[#[output application/json --- vars['inputParam']]
+]]>
+                </http:body>
+            </http:request>
+        </body>
+        <output type="any" doc:description="Payload's output"/>
+    </operation>
+
+    <operation name="do-stuff-get"
+               doc:description="Makes a get call">
+        <parameters>
+            <parameter name="inputParam" type="string" use="REQUIRED"/>
+        </parameters>
+        <body>
+            <http:request config-ref="httpreq-config"
+                          path="/stuff"
+                          method="GET">
+                <http:query-params>
+                    <![CDATA[#[ { 'created_by': vars['inputParam']}]]]>
+                </http:query-params>
+            </http:request>
+        </body>
+        <output type="any" doc:description="Payload's output"/>
+    </operation>
+</module>

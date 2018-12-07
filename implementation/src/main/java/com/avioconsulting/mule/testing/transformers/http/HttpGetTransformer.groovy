@@ -12,6 +12,7 @@ class HttpGetTransformer implements
         if (connectorInfo.method == 'GET') {
             // a wildcard mediatype should work for this
             return muleEvent.withNewPayload(null,
+                                            connectorInfo,
                                             '*/*')
         }
         muleEvent

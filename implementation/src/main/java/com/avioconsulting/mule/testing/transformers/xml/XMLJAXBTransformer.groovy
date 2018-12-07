@@ -27,13 +27,15 @@ class XMLJAXBTransformer<T extends ConnectorInfo> extends
 
     EventWrapper transform(EventWrapper event,
                            ConnectorInfo connectorInfo) {
-        def strongTypedPayload = helper.unmarshal(event)
+        def strongTypedPayload = helper.unmarshal(event,
+                                                  connectorInfo)
         def forMuleMsg = withMuleEvent(this.closure,
                                        event)
         def reply = forMuleMsg(strongTypedPayload)
         String xml = reply instanceof File ? reply.text : helper.getMarshalled(reply)
         this.xmlMessageBuilder.build(xml,
                                      event,
+                                     connectorInfo,
                                      messageType,
                                      200)
     }

@@ -14,7 +14,13 @@ import org.mule.runtime.core.internal.exception.MessagingException;
 import org.mule.runtime.core.internal.interception.DefaultInterceptionEvent;
 import org.mule.runtime.extension.api.error.ErrorTypeDefinition;
 import org.mule.runtime.extension.api.exception.ModuleException;
+import org.w3c.dom.Document;
 
+import javax.xml.namespace.QName;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.ByteArrayInputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -25,12 +31,30 @@ import java.util.concurrent.CompletableFuture;
 import static org.mule.runtime.core.api.util.ClassUtils.withContextClassLoader;
 
 public class MockingProcessorInterceptor implements ProcessorInterceptor {
-    private static final String CONNECTOR_NAME_PARAMETER = "doc:name";
+    private static final String PARAMETER_CONNECTOR_NAME = "doc:name";
+    private static final String PARAMETER_MODULE_NAME = "moduleName";
+    private static final QName SOURCE_ELEMENT = new QName("http://www.mulesoft.org/schema/mule/documentation",
+                                                          "sourceElement");
+    private static final DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+    private static final DocumentBuilder builder;
+
+    static {
+        try {
+            builder = dbf.newDocumentBuilder();
+        } catch (ParserConfigurationException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     private final Method isMockEnabledMethod;
     private final Method doMockInvocationMethod;
     private final Method getErrorTypeRepositoryMethod;
     private final Object mockingConfiguration;
     private final ClassLoader appClassLoader;
+    // The assumption here is that our call to a module/Exchange wrapped API, since it's just a chain container
+    // will be on the same thread, so we can "pass" the name of the connector down to the next invocation
+    // of this interceptor w/ ThreadLocal. See usages in this class for more info
+    private static ThreadLocal<String> moduleConnectorName = new ThreadLocal<>();
 
     MockingProcessorInterceptor(Object mockingConfiguration,
                                 ClassLoader appClassLoader) {
@@ -117,11 +141,23 @@ public class MockingProcessorInterceptor implements ProcessorInterceptor {
                                                        Map<String, ProcessorParameterValue> parameters,
                                                        InterceptionEvent event,
                                                        InterceptionAction action) {
-        if (!parameters.containsKey(CONNECTOR_NAME_PARAMETER)) {
+        String connectorName = getModuleCallName(parameters,
+                                                 action);
+        if (connectorName != null) {
+            moduleConnectorName.set(connectorName);
+            // we can't access anything on the module call but the next call inside should give us info
             return doProceed(action);
         }
-
-        String connectorName = parameters.get(CONNECTOR_NAME_PARAMETER).providedValue();
+        if (!parameters.containsKey(PARAMETER_CONNECTOR_NAME) && moduleConnectorName.get() == null) {
+            return doProceed(action);
+        } else if (moduleConnectorName.get() != null) {
+            connectorName = moduleConnectorName.get();
+            // don't want this to continue past this execution
+            moduleConnectorName.remove();
+        } else {
+            // the most normal case
+            connectorName = parameters.get(PARAMETER_CONNECTOR_NAME).providedValue();
+        }
 
         if (!isMockEnabled(connectorName)) {
             return doProceed(action);
@@ -157,6 +193,31 @@ public class MockingProcessorInterceptor implements ProcessorInterceptor {
         } catch (IllegalAccessException e) {
             throw new RuntimeException("Should not have had a reflection problem but did",
                                        e);
+        }
+    }
+
+    private String getModuleCallName(Map<String, ProcessorParameterValue> parameters,
+                                     InterceptionAction action) {
+        // if we're calling an API using Exchange "derived" XML SDK calls, this will be a processor chain
+        // but we can't get the name of the connector when the actual mock w/ params/vars runs.
+        // so we map the connector name to the processor chain here, then when this runs again with the processor
+        // chain, we know the name of the 'mock'
+        if (!parameters.containsKey(PARAMETER_MODULE_NAME)) {
+            return null;
+        }
+        Processor processor = getProcessor(action);
+        if (!(processor instanceof Component)) {
+            return null;
+        }
+        String sourceElement = (String) ((Component) processor).getAnnotation(SOURCE_ELEMENT);
+        if (sourceElement == null) {
+            return null;
+        }
+        try {
+            Document doc = builder.parse(new ByteArrayInputStream(sourceElement.getBytes()));
+            return doc.getDocumentElement().getAttribute(PARAMETER_CONNECTOR_NAME);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 

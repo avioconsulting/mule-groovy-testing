@@ -50,6 +50,89 @@ class HttpTest extends
     }
 
     @Test
+    void mocksProperly_from_flowVar() {
+        // arrange
+        def stuff = null
+        mockRestHttpCall('SomeSystem Call') {
+            json {
+                whenCalledWith { Map incoming ->
+                    stuff = incoming
+                    [reply: 456]
+                }
+            }
+        }
+
+        // act
+        def result = runFlow('restRequestFromFlowVar') {
+            json {
+                inputPayload([foo: 123])
+            }
+        }
+
+        // assert
+        assertThat stuff,
+                   is(equalTo([key: 123]))
+        assertThat result,
+                   is(equalTo([reply_key: 457]))
+    }
+
+    @Test
+    void mocksProperly_from_to_flowVar() {
+        // arrange
+        def stuff = null
+        mockRestHttpCall('SomeSystem Call') {
+            json {
+                whenCalledWith { Map incoming ->
+                    stuff = incoming
+                    [reply: 456]
+                }
+            }
+        }
+
+        // act
+        def result = runFlow('restRequestFromToFlowVar') {
+            json {
+                inputPayload([foo: 123])
+            }
+        }
+
+        // assert
+        assertThat stuff,
+                   is(equalTo([key: 123]))
+        assertThat 'each of our 3 operations should be preserved (original payload, 1st DW, and HTTP)',
+                   result,
+                   is(equalTo([reply_key: 703]))
+    }
+
+    @Test
+    void mocks_Properly_target_other_than_payload() {
+        // arrange
+        def stuff = null
+        mockRestHttpCall('SomeSystem Call') {
+            json {
+                whenCalledWith { Map incoming ->
+                    stuff = incoming
+                    [reply: 456]
+                }
+            }
+        }
+
+        // act
+        def result = runFlow('restRequestToFlowVar') {
+            json {
+                inputPayload([foo: 123])
+            }
+        }
+
+        // assert
+        assertThat stuff,
+                   is(equalTo([key: 123]))
+        assertThat 'original payload of 123 + 456 from our mock + 1 in the DW',
+                   result,
+                   is(equalTo([reply_key: 580]))
+    }
+
+    @Test
     void mocksProperly_raw() {
         // arrange
         MessageWrapper stuff = null

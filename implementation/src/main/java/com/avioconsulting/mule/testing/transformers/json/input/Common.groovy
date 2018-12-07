@@ -14,7 +14,8 @@ abstract class Common<T extends ConnectorInfo> implements
         if (muleEvent.message.payload == null) {
             return null
         }
-        def jsonString = muleEvent.message.messageAsString
-        return transform(jsonString)
+        // if the connector allows changing what's used for input, it will come in here
+        def json = messageProcessor.incomingBody ?: muleEvent.message.messageAsString
+        transform(json)
     }
 }

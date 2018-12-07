@@ -55,6 +55,42 @@ class XMLRestTest extends
     }
 
     @Test
+    void from_flowvar_map() {
+        // arrange
+        Map mockedData = null
+        mockRestHttpCall('SomeSystem Call') {
+            xml {
+                whenCalledWithMapAsXml { Map input ->
+                    mockedData = input
+                    [
+                            rootElementResponse: [
+                                    reply: 22
+                            ]
+                    ]
+                }
+            }
+        }
+
+        // act
+        def result = runFlow('xmlTestFromFlowVar') {
+            json {
+                inputPayload([foo: 123])
+            }
+        }
+
+        // assert
+        assert mockedData
+        assertThat JsonOutput.toJson(mockedData),
+                   is(equalTo(JsonOutput.toJson([
+                           rootElement: [key: '123']
+                   ])))
+        assertThat JsonOutput.toJson(result),
+                   is(equalTo(JsonOutput.toJson(
+                           [reply_key: 23]
+                   )))
+    }
+
+    @Test
     void mockViaMap_withMuleMsg() {
         // arrange
         MessageWrapper sentMessage = null
@@ -158,6 +194,7 @@ class XMLRestTest extends
 
     @Test
     void mockGroovyXmlParser() {
+        // arrange
         Node mockedData = null
         mockRestHttpCall('SomeSystem Call') {
             xml {
@@ -172,6 +209,42 @@ class XMLRestTest extends
 
         // act
         def result = runFlow('xmlTest') {
+            json {
+                inputPayload([foo: 123])
+            }
+        }
+
+        // assert
+        assert mockedData
+        assertThat mockedData.name() as String,
+                   is(equalTo('rootElement'))
+        def key = mockedData.key[0] as Node
+        assert key
+        assertThat key.text(),
+                   is(equalTo('123'))
+        assertThat JsonOutput.toJson(result),
+                   is(equalTo(JsonOutput.toJson(
+                           [reply_key: 23]
+                   )))
+    }
+
+    @Test
+    void from_flowvar_groovyxml() {
+        // arrange
+        Node mockedData = null
+        mockRestHttpCall('SomeSystem Call') {
+            xml {
+                whenCalledWithGroovyXmlParser { Node input ->
+                    mockedData = input
+                    def node = new Node(null, 'rootElementResponse')
+                    node.appendNode('reply', 22)
+                    node
+                }
+            }
+        }
+
+        // act
+        def result = runFlow('xmlTestFromFlowVar') {
             json {
                 inputPayload([foo: 123])
             }

@@ -9,18 +9,19 @@ abstract class StandardRequestResponseImpl<T extends ConnectorInfo> implements
         StandardRequestResponse {
     protected IFormatter formatter
     private Closure closure
-    private final ClosureCurrier closureCurrier
+    protected final ClosureCurrier closureCurrier
     private final String requestResponseUse
 
-    StandardRequestResponseImpl(ClosureCurrier closureCurrier,
-                                String requestResponseUse) {
+    StandardRequestResponseImpl(String requestResponseUse) {
         this.requestResponseUse = requestResponseUse
-        this.closureCurrier = closureCurrier
+        this.closureCurrier = new ClosureCurrier<T>()
     }
 
     TransformerChain<T> getTransformer() {
         def transformerChain = new TransformerChain<T>()
-        def code = closure.rehydrate(formatter, this, this)
+        def code = closure.rehydrate(formatter,
+                                     this,
+                                     this)
         code.resolveStrategy = Closure.DELEGATE_ONLY
         code()
         transformerChain.addTransformer(formatter.transformer)

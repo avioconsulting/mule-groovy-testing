@@ -36,4 +36,16 @@ class ConnectorInfo {
     String getContainer() {
         return container
     }
+
+    String getTargetFlowVariable() {
+        parameters['target']
+    }
+
+    /**
+     *
+     * @return null if there is no custom body specified for the connector
+     */
+    String getIncomingBody() {
+        null
+    }
 }

@@ -43,6 +43,7 @@ class FlowRunnerImpl implements
     @Override
     def soap(@DelegatesTo(SoapInvoker) Closure closure) {
         def soapInvoker = new SoapOperationFlowInvokerImpl(invokerEventFactory,
+                                                           runtimeBridge,
                                                            flowName)
         invoker = soapInvoker
         this.closure = closure
@@ -72,7 +73,9 @@ class FlowRunnerImpl implements
 
     EventWrapper getEvent() {
         assert invoker: 'Need to specify a proper format! (e.g. json)'
-        def code = closure.rehydrate(invoker, this, this)
+        def code = closure.rehydrate(invoker,
+                                     this,
+                                     this)
         code.resolveStrategy = Closure.DELEGATE_ONLY
         code()
         def event = invoker.getEvent()
