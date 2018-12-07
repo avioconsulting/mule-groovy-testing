@@ -47,6 +47,16 @@ class ApiMockTest extends
     }
 
     @Test
+    void mocksProperly_with_http_request_info() {
+        // arrange
+
+        // act
+
+        // assert
+        fail 'write the test'
+    }
+
+    @Test
     void mocksProperly_with_event() {
         // arrange
         def params = [:]
