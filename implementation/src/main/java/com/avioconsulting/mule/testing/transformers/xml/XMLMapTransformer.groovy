@@ -22,7 +22,7 @@ class XMLMapTransformer<T extends ConnectorInfo> extends
 
     EventWrapper transform(EventWrapper incomingEvent,
                            T connectorInfo) {
-        def xmlString = incomingEvent.messageAsString
+        def xmlString = connectorInfo.incomingBody ?: incomingEvent.messageAsString
         def node = new XmlSlurper().parseText(xmlString) as GPathResult
         def asMap = convertToMap(node)
         def forMuleMsg = withMuleEvent(closure,

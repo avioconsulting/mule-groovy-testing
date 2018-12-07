@@ -21,7 +21,7 @@ class XMLGroovyParserTransformer<T extends ConnectorInfo> extends
 
     EventWrapper transform(EventWrapper muleEvent,
                            T connectorInfo) {
-        def xmlString = muleEvent.messageAsString
+        def xmlString = connectorInfo.incomingBody ?: muleEvent.messageAsString
         def node = new XmlParser().parseText(xmlString) as Node
         def forMuleMsg = withMuleEvent(closure,
                                        muleEvent)
