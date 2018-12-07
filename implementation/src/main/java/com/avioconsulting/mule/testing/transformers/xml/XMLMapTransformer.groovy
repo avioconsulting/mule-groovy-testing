@@ -3,16 +3,16 @@ package com.avioconsulting.mule.testing.transformers.xml
 import com.avioconsulting.mule.testing.muleinterfaces.MuleMessageTransformer
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.ConnectorInfo
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.EventWrapper
-import com.avioconsulting.mule.testing.transformers.ClosureMuleMessageHandler
+import com.avioconsulting.mule.testing.transformers.ClosureCurrier
 import groovy.util.slurpersupport.GPathResult
 import groovy.xml.MarkupBuilder
 
 class XMLMapTransformer<T extends ConnectorInfo> extends
         XMLTransformer<T> implements
-        MuleMessageTransformer<T>,
-        ClosureMuleMessageHandler {
+        MuleMessageTransformer<T> {
     private final Closure closure
     private final XMLMessageBuilder.MessageType messageType
+    private final ClosureCurrier closureCurrier = new ClosureCurrier<T>()
 
     XMLMapTransformer(Closure closure,
                       XMLMessageBuilder.MessageType messageType) {
@@ -25,9 +25,10 @@ class XMLMapTransformer<T extends ConnectorInfo> extends
         def xmlString = connectorInfo.incomingBody ?: incomingEvent.messageAsString
         def node = new XmlSlurper().parseText(xmlString) as GPathResult
         def asMap = convertToMap(node)
-        def forMuleMsg = withMuleEvent(closure,
-                                       incomingEvent)
-        def result = forMuleMsg(asMap)
+        def closure = closureCurrier.curryClosure(this.closure,
+                                                  incomingEvent,
+                                                  connectorInfo)
+        def result = closure(asMap)
         String xmlReply
         if (result instanceof File) {
             xmlReply = result.text

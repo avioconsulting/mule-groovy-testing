@@ -4,6 +4,7 @@ import com.avioconsulting.mule.testing.OverrideConfigList
 import com.avioconsulting.mule.testing.junit.BaseJunitTest
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.EventWrapper
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.MessageWrapper
+import com.avioconsulting.mule.testing.muleinterfaces.wrappers.connectors.HttpRequesterInfo
 import groovy.json.JsonOutput
 import org.junit.Test
 
@@ -200,8 +201,10 @@ class XMLRestTest extends
             xml {
                 whenCalledWithGroovyXmlParser { Node input ->
                     mockedData = input
-                    def node = new Node(null, 'rootElementResponse')
-                    node.appendNode('reply', 22)
+                    def node = new Node(null,
+                                        'rootElementResponse')
+                    node.appendNode('reply',
+                                    22)
                     node
                 }
             }
@@ -236,8 +239,10 @@ class XMLRestTest extends
             xml {
                 whenCalledWithGroovyXmlParser { Node input ->
                     mockedData = input
-                    def node = new Node(null, 'rootElementResponse')
-                    node.appendNode('reply', 22)
+                    def node = new Node(null,
+                                        'rootElementResponse')
+                    node.appendNode('reply',
+                                    22)
                     node
                 }
             }
@@ -273,8 +278,10 @@ class XMLRestTest extends
                 whenCalledWithGroovyXmlParser { Node input,
                                                 EventWrapper muleEvent ->
                     sentMessage = muleEvent.message
-                    def node = new Node(null, 'rootElementResponse')
-                    node.appendNode('reply', 22)
+                    def node = new Node(null,
+                                        'rootElementResponse')
+                    node.appendNode('reply',
+                                    22)
                     node
                 }
             }
@@ -324,5 +331,77 @@ class XMLRestTest extends
                    is(equalTo(JsonOutput.toJson(
                            [reply_key: 23]
                    )))
+    }
+
+    @Test
+    void access_connector_info_map() {
+        // arrange
+        Map mockedData = null
+        HttpRequesterInfo actualInfo
+        mockRestHttpCall('SomeSystem Call') {
+            xml {
+                whenCalledWithMapAsXml { Map input,
+                                         HttpRequesterInfo conInfo ->
+                    actualInfo = conInfo
+                    mockedData = input
+                    [
+                            rootElementResponse: [
+                                    reply: 22
+                            ]
+                    ]
+                }
+            }
+        }
+
+        // act
+        runFlow('xmlTest') {
+            json {
+                inputPayload([foo: 123])
+            }
+        }
+
+        // assert
+        assert mockedData
+        assertThat JsonOutput.toJson(mockedData),
+                   is(equalTo(JsonOutput.toJson([
+                           rootElement: [key: '123']
+                   ])))
+        assertThat actualInfo.uri,
+                   is(equalTo('http://localhost:443/some_path'))
+    }
+
+    @Test
+    void access_connector_info_groovyxml() {
+        // arrange
+        Node mockedData = null
+        HttpRequesterInfo actualInfo
+        mockRestHttpCall('SomeSystem Call') {
+            xml {
+                whenCalledWithGroovyXmlParser { Node input,
+                                                HttpRequesterInfo conInfo ->
+                    mockedData = input
+                    actualInfo = conInfo
+                    def node = new Node(null,
+                                        'rootElementResponse')
+                    node.appendNode('reply',
+                                    22)
+                    node
+                }
+            }
+        }
+
+        // act
+        runFlow('xmlTest') {
+            json {
+                inputPayload([foo: 123])
+            }
+        }
+
+        // assert
+        assert mockedData
+        assertThat mockedData.name() as String,
+                   is(equalTo('rootElement'))
+        assertThat actualInfo.uri,
+                   is(equalTo('http://localhost:443/some_path'))
     }
 }

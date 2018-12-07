@@ -3,6 +3,7 @@ package com.avioconsulting.mule.testing.mocking
 import com.avioconsulting.mule.testing.OverrideConfigList
 import com.avioconsulting.mule.testing.junit.BaseJunitTest
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.EventWrapper
+import com.avioconsulting.mule.testing.muleinterfaces.wrappers.connectors.SoapConsumerInfo
 import com.avioconsulting.mule.testing.soapxmlroot.SOAPTestRequest
 import com.avioconsulting.mule.testing.soapxmlroot.SOAPTestResponse
 import com.avioconsulting.schemas.soaptest.v1.ObjectFactory
@@ -53,6 +54,37 @@ class SoapTest extends
                    is(equalTo('2017-04-01'))
         assertThat result,
                    is(equalTo([result: 'yes!']))
+    }
+
+    @Test
+    void access_connector_info_jaxb() {
+        // arrange
+        SOAPTestRequestType mockedRequest = null
+        SoapConsumerInfo actualInfo = null
+        mockSoapCall('A SOAP Call') {
+            whenCalledWithJaxb(SOAPTestRequestType) { SOAPTestRequestType request,
+                                                      SoapConsumerInfo soapConsumerInfo ->
+                mockedRequest = request
+                actualInfo = soapConsumerInfo
+                def response = new SOAPTestResponseType()
+                response.details = 'yes!'
+                new ObjectFactory().createSOAPTestResponse(response)
+            }
+        }
+
+        // act
+        runFlow('soaptestFlow') {
+            json {
+                inputPayload([foo: 123])
+            }
+        }
+
+        // assert
+        assert mockedRequest
+        assertThat mockedRequest.title,
+                   is(equalTo("theTitle 123"))
+        assertThat actualInfo.uri,
+                   is(equalTo('http://localhost:8081'))
     }
 
     @Test
