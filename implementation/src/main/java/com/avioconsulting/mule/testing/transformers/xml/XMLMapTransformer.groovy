@@ -25,7 +25,8 @@ class XMLMapTransformer<T extends ConnectorInfo> extends
         def xmlString = incomingEvent.messageAsString
         def node = new XmlSlurper().parseText(xmlString) as GPathResult
         def asMap = convertToMap(node)
-        def forMuleMsg = withMuleEvent(closure, incomingEvent)
+        def forMuleMsg = withMuleEvent(closure,
+                                       incomingEvent)
         def result = forMuleMsg(asMap)
         String xmlReply
         if (result instanceof File) {
@@ -36,6 +37,7 @@ class XMLMapTransformer<T extends ConnectorInfo> extends
         }
         this.xmlMessageBuilder.build(xmlReply,
                                      incomingEvent,
+                                     connectorInfo,
                                      messageType,
                                      200)
     }
@@ -43,7 +45,8 @@ class XMLMapTransformer<T extends ConnectorInfo> extends
     private static Map convertToMap(GPathResult node,
                                     boolean root = true) {
         def kidResults = node.children().collectEntries { GPathResult child ->
-            [child.name(), child.childNodes() ? convertToMap(child, false) : child.text()]
+            [child.name(), child.childNodes() ? convertToMap(child,
+                                                             false) : child.text()]
         }
         if (root) {
             [

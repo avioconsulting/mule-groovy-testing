@@ -1,5 +1,6 @@
 package com.avioconsulting.mule.testing.transformers.xml
 
+import com.avioconsulting.mule.testing.muleinterfaces.wrappers.ConnectorInfo
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.EventWrapper
 
 class XMLMessageBuilder {
@@ -11,6 +12,7 @@ class XMLMessageBuilder {
 
     EventWrapper build(String xmlPayload,
                        EventWrapper rewriteEvent,
+                       ConnectorInfo connectorInfo,
                        MessageType messageType,
                        Integer httpStatus = null) {
         def messageProps = getXmlProperties(httpStatus)
@@ -19,9 +21,11 @@ class XMLMessageBuilder {
                 return rewriteEvent.withNewStreamingPayload(xmlPayload,
                                                             XML_MEDIA_TYPE,
                                                             messageProps,
+                                                            connectorInfo,
                                                             true)
             case MessageType.Soap:
                 return rewriteEvent.withSoapPayload(xmlPayload,
+                                                    connectorInfo,
                                                     messageProps)
             default:
                 throw new Exception("Unknown message type! ${messageType}")

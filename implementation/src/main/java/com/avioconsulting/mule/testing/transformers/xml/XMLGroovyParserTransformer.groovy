@@ -37,6 +37,7 @@ class XMLGroovyParserTransformer<T extends ConnectorInfo> extends
 
         this.xmlMessageBuilder.build(outputXmlString,
                                      muleEvent,
+                                     connectorInfo,
                                      messageType,
                                      200)
     }

@@ -34,6 +34,7 @@ class XMLJAXBTransformer<T extends ConnectorInfo> extends
         String xml = reply instanceof File ? reply.text : helper.getMarshalled(reply)
         this.xmlMessageBuilder.build(xml,
                                      event,
+                                     connectorInfo,
                                      messageType,
                                      200)
     }

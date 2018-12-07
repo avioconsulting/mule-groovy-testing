@@ -21,6 +21,7 @@ class SoapApikitInvokerImpl extends
     private final String flowName
     private final InvokerEventFactory eventFactory
     private final RuntimeBridgeTestSide runtimeBridgeTestSide
+    private final FlowWrapper flow
 
     SoapApikitInvokerImpl(InvokerEventFactory eventFactory,
                           String flowName,
@@ -29,8 +30,8 @@ class SoapApikitInvokerImpl extends
         this.runtimeBridgeTestSide = runtimeBridgeTestSide
         this.eventFactory = eventFactory
         this.flowName = flowName
-        def flow = runtimeBridgeTestSide.getFlow(flowName)
-        soapAction = deriveSoapAction(flow,
+        flow = runtimeBridgeTestSide.getFlow(flowName)
+        soapAction = deriveSoapAction(this.flow,
                                       operation,
                                       runtimeBridgeTestSide)
     }
@@ -54,6 +55,7 @@ class SoapApikitInvokerImpl extends
                                                             flowName)
         def muleEvent = this.xmlMessageBuilder.build(soapRequest,
                                                      newEvent,
+                                                     flow,
                                                      XMLMessageBuilder.MessageType.Mule41Stream)
         def additionalHeaders = [
                 'SOAPAction': soapAction
