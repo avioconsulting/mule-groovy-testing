@@ -20,12 +20,11 @@ class ApiMockTest extends
     @Test
     void mocksProperly() {
         // arrange
-        def payload = null
         def params = [:]
         mockApiCall('the name of our connector') {
-            whenCalledWith { mockPayload, mockParams ->
-                payload = mockPayload
-                params = mockParams
+            whenCalledWith { Map parameters ->
+                params = parameters
+                'new payload'
             }
         }
 
@@ -37,13 +36,23 @@ class ApiMockTest extends
         }
 
         // assert
-        assertThat payload,
-                   is(equalTo('nope'))
-        assertThat params,
+        assertThat 'Parameter key is based on the value inside the module XML, not the call to the module',
+                   params,
                    is(equalTo([
-                           inputParam: 'howdy'
+                           value: 'howdy'
                    ]))
         assertThat result,
-                   is(equalTo('howdy'))
+                   is(equalTo('new payload'))
     }
+
+    @Test
+    void mocksProperly_with_event() {
+        // arrange
+
+        // act
+
+        // assert
+        fail 'write the test'
+    }
+
 }
