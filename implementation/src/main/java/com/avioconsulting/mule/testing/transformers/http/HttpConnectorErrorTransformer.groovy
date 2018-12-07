@@ -1,8 +1,6 @@
 package com.avioconsulting.mule.testing.transformers.http
 
 import com.avioconsulting.mule.testing.muleinterfaces.IFetchClassLoaders
-import com.avioconsulting.mule.testing.muleinterfaces.MuleMessageTransformer
-import com.avioconsulting.mule.testing.muleinterfaces.wrappers.EventWrapper
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.ModuleExceptionWrapper
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.connectors.HttpRequesterInfo
 import com.avioconsulting.mule.testing.transformers.IHaveStateToReset
@@ -11,7 +9,7 @@ import java.util.concurrent.TimeoutException
 
 class HttpConnectorErrorTransformer implements
         IHaveStateToReset,
-        MuleMessageTransformer<HttpRequesterInfo> {
+        HttpTransformer {
     private boolean triggerConnectException
     private boolean triggerTimeoutException
     protected final IFetchClassLoaders fetchAppClassLoader
@@ -27,21 +25,6 @@ class HttpConnectorErrorTransformer implements
 
     def triggerTimeoutException() {
         this.triggerTimeoutException = true
-    }
-
-    EventWrapper transform(EventWrapper muleEvent,
-                           HttpRequesterInfo connectorInfo) {
-        if (!triggerConnectException && !triggerTimeoutException) {
-            return muleEvent
-        }
-        if (triggerConnectException) {
-            throw getConnectionException(connectorInfo.uri,
-                                         connectorInfo.method)
-        }
-        if (triggerTimeoutException) {
-            throw getTimeoutException(connectorInfo.uri,
-                                      connectorInfo.method)
-        }
     }
 
     protected Exception getConnectionException(String uri,
@@ -99,5 +82,21 @@ class HttpConnectorErrorTransformer implements
     def reset() {
         this.triggerConnectException = false
         this.triggerTimeoutException = false
+    }
+
+    @Override
+    HttpState transform(HttpState httpState,
+                        HttpRequesterInfo connectorInfo) {
+        if (!triggerConnectException && !triggerTimeoutException) {
+            return httpState
+        }
+        if (triggerConnectException) {
+            throw getConnectionException(connectorInfo.uri,
+                                         connectorInfo.method)
+        }
+        if (triggerTimeoutException) {
+            throw getTimeoutException(connectorInfo.uri,
+                                      connectorInfo.method)
+        }
     }
 }
