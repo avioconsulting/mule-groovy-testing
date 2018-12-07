@@ -1,12 +1,10 @@
 package com.avioconsulting.mule.testing.dsl.mocking
 
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.ConnectorInfo
-import com.avioconsulting.mule.testing.transformers.ClosureCurrierNoop
 
 class GenericRequestResponseChoiceImpl<T extends ConnectorInfo> extends
         StandardRequestResponseImpl<T> {
     GenericRequestResponseChoiceImpl() {
-        super(new ClosureCurrierNoop<T>(),
-              'Generic Mock')
+        super('Generic Mock')
     }
 }

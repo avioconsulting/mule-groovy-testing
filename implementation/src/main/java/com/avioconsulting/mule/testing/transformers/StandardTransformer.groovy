@@ -25,13 +25,12 @@ class StandardTransformer<T extends ConnectorInfo> implements
                            T connectorInfo) {
         // if they're only requesting optional curried values (e.g. HTTP requestor params)
         // then we don't want to call their closure with an input value
-        def onlyCurriedArgument = closureCurrier.isOnlyArgumentToBeCurried(closure)
         def curried = closureCurrier.curryClosure(closure,
                                                   muleEvent,
                                                   connectorInfo)
         def input = inputTransformer.transformInput(muleEvent,
                                                     connectorInfo)
-        def result = onlyCurriedArgument ? curried() : curried(input)
+        def result = curried.parameterTypes.size() == 0 ? curried() : curried(input)
         outputTransformer.transformOutput(result,
                                           muleEvent)
     }
