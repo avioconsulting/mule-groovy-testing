@@ -6,6 +6,7 @@ class SoapConsumerInfo extends
         ConnectorInfo {
     private final boolean customTransport
     private final String uri
+    private final String headers
 
     SoapConsumerInfo(String fileName,
                      Integer lineNumber,
@@ -18,6 +19,7 @@ class SoapConsumerInfo extends
         def connection = parameters['connection']
         this.customTransport = connection.transportConfiguration.getClass().getName().contains('CustomHttpTransportConfiguration')
         this.uri = connection.info.address
+        this.headers = parameters['message'].headers?.text
     }
 
     boolean isCustomHttpTransportConfigured() {
@@ -35,5 +37,9 @@ class SoapConsumerInfo extends
             return value.text
         }
         throw new Exception("Do not understand type ${value.getClass()}!")
+    }
+
+    String getHeaders() {
+        this.headers
     }
 }

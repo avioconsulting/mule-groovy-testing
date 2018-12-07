@@ -5,6 +5,7 @@
 * Fixes for SOAP/WS-Consumer 1.2.1
 * Consistent logging
 * Standardize closure currying for XML/REST and SOAP to allow getting connector info in the mock closure
+* Add ability to get access to SOAP headers when mocking SOAP calls
 
 # 2.0.6
 * Add support for `target` and ensure mocked connectors that have it configured have mocked output sent to the appropriate flow variable. NOTE: `targetValue` is not supported yet

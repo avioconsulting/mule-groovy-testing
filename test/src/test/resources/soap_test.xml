@@ -77,6 +77,51 @@ ns ns0 http://www.avioconsulting.com/schemas/SOAPTest/v1
             </ee:message>
         </ee:transform>
     </flow>
+    <flow name="soaptestFlowHeaders">
+        <ee:transform doc:name="Transform Message">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/xml
+ns ns0 http://www.avioconsulting.com/schemas/SOAPTest/v1
+---
+{
+	ns0#SOAPTestRequest: {
+		ns0#title: 'theTitle ' ++ payload.foo,
+		ns0#approvalDate: '2017-04-01'
+	}
+}]]></ee:set-payload>
+            </ee:message>
+            <ee:variables >
+                <ee:set-variable variableName="soapHeader" ><![CDATA[%dw 2.0
+output application/xml
+ns h http://www.avioconsulting.com/schemas/SOAPTest/v1
+---
+{
+	headers: {
+		h#headerValue: 'hi there'
+	}
+}]]></ee:set-variable>
+            </ee:variables>
+        </ee:transform>
+        <wsc:consume config-ref="Web_Service_Consumer"
+                     operation="operation1"
+                     doc:name="A SOAP Call">
+            <wsc:message >
+                <wsc:headers><![CDATA[#[vars.soapHeader]]]></wsc:headers>
+            </wsc:message>
+        </wsc:consume>
+        <ee:transform doc:name="Transform Message">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+ns ns0 http://www.avioconsulting.com/schemas/SOAPTest/v1
+---
+{
+	result: payload.body.ns0#SOAPTestResponse.details
+}]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+    </flow>
     <flow name="soaptestFlowFromFlowVar">
         <ee:transform doc:name="Transform Message">
             <ee:variables>

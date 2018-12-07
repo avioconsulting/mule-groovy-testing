@@ -88,6 +88,37 @@ class SoapTest extends
     }
 
     @Test
+    void access_soap_headers() {
+        // arrange
+        SOAPTestRequestType mockedRequest = null
+        SoapConsumerInfo actualInfo = null
+        mockSoapCall('A SOAP Call') {
+            whenCalledWithJaxb(SOAPTestRequestType) { SOAPTestRequestType request,
+                                                      SoapConsumerInfo soapConsumerInfo ->
+                mockedRequest = request
+                actualInfo = soapConsumerInfo
+                def response = new SOAPTestResponseType()
+                response.details = 'yes!'
+                new ObjectFactory().createSOAPTestResponse(response)
+            }
+        }
+
+        // act
+        runFlow('soaptestFlowHeaders') {
+            json {
+                inputPayload([foo: 123])
+            }
+        }
+
+        // assert
+        assert mockedRequest
+        assertThat mockedRequest.title,
+                   is(equalTo("theTitle 123"))
+        assertThat actualInfo.headers,
+                   is(equalTo("<?xml version='1.0' encoding='UTF-8'?>\n<headers>\n  <h:headerValue xmlns:h=\"http://www.avioconsulting.com/schemas/SOAPTest/v1\">hi there</h:headerValue>\n</headers>"))
+    }
+
+    @Test
     void mocksProperly_fromFlowVar() {
         // arrange
         SOAPTestRequestType mockedRequest = null
