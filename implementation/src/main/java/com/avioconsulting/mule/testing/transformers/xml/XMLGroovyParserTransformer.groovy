@@ -4,8 +4,10 @@ import com.avioconsulting.mule.testing.muleinterfaces.MuleMessageTransformer
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.ConnectorInfo
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.EventWrapper
 import com.avioconsulting.mule.testing.transformers.ClosureCurrier
+import groovy.util.logging.Log4j2
 import groovy.xml.XmlUtil
 
+@Log4j2
 class XMLGroovyParserTransformer<T extends ConnectorInfo> extends
         XMLTransformer<T> implements
         MuleMessageTransformer<T> {
@@ -22,6 +24,8 @@ class XMLGroovyParserTransformer<T extends ConnectorInfo> extends
     EventWrapper transform(EventWrapper muleEvent,
                            T connectorInfo) {
         def xmlString = connectorInfo.incomingBody ?: muleEvent.messageAsString
+        log.info 'Received XML of {}, converting to Groovy node',
+                 xmlString
         def node = new XmlParser().parseText(xmlString) as Node
         def closure = closureCurrier.curryClosure(this.closure,
                                                   muleEvent,
@@ -34,7 +38,8 @@ class XMLGroovyParserTransformer<T extends ConnectorInfo> extends
             assert reply instanceof Node
             outputXmlString = XmlUtil.serialize(reply)
         }
-
+        log.info 'Returning following XML back to Mule flow: {}',
+                 outputXmlString
         this.xmlMessageBuilder.build(outputXmlString,
                                      muleEvent,
                                      connectorInfo,

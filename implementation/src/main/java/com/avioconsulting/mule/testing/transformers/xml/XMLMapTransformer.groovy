@@ -4,9 +4,11 @@ import com.avioconsulting.mule.testing.muleinterfaces.MuleMessageTransformer
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.ConnectorInfo
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.EventWrapper
 import com.avioconsulting.mule.testing.transformers.ClosureCurrier
+import groovy.util.logging.Log4j2
 import groovy.util.slurpersupport.GPathResult
 import groovy.xml.MarkupBuilder
 
+@Log4j2
 class XMLMapTransformer<T extends ConnectorInfo> extends
         XMLTransformer<T> implements
         MuleMessageTransformer<T> {
@@ -23,6 +25,8 @@ class XMLMapTransformer<T extends ConnectorInfo> extends
     EventWrapper transform(EventWrapper incomingEvent,
                            T connectorInfo) {
         def xmlString = connectorInfo.incomingBody ?: incomingEvent.messageAsString
+        log.info 'Received XML of {}, converting to Groovy XML Map',
+                 xmlString
         def node = new XmlSlurper().parseText(xmlString) as GPathResult
         def asMap = convertToMap(node)
         def closure = closureCurrier.curryClosure(this.closure,
@@ -36,6 +40,8 @@ class XMLMapTransformer<T extends ConnectorInfo> extends
             assert result instanceof Map
             xmlReply = generateXmlFromMap(result)
         }
+        log.info 'Returning following XML back to Mule flow: {}',
+                 xmlReply
         this.xmlMessageBuilder.build(xmlReply,
                                      incomingEvent,
                                      connectorInfo,
