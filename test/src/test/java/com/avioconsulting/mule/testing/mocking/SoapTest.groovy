@@ -3,6 +3,7 @@ package com.avioconsulting.mule.testing.mocking
 import com.avioconsulting.mule.testing.OverrideConfigList
 import com.avioconsulting.mule.testing.junit.BaseJunitTest
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.EventWrapper
+import com.avioconsulting.mule.testing.muleinterfaces.wrappers.InvokeExceptionWrapper
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.connectors.SoapConsumerInfo
 import com.avioconsulting.mule.testing.soapxmlroot.SOAPTestRequest
 import com.avioconsulting.mule.testing.soapxmlroot.SOAPTestResponse
@@ -302,15 +303,17 @@ class SoapTest extends
         }
 
         // assert
-        assertThat result.class.name,
-                   is(equalTo('org.mule.runtime.core.internal.exception.MessagingException'))
-        assertThat result.cause.class.name,
+        assertThat result,
+                   is(instanceOf(InvokeExceptionWrapper))
+        def cause = result.cause
+        def causeOfCause = cause.cause
+        assertThat causeOfCause.class.name,
                    is(equalTo('org.mule.runtime.soap.api.exception.DispatchingException'))
-        assertThat result.cause.cause,
+        assertThat causeOfCause.cause,
                    is(nullValue())
-        assertThat result.info['Error type'],
+        assertThat cause.info['Error type'],
                    is(equalTo('WSC:CANNOT_DISPATCH'))
-        assertThat result.message,
+        assertThat cause.message,
                    is(equalTo('An error occurred while sending the SOAP request.'))
     }
 
@@ -331,15 +334,17 @@ class SoapTest extends
         }
 
         // assert
-        assertThat result.getClass().name,
-                   is(equalTo('org.mule.runtime.core.internal.exception.MessagingException'))
-        assertThat result.cause.getClass().name,
+        assertThat result,
+                   is(instanceOf(InvokeExceptionWrapper))
+        def cause = result.cause
+        def causeOfCause = cause.cause
+        assertThat cause.cause.getClass().name,
                    is(equalTo('org.mule.extension.http.api.error.HttpRequestFailedException'))
-        assertThat result.cause.cause.getClass().name,
+        assertThat causeOfCause.cause.getClass().name,
                    is(equalTo('java.net.ConnectException'))
-        assertThat result.info['Error type'],
+        assertThat cause.info['Error type'],
                    is(equalTo('HTTP:CONNECTIVITY'))
-        assertThat result.message,
+        assertThat cause.message,
                    is(equalTo("HTTP POST on resource 'http://localhost:8081' failed: Connection refused."))
     }
 
@@ -360,15 +365,17 @@ class SoapTest extends
         }
 
         // assert
-        assertThat result.class.name,
-                   is(equalTo('org.mule.runtime.core.internal.exception.MessagingException'))
-        assertThat result.cause.class.name,
+        assertThat result,
+                   is(instanceOf(InvokeExceptionWrapper))
+        def cause = result.cause
+        def causeOfCause = cause.cause
+        assertThat causeOfCause.class.name,
                    is(equalTo('org.mule.runtime.soap.api.exception.DispatchingException'))
-        assertThat result.cause.cause.class.name,
+        assertThat causeOfCause.cause.class.name,
                    is(equalTo('java.util.concurrent.TimeoutException'))
-        assertThat result.info['Error type'],
+        assertThat cause.info['Error type'],
                    is(equalTo('WSC:CANNOT_DISPATCH'))
-        assertThat result.message,
+        assertThat cause.message,
                    is(equalTo('The SOAP request timed out.'))
     }
 
@@ -389,15 +396,17 @@ class SoapTest extends
         }
 
         // assert
-        assertThat result.getClass().name,
-                   is(equalTo('org.mule.runtime.core.internal.exception.MessagingException'))
-        assertThat result.cause.getClass().name,
+        assertThat result,
+                   is(instanceOf(InvokeExceptionWrapper))
+        def cause = result.cause
+        def causeOfCause = cause.cause
+        assertThat causeOfCause.getClass().name,
                    is(equalTo('org.mule.extension.http.api.error.HttpRequestFailedException'))
-        assertThat result.cause.cause.getClass().name,
+        assertThat causeOfCause.cause.getClass().name,
                    is(equalTo('java.util.concurrent.TimeoutException'))
-        assertThat result.info['Error type'],
+        assertThat cause.info['Error type'],
                    is(equalTo('HTTP:TIMEOUT'))
-        assertThat result.message,
+        assertThat cause.message,
                    is(equalTo("HTTP POST on resource 'http://localhost:8081' failed: Some timeout error."))
     }
 
@@ -423,16 +432,17 @@ class SoapTest extends
         }
 
         // assert
-        assertThat result.getClass().name,
-                   is(equalTo('org.mule.runtime.core.internal.exception.MessagingException'))
-        def soapFaultException = result.cause
+        assertThat result,
+                   is(instanceOf(InvokeExceptionWrapper))
+        def cause = result.cause
+        def soapFaultException = cause.cause
         assertThat soapFaultException.getClass().name,
                    is(equalTo('org.mule.runtime.soap.api.exception.SoapFaultException'))
         assertThat soapFaultException.cause.getClass().name,
                    is(equalTo('java.lang.Exception'))
-        assertThat result.info['Error type'],
+        assertThat cause.info['Error type'],
                    is(equalTo('WSC:SOAP_FAULT'))
-        assertThat result.message,
+        assertThat cause.message,
                    is(startsWith('System.Web.Services.Protocols.SoapException: Server was unable to read request'))
         assertThat soapFaultException.faultCode,
                    is(equalTo(new QName('http://schemas.xmlsoap.org/soap/envelope/',
@@ -471,7 +481,7 @@ class SoapTest extends
         }
 
         // assert
-        def detail = result.cause.detail
+        def detail = result.cause.cause.detail
         assert detail
         assertThat detail.trim(),
                    is(equalTo('<?xml version="1.0" encoding="UTF-8"?><detail>\n  <foobar/>\n</detail>'))
