@@ -1,6 +1,9 @@
 # 2.0
 (for Mule 4.1)
 
+# 2.0.9
+* SOAP fault mocking fixes
+
 # 2.0.8
 * Allow accessing events (for flowVars/attributes) from invoke exception wrapper
 
