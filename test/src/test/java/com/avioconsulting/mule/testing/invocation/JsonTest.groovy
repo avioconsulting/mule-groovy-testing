@@ -4,6 +4,7 @@ import com.avioconsulting.mule.testing.OverrideConfigList
 import com.avioconsulting.mule.testing.SampleJacksonInput
 import com.avioconsulting.mule.testing.SampleJacksonOutput
 import com.avioconsulting.mule.testing.junit.BaseJunitTest
+import com.avioconsulting.mule.testing.muleinterfaces.wrappers.InvokeExceptionWrapper
 import org.junit.Test
 
 import static groovy.test.GroovyAssert.shouldFail
@@ -26,7 +27,8 @@ class JsonTest extends
         // act
         def result = runFlow('jsonTest') {
             json {
-                inputPayload(input, SampleJacksonOutput)
+                inputPayload(input,
+                             SampleJacksonOutput)
             }
         } as SampleJacksonOutput
 
@@ -63,7 +65,8 @@ class JsonTest extends
         input.foobar = 123
         def result = runFlow('stringResponseTest') {
             json {
-                inputPayload(input, String)
+                inputPayload(input,
+                             String)
             }
         } as String
 
@@ -147,7 +150,8 @@ class JsonTest extends
         // act
         def result = runFlow('jsonListTest') {
             json {
-                inputPayload(list, SampleJacksonOutput[])
+                inputPayload(list,
+                             SampleJacksonOutput[])
             }
         } as SampleJacksonOutput[]
 
@@ -165,7 +169,8 @@ class JsonTest extends
         // act
         def result = runFlow('emptyPayloadTest') {
             json {
-                inputPayload([:], String)
+                inputPayload([:],
+                             String)
             }
         }
 
@@ -220,5 +225,30 @@ class JsonTest extends
         // assert
         assertThat result,
                    is(nullValue())
+    }
+
+    @Test
+    void thrown_fault() {
+        // arrange
+
+        // act
+        def exception = shouldFail {
+            runFlow('jsonTestException') {
+                json {
+                    inputPayload(null)
+                }
+            }
+        }
+
+        // assert
+        assertThat exception,
+                   is(instanceOf(InvokeExceptionWrapper))
+        // for IDE/syntax complete
+        assert exception instanceof InvokeExceptionWrapper
+        assertThat exception.cause.getClass().getName(),
+                   is(containsString('MessagingException'))
+        assertThat exception.messageAsString,
+                   is(equalTo('howdy'))
+        fail 'write the test'
     }
 }

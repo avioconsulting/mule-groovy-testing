@@ -20,6 +20,25 @@ output application/json
             </ee:message>
         </ee:transform>
     </flow>
+    <flow name="jsonTestException">
+        <logger message="#[payload]"
+                level="INFO"/>
+        <raise-error type="SOME:FAILURE"/>
+        <error-handler>
+            <on-error-propagate>
+                <ee:transform doc:name="Transform Message">
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+    key: error.errorType
+}]]></ee:set-payload>
+                    </ee:message>
+                </ee:transform>
+            </on-error-propagate>
+        </error-handler>
+    </flow>
     <flow name="non-repeatable-stream-test">
         <!-- Logger will consume payload so we should see null on the flip side -->
         <logger message="consuming stream with this log message: #[payload]"
