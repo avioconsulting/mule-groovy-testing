@@ -1,7 +1,7 @@
 # 2.0
 (for Mule 4.1)
 
-# 2.0.7 (pending)
+# 2.0.7
 * Fixes for SOAP/WS-Consumer 1.2.1
 * Consistent logging
 * Standardize closure currying for XML/REST and SOAP to allow getting connector info in the mock closure
