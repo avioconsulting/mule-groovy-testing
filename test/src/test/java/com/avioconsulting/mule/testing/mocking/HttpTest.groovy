@@ -2,6 +2,7 @@ package com.avioconsulting.mule.testing.mocking
 
 import com.avioconsulting.mule.testing.OverrideConfigList
 import com.avioconsulting.mule.testing.junit.BaseJunitTest
+import com.avioconsulting.mule.testing.muleinterfaces.wrappers.InvokeExceptionWrapper
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.MessageWrapper
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.ReturnWrapper
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.connectors.HttpRequesterInfo
@@ -370,11 +371,13 @@ class HttpTest extends
         }
 
         // assert
-        assertThat result.getClass().name,
-                   is(equalTo('org.mule.runtime.core.internal.exception.MessagingException'))
-        assertThat result.cause.getClass().name,
+        assertThat result,
+                   is(instanceOf(InvokeExceptionWrapper))
+        def cause = result.cause
+        def causeOfCause = cause.cause
+        assertThat causeOfCause.getClass().name,
                    is(equalTo('org.mule.extension.http.api.request.validator.ResponseValidatorTypedException'))
-        assertThat result.message,
+        assertThat cause.message,
                    is(equalTo("HTTP GET on resource 'http://localhost:443/some_path/there' failed: not found (404)."))
     }
 
@@ -500,15 +503,17 @@ class HttpTest extends
         }
 
         // assert
-        assertThat result.getClass().name,
-                   is(equalTo('org.mule.runtime.core.internal.exception.MessagingException'))
-        assertThat result.cause.getClass().name,
+        assertThat result,
+                   is(instanceOf(InvokeExceptionWrapper))
+        def cause = result.cause
+        def causeOfCause = cause.cause
+        assertThat causeOfCause.getClass().name,
                    is(equalTo('org.mule.extension.http.api.error.HttpRequestFailedException'))
-        assertThat result.cause.cause.getClass().name,
+        assertThat causeOfCause.cause.getClass().name,
                    is(equalTo('java.net.ConnectException'))
-        assertThat result.info['Error type'],
+        assertThat cause.info['Error type'],
                    is(equalTo('HTTP:CONNECTIVITY'))
-        assertThat result.message,
+        assertThat cause.message,
                    is(equalTo("HTTP POST on resource 'http://localhost:443/some_path' failed: Connection refused."))
     }
 
@@ -533,15 +538,17 @@ class HttpTest extends
         }
 
         // assert
-        assertThat result.getClass().name,
-                   is(equalTo('org.mule.runtime.core.internal.exception.MessagingException'))
-        assertThat result.cause.getClass().name,
+        assertThat result,
+                   is(instanceOf(InvokeExceptionWrapper))
+        def cause = result.cause
+        def causeOfCause = cause.cause
+        assertThat causeOfCause.getClass().name,
                    is(equalTo('org.mule.extension.http.api.error.HttpRequestFailedException'))
-        assertThat result.cause.cause.getClass().name,
+        assertThat causeOfCause.cause.getClass().name,
                    is(equalTo('java.util.concurrent.TimeoutException'))
-        assertThat result.info['Error type'],
+        assertThat cause.info['Error type'],
                    is(equalTo('HTTP:TIMEOUT'))
-        assertThat result.message,
+        assertThat cause.message,
                    is(equalTo("HTTP POST on resource 'http://localhost:443/some_path' failed: Some timeout error."))
     }
 }
