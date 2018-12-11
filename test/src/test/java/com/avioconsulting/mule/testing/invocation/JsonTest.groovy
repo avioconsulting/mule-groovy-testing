@@ -5,6 +5,7 @@ import com.avioconsulting.mule.testing.SampleJacksonInput
 import com.avioconsulting.mule.testing.SampleJacksonOutput
 import com.avioconsulting.mule.testing.junit.BaseJunitTest
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.InvokeExceptionWrapper
+import groovy.json.JsonSlurper
 import org.junit.Test
 
 import static groovy.test.GroovyAssert.shouldFail
@@ -247,8 +248,10 @@ class JsonTest extends
         assert exception instanceof InvokeExceptionWrapper
         assertThat exception.cause.getClass().getName(),
                    is(containsString('MessagingException'))
-        assertThat exception.messageAsString,
-                   is(equalTo('howdy'))
-        fail 'write the test'
+        def asMap = new JsonSlurper().parseText(exception.muleMessage.messageAsString)
+        assertThat asMap,
+                   is(equalTo([
+                           key: 'An error occurred.'
+                   ]))
     }
 }

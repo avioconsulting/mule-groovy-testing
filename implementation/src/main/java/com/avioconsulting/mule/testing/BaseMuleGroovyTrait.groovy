@@ -12,6 +12,7 @@ import com.avioconsulting.mule.testing.muleinterfaces.containers.BaseEngineConfi
 import com.avioconsulting.mule.testing.muleinterfaces.containers.DescriptorGenerator
 import com.avioconsulting.mule.testing.muleinterfaces.containers.MuleEngineContainer
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.EventWrapper
+import com.avioconsulting.mule.testing.muleinterfaces.wrappers.InvokeExceptionWrapper
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 import org.apache.commons.io.FileUtils
@@ -38,7 +39,7 @@ trait BaseMuleGroovyTrait {
     String getUniqueArtifactName(TestingConfiguration testingConfiguration) {
         def muleArtifact = testingConfiguration.artifactModel
         def artifactName = muleArtifact.name as String
-        assert artifactName.findAll(':').size() == 2 : "Expected mule artifact name '${artifactName}' to be of format groupId:artifactName:version"
+        assert artifactName.findAll(':').size() == 2: "Expected mule artifact name '${artifactName}' to be of format groupId:artifactName:version"
         def parts = artifactName.split(':')
         def nameOnly = parts[1]
         // ensure some uniqueness
@@ -303,7 +304,12 @@ trait BaseMuleGroovyTrait {
                          String flowName,
                          EventWrapper event) {
         def flow = muleContext.getFlow(flowName)
-        flow.process(event)
+        try {
+            flow.process(event)
+        }
+        catch (e) {
+            throw new InvokeExceptionWrapper(e)
+        }
     }
 
     def waitForBatchCompletion(RuntimeBridgeTestSide bridge,

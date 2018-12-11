@@ -11,7 +11,8 @@ class InvokeExceptionWrapper extends Exception {
      * use this method
      * @return
      */
-    String getMessageAsString() {
-        'no way jose'
+    MessageWrapper getMuleMessage() {
+        assert cause.getClass().getName().contains('MessagingException')
+        new MessageWrapperImpl(cause.muleMessage)
     }
 }
