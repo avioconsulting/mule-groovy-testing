@@ -2,8 +2,7 @@ package com.avioconsulting.mule.testing.muleinterfaces.wrappers
 
 class InvokeExceptionWrapper extends Exception {
     InvokeExceptionWrapper(Exception cause) {
-        super('Problem invoking flow',
-              cause)
+        super(cause)
     }
 
     /**
