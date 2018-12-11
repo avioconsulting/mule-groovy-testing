@@ -437,19 +437,21 @@ class SoapTest extends
         def cause = result.cause
         def soapFaultException = cause.cause
         assertThat soapFaultException.getClass().name,
-                   is(equalTo('org.mule.runtime.soap.api.exception.SoapFaultException'))
+                   is(equalTo('org.mule.extension.ws.internal.error.SoapFaultMessageAwareException'))
         assertThat soapFaultException.cause.getClass().name,
-                   is(equalTo('java.lang.Exception'))
+                   is(equalTo('org.mule.soap.api.exception.SoapFaultException'))
+        assertThat soapFaultException.cause.cause.getClass().name,
+                   is(equalTo('org.apache.cxf.binding.soap.SoapFault'))
         assertThat cause.info['Error type'],
                    is(equalTo('WSC:SOAP_FAULT'))
         assertThat cause.message,
                    is(startsWith('System.Web.Services.Protocols.SoapException: Server was unable to read request'))
-        assertThat soapFaultException.faultCode,
+        assertThat soapFaultException.cause.faultCode,
                    is(equalTo(new QName('http://schemas.xmlsoap.org/soap/envelope/',
                                         'Client')))
-        assertThat soapFaultException.subCode,
+        assertThat soapFaultException.cause.subCode,
                    is(equalTo(Optional.empty()))
-        def detail = soapFaultException.detail
+        def detail = soapFaultException.cause.detail
         assert detail
         assertThat detail.trim(),
                    is(equalTo('<?xml version="1.0" encoding="UTF-8"?><detail/>'))
@@ -481,7 +483,7 @@ class SoapTest extends
         }
 
         // assert
-        def detail = result.cause.cause.detail
+        def detail = result.cause.cause.cause.detail
         assert detail
         assertThat detail.trim(),
                    is(equalTo('<?xml version="1.0" encoding="UTF-8"?><detail>\n  <foobar/>\n</detail>'))

@@ -12,15 +12,34 @@ import javax.xml.namespace.QName
 class SOAPFormatterImpl extends
         XMLFormatterImpl implements
         SOAPFormatter {
+    private Class getSoapClass(String klass) {
+        def artifactClassLoaders = fetchAppClassLoader.appClassloader.getArtifactPluginClassLoaders() as List<ClassLoader>
+        def value = artifactClassLoaders.findResult { ClassLoader cl ->
+            try {
+                cl.loadClass(klass)
+            }
+            catch (ClassNotFoundException e) {
+                return null
+            }
+        }
+        assert value: "Was not able to load ${klass} properly. Do you have the WSC consumer module in your POM?"
+        value
+    }
+
+
     @Lazy
-    private Class muleSoapFaultClass = {
-        try {
-            fetchAppClassLoader.appClassloader.loadClass('org.mule.runtime.soap.api.exception.SoapFaultException')
-        }
-        catch (e) {
-            throw new Exception('Was not able to load SoapFaultException properly. Do you have thw WSC consumer module in your POM?',
-                                e)
-        }
+    private Class middleSoapFaultClass = {
+        getSoapClass('org.mule.soap.api.exception.SoapFaultException')
+    }()
+
+    @Lazy
+    private Class outerSoapFaultClass = {
+        getSoapClass('org.mule.extension.ws.internal.error.SoapFaultMessageAwareException')
+    }()
+
+    @Lazy
+    private Class cxfSoapFaultClass = {
+        getSoapClass('org.apache.cxf.binding.soap.SoapFault')
     }()
 
     private WsConsumerConnectorErrorTransformer httpConnectorErrorTransformer
@@ -63,15 +82,17 @@ class SOAPFormatterImpl extends
                   Closure closure) {
         def detailResult = closure(DOMBuilder.newInstance())
         def detailString = detailResult ? detailResult.serialize() : '<detail/>'
-        def cxfExceptionStub = new Exception('Normally this would be a org.apache.cxf.binding.soap.SoapFault exception but that one is harder to find in the ClassLoader model and org.mule.runtime.soap.api.exception.SoapFaultException, which is the direct cause anyways, has all of the details available')
-        def muleException = muleSoapFaultClass.newInstance(faultCode,
-                                                           subCode,
-                                                           '<?xml version="1.0" encoding="UTF-8"?>' + detailString,
-                                                           message,
-                                                           null, // node
-                                                           null,
-                                                           cxfExceptionStub) as Throwable
-        throw new CustomErrorWrapperException(muleException,
+        def cxfException = cxfSoapFaultClass.newInstance(message,
+                                                         faultCode)
+        def muleException = middleSoapFaultClass.newInstance(faultCode,
+                                                             subCode,
+                                                             '<?xml version="1.0" encoding="UTF-8"?>' + detailString,
+                                                             message,
+                                                             null,
+                                                             // node
+                                                             null,
+                                                             cxfException) as Throwable
+        throw new CustomErrorWrapperException(outerSoapFaultClass.newInstance(muleException) as Throwable,
                                               'WSC',
                                               'SOAP_FAULT')
     }
