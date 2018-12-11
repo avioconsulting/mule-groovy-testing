@@ -300,15 +300,15 @@ trait BaseMuleGroovyTrait {
                 event)
     }
 
-    EventWrapper runFlow(RuntimeBridgeTestSide muleContext,
+    EventWrapper runFlow(RuntimeBridgeTestSide bridge,
                          String flowName,
                          EventWrapper event) {
-        def flow = muleContext.getFlow(flowName)
+        def flow = bridge.getFlow(flowName)
         try {
             flow.process(event)
         }
         catch (e) {
-            throw new InvokeExceptionWrapper(e)
+            throw bridge.createInvocationException(e)
         }
     }
 

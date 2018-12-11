@@ -253,5 +253,8 @@ class JsonTest extends
                    is(equalTo([
                            key: 'An error occurred.'
                    ]))
+        def event = exception.muleEvent
+        assertThat event.getVariable('httpStatus').value,
+                   is(equalTo(500))
     }
 }

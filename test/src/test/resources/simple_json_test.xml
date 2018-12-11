@@ -35,6 +35,9 @@ output application/json
     key: error.description
 }]]></ee:set-payload>
                     </ee:message>
+                    <ee:variables>
+                        <ee:set-variable variableName="httpStatus"><![CDATA[500]]></ee:set-variable>
+                    </ee:variables>
                 </ee:transform>
             </on-error-propagate>
         </error-handler>

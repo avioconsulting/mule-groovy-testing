@@ -1,8 +1,15 @@
 package com.avioconsulting.mule.testing.muleinterfaces.wrappers
 
 class InvokeExceptionWrapper extends Exception {
-    InvokeExceptionWrapper(Exception cause) {
+    private final MessageWrapper muleMessage
+    private final EventWrapper muleEvent
+
+    InvokeExceptionWrapper(Exception cause,
+                           MessageWrapper muleMessage,
+                           EventWrapper muleEvent) {
         super(cause)
+        this.muleEvent = muleEvent
+        this.muleMessage = muleMessage
     }
 
     /**
@@ -11,7 +18,10 @@ class InvokeExceptionWrapper extends Exception {
      * @return
      */
     MessageWrapper getMuleMessage() {
-        assert cause.getClass().getName().contains('MessagingException')
-        new MessageWrapperImpl(cause.muleMessage)
+        this.muleMessage
+    }
+
+    EventWrapper getMuleEvent() {
+        this.muleEvent
     }
 }

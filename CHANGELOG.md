@@ -1,6 +1,9 @@
 # 2.0
 (for Mule 4.1)
 
+# 2.0.8
+* Allow accessing events (for flowVars/attributes) from invoke exception wrapper
+
 # 2.0.7
 * Fixes for SOAP/WS-Consumer 1.2.1
 * Consistent logging

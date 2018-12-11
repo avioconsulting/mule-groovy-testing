@@ -74,4 +74,14 @@ class RuntimeBridgeTestSide implements
     BatchNotifyListenerWrapper getBatchNotifyListener() {
         new BatchNotifyListenerWrapper(runtimeBridgeMuleSide.getBatchNotifyListener())
     }
+
+    InvokeExceptionWrapper createInvocationException(Exception cause) {
+        assert cause.getClass().getName().contains('MessagingException')
+        def message = new MessageWrapperImpl(cause.muleMessage)
+        def event = new EventWrapperImpl(cause.event,
+                                         runtimeBridgeMuleSide)
+        new InvokeExceptionWrapper(cause,
+                                   message,
+                                   event)
+    }
 }
