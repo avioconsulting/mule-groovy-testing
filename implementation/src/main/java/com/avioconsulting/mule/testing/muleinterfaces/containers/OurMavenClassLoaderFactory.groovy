@@ -12,7 +12,6 @@ class OurMavenClassLoaderFactory {
     private final List<URL> services
 
     OurMavenClassLoaderFactory(BaseEngineConfig engineConfig,
-                               File repoDirectory,
                                File muleHomeDirectory,
                                List<Dependency> runtimeDependencyGraph) {
         def bundleDependencies = runtimeDependencyGraph.sort { d1, d2 ->
@@ -25,20 +24,20 @@ class OurMavenClassLoaderFactory {
             }
         }
         def serviceDependencies = bundleDependencies.findAll { dep ->
-            def file = dep.filenameRelativeToRepo
+            def file = dep.filename
             // this may seem weird but it's the best intersection of what
             // MavenContainerClassLoaderFactory does
             file.endsWith('.zip') || file.endsWith('-mule-service.jar')
         }
         def filterAnalyticsPluginEnabled = engineConfig.filterEngineExtensions.contains(BaseEngineConfig.ANALYTICS_PLUGIN)
         services = serviceDependencies.collect { svcDep ->
-            svcDep.getFullFilePath(repoDirectory)
+            svcDep.URL
         }
         services.removeAll() { svcUrl ->
             filterAnalyticsPluginEnabled && svcUrl.toString().contains('api-gateway-contract-service')
         }
         def urls = (bundleDependencies - serviceDependencies).collect { dep ->
-            dep.getFullFilePath(repoDirectory)
+            dep.URL
         }
         urls.add(new URL(new File(muleHomeDirectory,
                                   'conf').toURI().toString() + '/'))

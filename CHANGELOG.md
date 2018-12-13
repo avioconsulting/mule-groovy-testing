@@ -1,6 +1,10 @@
 # 2.0
 (for Mule 4.1)
 
+# 2.0.10 (release pending)
+* REQUIRES `dependency-resolver-maven-plugin` version >= 1.0.2
+* Further decouple testing framework from Maven be removing ~/.m2 coupling. Let `dependency-resolver-maven-plugin` handle that.
+
 # 2.0.9
 * SOAP fault mocking fixes
 

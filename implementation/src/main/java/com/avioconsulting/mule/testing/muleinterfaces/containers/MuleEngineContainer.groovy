@@ -87,28 +87,11 @@ class MuleEngineContainer {
 
     private OurMavenClassLoaderFactory getClassLoaderFactory(BaseEngineConfig engineConfig,
                                                              String dependencyJsonText) {
-        File repo
-        def mavenRepoLocalSetting = System.getProperty('maven.repo.local')
-        if (mavenRepoLocalSetting) {
-            log.info 'Using overridden M2 repo from -Dmaven.repo.local of {}',
-                     mavenRepoLocalSetting
-            repo = new File(mavenRepoLocalSetting)
-        } else {
-            def m2Directory = new File(System.getProperty('user.home'),
-                                       '.m2')
-            repo = new File(m2Directory,
-                            'repository')
-            log.info 'Using derived/user home directory Maven repo location of {}',
-                     repo
-        }
-        // because we run in offline model, see pom.xml
-        assert repo.exists(): "If your local Maven repo directory. ${repo}, does not already exist by now, we will not be able to run anyways"
         log.info 'Building classloader factory'
         def dependencyGraph = new JsonSlurper().parseText(dependencyJsonText).collect { d ->
             Dependency.parse(d)
         }
         new OurMavenClassLoaderFactory(engineConfig,
-                                       repo,
                                        muleHomeDirectory,
                                        dependencyGraph)
     }

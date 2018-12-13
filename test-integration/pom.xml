@@ -51,7 +51,7 @@
             <plugin>
                 <groupId>com.avioconsulting.mule</groupId>
                 <artifactId>dependency-resolver-maven-plugin</artifactId>
-                <version>1.0.0</version>
+                <version>1.0.2</version>
                 <executions>
                     <execution>
                         <id>generate-dep-graph</id>

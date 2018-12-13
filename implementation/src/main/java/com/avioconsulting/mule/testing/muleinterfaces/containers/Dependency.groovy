@@ -5,10 +5,10 @@ import groovy.transform.Immutable
 // mirrors JSON
 @Immutable
 class Dependency {
-    String name, groupId, artifactId, version, filenameRelativeToRepo
+    String name, groupId, artifactId, version, filename
 
-    URL getFullFilePath(File repoDirectory) {
-        new File(repoDirectory, filenameRelativeToRepo).toURI().toURL()
+    URL getURL() {
+        new File(filename).toURI().toURL()
     }
 
     static Dependency parse(Map stuff) {
@@ -16,6 +16,6 @@ class Dependency {
                        stuff['groupId'],
                        stuff['artifactId'],
                        stuff['version'],
-                       stuff['filenameRelativeToRepo'])
+                       stuff['filename'])
     }
 }
