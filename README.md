@@ -64,7 +64,7 @@ ${app.runtime} from this project by default -->
 <plugin>
     <groupId>com.avioconsulting.mule</groupId>
     <artifactId>dependency-resolver-maven-plugin</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.2</version>
     <executions>
         <execution>
             <id>generate-dep-graph</id>
@@ -92,7 +92,7 @@ ${app.runtime} from this project by default -->
 <dependency>
     <groupId>com.avioconsulting.mule</groupId>
     <artifactId>testing</artifactId>
-    <version>2.0.0</version>
+    <version>2.0.10</version>
     <scope>test</scope>
 </dependency>
 ```
