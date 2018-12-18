@@ -87,7 +87,7 @@
                         </goals>
                         <phase>generate-test-sources</phase>
                         <configuration>
-                            <schemaDirectory>${basedir}/src/test/resources/soap</schemaDirectory>
+                            <schemaDirectory>${basedir}/src/main/resources/soap</schemaDirectory>
                             <schemaIncludes>
                                 <include>SOAPTest_v1.xsd</include>
                             </schemaIncludes>
@@ -100,7 +100,7 @@
                         </goals>
                         <phase>generate-test-sources</phase>
                         <configuration>
-                            <schemaDirectory>${basedir}/src/test/resources/soap_xmlroot</schemaDirectory>
+                            <schemaDirectory>${basedir}/src/main/resources/soap_xmlroot</schemaDirectory>
                             <schemaIncludes>
                                 <include>SOAPTest_v1.xsd</include>
                             </schemaIncludes>
@@ -109,7 +109,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <bindingDirectory>${basedir}/src/test/resources</bindingDirectory>
+                    <bindingDirectory>${basedir}/src/main/resources</bindingDirectory>
                     <addCompileSourceRoot>false</addCompileSourceRoot>
                     <addTestCompileSourceRoot>true</addTestCompileSourceRoot>
                     <!-- We have 2 executions -->

@@ -36,8 +36,8 @@ class InterceptorClassLoaderTest extends
         assertThat result[0],
                    is(equalTo('our debug enabled true'))
         assertThat result[1],
-                   is(startsWith('the classloader before paging is org.mule.runtime.module.artifact.api.classloader.MuleArtifactClassLoader[domain/default/app/tests_for_the_test'))
+                   is(startsWith('the classloader before paging is org.mule.runtime.module.artifact.api.classloader.MuleArtifactClassLoader[domain/default/app/tests-for-the-test'))
         assertThat result[2],
-                   is(startsWith('the classloader now is org.mule.runtime.deployment.model.internal.application.MuleApplicationClassLoader[domain/default/app/tests_for_the_test'))
+                   is(startsWith('the classloader now is org.mule.runtime.deployment.model.internal.application.MuleApplicationClassLoader[domain/default/app/tests-for-the-test'))
     }
 }
