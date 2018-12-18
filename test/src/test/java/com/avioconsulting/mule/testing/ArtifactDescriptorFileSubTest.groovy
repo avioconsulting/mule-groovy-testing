@@ -9,7 +9,8 @@ import static org.hamcrest.Matchers.is
 import static org.junit.Assert.assertThat
 
 @Log4j2
-class ArtifactDescriptorFileSubTest implements // not inheriting basejunit test because we don't want to start/stop for this test
+class ArtifactDescriptorFileSubTest implements
+        // not inheriting basejunit test because we don't want to start/stop for this test
         BaseMuleGroovyTrait {
     @Override
     File getMuleArtifactPath() {
@@ -30,6 +31,10 @@ class ArtifactDescriptorFileSubTest implements // not inheriting basejunit test 
         ]
     }
 
+    List<String> getAdditionalConfigResources() {
+        ['another.xml']
+    }
+
     @Test
     void correct_resources() {
         // arrange
@@ -41,7 +46,8 @@ class ArtifactDescriptorFileSubTest implements // not inheriting basejunit test 
         assertThat artifactConfigs,
                    is(equalTo([
                            'java_test.xml',
-                           'http_test.xml'
+                           'http_test.xml',
+                           'another.xml'
                    ]))
     }
 }

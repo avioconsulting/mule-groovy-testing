@@ -242,13 +242,19 @@ trait BaseMuleGroovyTrait {
         if (entirelyDifferentConfigList) {
             map.configs = entirelyDifferentConfigList
         }
-        map.configs = substituteConfigResources(map.configs as List<String>)
+        def configs = substituteConfigResources(map.configs as List<String>)
+        configs += getAdditionalConfigResources()
+        map.configs = configs
         map
     }
 
     List<String> getConfigResources() {
         // if null, framework will use list from artifact descriptor
         null
+    }
+
+    List<String> getAdditionalConfigResources() {
+        []
     }
 
     List<String> substituteConfigResources(List<String> configs) {
