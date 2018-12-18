@@ -5,6 +5,7 @@ import com.avioconsulting.mule.testing.SampleJacksonInput
 import com.avioconsulting.mule.testing.SampleJacksonOutput
 import com.avioconsulting.mule.testing.junit.BaseJunitTest
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.InvokeExceptionWrapper
+import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 import org.junit.Test
 
@@ -36,6 +37,29 @@ class JsonTest extends
         // assert
         assertThat result.result,
                    is(equalTo(123))
+    }
+
+    @Test
+    void via_java_with_media_type() {
+        // arrange
+        def inputMap = [
+                foo: 123
+        ]
+        def input = JsonOutput.toJson(inputMap)
+
+        // act
+        def result = runFlow('jsonTestReturnJavaObject') {
+            java {
+                inputPayload(input,
+                             'application/json')
+            }
+        }
+
+        // assert
+        assertThat result,
+                   is(equalTo([
+                           key: 123
+                   ]))
     }
 
     @Test

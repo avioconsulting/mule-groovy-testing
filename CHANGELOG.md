@@ -3,6 +3,7 @@
 
 # 2.0.11 (release pending)
 * Added ability to add additional config resources without using awkward sub setup - see `getAdditionalConfigResources()`
+* Add ability to flow invoke with a media type with a Java payload
 
 # 2.0.10
 * REQUIRES `dependency-resolver-maven-plugin` version >= 1.0.2

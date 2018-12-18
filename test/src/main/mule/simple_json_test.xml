@@ -20,6 +20,17 @@ output application/json
             </ee:message>
         </ee:transform>
     </flow>
+    <flow name="jsonTestReturnJavaObject">
+        <flow-ref name="jsonTest" />
+        <ee:transform doc:name="Transform Message">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/java
+---
+payload]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+    </flow>
     <flow name="jsonTestException">
         <logger message="#[payload]"
                 level="INFO"/>

@@ -54,6 +54,17 @@ class RuntimeBridgeTestSide implements
     @Override
     EventWrapper getMuleEventWithPayload(Object payload,
                                          String flowName,
+                                         String mediaType) {
+        def message = new MessageWrapperImpl(payload,
+                                             runtimeBridgeMuleSide,
+                                             mediaType)
+        getMuleEvent(message,
+                     flowName)
+    }
+
+    @Override
+    EventWrapper getMuleEventWithPayload(Object payload,
+                                         String flowName,
                                          Map attributes) {
         assert false: 'Not yet implemented'
     }
