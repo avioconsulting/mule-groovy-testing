@@ -1,6 +1,6 @@
 package com.avioconsulting.mule.testing.invocation
 
-import com.avioconsulting.mule.testing.OverrideConfigList
+import com.avioconsulting.mule.testing.ConfigTrait
 import com.avioconsulting.mule.testing.junit.BaseJunitTest
 import com.avioconsulting.mule.testing.junit.MuleGroovyParameterizedRunner
 import org.junit.Test
@@ -10,7 +10,7 @@ import org.junit.runners.Parameterized
 @RunWith(MuleGroovyParameterizedRunner)
 class CustomRunnerTest extends
         BaseJunitTest implements
-        OverrideConfigList {
+        ConfigTrait {
     @Parameterized.Parameters(name = "{0}")
     static Collection<Object[]> testData() {
         [

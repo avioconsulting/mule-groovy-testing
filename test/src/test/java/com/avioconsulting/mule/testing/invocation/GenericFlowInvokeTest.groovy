@@ -1,6 +1,6 @@
 package com.avioconsulting.mule.testing.invocation
 
-import com.avioconsulting.mule.testing.OverrideConfigList
+import com.avioconsulting.mule.testing.ConfigTrait
 import com.avioconsulting.mule.testing.junit.BaseJunitTest
 import org.junit.Test
 
@@ -8,7 +8,7 @@ import static groovy.test.GroovyAssert.shouldFail
 
 class GenericFlowInvokeTest extends
         BaseJunitTest implements
-        OverrideConfigList {
+        ConfigTrait {
     List<String> getConfigResources() {
         ['simple_json_test.xml']
     }

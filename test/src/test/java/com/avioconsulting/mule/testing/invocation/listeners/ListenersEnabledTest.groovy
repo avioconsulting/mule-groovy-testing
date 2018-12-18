@@ -1,7 +1,7 @@
 package com.avioconsulting.mule.testing.invocation.listeners
 
 
-import com.avioconsulting.mule.testing.OverrideConfigList
+import com.avioconsulting.mule.testing.ConfigTrait
 import com.avioconsulting.mule.testing.junit.BaseJunitTest
 import groovy.util.logging.Log4j2
 import org.junit.Test
@@ -13,7 +13,7 @@ import static org.junit.Assert.assertThat
 @Log4j2
 class ListenersEnabledTest extends
         BaseJunitTest implements
-        OverrideConfigList,
+        ConfigTrait,
         PortStuff {
 
     @Override

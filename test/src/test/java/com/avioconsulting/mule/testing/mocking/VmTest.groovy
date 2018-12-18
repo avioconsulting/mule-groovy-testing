@@ -1,6 +1,6 @@
 package com.avioconsulting.mule.testing.mocking
 
-import com.avioconsulting.mule.testing.OverrideConfigList
+import com.avioconsulting.mule.testing.ConfigTrait
 import com.avioconsulting.mule.testing.SampleJacksonInput
 import com.avioconsulting.mule.testing.junit.BaseJunitTest
 import org.junit.Test
@@ -11,7 +11,7 @@ import static org.junit.Assert.assertThat
 
 class VmTest extends
         BaseJunitTest implements
-        OverrideConfigList {
+        ConfigTrait {
     List<String> getConfigResources() {
         ['vm_test.xml']
     }

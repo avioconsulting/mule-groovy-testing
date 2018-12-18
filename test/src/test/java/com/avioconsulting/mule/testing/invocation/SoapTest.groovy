@@ -1,6 +1,6 @@
 package com.avioconsulting.mule.testing.invocation
 
-import com.avioconsulting.mule.testing.OverrideConfigList
+import com.avioconsulting.mule.testing.ConfigTrait
 import com.avioconsulting.mule.testing.XmlDateHelp
 import com.avioconsulting.mule.testing.junit.BaseJunitTest
 import com.avioconsulting.mule.testing.soapxmlroot.SOAPTestRequest
@@ -12,7 +12,7 @@ import static org.junit.Assert.assertThat
 
 class SoapTest extends
         BaseJunitTest implements
-        OverrideConfigList,
+        ConfigTrait,
         XmlDateHelp {
     List<String> getConfigResources() {
         ['soap_test.xml']

@@ -1,6 +1,6 @@
 package com.avioconsulting.mule.testing.mocking
 
-import com.avioconsulting.mule.testing.OverrideConfigList
+import com.avioconsulting.mule.testing.ConfigTrait
 import com.avioconsulting.mule.testing.junit.BaseJunitTest
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.EventWrapper
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.InvokeExceptionWrapper
@@ -21,7 +21,7 @@ import static org.junit.Assert.assertThat
 
 class SoapTest extends
         BaseJunitTest implements
-        OverrideConfigList {
+        ConfigTrait {
     List<String> getConfigResources() {
         ['soap_test.xml']
     }

@@ -1,6 +1,6 @@
 package com.avioconsulting.mule.testing.invocation
 
-import com.avioconsulting.mule.testing.OverrideConfigList
+import com.avioconsulting.mule.testing.ConfigTrait
 import com.avioconsulting.mule.testing.SampleJacksonInput
 import com.avioconsulting.mule.testing.SampleJacksonOutput
 import com.avioconsulting.mule.testing.junit.BaseJunitTest
@@ -13,7 +13,7 @@ import static org.junit.Assert.assertThat
 
 class WithInputEventTest extends
         BaseJunitTest implements
-        OverrideConfigList {
+        ConfigTrait {
     List<String> getConfigResources() {
         ['input_message_test.xml']
     }

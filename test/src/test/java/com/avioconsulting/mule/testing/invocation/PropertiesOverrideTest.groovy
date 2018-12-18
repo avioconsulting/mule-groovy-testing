@@ -1,7 +1,7 @@
 package com.avioconsulting.mule.testing.invocation
 
 
-import com.avioconsulting.mule.testing.OverrideConfigList
+import com.avioconsulting.mule.testing.ConfigTrait
 import com.avioconsulting.mule.testing.junit.BaseJunitTest
 import org.junit.Test
 
@@ -11,7 +11,7 @@ import static org.junit.Assert.assertThat
 
 class PropertiesOverrideTest extends
         BaseJunitTest implements
-        OverrideConfigList {
+        ConfigTrait {
     List<String> getConfigResources() {
         ['properties_override_test.xml']
     }

@@ -1,6 +1,6 @@
 package com.avioconsulting.mule.testing.mocking
 
-import com.avioconsulting.mule.testing.OverrideConfigList
+import com.avioconsulting.mule.testing.ConfigTrait
 import com.avioconsulting.mule.testing.junit.BaseJunitTest
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.EventWrapper
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.connectors.HttpRequesterInfo
@@ -14,7 +14,7 @@ import static org.junit.Assert.assertThat
 @Log4j2
 class ApiMockTest extends
         BaseJunitTest implements
-        OverrideConfigList {
+        ConfigTrait {
     List<String> getConfigResources() {
         ['api-mock.xml']
     }

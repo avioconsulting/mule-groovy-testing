@@ -1,6 +1,6 @@
 package com.avioconsulting.mule.testing.invocation
 
-import com.avioconsulting.mule.testing.OverrideConfigList
+import com.avioconsulting.mule.testing.ConfigTrait
 import com.avioconsulting.mule.testing.SampleJacksonInput
 import com.avioconsulting.mule.testing.SampleJacksonOutput
 import com.avioconsulting.mule.testing.junit.BaseApiKitTest
@@ -12,7 +12,7 @@ import static org.junit.Assert.assertThat
 
 class ApikitFlowInvokeTest extends
         BaseApiKitTest implements
-        OverrideConfigList {
+        ConfigTrait {
     String getApiNameUnderTest() {
         'the-APP'
     }
