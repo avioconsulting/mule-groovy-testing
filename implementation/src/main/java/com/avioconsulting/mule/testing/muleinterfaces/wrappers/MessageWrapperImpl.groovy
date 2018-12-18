@@ -1,7 +1,8 @@
 package com.avioconsulting.mule.testing.muleinterfaces.wrappers
 
 class MessageWrapperImpl implements
-        MessageWrapper {
+        MessageWrapper,
+        StreamUtils{
     static final String TYPED_VALUE_CLASS_NAME = 'org.mule.runtime.api.metadata.TypedValue'
     private final Object muleMessage
 
