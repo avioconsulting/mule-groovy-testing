@@ -148,14 +148,14 @@ class ApiMockTest extends
     @Test
     void mock_get_error() {
         // arrange
-//        mockRestHttpCall('the name of our connector') {
-//            json {
-//                whenCalledWith(String) { HttpRequesterInfo httpInfo ->
-//                    setHttpReturnCode(404)
-//                    'new payload'
-//                }
-//            }
-//        }
+        mockRestHttpCall('the name of our connector') {
+            json {
+                whenCalledWith(String) { HttpRequesterInfo httpInfo ->
+                    setHttpReturnCode(404)
+                    'new payload'
+                }
+            }
+        }
 
         // act
         def exception = shouldFail {
