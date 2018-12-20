@@ -1,6 +1,9 @@
 # 2.0
 (for Mule 4.1)
 
+# 2.0.12 (pending)
+* Fix issue with HTTP requestor validation (mimic actual Mule behavior of validating against 200/201 when None is selected)
+
 # 2.0.11
 * Added ability to add additional config resources without using awkward sub setup - see `getAdditionalConfigResources()`
 * Add ability to flow invoke with a media type with a Java payload
