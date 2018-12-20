@@ -4,15 +4,17 @@
         doc:description="This module relies entirely in runtime provided components (no other Plugin dependencies)"
         xmlns="http://www.mulesoft.org/schema/mule/module"
         xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+        xmlns:mule="http://www.mulesoft.org/schema/mule/core"
         xmlns:http="http://www.mulesoft.org/schema/mule/http"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.mulesoft.org/schema/mule/module http://www.mulesoft.org/schema/mule/module/current/mule-module.xsd
+        http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
            http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
     <http:request-config name="httpreq-config"
                          basePath="/">
-        <http:request-connection host="foobar"
+        <http:request-connection host="www.google.com"
                                  protocol="HTTP"
-                                 port="8081">
+                                 port="80">
         </http:request-connection>
     </http:request-config>
 
@@ -43,11 +45,15 @@
             <http:request config-ref="httpreq-config"
                           path="/stuff"
                           method="GET">
+                <mule:error-mapping sourceType="HTTP:NOT_FOUND" targetType="MODULE-HELLO:NOT_FOUND" />
                 <http:query-params>
                     <![CDATA[#[ { 'created_by': vars['inputParam']}]]]>
                 </http:query-params>
             </http:request>
         </body>
         <output type="any" doc:description="Payload's output"/>
+        <errors>
+            <error type="NOT_FOUND"/>
+        </errors>
     </operation>
 </module>

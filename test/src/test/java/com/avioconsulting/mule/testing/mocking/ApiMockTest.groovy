@@ -7,6 +7,7 @@ import com.avioconsulting.mule.testing.muleinterfaces.wrappers.connectors.HttpRe
 import groovy.util.logging.Log4j2
 import org.junit.Test
 
+import static groovy.test.GroovyAssert.shouldFail
 import static org.hamcrest.Matchers.equalTo
 import static org.hamcrest.Matchers.is
 import static org.junit.Assert.assertThat
@@ -142,5 +143,31 @@ class ApiMockTest extends
                    is(equalTo([
                            created_by: 'nope'
                    ]))
+    }
+
+    @Test
+    void mock_get_error() {
+        // arrange
+        mockRestHttpCall('the name of our connector') {
+            json {
+                whenCalledWith(String) { HttpRequesterInfo httpInfo ->
+                    setHttpReturnCode(404)
+                    'new payload'
+                }
+            }
+        }
+
+        // act
+        def exception = shouldFail {
+            runFlow('fooGetFlow') {
+                java {
+                    inputPayload('nope')
+                }
+            }
+        }
+
+        // assert
+        assertThat exception.message,
+                   is(equalTo('org.mule.runtime.core.internal.exception.MessagingException: HTTP GET on resource \'http://www.google.com:80/stuff\' failed: not found (404).; ErrorType: MODULE-HELLO:NOT_FOUND'))
     }
 }

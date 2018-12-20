@@ -5,7 +5,6 @@ import com.avioconsulting.mule.testing.muleinterfaces.wrappers.ConnectorInfo
 class HttpRequesterInfo extends
         ConnectorInfo {
     private final String method
-    private final boolean validationEnabled
     private final Map<String, String> queryParams
     private final Map<String, String> headers
     private HttpValidatorWrapper validatorWrapper
@@ -21,12 +20,18 @@ class HttpRequesterInfo extends
               container,
               parameters)
         this.method = parameters['method'] as String
-        def muleValidator = parameters['responseValidationSettings'].responseValidator
-        this.validationEnabled = muleValidator != null
-        if (this.validationEnabled) {
-            this.validatorWrapper = new HttpValidatorWrapper(muleValidator,
-                                                             this)
+        def responseValidationSettings = parameters['responseValidationSettings']
+        def muleValidator = responseValidationSettings.responseValidator
+        if (!muleValidator) {
+            // Even if you choose 'None' for response validator in Studio 7, Mule will still validate against 200,201 by default
+            // but if none is picked, we won't see a validator
+            // so we just build one using the app's classloader
+            def appClassLoader = responseValidationSettings.getClass().classLoader
+            def validatorClass = appClassLoader.loadClass('org.mule.extension.http.api.request.validator.SuccessStatusCodeValidator')
+            muleValidator = validatorClass.newInstance('0..399')
         }
+        this.validatorWrapper = new HttpValidatorWrapper(muleValidator,
+                                                         this)
         // it's a MultiMap, keep Mule runtime classes away from our tests
         def requestBuilder = parameters['requestBuilder']
         this.body = requestBuilder.body
@@ -46,10 +51,6 @@ class HttpRequesterInfo extends
 
     String getMethod() {
         this.method
-    }
-
-    boolean isValidationEnabled() {
-        this.validationEnabled
     }
 
     Map<String, String> getQueryParams() {
