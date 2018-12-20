@@ -411,6 +411,10 @@ class HttpTest extends
                    is(equalTo('org.mule.extension.http.api.request.validator.ResponseValidatorTypedException'))
         assertThat cause.message,
                    is(equalTo("HTTP GET on resource 'http://localhost:443/some_path/there' failed: not found (404)."))
+        assertThat causeOfCause.getClass().name,
+                   is(equalTo('org.mule.extension.http.api.request.validator.ResponseValidatorTypedException'))
+        assertThat cause.info['Error type'],
+                   is(equalTo('HTTP:NOT_FOUND'))
     }
 
     @Test
