@@ -382,6 +382,38 @@ class HttpTest extends
     }
 
     @Test
+    void http_return_error_code_default_validator() {
+        // arrange
+        mockRestHttpCall('SomeSystem Call') {
+            json {
+                whenCalledWith {
+                    setHttpReturnCode(404)
+                    [reply: 456]
+                }
+            }
+        }
+
+        // act
+        def result = shouldFail {
+            runFlow('queryParameters') {
+                json {
+                    inputPayload([foo: 123])
+                }
+            }
+        }
+
+        // assert
+        assertThat result,
+                   is(instanceOf(InvokeExceptionWrapper))
+        def cause = result.cause
+        def causeOfCause = cause.cause
+        assertThat causeOfCause.getClass().name,
+                   is(equalTo('org.mule.extension.http.api.request.validator.ResponseValidatorTypedException'))
+        assertThat cause.message,
+                   is(equalTo("HTTP GET on resource 'http://localhost:443/some_path/there' failed: not found (404)."))
+    }
+
+    @Test
     void http_return_error_code_only_on_first_call() {
         // arrange
         def returnError = true
