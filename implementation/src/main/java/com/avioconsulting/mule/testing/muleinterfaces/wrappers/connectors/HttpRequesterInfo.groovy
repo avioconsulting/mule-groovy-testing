@@ -28,7 +28,7 @@ class HttpRequesterInfo extends
             // so we just build one using the app's classloader
             def appClassLoader = responseValidationSettings.getClass().classLoader
             def validatorClass = appClassLoader.loadClass('org.mule.extension.http.api.request.validator.SuccessStatusCodeValidator')
-            muleValidator = validatorClass.newInstance('200,201')
+            muleValidator = validatorClass.newInstance('0..399')
         }
         this.validatorWrapper = new HttpValidatorWrapper(muleValidator,
                                                          this)
