@@ -382,7 +382,7 @@ class HttpTest extends
     }
 
     @Test
-    void http_return_error_code_default_validator() {
+    void http_return_error_code_default_validator_fail() {
         // arrange
         mockRestHttpCall('SomeSystem Call') {
             json {

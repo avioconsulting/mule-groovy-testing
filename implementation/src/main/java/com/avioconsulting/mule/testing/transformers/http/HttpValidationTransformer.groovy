@@ -20,9 +20,6 @@ class HttpValidationTransformer implements
                 'http.status': this.httpReturnCode
         ]
         muleEvent = muleEvent.withNewAttributes(attributes)
-        if (!connectorInfo.validationEnabled) {
-            return muleEvent
-        }
         connectorInfo.validator.validate(this.httpReturnCode,
                                          'Test framework told us to',
                                          ['X-Some-Header': '123'])
