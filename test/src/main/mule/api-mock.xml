@@ -83,4 +83,26 @@ payload]]></ee:set-payload>
             </ee:message>
         </ee:transform>
     </flow>
+    <flow name="fooGetFlowTryErrorHandler">
+        <logger message="calling module"/>
+        <try>
+            <module-hello:do-stuff-get doc:name="the name of our connector" inputParam="#[payload]"/>
+            <error-handler>
+                <on-error-propagate enableNotifications="true"
+                                    logException="true"
+                                    type="ANY">
+                    <logger message="error handler"/>
+                </on-error-propagate>
+            </error-handler>
+        </try>
+        <logger message="done calling module, transforming output to java"/>
+        <ee:transform doc:name="Transform Message">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/java
+---
+payload]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+    </flow>
 </mule>
