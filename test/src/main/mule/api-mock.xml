@@ -51,6 +51,23 @@ payload]]></ee:set-payload>
             </ee:message>
         </ee:transform>
     </flow>
+    <flow name="fooGetFlowTryLoggerAfterConnector">
+        <logger message="calling module"/>
+        <try>
+            <module-hello:do-stuff-get doc:name="the name of our connector" inputParam="#[payload]"/>
+            <logger message="something"
+                    level="INFO"/>
+        </try>
+        <logger message="done calling module, transforming output to java"/>
+        <ee:transform doc:name="Transform Message">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/java
+---
+payload]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+    </flow>
     <flow name="fooGetFlowTryConnectorFirst">
         <logger message="calling module"/>
         <try>

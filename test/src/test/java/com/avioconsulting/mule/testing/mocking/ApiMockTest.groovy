@@ -210,13 +210,33 @@ class ApiMockTest extends
     @Test
     void mocks_get_try_logger_after_connector() {
         // arrange
+        HttpRequesterInfo actualHttpRequestInfo = null
+        mockRestHttpCall('the name of our connector') {
+            json {
+                whenCalledWith(String) { HttpRequesterInfo httpInfo ->
+                    actualHttpRequestInfo = httpInfo
+                    'new payload'
+                }
+            }
+        }
 
         // act
+        def result = runFlow('fooGetFlowTryLoggerAfterConnector') {
+            java {
+                inputPayload('nope')
+            }
+        }
 
         // assert
-        fail 'write the test'
+        assertThat result,
+                   is(equalTo('new payload'))
+        assertThat actualHttpRequestInfo.method,
+                   is(equalTo('GET'))
+        assertThat actualHttpRequestInfo.queryParams,
+                   is(equalTo([
+                           created_by: 'nope'
+                   ]))
     }
-
 
     @Test
     void mock_get_error() {
