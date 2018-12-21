@@ -208,6 +208,17 @@ class ApiMockTest extends
     }
 
     @Test
+    void mocks_get_try_logger_after_connector() {
+        // arrange
+
+        // act
+
+        // assert
+        fail 'write the test'
+    }
+
+
+    @Test
     void mock_get_error() {
         // arrange
         mockRestHttpCall('the name of our connector') {

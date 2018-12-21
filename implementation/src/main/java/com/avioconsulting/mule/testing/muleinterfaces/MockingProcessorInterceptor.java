@@ -12,9 +12,13 @@ import org.mule.runtime.api.message.ErrorType;
 import org.mule.runtime.core.api.processor.Processor;
 import org.mule.runtime.core.internal.exception.MessagingException;
 import org.mule.runtime.core.internal.interception.DefaultInterceptionEvent;
+import org.mule.runtime.core.internal.processor.TryScope;
 import org.mule.runtime.extension.api.error.ErrorTypeDefinition;
 import org.mule.runtime.extension.api.exception.ModuleException;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
@@ -24,6 +28,8 @@ import java.io.ByteArrayInputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -202,22 +208,39 @@ public class MockingProcessorInterceptor implements ProcessorInterceptor {
 
     private String getModuleCallName(Map<String, ProcessorParameterValue> parameters,
                                      InterceptionAction action) {
-        // if we're calling an API using Exchange "derived" XML SDK calls, this will be a processor chain
-        // but we can't get the name of the connector when the actual mock w/ params/vars runs.
-        // so we map the connector name to the processor chain here, then when this runs again with the processor
-        // chain, we know the name of the 'mock'
-        if (!parameters.containsKey(PARAMETER_MODULE_NAME)) {
-            return null;
-        }
         Processor processor = getProcessor(action);
-        if (!(processor instanceof Component)) {
-            return null;
-        }
-        String sourceElement = (String) ((Component) processor).getAnnotation(SOURCE_ELEMENT);
-        if (sourceElement == null) {
-            return null;
-        }
         try {
+            // if we're calling an API using Exchange "derived" XML SDK calls, this will be a processor chain
+            // but we can't get the name of the connector when the actual mock w/ params/vars runs.
+            // so we map the connector name to the processor chain here, then when this runs again with the processor
+            // chain, we know the name of the 'mock'
+            if (processor instanceof TryScope) {
+                String sourceElement = (String) ((TryScope) processor).getAnnotation(SOURCE_ELEMENT);
+                Document doc = builder.parse(new ByteArrayInputStream(sourceElement.getBytes()));
+                Element tryElement = doc.getDocumentElement();
+                NodeList childNodes = tryElement.getChildNodes();
+                List<Element> childElements = new ArrayList<>();
+                for (int i = 0; i < childNodes.getLength(); i++) {
+                    Node node = childNodes.item(i);
+                    if (node instanceof Element) {
+                        childElements.add((Element) node);
+                    }
+                }
+                if (childElements.size() != 1) {
+                    return null;
+                }
+                return childElements.get(0).getAttribute(PARAMETER_CONNECTOR_NAME);
+            }
+            if (!parameters.containsKey(PARAMETER_MODULE_NAME)) {
+                return null;
+            }
+            if (!(processor instanceof Component)) {
+                return null;
+            }
+            String sourceElement = (String) ((Component) processor).getAnnotation(SOURCE_ELEMENT);
+            if (sourceElement == null) {
+                return null;
+            }
             Document doc = builder.parse(new ByteArrayInputStream(sourceElement.getBytes()));
             return doc.getDocumentElement().getAttribute(PARAMETER_CONNECTOR_NAME);
         } catch (Exception e) {
