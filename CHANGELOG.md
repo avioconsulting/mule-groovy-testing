@@ -1,7 +1,10 @@
 # 2.0
 (for Mule 4.1)
 
-# 2.0.12 (pending)
+# 2.0.13 (pending)
+* Fix issue with try scope and API modules
+
+# 2.0.12
 * Fix issue with HTTP requestor validation (mimic actual Mule behavior of validating against 200/201 when None is selected)
 
 # 2.0.11
