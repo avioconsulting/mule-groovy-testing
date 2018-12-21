@@ -1,5 +1,7 @@
 package com.avioconsulting.mule.testing.muleinterfaces;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.mule.runtime.api.component.Component;
 import org.mule.runtime.api.component.ComponentIdentifier;
 import org.mule.runtime.api.component.location.ComponentLocation;
@@ -43,6 +45,7 @@ public class MockingProcessorInterceptor implements ProcessorInterceptor {
                                                           "sourceElement");
     private static final DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
     private static final DocumentBuilder builder;
+    private static final Logger logger = LogManager.getLogger(MockingProcessorInterceptor.class);
 
     static {
         try {
@@ -153,6 +156,8 @@ public class MockingProcessorInterceptor implements ProcessorInterceptor {
         // (e.g. yourapi:some_operation)
         // then inside that module is a "processor chain" / operation is the actual call
         if (connectorName != null) {
+            logger.info("Preserving module name of '{}' for next call (a connector that might be mocked) since it may not have a name on it",
+                        connectorName);
             moduleConnectorName.set(connectorName);
             // we can't access anything on the module call but the next call inside should give us info
             return doProceed(action);
@@ -162,6 +167,8 @@ public class MockingProcessorInterceptor implements ProcessorInterceptor {
         } else if (moduleConnectorName.get() != null) {
             // in this case, we found the actual HTTP connector name using the module we already have
             connectorName = moduleConnectorName.get();
+            logger.info("Obtained the connector name of '{}' using previous module execution",
+                        connectorName);
             // don't want this to continue past this execution
             moduleConnectorName.remove();
         } else {
