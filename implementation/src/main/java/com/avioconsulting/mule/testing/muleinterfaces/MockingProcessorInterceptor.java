@@ -252,20 +252,20 @@ public class MockingProcessorInterceptor implements ProcessorInterceptor {
         // <try>
         //  <module-hello:do-stuff-get doc:name="the name of our connector" inputParam="#[payload]"></module-hello:do-stuff-get>
         // </try>
-        List<Element> childElements = new ArrayList<>();
+        List<Element> nonErrorHandlerChildElements = new ArrayList<>();
         // get elements only (no text, etc.)
         for (int i = 0; i < childNodes.getLength(); i++) {
             Node node = childNodes.item(i);
-            if (node instanceof Element) {
-                childElements.add((Element) node);
+            if (node instanceof Element && !node.getNodeName().equals("error-handler")) {
+                nonErrorHandlerChildElements.add((Element) node);
             }
         }
         // we should only need to do this for cases where the connector is the only item in the try scope
         // other cases work without doing this (see ApiMockTest)
-        if (childElements.size() != 1) {
+        if (nonErrorHandlerChildElements.size() != 1) {
             return null;
         }
-        return childElements.get(0).getAttribute(PARAMETER_CONNECTOR_NAME);
+        return nonErrorHandlerChildElements.get(0).getAttribute(PARAMETER_CONNECTOR_NAME);
     }
 
     private String getNamespace(Throwable moduleExceptionWrapper) {
