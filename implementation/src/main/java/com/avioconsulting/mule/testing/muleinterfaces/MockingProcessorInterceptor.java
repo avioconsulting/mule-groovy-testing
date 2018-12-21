@@ -143,6 +143,9 @@ public class MockingProcessorInterceptor implements ProcessorInterceptor {
                                                        InterceptionAction action) {
         String connectorName = getModuleCallName(parameters,
                                                  action);
+        // when we are mocking an HTTP call inside an API module, the first call we see here will be the module
+        // (e.g. yourapi:some_operation)
+        // then inside that module is a "processor chain" / operation is the actual call
         if (connectorName != null) {
             moduleConnectorName.set(connectorName);
             // we can't access anything on the module call but the next call inside should give us info
