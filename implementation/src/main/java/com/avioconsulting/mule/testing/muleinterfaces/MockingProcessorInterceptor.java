@@ -21,12 +21,14 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -222,21 +224,7 @@ public class MockingProcessorInterceptor implements ProcessorInterceptor {
             // so we map the connector name to the processor chain here, then when this runs again with the processor
             // chain, we know the name of the 'mock'
             if (processor instanceof TryScope) {
-                String sourceElement = (String) ((TryScope) processor).getAnnotation(SOURCE_ELEMENT);
-                Document doc = builder.parse(new ByteArrayInputStream(sourceElement.getBytes()));
-                Element tryElement = doc.getDocumentElement();
-                NodeList childNodes = tryElement.getChildNodes();
-                List<Element> childElements = new ArrayList<>();
-                for (int i = 0; i < childNodes.getLength(); i++) {
-                    Node node = childNodes.item(i);
-                    if (node instanceof Element) {
-                        childElements.add((Element) node);
-                    }
-                }
-                if (childElements.size() != 1) {
-                    return null;
-                }
-                return childElements.get(0).getAttribute(PARAMETER_CONNECTOR_NAME);
+                return getNameFromTryScope((TryScope) processor);
             }
             if (!parameters.containsKey(PARAMETER_MODULE_NAME)) {
                 return null;
@@ -253,6 +241,31 @@ public class MockingProcessorInterceptor implements ProcessorInterceptor {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private String getNameFromTryScope(TryScope processor) throws SAXException, IOException {
+        // the try scope works differently. it can interfere with the usual module process
+        String sourceElement = (String) processor.getAnnotation(SOURCE_ELEMENT);
+        Document doc = builder.parse(new ByteArrayInputStream(sourceElement.getBytes()));
+        Element tryElement = doc.getDocumentElement();
+        NodeList childNodes = tryElement.getChildNodes();
+        // <try>
+        //  <module-hello:do-stuff-get doc:name="the name of our connector" inputParam="#[payload]"></module-hello:do-stuff-get>
+        // </try>
+        List<Element> childElements = new ArrayList<>();
+        // get elements only (no text, etc.)
+        for (int i = 0; i < childNodes.getLength(); i++) {
+            Node node = childNodes.item(i);
+            if (node instanceof Element) {
+                childElements.add((Element) node);
+            }
+        }
+        // we should only need to do this for cases where the connector is the only item in the try scope
+        // other cases work without doing this (see ApiMockTest)
+        if (childElements.size() != 1) {
+            return null;
+        }
+        return childElements.get(0).getAttribute(PARAMETER_CONNECTOR_NAME);
     }
 
     private String getNamespace(Throwable moduleExceptionWrapper) {
