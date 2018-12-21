@@ -154,6 +154,7 @@ public class MockingProcessorInterceptor implements ProcessorInterceptor {
         if (!parameters.containsKey(PARAMETER_CONNECTOR_NAME) && moduleConnectorName.get() == null) {
             return doProceed(action);
         } else if (moduleConnectorName.get() != null) {
+            // in this case, we found the actual HTTTP connector name using the module we already have
             connectorName = moduleConnectorName.get();
             // don't want this to continue past this execution
             moduleConnectorName.remove();
