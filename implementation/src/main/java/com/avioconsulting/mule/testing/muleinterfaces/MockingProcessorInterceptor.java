@@ -1,5 +1,7 @@
 package com.avioconsulting.mule.testing.muleinterfaces;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.mule.runtime.api.component.Component;
 import org.mule.runtime.api.component.ComponentIdentifier;
 import org.mule.runtime.api.component.location.ComponentLocation;
@@ -12,18 +14,26 @@ import org.mule.runtime.api.message.ErrorType;
 import org.mule.runtime.core.api.processor.Processor;
 import org.mule.runtime.core.internal.exception.MessagingException;
 import org.mule.runtime.core.internal.interception.DefaultInterceptionEvent;
+import org.mule.runtime.core.internal.processor.TryScope;
 import org.mule.runtime.extension.api.error.ErrorTypeDefinition;
 import org.mule.runtime.extension.api.exception.ModuleException;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -37,6 +47,7 @@ public class MockingProcessorInterceptor implements ProcessorInterceptor {
                                                           "sourceElement");
     private static final DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
     private static final DocumentBuilder builder;
+    private static final Logger logger = LogManager.getLogger(MockingProcessorInterceptor.class);
 
     static {
         try {
@@ -143,7 +154,12 @@ public class MockingProcessorInterceptor implements ProcessorInterceptor {
                                                        InterceptionAction action) {
         String connectorName = getModuleCallName(parameters,
                                                  action);
+        // when we are mocking an HTTP call inside an API module, the first call we see here will be the module
+        // (e.g. yourapi:some_operation)
+        // then inside that module is a "processor chain" / operation is the actual call
         if (connectorName != null) {
+            logger.info("Preserving module name of '{}' for next call (a connector that might be mocked) since it may not have a name on it",
+                        connectorName);
             moduleConnectorName.set(connectorName);
             // we can't access anything on the module call but the next call inside should give us info
             return doProceed(action);
@@ -151,7 +167,10 @@ public class MockingProcessorInterceptor implements ProcessorInterceptor {
         if (!parameters.containsKey(PARAMETER_CONNECTOR_NAME) && moduleConnectorName.get() == null) {
             return doProceed(action);
         } else if (moduleConnectorName.get() != null) {
+            // in this case, we found the actual HTTP connector name using the module we already have
             connectorName = moduleConnectorName.get();
+            logger.info("Obtained the connector name of '{}' using previous module execution",
+                        connectorName);
             // don't want this to continue past this execution
             moduleConnectorName.remove();
         } else {
@@ -198,27 +217,55 @@ public class MockingProcessorInterceptor implements ProcessorInterceptor {
 
     private String getModuleCallName(Map<String, ProcessorParameterValue> parameters,
                                      InterceptionAction action) {
-        // if we're calling an API using Exchange "derived" XML SDK calls, this will be a processor chain
-        // but we can't get the name of the connector when the actual mock w/ params/vars runs.
-        // so we map the connector name to the processor chain here, then when this runs again with the processor
-        // chain, we know the name of the 'mock'
-        if (!parameters.containsKey(PARAMETER_MODULE_NAME)) {
-            return null;
-        }
         Processor processor = getProcessor(action);
-        if (!(processor instanceof Component)) {
-            return null;
-        }
-        String sourceElement = (String) ((Component) processor).getAnnotation(SOURCE_ELEMENT);
-        if (sourceElement == null) {
-            return null;
-        }
         try {
+            // if we're calling an API using Exchange "derived" XML SDK calls, this will be a processor chain
+            // but we can't get the name of the connector when the actual mock w/ params/vars runs.
+            // so we map the connector name to the processor chain here, then when this runs again with the processor
+            // chain, we know the name of the 'mock'
+            if (processor instanceof TryScope) {
+                return getNameFromTryScope((TryScope) processor);
+            }
+            if (!parameters.containsKey(PARAMETER_MODULE_NAME)) {
+                return null;
+            }
+            if (!(processor instanceof Component)) {
+                return null;
+            }
+            String sourceElement = (String) ((Component) processor).getAnnotation(SOURCE_ELEMENT);
+            if (sourceElement == null) {
+                return null;
+            }
             Document doc = builder.parse(new ByteArrayInputStream(sourceElement.getBytes()));
             return doc.getDocumentElement().getAttribute(PARAMETER_CONNECTOR_NAME);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private String getNameFromTryScope(TryScope processor) throws SAXException, IOException {
+        // the try scope works differently. it can interfere with the usual module process
+        String sourceElement = (String) processor.getAnnotation(SOURCE_ELEMENT);
+        Document doc = builder.parse(new ByteArrayInputStream(sourceElement.getBytes()));
+        Element tryElement = doc.getDocumentElement();
+        NodeList childNodes = tryElement.getChildNodes();
+        // <try>
+        //  <module-hello:do-stuff-get doc:name="the name of our connector" inputParam="#[payload]"></module-hello:do-stuff-get>
+        // </try>
+        List<Element> childElements = new ArrayList<>();
+        // get elements only (no text, etc.)
+        for (int i = 0; i < childNodes.getLength(); i++) {
+            Node node = childNodes.item(i);
+            if (node instanceof Element) {
+                childElements.add((Element) node);
+            }
+        }
+        // we should only need to do this for cases where the connector is the only item in the try scope
+        // other cases work without doing this (see ApiMockTest)
+        if (childElements.size() != 1) {
+            return null;
+        }
+        return childElements.get(0).getAttribute(PARAMETER_CONNECTOR_NAME);
     }
 
     private String getNamespace(Throwable moduleExceptionWrapper) {
