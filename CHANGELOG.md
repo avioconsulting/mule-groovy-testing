@@ -1,7 +1,10 @@
 # 2.0
 (for Mule 4.1)
 
-# 2.0.13 (pending)
+# 2.0.14
+* Fix issue with try scope, API module, and error handler
+
+# 2.0.13
 * Fix issue with try scope and API modules
 
 # 2.0.12
