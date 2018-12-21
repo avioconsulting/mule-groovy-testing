@@ -146,7 +146,7 @@ class ApiMockTest extends
     }
 
     @Test
-    void mocks_get_try() {
+    void mocks_get_try_logger_first() {
         // arrange
         HttpRequesterInfo actualHttpRequestInfo = null
         mockRestHttpCall('the name of our connector') {
@@ -159,7 +159,38 @@ class ApiMockTest extends
         }
 
         // act
-        def result = runFlow('fooGetFlowTry') {
+        def result = runFlow('fooGetFlowTryLoggerFirst') {
+            java {
+                inputPayload('nope')
+            }
+        }
+
+        // assert
+        assertThat result,
+                   is(equalTo('new payload'))
+        assertThat actualHttpRequestInfo.method,
+                   is(equalTo('GET'))
+        assertThat actualHttpRequestInfo.queryParams,
+                   is(equalTo([
+                           created_by: 'nope'
+                   ]))
+    }
+
+    @Test
+    void mocks_get_try_connector_first() {
+        // arrange
+        HttpRequesterInfo actualHttpRequestInfo = null
+        mockRestHttpCall('the name of our connector') {
+            json {
+                whenCalledWith(String) { HttpRequesterInfo httpInfo ->
+                    actualHttpRequestInfo = httpInfo
+                    'new payload'
+                }
+            }
+        }
+
+        // act
+        def result = runFlow('fooGetFlowTryConnectorFirst') {
             java {
                 inputPayload('nope')
             }
