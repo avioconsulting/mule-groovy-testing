@@ -73,13 +73,8 @@ class MessageWrapperImpl implements
         def klass = value.getClass().name
         // this is what repeatable streams look like
         if (klass.contains('ManagedCursorStreamProvider')) {
-            def cursor = value.openCursor()
-            try {
-                def result = cursor.text
-                return result
-            }
-            finally {
-                cursor.close()
+            withCursorAsText(value) { String text ->
+               return text
             }
         }
         // this is what non repeatable streams look like

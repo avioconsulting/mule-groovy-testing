@@ -1,6 +1,9 @@
 # 2.0
 (for Mule 4.1)
 
+# 2.0.15
+* Fix typo in `StreamUtils.withCursorAsText` and improve code reuse there
+
 # 2.0.14
 * Fix issue with try scope, API module, and error handler
 
