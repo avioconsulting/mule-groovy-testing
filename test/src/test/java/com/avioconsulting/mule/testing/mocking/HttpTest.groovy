@@ -558,7 +558,7 @@ class HttpTest extends
     }
 
     @Test
-    void httpTimeoutError() {
+    void httpTimeoutError_test() {
         // arrange
         mockRestHttpCall('SomeSystem Call') {
             json {
