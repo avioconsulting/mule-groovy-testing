@@ -290,7 +290,9 @@ class SoapTest extends
     void httpConnectionError_no_custom_transport() {
         // arrange
         mockSoapCall('A SOAP Call') {
-            httpConnectError()
+            whenCalledWithMapAsXml { input ->
+                httpConnectError()
+            }
         }
 
         // act
@@ -321,7 +323,9 @@ class SoapTest extends
     void httpConnectionError_custom_transport() {
         // arrange
         mockSoapCall('A SOAP Call') {
-            httpConnectError()
+            whenCalledWithMapAsXml { input ->
+                httpConnectError()
+            }
         }
 
         // act
@@ -352,7 +356,9 @@ class SoapTest extends
     void http_TimeoutError_no_custom_transport() {
         // arrange
         mockSoapCall('A SOAP Call') {
-            httpTimeoutError()
+            whenCalledWithMapAsXml { input ->
+                httpTimeoutError()
+            }
         }
 
         // act
@@ -383,7 +389,9 @@ class SoapTest extends
     void http_TimeoutError_custom_transport() {
         // arrange
         mockSoapCall('A SOAP Call') {
-            httpTimeoutError()
+            whenCalledWithMapAsXml { input ->
+                httpTimeoutError()
+            }
         }
 
         // act

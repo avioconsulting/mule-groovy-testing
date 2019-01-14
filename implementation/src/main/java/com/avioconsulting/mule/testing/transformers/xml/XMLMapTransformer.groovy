@@ -33,6 +33,10 @@ class XMLMapTransformer<T extends ConnectorInfo> extends
                                                   incomingEvent,
                                                   connectorInfo)
         def result = closure(asMap)
+        // TODO: Remove this once we get closure context, see XMLTransformer
+        if (impendingFault) {
+            return incomingEvent
+        }
         String xmlReply
         if (result instanceof File) {
             xmlReply = result.text

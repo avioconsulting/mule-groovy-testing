@@ -6,13 +6,13 @@ import com.avioconsulting.mule.testing.transformers.TransformerChain
 import com.avioconsulting.mule.testing.transformers.http.SoapFaultTransformer
 import com.avioconsulting.mule.testing.transformers.http.WsConsumerConnectorErrorTransformer
 
-class SOAPRequestResponse extends
+class SOAPRequestResponseImpl extends
         StandardRequestResponseImpl<SoapConsumerInfo> {
     private final WsConsumerConnectorErrorTransformer httpConnectorErrorTransformer
     private final SoapFaultTransformer soapFaultTransformer
 
-    SOAPRequestResponse(IFetchClassLoaders fetchAppClassLoader,
-                        Closure closure) {
+    SOAPRequestResponseImpl(IFetchClassLoaders fetchAppClassLoader,
+                            Closure closure) {
         this.httpConnectorErrorTransformer = new WsConsumerConnectorErrorTransformer(fetchAppClassLoader)
         this.soapFaultTransformer = new SoapFaultTransformer(fetchAppClassLoader)
         def soapFormatter = new SOAPFormatterImpl(httpConnectorErrorTransformer,

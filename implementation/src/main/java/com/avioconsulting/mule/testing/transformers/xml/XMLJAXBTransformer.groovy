@@ -31,6 +31,10 @@ class XMLJAXBTransformer<T extends ConnectorInfo> extends
                                                   event,
                                                   connectorInfo)
         def reply = closure(strongTypedPayload)
+        // TODO: Remove this once we get closure context, see XMLTransformer
+        if (impendingFault) {
+            return event
+        }
         String xml = reply instanceof File ? reply.text : helper.getMarshalled(reply)
         this.xmlMessageBuilder.build(xml,
                                      event,

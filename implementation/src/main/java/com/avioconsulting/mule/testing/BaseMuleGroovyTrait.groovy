@@ -411,8 +411,8 @@ trait BaseMuleGroovyTrait {
                      RuntimeBridgeTestSide bridge,
                      String connectorName,
                      @DelegatesTo(SOAPFormatter) Closure closure) {
-        def soapFormatter = new SOAPRequestResponse(bridge,
-                                                    closure)
+        def soapFormatter = new SOAPRequestResponseImpl(bridge,
+                                                        closure)
         mockingConfiguration.addMock(connectorName,
                                      soapFormatter.transformer)
     }

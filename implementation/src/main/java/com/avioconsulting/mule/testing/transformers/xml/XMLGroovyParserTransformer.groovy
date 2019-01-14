@@ -31,6 +31,10 @@ class XMLGroovyParserTransformer<T extends ConnectorInfo> extends
                                                   muleEvent,
                                                   connectorInfo)
         def reply = closure(node)
+        // TODO: Remove this once we get closure context, see XMLTransformer
+        if (impendingFault) {
+            return muleEvent
+        }
         String outputXmlString
         if (reply instanceof File) {
             outputXmlString = reply.text

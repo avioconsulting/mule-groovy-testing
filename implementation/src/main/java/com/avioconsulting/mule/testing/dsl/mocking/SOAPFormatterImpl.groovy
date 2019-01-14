@@ -20,12 +20,14 @@ class SOAPFormatterImpl extends XMLFormatterImpl implements SOAPFormatter {
     @Override
     def httpConnectError() {
         errorTransformer.triggerConnectException()
+        notifyImpendingFault()
         return null
     }
 
     @Override
     def httpTimeoutError() {
         errorTransformer.triggerTimeoutException()
+        notifyImpendingFault()
         return null
     }
 
@@ -49,6 +51,7 @@ class SOAPFormatterImpl extends XMLFormatterImpl implements SOAPFormatter {
                                               faultCode,
                                               subCode,
                                               detailMarkupBuilderClosure)
+        notifyImpendingFault()
         return null
     }
 }
