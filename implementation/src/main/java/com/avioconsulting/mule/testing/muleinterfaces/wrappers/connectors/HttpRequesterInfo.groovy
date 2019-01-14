@@ -4,7 +4,7 @@ import com.avioconsulting.mule.testing.TestingFrameworkException
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.ConnectorInfo
 
 class HttpRequesterInfo extends
-        ConnectorInfo {
+        ConnectorInfo implements HttpFunctionality {
     private final String method
     private final Map<String, String> queryParams
     private final Map<String, String> headers
@@ -28,11 +28,8 @@ class HttpRequesterInfo extends
             // but if none is picked, we won't see a validator
             // so we just build one using the app's classloader
             def appClassLoader = responseValidationSettings.getClass().classLoader
-            def validatorClass = appClassLoader.loadClass('org.mule.extension.http.api.request.validator.SuccessStatusCodeValidator')
-            muleValidator = validatorClass.newInstance('0..399')
+            muleValidator = getValidator(appClassLoader)
         }
-        this.validatorWrapper = new HttpValidatorWrapper(muleValidator,
-                                                         this)
         // it's a MultiMap, keep Mule runtime classes away from our tests
         def requestBuilder = parameters['requestBuilder']
         this.body = requestBuilder.body
@@ -42,6 +39,8 @@ class HttpRequesterInfo extends
         def host = "${uriParams.scheme.scheme}://${uriParams.host}:${uriParams.port}"
         def path = requestBuilder.replaceUriParams(parameters['uriSettings'].path)
         this.uri = "${host}${path}"
+        this.validatorWrapper = new HttpValidatorWrapper(muleValidator,
+                                                         this)
     }
 
     private static Map convertMultiMap(Map map) {

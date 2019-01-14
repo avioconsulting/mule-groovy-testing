@@ -4,10 +4,11 @@ import com.avioconsulting.mule.testing.TestingFrameworkException
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.ConnectorInfo
 
 class SoapConsumerInfo extends
-        ConnectorInfo {
+        ConnectorInfo implements HttpFunctionality {
     private final boolean customTransport
     private final String uri
     private final String headers
+    private HttpValidatorWrapper validatorWrapper
 
     SoapConsumerInfo(String fileName,
                      Integer lineNumber,
@@ -21,6 +22,10 @@ class SoapConsumerInfo extends
         this.customTransport = connection.transportConfiguration.getClass().getName().contains('CustomHttpTransportConfiguration')
         this.uri = connection.info.address
         this.headers = parameters['message'].headers?.text
+        def validator = getValidator(parameters['transportConfig'].getClass().classLoader)
+        this.validatorWrapper = new HttpValidatorWrapper(validator,
+                                                         'POST', // all SOAP reqs should be POSTs
+                                                         this.uri)
     }
 
     boolean isCustomHttpTransportConfigured() {
@@ -42,5 +47,9 @@ class SoapConsumerInfo extends
 
     String getHeaders() {
         this.headers
+    }
+
+    HttpValidatorWrapper getValidator() {
+        this.validatorWrapper
     }
 }

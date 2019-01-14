@@ -1,16 +1,28 @@
 package com.avioconsulting.mule.testing.muleinterfaces.wrappers.connectors
 
+import com.avioconsulting.mule.testing.muleinterfaces.wrappers.ModuleExceptionWrapper
+
 class HttpValidatorWrapper {
     private final Object muleValidator
-    private final HttpRequesterInfo httpRequesterInfo
     private final Class httpResponseAttrClass
     private final Class multiMapClass
     private final Object httpRequestBuilder
     private final Object muleResultBuilder
+    private final String httpMethod
+    private final String httpUri
 
     HttpValidatorWrapper(Object muleValidator,
                          HttpRequesterInfo httpRequesterInfo) {
-        this.httpRequesterInfo = httpRequesterInfo
+        this(muleValidator,
+             httpRequesterInfo.method,
+             httpRequesterInfo.uri)
+    }
+
+    HttpValidatorWrapper(Object muleValidator,
+                         String httpMethod,
+                         String httpUri) {
+        this.httpUri = httpUri
+        this.httpMethod = httpMethod
         this.muleValidator = muleValidator
         def muleClassLoader = muleValidator.class.classLoader
         this.httpResponseAttrClass = muleClassLoader.loadClass('org.mule.extension.http.api.HttpResponseAttributes')
@@ -25,8 +37,8 @@ class HttpValidatorWrapper {
                  String reasonPhrase,
                  Map<String, String> headers) {
         def httpRequest = httpRequestBuilder
-                .method(httpRequesterInfo.method)
-                .uri(httpRequesterInfo.uri)
+                .method(httpMethod)
+                .uri(httpUri)
                 .build()
         def multiMap = multiMapClass.newInstance(headers)
         def httpResponseAttr = httpResponseAttrClass.newInstance(statusCode,
@@ -36,7 +48,18 @@ class HttpValidatorWrapper {
                 .attributes(httpResponseAttr)
                 .output(new ByteArrayInputStream())
                 .build()
-        muleValidator.validate(result,
-                               httpRequest)
+        try {
+            muleValidator.validate(result,
+                                   httpRequest)
+        }
+        catch (e) {
+            // ResponseValidatorTypedException extends from ModuleException but others do not
+            // this way our mock/error type handling works right (see interceptors/mocking config)
+            if (e.getClass().name.endsWith('ResponseValidatorTypedException')) {
+                throw new ModuleExceptionWrapper(e,
+                                                 'HTTP')
+            }
+            throw e
+        }
     }
 }
