@@ -411,6 +411,53 @@ class SoapTest extends
     }
 
     @Test
+    void soap_fault_custom_transport() {
+        // arrange
+        mockSoapCall('Do Math') {
+            whenCalledWithMapAsXml { request ->
+                soapFault('System.Web.Services.Protocols.SoapException: Server was unable to read request...',
+                          new QName('http://schemas.xmlsoap.org/soap/envelope/',
+                                    'Client'),
+                          null)
+            }
+        }
+
+        // act
+        def result = shouldFail {
+            runFlow('calculatorSoapFaultFlowCustomTransport') {
+                json {
+                    inputPayload([foo: 123])
+                }
+            }
+        }
+
+        // assert
+        assertThat result,
+                   is(instanceOf(InvokeExceptionWrapper))
+        def cause = result.cause
+        def soapFaultException = cause.cause
+        assertThat soapFaultException.getClass().name,
+                   is(equalTo('org.mule.extension.ws.internal.error.SoapFaultMessageAwareException'))
+        assertThat soapFaultException.cause.getClass().name,
+                   is(equalTo('org.mule.soap.api.exception.SoapFaultException'))
+        assertThat soapFaultException.cause.cause.getClass().name,
+                   is(equalTo('org.apache.cxf.binding.soap.SoapFault'))
+        assertThat cause.info['Error type'],
+                   is(equalTo('WSC:SOAP_FAULT'))
+        assertThat cause.message,
+                   is(startsWith('System.Web.Services.Protocols.SoapException: Server was unable to read request'))
+        assertThat soapFaultException.cause.faultCode,
+                   is(equalTo(new QName('http://schemas.xmlsoap.org/soap/envelope/',
+                                        'Client')))
+        assertThat soapFaultException.cause.subCode,
+                   is(equalTo(Optional.empty()))
+        def detail = soapFaultException.cause.detail
+        assert detail
+        assertThat detail.trim(),
+                   is(equalTo('<?xml version="1.0" encoding="UTF-8"?><detail/>'))
+    }
+
+    @Test
     void soap_fault_no_detail_provided() {
         // arrange
         mockSoapCall('Do Math') {
