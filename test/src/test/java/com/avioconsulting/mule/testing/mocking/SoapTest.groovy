@@ -444,7 +444,8 @@ class SoapTest extends
                    is(instanceOf(InvokeExceptionWrapper))
         def cause = result.cause
         def validatorException = cause.cause
-        assertThat validatorException.getClass().name,
+        assertThat 'If a SOAP-WS Consumer is merely changed to use a custom transport, by default, it will pick up HTTP 500 errors from server and throw an exception based on that rather than the SOAP fault itself',
+                   validatorException.getClass().name,
                    is(equalTo('org.mule.extension.http.api.request.validator.ResponseValidatorTypedException'))
         assertThat validatorException.cause.getClass().name,
                    is(equalTo('org.mule.runtime.api.exception.MuleRuntimeException'))
