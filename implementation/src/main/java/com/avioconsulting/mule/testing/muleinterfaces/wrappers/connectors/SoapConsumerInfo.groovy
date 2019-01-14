@@ -6,6 +6,7 @@ import com.avioconsulting.mule.testing.muleinterfaces.wrappers.ConnectorInfo
 class SoapConsumerInfo extends
         ConnectorInfo implements HttpFunctionality {
     private final boolean customTransport
+    private final boolean validatorWorkaroundConfigured
     private final String uri
     private final String headers
     private HttpValidatorWrapper validatorWrapper
@@ -19,17 +20,52 @@ class SoapConsumerInfo extends
               container,
               parameters)
         def connection = parameters['connection']
-        this.customTransport = connection.transportConfiguration.getClass().getName().contains('CustomHttpTransportConfiguration')
+        def transportConfig = connection.transportConfiguration
+        this.customTransport = transportConfig.getClass().getName().contains('CustomHttpTransportConfiguration')
         this.uri = connection.info.address
         this.headers = parameters['message'].headers?.text
-        def validator = getValidator(parameters['transportConfig'].getClass().classLoader)
+        Object validator = null
+        if (customTransport) {
+            validator = findValidator(transportConfig,
+                                      parameters)
+        }
+        if (!validator) {
+            // create one by default just like Mule does
+            validator = getValidator(parameters['transportConfig'].getClass().classLoader)
+        }
         this.validatorWrapper = new HttpValidatorWrapper(validator,
-                                                         'POST', // all SOAP reqs should be POSTs
+                                                         'POST',
+                                                         // all SOAP reqs should be POSTs
                                                          this.uri)
+    }
+
+    private static def findValidator(transportConfig,
+                                     Map<String, Object> parameters) {
+        def getPrivateField = { Object object,
+                                String fieldName ->
+            def klass = object.getClass()
+            if (klass.name.contains('EnhancerByCGLIB')) {
+                // proxies get in the way if we try and use the actual class to find the private field
+                klass = klass.superclass
+            }
+            def field = klass.getDeclaredField(fieldName)
+            assert field: "Expected to find ${fieldName}"
+            field.accessible = true
+            return field
+        }
+        def requesterConfigNameField = getPrivateField(transportConfig,
+                                                       'requesterConfig')
+        def requesterConfigName = requesterConfigNameField.get(transportConfig)
+        def requesterConfig = parameters['client'].registry.lookupByName(requesterConfigName).value.configuration.value
+        def responseSettings = requesterConfig.responseSettings
     }
 
     boolean isCustomHttpTransportConfigured() {
         customTransport
+    }
+
+    boolean isValidatorWorkaroundConfigured() {
+        validatorWorkaroundConfigured
     }
 
     String getUri() {
