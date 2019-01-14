@@ -57,6 +57,24 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
             </wsc:custom-transport-configuration>
         </wsc:connection>
     </wsc:config>
+    <http:request-config name="HTTP_Request_configuration_Workaround"
+                         doc:name="HTTP Request configuration"
+                         responseTimeout="500">
+        <http:request-connection host="localhost" port="8081"/>
+        <http:response-validator>
+            <http:success-status-code-validator values="0..999" />
+        </http:response-validator>
+    </http:request-config>
+    <wsc:config name="Web_Service_Consumer_Calculator_Custom_Transport_Config_Workaround">
+        <wsc:connection wsdlLocation="http://www.dneonline.com/calculator.asmx?wsdl"
+                        service="Calculator"
+                        port="CalculatorSoap"
+                        address="http://www.dneonline.com/calculator.asmx">
+            <wsc:custom-transport-configuration>
+                <wsc:http-transport-configuration requesterConfig="HTTP_Request_configuration_Workaround"/>
+            </wsc:custom-transport-configuration>
+        </wsc:connection>
+    </wsc:config>
     <flow name="soaptestFlow">
         <ee:transform doc:name="Transform Message">
             <ee:message>
@@ -287,6 +305,26 @@ ns ns0 http://tempuri.org/
             </ee:message>
         </ee:transform>
         <wsc:consume config-ref="Web_Service_Consumer_Calculator_Custom_Transport_Config"
+                     operation="Add"
+                     doc:name="Do Math"/>
+    </flow>
+    <flow name="calculatorSoapFaultFlowCustomTransportWithWorkaround">
+        <ee:transform doc:name="Transform Message">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/xml
+ns ns0 http://tempuri.org/
+---
+{
+	ns0#Add: {
+	    // used for testing with real service
+		ns0#intA: 'howdy',
+		ns0#intB: 456
+	}
+}]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+        <wsc:consume config-ref="Web_Service_Consumer_Calculator_Custom_Transport_Config_Workaround"
                      operation="Add"
                      doc:name="Do Math"/>
     </flow>
