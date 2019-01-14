@@ -286,7 +286,7 @@ ns ns0 http://tempuri.org/
 }]]></ee:set-payload>
             </ee:message>
         </ee:transform>
-        <wsc:consume config-ref="Web_Service_Consumer_Custom_Transport"
+        <wsc:consume config-ref="Web_Service_Consumer_Calculator_Custom_Transport_Config"
                      operation="Add"
                      doc:name="Do Math"/>
     </flow>
