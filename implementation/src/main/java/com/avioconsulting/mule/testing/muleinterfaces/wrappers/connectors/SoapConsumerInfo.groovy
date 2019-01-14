@@ -33,6 +33,9 @@ class SoapConsumerInfo extends
             // create one by default just like Mule does
             validator = getValidator(parameters['transportConfig'].getClass().classLoader)
         }
+        else {
+            this.validatorWorkaroundConfigured = true
+        }
         this.validatorWrapper = new HttpValidatorWrapper(validator,
                                                          'POST',
                                                          // all SOAP reqs should be POSTs
@@ -41,8 +44,8 @@ class SoapConsumerInfo extends
 
     private static def findValidator(transportConfig,
                                      Map<String, Object> parameters) {
-        def getPrivateField = { Object object,
-                                String fieldName ->
+        def getPrivateFieldValue = { Object object,
+                                     String fieldName ->
             def klass = object.getClass()
             if (klass.name.contains('EnhancerByCGLIB')) {
                 // proxies get in the way if we try and use the actual class to find the private field
@@ -51,13 +54,15 @@ class SoapConsumerInfo extends
             def field = klass.getDeclaredField(fieldName)
             assert field: "Expected to find ${fieldName}"
             field.accessible = true
-            return field
+            field.get(object)
         }
-        def requesterConfigNameField = getPrivateField(transportConfig,
+        def requesterConfigName = getPrivateFieldValue(transportConfig,
                                                        'requesterConfig')
-        def requesterConfigName = requesterConfigNameField.get(transportConfig)
         def requesterConfig = parameters['client'].registry.lookupByName(requesterConfigName).value.configuration.value
-        def responseSettings = requesterConfig.responseSettings
+        def responseSettings = getPrivateFieldValue(requesterConfig,
+                                                    'responseSettings')
+        getPrivateFieldValue(responseSettings,
+                             'responseValidator')
     }
 
     boolean isCustomHttpTransportConfigured() {

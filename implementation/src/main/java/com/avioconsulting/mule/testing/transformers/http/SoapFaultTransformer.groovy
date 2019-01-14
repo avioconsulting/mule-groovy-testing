@@ -73,7 +73,9 @@ class SoapFaultTransformer implements IHaveStateToReset,
             return event
         }
         if (connectorInfo.customHttpTransportConfigured) {
-            log.warn 'You are throwing a SOAP fault from a SOAP mock on a WSC config with a custom transport configured. When you have this configuration, Mule will treat the likely HTTP 500 coming back from the SOAP server as an exception and never get to the SOAP fault. The testing framework is mirroring this behavior so that you know it is happening.'
+            if (!connectorInfo.validatorWorkaroundConfigured) {
+                log.warn 'You are throwing a SOAP fault from a SOAP mock on a WSC config with a custom transport configured. When you have this configuration, Mule will treat the likely HTTP 500 coming back from the SOAP server as an exception and never get to the SOAP fault. The testing framework is mirroring this behavior so that you know it is happening.'
+            }
             // We have no easy way of getting a validator setup
             connectorInfo.validator.validate(500,
                                              'some fault',
