@@ -9,6 +9,7 @@ import com.avioconsulting.mule.testing.transformers.IHaveStateToReset
 
 import java.util.concurrent.TimeoutException
 
+// TODO: Convert these error 'transformers' to not be transformers and just throw immediately. See XMLTransformer
 class HttpConnectorErrorTransformer implements
         IHaveStateToReset,
         MuleMessageTransformer<HttpRequesterInfo> {
