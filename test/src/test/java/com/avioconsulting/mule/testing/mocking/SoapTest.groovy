@@ -1,7 +1,6 @@
 package com.avioconsulting.mule.testing.mocking
 
 import com.avioconsulting.mule.testing.ConfigTrait
-import com.avioconsulting.mule.testing.TestingFrameworkException
 import com.avioconsulting.mule.testing.junit.BaseJunitTest
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.EventWrapper
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.InvokeExceptionWrapper
@@ -444,10 +443,16 @@ class SoapTest extends
         assertThat result,
                    is(instanceOf(InvokeExceptionWrapper))
         def cause = result.cause
-        def ultimateCause = cause.cause
+        def validatorException = cause.cause
         assertThat 'If a SOAP-WS Consumer is merely changed to use a custom transport, by default, it will pick up HTTP 500 errors from server and throw an exception based on that rather than the SOAP fault itself',
-                   ultimateCause,
-                   is(instanceOf(TestingFrameworkException))
+                   validatorException.getClass().name,
+                   is(equalTo('org.mule.extension.http.api.request.validator.ResponseValidatorTypedException'))
+        assertThat validatorException.cause.getClass().name,
+                   is(equalTo('org.mule.runtime.api.exception.MuleRuntimeException'))
+        assertThat cause.info['Error type'],
+                   is(equalTo('HTTP:INTERNAL_SERVER_ERROR'))
+        assertThat cause.message,
+                   is(startsWith('HTTP POST on resource \'http://www.dneonline.com/calculator.asmx\' failed: internal server error (500).'))
     }
 
     @Test
