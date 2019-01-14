@@ -62,7 +62,7 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
                          responseTimeout="500">
         <http:request-connection host="localhost" port="8081"/>
         <http:response-validator>
-            <http:success-status-code-validator values="0..999" />
+            <http:success-status-code-validator values="0..399,500" />
         </http:response-validator>
     </http:request-config>
     <wsc:config name="Web_Service_Consumer_Calculator_Custom_Transport_Config_Workaround">
