@@ -1,15 +1,18 @@
 package com.avioconsulting.mule.testing.transformers.http
 
+import com.avioconsulting.mule.testing.TestingFrameworkException
 import com.avioconsulting.mule.testing.muleinterfaces.IFetchClassLoaders
 import com.avioconsulting.mule.testing.muleinterfaces.MuleMessageTransformer
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.CustomErrorWrapperException
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.EventWrapper
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.connectors.SoapConsumerInfo
 import com.avioconsulting.mule.testing.transformers.IHaveStateToReset
+import groovy.util.logging.Log4j2
 import groovy.xml.DOMBuilder
 
 import javax.xml.namespace.QName
 
+@Log4j2
 class SoapFaultTransformer implements IHaveStateToReset,
         MuleMessageTransformer<SoapConsumerInfo> {
     private final IFetchClassLoaders fetchAppClassLoader
@@ -68,6 +71,13 @@ class SoapFaultTransformer implements IHaveStateToReset,
                            SoapConsumerInfo connectorInfo) {
         if (message == null) {
             return event
+        }
+        if (connectorInfo.customHttpTransportConfigured) {
+            def exception = new TestingFrameworkException('You are throwing a SOAP fault from a SOAP mock on a WSC config with a custom transport configured. When you have this configuration, Mule will treat the likely HTTP 500 coming back from the SOAP server as an exception and never get to the SOAP fault. The testing framework is mirroring this behavior so that you know it is happening.')
+            log.error 'Halting mock execution',
+                      exception
+            throw exception
+
         }
         def detailResult = detailClosure(DOMBuilder.newInstance())
         def detailString = detailResult ? detailResult.serialize() : '<detail/>'

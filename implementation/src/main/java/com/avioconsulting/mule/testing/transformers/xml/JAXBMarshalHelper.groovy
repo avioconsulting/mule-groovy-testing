@@ -1,5 +1,6 @@
 package com.avioconsulting.mule.testing.transformers.xml
 
+import com.avioconsulting.mule.testing.TestingFrameworkException
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.ConnectorInfo
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.EventWrapper
 import groovy.util.logging.Log4j2
@@ -42,7 +43,7 @@ class JAXBMarshalHelper {
             asString
         }
         catch (e) {
-            throw new Exception(
+            throw new TestingFrameworkException(
                     "Unmarshal problem. if ${objectOrJaxbElement.class.name} is not an XML Root element, you need to use ObjectFactory to wrap it in a JAXBElement object!",
                     e)
         }
@@ -63,7 +64,7 @@ class JAXBMarshalHelper {
             }
         }
         catch (e) {
-            throw new Exception('SOAP Mocks: Unable to marshal message. Do you need a different JAXB context?', e)
+            throw new TestingFrameworkException('SOAP Mocks: Unable to marshal message. Do you need a different JAXB context?', e)
         }
     }
 }

@@ -1,5 +1,6 @@
 package com.avioconsulting.mule.testing.transformers.xml
 
+import com.avioconsulting.mule.testing.TestingFrameworkException
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.ConnectorInfo
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.EventWrapper
 
@@ -28,7 +29,7 @@ class XMLMessageBuilder {
                                                     connectorInfo,
                                                     messageProps)
             default:
-                throw new Exception("Unknown message type! ${messageType}")
+                throw new TestingFrameworkException("Unknown message type! ${messageType}")
         }
     }
 

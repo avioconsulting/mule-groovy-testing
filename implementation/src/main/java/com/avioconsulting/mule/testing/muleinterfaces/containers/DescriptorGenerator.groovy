@@ -1,6 +1,7 @@
 package com.avioconsulting.mule.testing.muleinterfaces.containers
 
 import com.avioconsulting.mule.testing.EnvironmentDetector
+import com.avioconsulting.mule.testing.TestingFrameworkException
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 import groovy.util.logging.Log4j2
@@ -133,7 +134,7 @@ class DescriptorGenerator implements EnvironmentDetector {
     private void runMaven() {
         def mavenHome = System.getProperty('maven.home')
         if (!mavenHome && isEclipse()) {
-            throw new Exception("\n---------Eclipse/Studio does not make the system path available during JUnit runs and you do not have maven.home configured as a system property so we cannot invoke Maven to generate the descriptor. You cannot use the version of Maven bundled inside Studio. To fix this, go to Window->Preferences->Java->Installed JREs->highlight the JRE->Edit, then paste in -Dmaven.home=yourMavenHomeDirectory into 'Default VM arguments'.\n---------")
+            throw new TestingFrameworkException("\n---------Eclipse/Studio does not make the system path available during JUnit runs and you do not have maven.home configured as a system property so we cannot invoke Maven to generate the descriptor. You cannot use the version of Maven bundled inside Studio. To fix this, go to Window->Preferences->Java->Installed JREs->highlight the JRE->Edit, then paste in -Dmaven.home=yourMavenHomeDirectory into 'Default VM arguments'.\n---------")
         }
         def viaSystemProperty = false
         def attempts = []
@@ -167,8 +168,8 @@ class DescriptorGenerator implements EnvironmentDetector {
             }
         }
         catch (e) {
-            throw new Exception("Attempted to locate Maven to generate classloader descriptor via these methods but failed! ${attempts}",
-                                e)
+            throw new TestingFrameworkException("Attempted to locate Maven to generate classloader descriptor via these methods but failed! ${attempts}",
+                                                e)
         }
     }
 
@@ -188,7 +189,7 @@ class DescriptorGenerator implements EnvironmentDetector {
         mavenInvoker.setMavenHome(new File(mavenHome))
         def result = mavenInvoker.execute(mavenInvokeRequest)
         if (result.exitCode != 0) {
-            throw new Exception('Successfully located Maven executable but unable to use Maven to generate classloader model/artifact descriptor. This is likely a problem with your POM or your project. Examine the output for what might be wrong.')
+            throw new TestingFrameworkException('Successfully located Maven executable but unable to use Maven to generate classloader model/artifact descriptor. This is likely a problem with your POM or your project. Examine the output for what might be wrong.')
         }
     }
 }

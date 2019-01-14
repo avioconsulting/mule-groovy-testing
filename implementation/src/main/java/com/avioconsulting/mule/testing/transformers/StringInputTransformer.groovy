@@ -1,5 +1,6 @@
 package com.avioconsulting.mule.testing.transformers
 
+import com.avioconsulting.mule.testing.TestingFrameworkException
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.ConnectorInfo
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.EventWrapper
 
@@ -13,7 +14,7 @@ class StringInputTransformer<T extends ConnectorInfo> implements
             return null
         }
         if (muleMessage.dataTypeClass != String) {
-            throw new Exception(
+            throw new TestingFrameworkException(
                     "Expected payload to be of type String here but it actually was ${muleMessage.dataTypeClass}. Check the connectors you're mocking and make sure you transformed the payload properly! (e.g. payload into VMs must be Strings)")
         }
         muleMessage.valueInsideTypedValue

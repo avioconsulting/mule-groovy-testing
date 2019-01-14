@@ -1,6 +1,7 @@
 package com.avioconsulting.mule.testing.transformers.sfdc
 
 import com.avioconsulting.mule.testing.InvokerEventFactory
+import com.avioconsulting.mule.testing.TestingFrameworkException
 import com.avioconsulting.mule.testing.dsl.mocking.sfdc.UpsertResponseUtil
 import com.avioconsulting.mule.testing.muleinterfaces.MuleMessageTransformer
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.ConnectorInfo
@@ -29,7 +30,7 @@ class UpsertTransformer implements
             // hidden methods
             name.startsWith('$') || name.endsWith('Klass') || name.startsWith('this$')
         }
-        throw new Exception(
+        throw new TestingFrameworkException(
                 "Must return a SalesForce result from your mock. Options include ${options}. See ${responseUtilClass} class for options.")
     }
 
@@ -37,7 +38,7 @@ class UpsertTransformer implements
                            ConnectorInfo connectorInfo) {
         def payload = muleEvent.message.payload as List<Map>
         if (payload.size() > 200) {
-            throw new Exception("You can only upsert a maximum of 200 records but you just tried to upsert ${payload.size()} records. Consider using a batch processor?")
+            throw new TestingFrameworkException("You can only upsert a maximum of 200 records but you just tried to upsert ${payload.size()} records. Consider using a batch processor?")
         }
         def code = closure.rehydrate(new UpsertResponseUtil(), this, this)
         code.resolveStrategy = Closure.DELEGATE_ONLY

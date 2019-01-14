@@ -1,6 +1,7 @@
 package com.avioconsulting.mule.testing.dsl.invokers
 
 import com.avioconsulting.mule.testing.InvokerEventFactory
+import com.avioconsulting.mule.testing.TestingFrameworkException
 import com.avioconsulting.mule.testing.muleinterfaces.RuntimeBridgeTestSide
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.EventWrapper
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.FlowWrapper
@@ -62,12 +63,12 @@ class FlowRunnerImpl implements
     def withOutputHttpStatus(Closure closure) {
         withOutputEvent { EventWrapper outputEvent ->
             if (outputEvent == null) {
-                throw new Exception(
+                throw new TestingFrameworkException(
                         'A null event was returned (filter?) so No HTTP status was returned from your flow. With the real flow, an HTTP status of 200 will usually be set by default so this test is usually not required.')
             }
             def status = outputEvent.getVariable('httpStatus')?.value as Integer
             if (!status) {
-                throw new Exception('No HTTP status was returned from your flow in the httpStatus variable. Did you forget?')
+                throw new TestingFrameworkException('No HTTP status was returned from your flow in the httpStatus variable. Did you forget?')
             }
             closure(status)
         }

@@ -1,5 +1,6 @@
 package com.avioconsulting.mule.testing.transformers.json.input
 
+import com.avioconsulting.mule.testing.TestingFrameworkException
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.ConnectorInfo
 import com.fasterxml.jackson.databind.ObjectMapper
 import groovy.util.logging.Log4j2
@@ -36,6 +37,6 @@ class JacksonInputTransformer<T extends ConnectorInfo> extends
                 errors << e
             }
         }
-        throw new Exception("Unable to do Jackson deserialization using classes ${inputClasses}, errors: ${errors}!")
+        throw new TestingFrameworkException("Unable to do Jackson deserialization using classes ${inputClasses}, errors: ${errors}!")
     }
 }

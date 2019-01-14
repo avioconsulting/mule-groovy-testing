@@ -1,5 +1,6 @@
 package com.avioconsulting.mule.testing.muleinterfaces.wrappers.connectors
 
+import com.avioconsulting.mule.testing.TestingFrameworkException
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.ConnectorInfo
 
 class HttpRequesterInfo extends
@@ -79,6 +80,6 @@ class HttpRequesterInfo extends
         if (value instanceof InputStream) {
             return value.text
         }
-        throw new Exception("Do not understand type ${value.getClass()}!")
+        throw new TestingFrameworkException("Do not understand type ${value.getClass()}!")
     }
 }

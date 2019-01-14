@@ -1,5 +1,7 @@
 package com.avioconsulting.mule.testing.muleinterfaces.wrappers
 
+import com.avioconsulting.mule.testing.TestingFrameworkException
+
 class MessageWrapperImpl implements
         MessageWrapper,
         StreamUtils{
@@ -63,7 +65,7 @@ class MessageWrapperImpl implements
                 cursor.close()
             }
         } else {
-            throw new Exception("Do not know how to handle payload of type ${klass}! This method can only be used with iterator/page types")
+            throw new TestingFrameworkException("Do not know how to handle payload of type ${klass}! This method can only be used with iterator/page types")
         }
     }
 
@@ -85,7 +87,7 @@ class MessageWrapperImpl implements
         } else if (value == null) {
             return value
         } else {
-            throw new Exception("Do not know how to handle payload of type ${klass}")
+            throw new TestingFrameworkException("Do not know how to handle payload of type ${klass}")
         }
     }
 
