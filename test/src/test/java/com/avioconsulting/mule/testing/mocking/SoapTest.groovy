@@ -443,26 +443,15 @@ class SoapTest extends
         assertThat result,
                    is(instanceOf(InvokeExceptionWrapper))
         def cause = result.cause
-        def soapFaultException = cause.cause
-        assertThat soapFaultException.getClass().name,
-                   is(equalTo('org.mule.extension.ws.internal.error.SoapFaultMessageAwareException'))
-        assertThat soapFaultException.cause.getClass().name,
-                   is(equalTo('org.mule.soap.api.exception.SoapFaultException'))
-        assertThat soapFaultException.cause.cause.getClass().name,
-                   is(equalTo('org.apache.cxf.binding.soap.SoapFault'))
+        def validatorException = cause.cause
+        assertThat validatorException.getClass().name,
+                   is(equalTo('org.mule.extension.http.api.request.validator.ResponseValidatorTypedException'))
+        assertThat validatorException.cause.getClass().name,
+                   is(equalTo('org.mule.runtime.api.exception.MuleRuntimeException'))
         assertThat cause.info['Error type'],
-                   is(equalTo('WSC:SOAP_FAULT'))
+                   is(equalTo('HTTP:INTERNAL_SERVER_ERROR'))
         assertThat cause.message,
-                   is(startsWith('System.Web.Services.Protocols.SoapException: Server was unable to read request'))
-        assertThat soapFaultException.cause.faultCode,
-                   is(equalTo(new QName('http://schemas.xmlsoap.org/soap/envelope/',
-                                        'Client')))
-        assertThat soapFaultException.cause.subCode,
-                   is(equalTo(Optional.empty()))
-        def detail = soapFaultException.cause.detail
-        assert detail
-        assertThat detail.trim(),
-                   is(equalTo('<?xml version="1.0" encoding="UTF-8"?><detail/>'))
+                   is(startsWith('HTTP POST on resource \'http://www.dneonline.com/calculator.asmx\' failed: internal server error (500).'))
     }
 
     @Test
