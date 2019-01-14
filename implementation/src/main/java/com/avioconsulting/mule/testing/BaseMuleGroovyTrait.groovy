@@ -12,7 +12,6 @@ import com.avioconsulting.mule.testing.muleinterfaces.containers.BaseEngineConfi
 import com.avioconsulting.mule.testing.muleinterfaces.containers.DescriptorGenerator
 import com.avioconsulting.mule.testing.muleinterfaces.containers.MuleEngineContainer
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.EventWrapper
-import com.avioconsulting.mule.testing.muleinterfaces.wrappers.InvokeExceptionWrapper
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 import org.apache.commons.io.FileUtils
@@ -412,12 +411,8 @@ trait BaseMuleGroovyTrait {
                      RuntimeBridgeTestSide bridge,
                      String connectorName,
                      @DelegatesTo(SOAPFormatter) Closure closure) {
-        def soapFormatter = new SOAPFormatterImpl(bridge)
-        def code = closure.rehydrate(soapFormatter,
-                                     this,
-                                     this)
-        code.resolveStrategy = Closure.DELEGATE_ONLY
-        code()
+        def soapFormatter = new SOAPRequestResponse(bridge,
+                                                    closure)
         mockingConfiguration.addMock(connectorName,
                                      soapFormatter.transformer)
     }

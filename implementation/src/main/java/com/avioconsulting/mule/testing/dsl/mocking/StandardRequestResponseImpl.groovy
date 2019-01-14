@@ -27,12 +27,18 @@ abstract class StandardRequestResponseImpl<T extends ConnectorInfo> implements
     }
 
     def json(@DelegatesTo(JsonFormatter) Closure closure) {
-        formatter = new JsonFormatterImpl(closureCurrier)
-        this.closure = closure
+        useFormatter(new JsonFormatterImpl(closureCurrier),
+                     closure)
     }
 
     def xml(@DelegatesTo(XMLFormatter) Closure closure) {
-        formatter = new XMLFormatterImpl()
+        useFormatter(new XMLFormatterImpl(),
+                     closure)
+    }
+
+    protected def useFormatter(IFormatter formatter,
+                               Closure closure) {
+        this.formatter = formatter
         this.closure = closure
     }
 
