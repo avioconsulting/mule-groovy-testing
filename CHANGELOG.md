@@ -1,6 +1,9 @@
 # 2.0
 (for Mule 4.1)
 
+# 2.0.17
+* Display testing framework version on startup
+
 # 2.0.16
 * SOAP mock now behaves likes real engine when custom transports are used. HTTP 500 messages will now 'hide' the SOAP fault and present themselves more like an HTTP exception.
 

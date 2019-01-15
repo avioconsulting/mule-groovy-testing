@@ -12,8 +12,32 @@ class MuleEngineContainer {
     private final Object container
     private final Object registryListener
     private final File muleHomeDirectory
+    @Lazy
+    private static String testingFrameworkVersion = {
+        def resourceStream = MuleEngineContainer.getResourceAsStream('/META-INF/maven/com.avioconsulting.mule/testing/pom.properties')
+        // if we run the tests for the tests in an IDE, we won't have this but we will 100% of the time
+        // if we're a lib from .m2/repo
+        if (!resourceStream) {
+            return 'DEV_VERSION'
+        }
+        def props = new Properties()
+        props.load(resourceStream)
+        props.getProperty('version')
+    }()
+
+    private static String getHeader() {
+        def message = "AVIO Testing Framework ${testingFrameworkVersion}"
+        def headerFooter = '**********************************************************************'
+        def carriageReturn = System.lineSeparator()
+        [
+                carriageReturn + headerFooter, // looks better if starts on its own line
+                '*' + message.center(headerFooter.length()-2) + '*',
+                headerFooter
+        ].join(carriageReturn)
+    }
 
     MuleEngineContainer(BaseEngineConfig engineConfig) {
+        log.info getHeader()
         try {
             this.engineConfig = engineConfig
             muleHomeDirectory = new File('.mule')
