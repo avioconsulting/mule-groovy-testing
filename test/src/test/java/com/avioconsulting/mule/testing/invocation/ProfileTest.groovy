@@ -4,6 +4,10 @@ import com.avioconsulting.mule.testing.ConfigTrait
 import com.avioconsulting.mule.testing.junit.BaseJunitTest
 import org.junit.Test
 
+import static org.hamcrest.Matchers.equalTo
+import static org.hamcrest.Matchers.is
+import static org.junit.Assert.assertThat
+
 class ProfileTest extends
         BaseJunitTest implements
         ConfigTrait {
@@ -19,6 +23,15 @@ class ProfileTest extends
     @Test
     void loads_ok() {
         // arrange
+        def mockCalled = false
+        mockRestHttpCall('the name of our connector') {
+            json {
+                whenCalledWith(String) { String ourPayload ->
+                    mockCalled = true
+                    'new payload'
+                }
+            }
+        }
 
         // act
         runFlow('foo') {
@@ -28,6 +41,8 @@ class ProfileTest extends
         }
 
         // assert
-        fail 'write the test'
+        assertThat 'If we did all this right, we should load and run OK. if not, we probably will not even load',
+                   mockCalled,
+                   is(equalTo(true))
     }
 }
