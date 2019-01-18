@@ -27,15 +27,11 @@
             <http:request config-ref="httpreq-config"
                           path="/stuff"
                           method="GET">
-                <mule:error-mapping sourceType="HTTP:NOT_FOUND" targetType="MODULE-HELLO:NOT_FOUND" />
                 <http:query-params>
                     <![CDATA[#[ { 'created_by': vars['inputParam']}]]]>
                 </http:query-params>
             </http:request>
         </body>
         <output type="any" doc:description="Payload's output"/>
-        <errors>
-            <error type="NOT_FOUND"/>
-        </errors>
     </operation>
 </module>
