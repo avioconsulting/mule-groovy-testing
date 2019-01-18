@@ -12,7 +12,8 @@ class UpsertResponseUtil {
     }()
 
     List successful(boolean created = true) {
-        successful(1, created)
+        successful(1,
+                   created)
     }
 
     List successful(int number,

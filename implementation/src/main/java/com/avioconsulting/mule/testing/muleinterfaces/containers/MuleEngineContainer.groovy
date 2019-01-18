@@ -31,7 +31,7 @@ class MuleEngineContainer {
         def carriageReturn = System.lineSeparator()
         [
                 carriageReturn + headerFooter, // looks better if starts on its own line
-                '*' + message.center(headerFooter.length()-2) + '*',
+                '*' + message.center(headerFooter.length() - 2) + '*',
                 headerFooter
         ].join(carriageReturn)
     }

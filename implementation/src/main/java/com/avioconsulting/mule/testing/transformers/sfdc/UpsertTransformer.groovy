@@ -40,7 +40,9 @@ class UpsertTransformer implements
         if (payload.size() > 200) {
             throw new TestingFrameworkException("You can only upsert a maximum of 200 records but you just tried to upsert ${payload.size()} records. Consider using a batch processor?")
         }
-        def code = closure.rehydrate(new UpsertResponseUtil(), this, this)
+        def code = closure.rehydrate(new UpsertResponseUtil(),
+                                     this,
+                                     this)
         code.resolveStrategy = Closure.DELEGATE_ONLY
         def result = code(payload)
         validateReturnPayloadList(result,

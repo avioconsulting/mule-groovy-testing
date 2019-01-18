@@ -17,7 +17,8 @@ class TransformerChain<T extends ConnectorInfo> implements
     }
 
     def prependTransformer(MuleMessageTransformer transformer) {
-        transformers.add(0, transformer)
+        transformers.add(0,
+                         transformer)
     }
 
     def addTransformer(MuleMessageTransformer transformer) {

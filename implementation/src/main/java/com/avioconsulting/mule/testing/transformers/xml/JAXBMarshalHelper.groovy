@@ -24,7 +24,8 @@ class JAXBMarshalHelper {
         def deb = dbf.newDocumentBuilder()
         def doc = deb.newDocument()
         def marshaller = this.jaxbContext.createMarshaller()
-        marshaller.marshal(objectOrJaxbElement, doc)
+        marshaller.marshal(objectOrJaxbElement,
+                           doc)
         doc
     }
 
@@ -33,7 +34,8 @@ class JAXBMarshalHelper {
         def stringWriter = new StringWriter()
 
         try {
-            marshaller.marshal objectOrJaxbElement, stringWriter
+            marshaller.marshal objectOrJaxbElement,
+                               stringWriter
             stringWriter.close()
             def asString = stringWriter.toString()
             // will pretty print the XML
@@ -64,7 +66,8 @@ class JAXBMarshalHelper {
             }
         }
         catch (e) {
-            throw new TestingFrameworkException('SOAP Mocks: Unable to marshal message. Do you need a different JAXB context?', e)
+            throw new TestingFrameworkException('SOAP Mocks: Unable to marshal message. Do you need a different JAXB context?',
+                                                e)
         }
     }
 }

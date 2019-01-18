@@ -30,7 +30,8 @@ class DsqlMock<T extends ConnectorInfo> implements
         def prefixedDsql = dsqlParserQuery.parseDsql(this.muleContext,
                                                      muleEvent,
                                                      query) as String
-        def dSqlQuery = prefixedDsql.replace('dsql:', '')
+        def dSqlQuery = prefixedDsql.replace('dsql:',
+                                             '')
         def result = closure(dSqlQuery)
         if (payloadValidator.isPayloadTypeValidationRequired(processor)) {
             payloadValidator.validatePayloadType(result)

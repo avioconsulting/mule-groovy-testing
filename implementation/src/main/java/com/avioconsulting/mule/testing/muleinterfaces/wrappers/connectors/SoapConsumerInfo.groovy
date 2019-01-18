@@ -32,8 +32,7 @@ class SoapConsumerInfo extends
         if (!validator) {
             // create one by default just like Mule does
             validator = getValidator(parameters['transportConfig'].getClass().classLoader)
-        }
-        else {
+        } else {
             this.validatorWorkaroundConfigured = true
         }
         this.validatorWrapper = new HttpValidatorWrapper(validator,

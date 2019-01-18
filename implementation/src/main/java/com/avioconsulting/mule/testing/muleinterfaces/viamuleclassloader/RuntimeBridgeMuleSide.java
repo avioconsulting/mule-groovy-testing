@@ -1,7 +1,5 @@
 package com.avioconsulting.mule.testing.muleinterfaces.viamuleclassloader;
 
-import com.avioconsulting.mule.testing.muleinterfaces.viamuleclassloader.CoreInterceptionEvent;
-import com.avioconsulting.mule.testing.muleinterfaces.viamuleclassloader.GroovyTestingBatchNotifyListener;
 import org.mule.runtime.api.artifact.Registry;
 import org.mule.runtime.api.component.location.ComponentLocation;
 import org.mule.runtime.api.event.EventContext;

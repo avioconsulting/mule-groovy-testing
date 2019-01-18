@@ -30,7 +30,8 @@ class FlowRunnerImpl implements
         this.runtimeBridge = runtimeBridge
         this.invokerEventFactory = runtimeBridge
         threadContext = CloseableThreadContext.push('Flow invocation')
-        this.threadContext.put('flowInvocation', flowName)
+        this.threadContext.put('flowInvocation',
+                               flowName)
     }
 
     def json(@DelegatesTo(JsonInvoker) Closure closure) {

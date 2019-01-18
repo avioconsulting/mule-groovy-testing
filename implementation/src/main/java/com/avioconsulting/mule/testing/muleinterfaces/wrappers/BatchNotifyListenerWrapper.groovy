@@ -14,7 +14,8 @@ class BatchNotifyListenerWrapper {
 
     void begin(List<String> jobsToWaitFor,
                boolean throwUnderlyingException) {
-        muleSideListener.begin(jobsToWaitFor, throwUnderlyingException)
+        muleSideListener.begin(jobsToWaitFor,
+                               throwUnderlyingException)
     }
 
     void end() {

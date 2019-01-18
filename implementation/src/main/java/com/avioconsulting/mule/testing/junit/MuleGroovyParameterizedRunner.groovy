@@ -17,6 +17,7 @@ class MuleGroovyParameterizedRunner extends
             MuleGroovyJunitRunner.listenerSetup = true
             notifier.addListener(new MuleGroovyShutdownListener())
         }
-        super.runChild(runner, notifier)
+        super.runChild(runner,
+                       notifier)
     }
 }

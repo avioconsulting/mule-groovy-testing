@@ -12,7 +12,8 @@ class MockingConfiguration {
     Object runtimeBridgeMuleSide
 
     MockingConfiguration(TestingConfiguration testingConfiguration) {
-        this.keepListenersOnForTheseFlows = testingConfiguration.keepListenersOnForTheseFlows.collectEntries { flowName ->
+        this.keepListenersOnForTheseFlows = testingConfiguration.keepListenersOnForTheseFlows.collectEntries { flowName
+            ->
             [flowName, 1]
         }
     }
@@ -55,10 +56,14 @@ class MockingConfiguration {
                                                      componentLocation.lineInFile.get() as Integer,
                                                      params)
         def threadContext = CloseableThreadContext.push('Mock processor')
-        threadContext.put('connector', connectorInfo.name)
-        threadContext.put('container', connectorInfo.container)
-        threadContext.put('filename', connectorInfo.fileName)
-        threadContext.put('lineNumber', connectorInfo.lineNumber.toString())
+        threadContext.put('connector',
+                          connectorInfo.name)
+        threadContext.put('container',
+                          connectorInfo.container)
+        threadContext.put('filename',
+                          connectorInfo.fileName)
+        threadContext.put('lineNumber',
+                          connectorInfo.lineNumber.toString())
         try {
             log.info 'Beginning mock execution'
             try {

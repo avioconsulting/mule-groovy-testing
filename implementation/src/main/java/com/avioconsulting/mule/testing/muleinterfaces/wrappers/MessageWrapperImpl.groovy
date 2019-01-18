@@ -4,7 +4,7 @@ import com.avioconsulting.mule.testing.TestingFrameworkException
 
 class MessageWrapperImpl implements
         MessageWrapper,
-        StreamUtils{
+        StreamUtils {
     static final String TYPED_VALUE_CLASS_NAME = 'org.mule.runtime.api.metadata.TypedValue'
     private final Object muleMessage
 
@@ -76,7 +76,7 @@ class MessageWrapperImpl implements
         // this is what repeatable streams look like
         if (klass.contains('ManagedCursorStreamProvider')) {
             withCursorAsText(value) { String text ->
-               return text
+                return text
             }
         }
         // this is what non repeatable streams look like

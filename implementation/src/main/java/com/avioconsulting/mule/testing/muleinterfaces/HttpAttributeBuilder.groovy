@@ -42,9 +42,11 @@ trait HttpAttributeBuilder {
                               method,
                               url,
                               url,
-                              '', // query string
+                              '',
+                              // query string
                               getMultiMap(queryParams),
-                              [:], // uri params
+                              [:],
+                              // uri params
                               '/remoteaddress',
                               null)
     }

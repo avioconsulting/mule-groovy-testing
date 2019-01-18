@@ -6,13 +6,16 @@ class FlowWrapper extends
         ConnectorInfo {
     private final Object nativeMuleObject
     private final Object runtimeBridgeMuleSide
-    private static final QName componentId = new QName('config', 'componentIdentifier')
+    private static final QName componentId = new QName('config',
+                                                       'componentIdentifier')
 
     FlowWrapper(String name,
                 Object nativeMuleObject,
                 Object runtimeBridgeMuleSide) {
-        super(getComponentLocationField(nativeMuleObject, 'fileName') as String,
-              getComponentLocationField(nativeMuleObject, 'lineInFile') as Integer,
+        super(getComponentLocationField(nativeMuleObject,
+                                        'fileName') as String,
+              getComponentLocationField(nativeMuleObject,
+                                        'lineInFile') as Integer,
               'n/a',
               [:])
         this.runtimeBridgeMuleSide = runtimeBridgeMuleSide

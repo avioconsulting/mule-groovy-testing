@@ -39,7 +39,7 @@ class JsonFormatterImpl<T extends ConnectorInfo> implements
 
     @Override
     def nonRepeatableStream() {
-        assert outputTransformer : 'Do not call nonRepeatableStream before whenCalledWith'
+        assert outputTransformer: 'Do not call nonRepeatableStream before whenCalledWith'
         outputTransformer.nonRepeatableStream()
         return null
     }
