@@ -10,7 +10,7 @@ import org.apache.commons.io.FileUtils
 class MuleEngineContainer {
     private final BaseEngineConfig engineConfig
     private final Object container
-    private final Object registryListener
+    private final Object deployListener
     private final File muleHomeDirectory
     @Lazy
     private static String testingFrameworkVersion = {
@@ -73,18 +73,18 @@ class MuleEngineContainer {
                                                                                     engineConfig.filterEngineExtensions)
 // work around this - https://jira.apache.org/jira/browse/LOG4J2-2152
             def preserve = Thread.currentThread().contextClassLoader
-            registryListener = null
+            deployListener = null
             try {
                 Thread.currentThread().contextClassLoader = containerClassLoader
                 def containerKlass = containerClassLoader.loadClass('org.mule.runtime.module.launcher.MuleContainer')
                 container = containerKlass.newInstance()
                 container.start(false)
                 muleStartedFile.text = dependencyJsonText
-                def registryListenerKlass = containerClassLoader.loadClass('com.avioconsulting.mule.testing.muleinterfaces.viamuleclassloader.MuleRegistryListener')
-                registryListener = registryListenerKlass.newInstance()
-                container.deploymentService.addDeploymentListener(registryListener)
+                def deployListenerKlass = containerClassLoader.loadClass('com.avioconsulting.mule.testing.muleinterfaces.viamuleclassloader.TestingFrameworkDeployListener')
+                deployListener = deployListenerKlass.newInstance()
+                container.deploymentService.addDeploymentListener(deployListener)
                 assert container
-                assert registryListener
+                assert deployListener
             }
             finally {
                 Thread.currentThread().contextClassLoader = preserve
@@ -159,12 +159,12 @@ class MuleEngineContainer {
                                             MockingConfiguration mockingConfiguration,
                                             Properties properties) {
         // have to do this before we deploy to catch the event
-        registryListener.setMockingConfiguration(artifactName,
-                                                 mockingConfiguration)
+        deployListener.setMockingConfiguration(artifactName,
+                                               mockingConfiguration)
         container.deploymentService.deploy(application,
                                            properties)
         // this we have to do after the deployment
-        def muleSide = registryListener.getRuntimeBridge(artifactName)
+        def muleSide = deployListener.getRuntimeBridge(artifactName)
         new RuntimeBridgeTestSide(muleSide,
                                   artifactName)
     }

@@ -9,14 +9,14 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MuleRegistryListener implements DeploymentListener {
+public class TestingFrameworkDeployListener implements DeploymentListener {
     // we share a single listener for the whole container so if we change apps
     // (e.g. we change our config files/properties/etc. we need to be able to differentiate)
     private final Map<String, RuntimeBridgeMuleSide> runtimeBridges;
     private final Map<String, Object> mockingConfigurations;
     private final Map<String, GroovyTestingBatchNotifyListener> batchListeners;
 
-    public MuleRegistryListener() {
+    public TestingFrameworkDeployListener() {
         this.runtimeBridges = new HashMap<>();
         this.mockingConfigurations = new HashMap<>();
         this.batchListeners = new HashMap<>();
