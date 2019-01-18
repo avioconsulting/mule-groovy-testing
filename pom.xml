@@ -11,7 +11,7 @@
     <modules>
         <module>implementation</module>
         <module>test</module>
-        <module>test-dependency</module>
+        <module>connector-class-loader-test</module>
         <module>test-api</module>
     </modules>
 
