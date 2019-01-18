@@ -195,12 +195,6 @@
             <classifier>mule-plugin</classifier>
         </dependency>
         <dependency>
-            <groupId>com.avioconsulting.mule.testing</groupId>
-            <artifactId>misc-dependency</artifactId>
-            <version>${project.version}</version>
-            <classifier>mule-plugin</classifier>
-        </dependency>
-        <dependency>
             <groupId>com.avioconsulting.mule</groupId>
             <artifactId>testing</artifactId>
             <version>${project.version}</version>
@@ -278,4 +272,19 @@
             </snapshots>
         </pluginRepository>
     </pluginRepositories>
+
+    <profiles>
+        <profile>
+            <id>add-misc-dependency</id>
+
+            <dependencies>
+                <dependency>
+                    <groupId>com.avioconsulting.mule.testing</groupId>
+                    <artifactId>misc-dependency</artifactId>
+                    <version>${project.version}</version>
+                    <classifier>mule-plugin</classifier>
+                </dependency>
+            </dependencies>
+        </profile>
+    </profiles>
 </project>
