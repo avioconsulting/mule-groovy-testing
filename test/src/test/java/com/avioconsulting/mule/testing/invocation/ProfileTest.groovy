@@ -6,6 +6,7 @@ import org.junit.Test
 
 import static org.hamcrest.Matchers.*
 import static org.junit.Assert.assertThat
+import static org.junit.Assume.assumeTrue
 
 class ProfileTest extends
         BaseJunitTest implements
@@ -53,6 +54,8 @@ class ProfileTest extends
 
         // assert
         def model = new File('target/META-INF/mule-artifact/classloader-model.json')
+        assumeTrue 'If running from an IDE, we may not see this',
+                   model.exists()
         assertThat 'packaging immediately follows testing. if we manipulate the model using profiles for the purposes of testing, it should not affect the real model',
                    model.text,
                    is(not(containsString('misc-dependency')))

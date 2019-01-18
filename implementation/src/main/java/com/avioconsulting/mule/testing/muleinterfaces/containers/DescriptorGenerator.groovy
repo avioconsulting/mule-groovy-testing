@@ -5,6 +5,7 @@ import com.avioconsulting.mule.testing.TestingFrameworkException
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 import groovy.util.logging.Log4j2
+import org.apache.commons.io.FileUtils
 import org.apache.maven.shared.invoker.DefaultInvocationRequest
 import org.apache.maven.shared.invoker.DefaultInvoker
 
@@ -44,12 +45,6 @@ class DescriptorGenerator implements EnvironmentDetector {
     }
 
     def regenerateClassLoaderModelAndArtifactDescriptor() {
-        if (isRunViaMavenSurefire()) {
-            assert classLoaderModelFile.exists(): "Expected ${classLoaderModelFile} to already exist because we are running from Maven but it does not. Has the Mule Maven plugin run?"
-            // the odds are very low that a Maven based run will not have already generated our files
-            log.info 'Skipping classloader model/artifact descriptor regenerate because we are running in Maven'
-            return
-        }
         def updated = regenerateClassLoaderModel()
         regenerateArtifactDescriptor(updated)
     }
@@ -103,9 +98,9 @@ class DescriptorGenerator implements EnvironmentDetector {
         def sha256 = hashString(mavenPomPath.text)
         def digestFile = new File(buildOutputDirectory,
                                   'pom.xml.sha256')
-        def needUpdate = (!digestFile.exists()) || digestFile.text != sha256 || !classLoaderModelFile.exists()
+        def needUpdate = (!digestFile.exists()) || digestFile.text != sha256 || !classLoaderModelTestFile.exists()
         if (needUpdate) {
-            def context = classLoaderModelFile.exists() ? 'has been built but is out of date' :
+            def context = classLoaderModelTestFile.exists() ? 'has been built but is out of date' :
                     'has not been built'
             // not the cleanest way in the world, but it avoids lots of coupling. and it's more cross platform
             // compatible than direct shell invocation
@@ -113,7 +108,7 @@ class DescriptorGenerator implements EnvironmentDetector {
                      context,
                      mavenPomPath
             runMaven()
-            assert classLoaderModelFile.exists(): 'Somehow we successfully ran a Maven compile but did not generate a classloader model.'
+            assert classLoaderModelTestFile.exists(): 'Somehow we successfully ran a Maven compile but did not generate a classloader model.'
             digestFile.write(sha256)
         } else {
             log.info 'already up to date classLoader model on filesystem'
@@ -196,9 +191,28 @@ class DescriptorGenerator implements EnvironmentDetector {
         mavenInvokeRequest.setGoals(['test-compile'])
         def mavenInvoker = new DefaultInvoker()
         mavenInvoker.setMavenHome(new File(mavenHome))
-        def result = mavenInvoker.execute(mavenInvokeRequest)
-        if (result.exitCode != 0) {
-            throw new TestingFrameworkException('Successfully located Maven executable but unable to use Maven to generate classloader model/artifact descriptor. This is likely a problem with your POM or your project. Examine the output for what might be wrong.')
+        File backupFile = null
+        if (classLoaderModelFile.exists()) {
+            log.info 'Preserving existing classloader model to prevent tests from altering it'
+            backupFile = new File(classLoaderModelFile.absolutePath + '.backup')
+            // don't want to disrupt packaging
+            FileUtils.copyFile(classLoaderModelFile,
+                               backupFile)
+        }
+        try {
+            def result = mavenInvoker.execute(mavenInvokeRequest)
+            if (result.exitCode != 0) {
+                throw new TestingFrameworkException('Successfully located Maven executable but unable to use Maven to generate classloader model/artifact descriptor. This is likely a problem with your POM or your project. Examine the output for what might be wrong.')
+            }
+            FileUtils.moveFile(classLoaderModelFile,
+                               classLoaderModelTestFile)
+        }
+        finally {
+            if (backupFile) {
+                log.info 'Restoring existing classloader model to prevent tests from altering it'
+                FileUtils.moveFile(backupFile,
+                                   classLoaderModelFile)
+            }
         }
     }
 }
