@@ -58,6 +58,7 @@ class TestState {
                                                                  test.getClassLoaderModel(),
                                                                  test.getMuleArtifactJson(),
                                                                  test.keepListenersOnForTheseFlows(),
+                                                                 test.mavenProfiles,
                                                                  test.outputDirsToCopy(),
                                                                  test.getBaseEngineConfig(),
                                                                  test.getMavenPomPath().absolutePath,

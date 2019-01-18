@@ -7,7 +7,7 @@ import groovy.transform.Immutable
 @Immutable
 class TestingConfiguration {
     Map startupProperties, classLoaderModel, artifactModel
-    List<String> keepListenersOnForTheseFlows
+    List<String> keepListenersOnForTheseFlows, mavenProfiles
     List<File> outputDirsToCopy
     BaseEngineConfig engineConfig
     String mavenPomPath, repositoryDirectory

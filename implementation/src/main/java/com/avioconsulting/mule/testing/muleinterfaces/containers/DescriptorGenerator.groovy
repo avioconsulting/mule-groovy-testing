@@ -20,14 +20,20 @@ class DescriptorGenerator implements EnvironmentDetector {
     private final File muleArtifactDirectory
     private final File mavenPomPath
     private final Properties propertiesForMavenGeneration
+    private final List<String> mavenProfiles
+    private final File classLoaderModelTestFile
 
     DescriptorGenerator(File classLoaderModelFile,
+                        File classLoaderModelTestFile,
                         File skinnyMuleArtifactDescriptorPath,
                         File classesDirectory,
                         File buildOutputDirectory,
                         File muleArtifactDirectory,
                         File mavenPomPath,
-                        Properties propertiesForMavenGeneration) {
+                        Properties propertiesForMavenGeneration,
+                        List<String> mavenProfiles) {
+        this.classLoaderModelTestFile = classLoaderModelTestFile
+        this.mavenProfiles = mavenProfiles
         this.propertiesForMavenGeneration = propertiesForMavenGeneration
         this.mavenPomPath = mavenPomPath
         this.muleArtifactDirectory = muleArtifactDirectory
@@ -179,6 +185,9 @@ class DescriptorGenerator implements EnvironmentDetector {
         def mavenProps = propertiesForMavenGeneration
         if (mavenProps) {
             mavenInvokeRequest.setProperties(mavenProps)
+        }
+        if (mavenProfiles.any()) {
+            mavenInvokeRequest.setProfiles(mavenProfiles)
         }
         // this will trigger Mule's Maven plugin to populate both mule-artifact.json with all the config files/exports/etc.
         // and generate the classloader model

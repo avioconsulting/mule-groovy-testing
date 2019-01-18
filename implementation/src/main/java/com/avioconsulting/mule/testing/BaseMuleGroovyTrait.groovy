@@ -198,17 +198,24 @@ trait BaseMuleGroovyTrait {
 
     private DescriptorGenerator getDescriptorGenerator() {
         new DescriptorGenerator(classLoaderModelFile,
+                                classLoaderModelTestFile,
                                 skinnyMuleArtifactDescriptorPath,
                                 classesDirectory,
                                 buildOutputDirectory,
                                 muleArtifactDirectory,
                                 mavenPomPath,
-                                propertiesForMavenGeneration)
+                                propertiesForMavenGeneration,
+                                mavenProfiles)
     }
 
     File getClassLoaderModelFile() {
         new File(muleArtifactDirectory,
                  'classloader-model.json')
+    }
+
+    File getClassLoaderModelTestFile() {
+        new File(muleArtifactDirectory,
+                 'classloader-model-test.json')
     }
 
     /**
