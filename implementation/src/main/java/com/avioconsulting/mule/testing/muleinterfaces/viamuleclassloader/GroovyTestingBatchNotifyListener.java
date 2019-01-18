@@ -1,4 +1,4 @@
-package com.avioconsulting.mule.testing.muleinterfaces;
+package com.avioconsulting.mule.testing.muleinterfaces.viamuleclassloader;
 
 import com.mulesoft.mule.runtime.module.batch.api.BatchJobInstance;
 import com.mulesoft.mule.runtime.module.batch.api.BatchJobResult;

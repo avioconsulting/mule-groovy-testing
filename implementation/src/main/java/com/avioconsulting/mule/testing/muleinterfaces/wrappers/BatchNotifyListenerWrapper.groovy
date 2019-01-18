@@ -5,7 +5,7 @@ class BatchNotifyListenerWrapper {
 
     /**
      *
-     * @param muleSideListener - com.avioconsulting.mule.testing.muleinterfaces.GroovyTestingBatchNotifyListener but we have classpath
+     * @param muleSideListener - com.avioconsulting.mule.testing.muleinterfaces.viamuleclassloader.GroovyTestingBatchNotifyListener but we have classpath
      * /reflection stuff to worry about
      */
     BatchNotifyListenerWrapper(Object muleSideListener) {

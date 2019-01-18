@@ -1,4 +1,4 @@
-package com.avioconsulting.mule.testing.muleinterfaces;
+package com.avioconsulting.mule.testing.muleinterfaces.viamuleclassloader;
 
 import org.mule.runtime.api.artifact.Registry;
 import org.mule.runtime.api.config.custom.CustomizationService;

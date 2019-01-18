@@ -1,4 +1,4 @@
-package com.avioconsulting.mule.testing.muleinterfaces;
+package com.avioconsulting.mule.testing.muleinterfaces.viamuleclassloader;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

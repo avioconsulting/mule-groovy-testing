@@ -1,4 +1,4 @@
-package com.avioconsulting.mule.testing.muleinterfaces;
+package com.avioconsulting.mule.testing.muleinterfaces.viamuleclassloader;
 
 import org.mule.runtime.api.el.BindingContext;
 import org.mule.runtime.api.event.EventContext;

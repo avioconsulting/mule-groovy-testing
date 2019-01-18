@@ -80,7 +80,7 @@ class MuleEngineContainer {
                 container = containerKlass.newInstance()
                 container.start(false)
                 muleStartedFile.text = dependencyJsonText
-                def registryListenerKlass = containerClassLoader.loadClass('com.avioconsulting.mule.testing.muleinterfaces.MuleRegistryListener')
+                def registryListenerKlass = containerClassLoader.loadClass('com.avioconsulting.mule.testing.muleinterfaces.viamuleclassloader.MuleRegistryListener')
                 registryListener = registryListenerKlass.newInstance()
                 container.deploymentService.addDeploymentListener(registryListener)
                 assert container
