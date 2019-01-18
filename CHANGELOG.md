@@ -1,6 +1,9 @@
 # 2.0
 (for Mule 4.1)
 
+# 2.0.18
+* Add ability to specify Maven profiles when the testing framework generates a classloader model. This is useful if you need to add a dependency that's solely used during testing
+
 # 2.0.17
 * Display testing framework version on startup
 
