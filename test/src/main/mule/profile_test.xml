@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<mule xmlns="http://www.mulesoft.org/schema/mule/core"
+      xmlns:module-miscdep="http://www.mulesoft.org/schema/mule/module-miscdep"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/module-miscdep http://www.mulesoft.org/schema/mule/module-miscdep/current/mule-module-miscdep.xsd">
+    <flow name="foo">
+        <module-miscdep:do-stuff-get doc:name="the name of our connector" inputParam="#[payload]"/>
+    </flow>
+</mule>

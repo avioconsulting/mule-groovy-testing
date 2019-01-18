@@ -13,6 +13,7 @@
         <module>test</module>
         <module>connector-class-loader-test</module>
         <module>test-api</module>
+        <module>misc-dependency</module>
     </modules>
 
     <build>

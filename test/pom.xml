@@ -195,6 +195,12 @@
             <classifier>mule-plugin</classifier>
         </dependency>
         <dependency>
+            <groupId>com.avioconsulting.mule.testing</groupId>
+            <artifactId>misc-dependency</artifactId>
+            <version>${project.version}</version>
+            <classifier>mule-plugin</classifier>
+        </dependency>
+        <dependency>
             <groupId>com.avioconsulting.mule</groupId>
             <artifactId>testing</artifactId>
             <version>${project.version}</version>

@@ -187,6 +187,15 @@ trait BaseMuleGroovyTrait {
                  'classes')
     }
 
+    /**
+     * If you need certain Maven profiles to be activated while calling Maven
+     * to generate the classloader model, include them here
+     * @return
+     */
+    List<String> getMavenProfiles() {
+        []
+    }
+
     private DescriptorGenerator getDescriptorGenerator() {
         new DescriptorGenerator(classLoaderModelFile,
                                 skinnyMuleArtifactDescriptorPath,
