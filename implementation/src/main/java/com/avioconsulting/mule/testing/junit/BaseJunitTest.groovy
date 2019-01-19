@@ -19,7 +19,6 @@ import org.junit.runner.RunWith
 @RunWith(MuleGroovyJunitRunner)
 abstract class BaseJunitTest implements
         BaseMuleGroovyTrait {
-    private static Map cachedClassLoaderModel
     static TestState testState = new TestState()
 
     MockingConfiguration getMockingConfiguration() {
@@ -41,12 +40,14 @@ abstract class BaseJunitTest implements
         testState.startMule(this)
     }
 
+    Map getFreshClassLoaderModel() {
+        BaseMuleGroovyTrait.super.getClassLoaderModel()
+    }
+
     @Override
     Map getClassLoaderModel() {
-        if (!cachedClassLoaderModel) {
-            cachedClassLoaderModel = BaseMuleGroovyTrait.super.getClassLoaderModel()
-        }
-        cachedClassLoaderModel
+        // this is deterministic based on config/deployed app so we delegate to test state
+        testState.cachedClassLoaderModel
     }
 
     def runFlow(String flowName,

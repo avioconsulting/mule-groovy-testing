@@ -1,5 +1,6 @@
 package com.avioconsulting.mule.testing.junit
 
+
 import com.avioconsulting.mule.testing.muleinterfaces.MockingConfiguration
 import com.avioconsulting.mule.testing.muleinterfaces.RuntimeBridgeTestSide
 import com.avioconsulting.mule.testing.muleinterfaces.containers.MuleEngineContainer
@@ -14,6 +15,7 @@ class TestState {
     private RuntimeBridgeTestSide runtimeBridge
     private final Map<TestingConfiguration, Integer> failedConfigurations = [:]
     private final List<String> newConfigs = []
+    Map cachedClassLoaderModel
 
     MockingConfiguration getMockingConfiguration() {
         return mockingConfiguration
@@ -49,11 +51,19 @@ class TestState {
         }
     }
 
+    private def populateClassLoaderModel(BaseJunitTest test) {
+        cachedClassLoaderModel = test.getFreshClassLoaderModel()
+    }
+
     void startMule(BaseJunitTest test) {
         def threadContext = CloseableThreadContext.putAll([
                 testClass: test.getClass().getName()
         ])
         try {
+            if (!cachedClassLoaderModel) {
+                // testing config needs this
+                populateClassLoaderModel(test)
+            }
             def proposedTestingConfig = new TestingConfiguration(test.getStartUpProperties(),
                                                                  test.getClassLoaderModel(),
                                                                  test.getMuleArtifactJson(),
@@ -82,6 +92,7 @@ class TestState {
                 log.info 'Using existing Mule app...'
             }
             if (newBridgeNeeded) {
+                populateClassLoaderModel(test)
                 newConfigs << test.getClass().getName()
                 mockingConfiguration = new MockingConfiguration(proposedTestingConfig)
                 try {
