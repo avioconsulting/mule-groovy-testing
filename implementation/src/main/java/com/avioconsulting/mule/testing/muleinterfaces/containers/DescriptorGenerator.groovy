@@ -104,14 +104,16 @@ class DescriptorGenerator implements EnvironmentDetector {
                     'has not been built'
             // not the cleanest way in the world, but it avoids lots of coupling. and it's more cross platform
             // compatible than direct shell invocation
-            log.info 'ClassLoader model descriptor {}, running maven against POM {} to generate one',
+            log.info 'ClassLoader model descriptor {} {}, running maven against POM {} to generate one',
+                     classLoaderModelTestFile,
                      context,
                      mavenPomPath
             runMaven()
             assert classLoaderModelTestFile.exists(): 'Somehow we successfully ran a Maven compile but did not generate a classloader model.'
             digestFile.write(sha256)
         } else {
-            log.info 'already up to date classLoader model on filesystem'
+            log.info 'already up to date classLoader model {} on filesystem',
+                     classLoaderModelTestFile
         }
         needUpdate
     }
