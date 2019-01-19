@@ -216,8 +216,11 @@ trait BaseMuleGroovyTrait {
     File getClassLoaderModelTestFile() {
         // putting this in buildOutputDirectory (e.g. target) rather than
         // muleArtifactDirectory because we do not want this file in the finished product/JAR
+        // this file is also deterministic on the maven profiles that generated it so we need those in here
+        def mavenProfileString = mavenProfiles.join('-')
+        def filename = "classloader-model-test${mavenProfileString ? '-' + mavenProfileString : mavenProfileString}.json"
         new File(buildOutputDirectory,
-                 'classloader-model-test.json')
+                 filename)
     }
 
     /**
