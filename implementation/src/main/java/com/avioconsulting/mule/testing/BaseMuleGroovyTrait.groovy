@@ -214,7 +214,9 @@ trait BaseMuleGroovyTrait {
     }
 
     File getClassLoaderModelTestFile() {
-        new File(muleArtifactDirectory,
+        // putting this in buildOutputDirectory (e.g. target) rather than
+        // muleArtifactDirectory because we do not want this file in the finished product/JAR
+        new File(buildOutputDirectory,
                  'classloader-model-test.json')
     }
 
