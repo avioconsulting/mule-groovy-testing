@@ -10,10 +10,12 @@
 
     <modules>
         <module>implementation</module>
+        <!-- misc_dependency needs to go before test in here because test's dependency
+         on it is in a non-selected by default profile -->
+        <module>misc-dependency</module>
         <module>test</module>
         <module>connector-class-loader-test</module>
         <module>test-api</module>
-        <module>misc-dependency</module>
     </modules>
 
     <build>

@@ -204,12 +204,19 @@ class DescriptorGenerator implements EnvironmentDetector {
             if (result.exitCode != 0) {
                 throw new TestingFrameworkException('Successfully located Maven executable but unable to use Maven to generate classloader model/artifact descriptor. This is likely a problem with your POM or your project. Examine the output for what might be wrong.')
             }
+            // we need our move to succeed and we might have a leftover file
+            if (classLoaderModelTestFile.exists()) {
+                FileUtils.deleteQuietly(classLoaderModelTestFile)
+            }
             FileUtils.moveFile(classLoaderModelFile,
                                classLoaderModelTestFile)
         }
         finally {
             if (backupFile) {
                 log.info 'Restoring existing classloader model to prevent tests from altering it'
+                if (classLoaderModelFile.exists()) {
+                    FileUtils.deleteQuietly(classLoaderModelFile)
+                }
                 FileUtils.moveFile(backupFile,
                                    classLoaderModelFile)
             }
