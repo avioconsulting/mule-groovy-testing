@@ -80,6 +80,8 @@ class SoapApikitInvokerImpl extends
         def config = flow.getConfigurationInstance('apikit-soap:router')
         // config is SoapkitConfiguration
         def wsdlPath = config.info.wsdlLocation as String
+        // wsdls are located in src/main/resources/api
+        wsdlPath = "api/${wsdlPath}"
         // Using this app classloader here because the WSDL itself is a resource and we will be
         // unable to find it based on path alone
         def wsdlUrl = bridge.appClassloader.getResource(wsdlPath)
