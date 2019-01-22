@@ -19,9 +19,11 @@ class MockFlowTest extends
     @Test
     void mocks_correctly() {
         // arrange
+        def actualInput = null
         mockGeneric('flow2') {
             raw {
                 whenCalledWith { input ->
+                    actualInput = input
                     'should see this'
                 }
             }
@@ -37,5 +39,7 @@ class MockFlowTest extends
         // assert
         assertThat result,
                    is(equalTo('should see this'))
+        assertThat actualInput.value,
+                   is(equalTo('the payload'))
     }
 }

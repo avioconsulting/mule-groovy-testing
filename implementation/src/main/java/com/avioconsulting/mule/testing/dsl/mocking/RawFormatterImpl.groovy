@@ -24,7 +24,7 @@ class RawFormatterImpl<T extends ConnectorInfo> implements
         def input = new InputTransformer<T>() {
             def transformInput(EventWrapper input,
                                T connectorInfo) {
-                input.message
+                input.message.payload
             }
         }
         def output = new OutputTransformer() {

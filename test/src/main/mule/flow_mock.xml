@@ -5,6 +5,7 @@
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
     <flow name="flow1">
+        <set-payload value="the payload"/>
         <flow-ref name="flow2"
                   doc:name="flow2"/>
     </flow>

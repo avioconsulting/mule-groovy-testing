@@ -3,8 +3,8 @@ package com.avioconsulting.mule.testing.mocking
 import com.avioconsulting.mule.testing.ConfigTrait
 import com.avioconsulting.mule.testing.junit.BaseJunitTest
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.InvokeExceptionWrapper
-import com.avioconsulting.mule.testing.muleinterfaces.wrappers.MessageWrapper
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.ReturnWrapper
+import com.avioconsulting.mule.testing.muleinterfaces.wrappers.StreamUtils
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.connectors.HttpRequesterInfo
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
@@ -18,7 +18,8 @@ import static org.junit.Assert.assertThat
 @Log4j2
 class HttpTest extends
         BaseJunitTest implements
-        ConfigTrait {
+        ConfigTrait,
+        StreamUtils {
     List<String> getConfigResources() {
         ['http_test.xml']
     }
@@ -136,10 +137,10 @@ class HttpTest extends
     @Test
     void mocksProperly_raw() {
         // arrange
-        MessageWrapper stuff = null
+        def stuff = null
         mockRestHttpCall('SomeSystem Call') {
             raw {
-                whenCalledWith { MessageWrapper incoming ->
+                whenCalledWith { incoming ->
                     stuff = incoming
                     new ReturnWrapper(JsonOutput.toJson([reply: 456]),
                                       'application/json')
@@ -157,8 +158,10 @@ class HttpTest extends
         // assert
         assertThat result,
                    is(equalTo([reply_key: 457]))
-        assertThat new JsonSlurper().parseText(stuff.messageAsString),
-                   is(equalTo([key: 123]))
+        withCursorAsText(stuff.value) { String json ->
+            assertThat new JsonSlurper().parseText(json),
+                       is(equalTo([key: 123]))
+        }
     }
 
     @Test
