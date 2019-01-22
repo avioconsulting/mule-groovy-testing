@@ -101,12 +101,10 @@ class HttpTest extends
         }
 
         // assert
-        withCursorAsText(stuff.value) { String text ->
-            // we're in raw mode so our payload will be a JSON string
-            def asMap = new JsonSlurper().parseText(text)
-            assertThat asMap,
-                       is(equalTo([key: 123]))
-        }
+        // we're in raw mode so our payload will be a JSON string
+        def asMap = new JsonSlurper().parseText(stuff)
+        assertThat asMap,
+                   is(equalTo([key: 123]))
         assertThat result,
                    is(equalTo([reply_key: 457]))
     }
@@ -191,10 +189,8 @@ class HttpTest extends
         // assert
         assertThat result,
                    is(equalTo([reply_key: 457]))
-        withCursorAsText(stuff.value) { String json ->
-            assertThat new JsonSlurper().parseText(json),
-                       is(equalTo([key: 123]))
-        }
+        assertThat new JsonSlurper().parseText(stuff),
+                   is(equalTo([key: 123]))
     }
 
     @Test

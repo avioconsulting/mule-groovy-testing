@@ -5,6 +5,7 @@
 * Fix SOAP apikit invocation problem with WSDL location
 * Carve out `StreamUtils.withCursorAsList` helper
 * Make `raw` formatting with mocks more consistent
+* Fix HTTP requester `body` support with raw mock formatting
 
 # 2.0.18
 * Add ability to specify Maven profiles when the testing framework generates a classloader model. This is useful if you need to add a dependency that's solely used during testing
