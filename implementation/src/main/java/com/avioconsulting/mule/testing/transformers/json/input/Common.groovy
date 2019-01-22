@@ -9,13 +9,13 @@ abstract class Common<T extends ConnectorInfo> implements
     abstract def transform(String jsonString)
 
     def transformInput(EventWrapper muleEvent,
-                       T messageProcessor) {
+                       T connectorInfo) {
         // comes back from some Mule connectors like JSON
         if (muleEvent.message.payload == null) {
             return null
         }
         // if the connector allows changing what's used for input, it will come in here
-        def json = messageProcessor.incomingBody ?: muleEvent.message.messageAsString
+        def json = connectorInfo.supportsIncomingBody ? connectorInfo.incomingBody : muleEvent.messageAsString
         transform(json)
     }
 }

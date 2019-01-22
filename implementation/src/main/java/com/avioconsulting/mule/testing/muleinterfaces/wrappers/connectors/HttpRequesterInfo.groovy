@@ -70,6 +70,11 @@ class HttpRequesterInfo extends
     }
 
     @Override
+    boolean isSupportsIncomingBody() {
+        true
+    }
+
+    @Override
     Object getIncomingBody() {
         // no payloads should be a part of GET
         if (this.method == 'GET') {

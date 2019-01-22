@@ -77,6 +77,11 @@ class SoapConsumerInfo extends
     }
 
     @Override
+    boolean isSupportsIncomingBody() {
+        true
+    }
+
+    @Override
     Object getIncomingBody() {
         def value = parameters['message'].body
         if (value instanceof InputStream) {

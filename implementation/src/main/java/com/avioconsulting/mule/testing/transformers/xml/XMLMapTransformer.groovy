@@ -24,7 +24,7 @@ class XMLMapTransformer<T extends ConnectorInfo> extends
 
     EventWrapper transform(EventWrapper incomingEvent,
                            T connectorInfo) {
-        def xmlString = connectorInfo.incomingBody ?: incomingEvent.messageAsString
+        def xmlString = connectorInfo.supportsIncomingBody ? connectorInfo.incomingBody : incomingEvent.messageAsString
         log.info 'Received XML of {}, converting to Groovy XML Map',
                  xmlString
         def node = new XmlSlurper().parseText(xmlString) as GPathResult

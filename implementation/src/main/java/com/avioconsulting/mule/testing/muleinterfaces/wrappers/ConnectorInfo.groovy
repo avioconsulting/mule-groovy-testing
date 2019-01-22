@@ -41,6 +41,11 @@ class ConnectorInfo {
         parameters['target']
     }
 
+    // want to be able to differentiate between a deliberate null body and a connector that doesn't support body
+    boolean isSupportsIncomingBody() {
+        false
+    }
+
     /**
      *
      * @return null if there is no custom body specified for the connector

@@ -54,7 +54,7 @@ class JAXBMarshalHelper {
     def unmarshal(EventWrapper event,
                   ConnectorInfo connectorInfo) {
         def unmarshaller = this.jaxbContext.createUnmarshaller()
-        def payloadAsStr = connectorInfo.incomingBody ?: event.messageAsString
+        def payloadAsStr = connectorInfo.supportsIncomingBody ? connectorInfo.incomingBody : event.messageAsString
         log.info 'JAXB Unmarshaller received payload of {}',
                  payloadAsStr
         try {
