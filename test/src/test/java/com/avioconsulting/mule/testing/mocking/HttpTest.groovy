@@ -79,6 +79,39 @@ class HttpTest extends
     }
 
     @Test
+    void mocksProperly_from_flowVar_raw() {
+        // arrange
+        def stuff = null
+        mockRestHttpCall('SomeSystem Call') {
+            raw {
+                whenCalledWith { incoming ->
+                    stuff = incoming
+                    // we're in raw mode so use a string
+                    new ReturnWrapper(JsonOutput.toJson([reply: 456]),
+                                      'application/json')
+                }
+            }
+        }
+
+        // act
+        def result = runFlow('restRequestFromFlowVar') {
+            json {
+                inputPayload([foo: 123])
+            }
+        }
+
+        // assert
+        withCursorAsText(stuff.value) { String text ->
+            // we're in raw mode so our payload will be a JSON string
+            def asMap = new JsonSlurper().parseText(text)
+            assertThat asMap,
+                       is(equalTo([key: 123]))
+        }
+        assertThat result,
+                   is(equalTo([reply_key: 457]))
+    }
+
+    @Test
     void mocksProperly_from_to_flowVar() {
         // arrange
         def stuff = null
