@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Whenever you update this file, update SOAPTest_cxf_v1.wsdl AS WELL! -->
+<wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+                  xmlns:tns="http://www.avioconsulting.com/services/soapTesting/v1"
+                  xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+                  xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="SOAPTest_v1"
+                  xmlns:pp="http://www.avioconsulting.com/schemas/SOAPTest/v1"
+                  targetNamespace="http://www.avioconsulting.com/services/soapTesting/v1">
+    <wsdl:types>
+        <xsd:schema>
+            <xsd:import namespace="http://www.avioconsulting.com/schemas/SOAPTest/v1"
+                        schemaLocation="SOAPTest_v1.xsd"/>
+        </xsd:schema>
+    </wsdl:types>
+
+    <wsdl:message name="SOAPTestRequest">
+        <wsdl:part element="pp:SOAPTestRequest" name="parameters"/>
+    </wsdl:message>
+    <wsdl:message name="SOAPTestResponse">
+        <wsdl:part element="pp:SOAPTestResponse" name="parameters"/>
+    </wsdl:message>
+    <wsdl:message name="SOAPTestFault">
+        <wsdl:part name="fault" element="pp:SOAPTestFault"/>
+    </wsdl:message>
+
+    <wsdl:portType name="SOAPTest">
+        <wsdl:operation name="operation1">
+            <wsdl:input message="tns:SOAPTestRequest"/>
+            <wsdl:output message="tns:SOAPTestResponse"/>
+            <wsdl:fault message="tns:SOAPTestFault" name="SOAPTestFault"/>
+        </wsdl:operation>
+    </wsdl:portType>
+
+    <wsdl:binding name="SOAPTestBinding" type="tns:SOAPTest">
+        <soap:binding style="document"
+                      transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="operation1">
+            <soap:operation
+                    soapAction="http://www.avioconsulting.com/services/SOAPTest/v1/SOAPTest"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <soap:fault name="SOAPTestFault" use="literal"/>
+        </wsdl:operation>
+    </wsdl:binding>
+
+    <wsdl:service name="SOAPTestService">
+        <wsdl:port binding="tns:SOAPTestBinding" name="SOAPTestService">
+            <soap:address location="http://www.example.org/"/>
+        </wsdl:port>
+    </wsdl:service>
+</wsdl:definitions>

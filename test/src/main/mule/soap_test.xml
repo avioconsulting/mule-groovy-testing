@@ -38,7 +38,7 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
         </wsc:connection>
     </wsc:config>
     <apikit-soap:config name="soapkit-config"
-                        wsdlLocation="soap/test.wsdl"
+                        wsdlLocation="test_server.wsdl"
                         service="SOAPTestService"
                         port="SOAPTestService" doc:name="APIkit SOAP: Configuration"/>
     <wsc:config name="Web_Service_Consumer_Calculator">
