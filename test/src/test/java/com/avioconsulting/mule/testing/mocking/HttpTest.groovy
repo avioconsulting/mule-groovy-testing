@@ -223,6 +223,34 @@ class HttpTest extends
     }
 
     @Test
+    void mocksProperly_raw_map_payload_null() {
+        // arrange
+        def stuff = 'should not see this'
+        mockRestHttpCall('SomeSystem Call') {
+            raw {
+                whenCalledWith { incoming ->
+                    stuff = incoming
+                    new ReturnWrapper(JsonOutput.toJson([reply: 456]),
+                                      'application/json')
+                }
+            }
+        }
+
+        // act
+        def result = runFlow('javaPayloadNullOnPurpose') {
+            json {
+                inputPayload([foo: 123])
+            }
+        }
+
+        // assert
+        assertThat result,
+                   is(equalTo([reply_key: 457]))
+        assertThat stuff,
+                   is(nullValue())
+    }
+
+    @Test
     void mocksProperlyWithChoice() {
         // arrange
         def stuff = null
