@@ -194,6 +194,35 @@ class HttpTest extends
     }
 
     @Test
+    void mocksProperly_raw_map_payload_for_form_url_encoded() {
+        // arrange
+        def stuff = null
+
+        mockRestHttpCall('SomeSystem Call') {
+            raw {
+                whenCalledWith { incoming ->
+                    stuff = incoming
+                    new ReturnWrapper(JsonOutput.toJson([reply: 456]),
+                                      'application/json')
+                }
+            }
+        }
+
+        // act
+        def result = runFlow('javaPayloadForFormUrlEncoded') {
+            json {
+                inputPayload([foo: 123])
+            }
+        }
+
+        // assert
+        assertThat result,
+                   is(equalTo([reply_key: 457]))
+        assertThat stuff,
+                   is(equalTo([key: 123]))
+    }
+
+    @Test
     void mocksProperlyWithChoice() {
         // arrange
         def stuff = null

@@ -70,7 +70,7 @@ class HttpRequesterInfo extends
     }
 
     @Override
-    String getIncomingBody() {
+    Object getIncomingBody() {
         // no payloads should be a part of GET
         if (this.method == 'GET') {
             return null
@@ -79,6 +79,6 @@ class HttpRequesterInfo extends
         if (value instanceof InputStream) {
             return value.text
         }
-        throw new TestingFrameworkException("Do not understand type ${value.getClass()}!")
+        return value
     }
 }

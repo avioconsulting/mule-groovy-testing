@@ -45,7 +45,7 @@ class ConnectorInfo {
      *
      * @return null if there is no custom body specified for the connector
      */
-    String getIncomingBody() {
+    Object getIncomingBody() {
         null
     }
 }

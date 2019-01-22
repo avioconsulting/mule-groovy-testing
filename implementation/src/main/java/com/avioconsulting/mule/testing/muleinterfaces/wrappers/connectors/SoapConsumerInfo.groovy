@@ -77,7 +77,7 @@ class SoapConsumerInfo extends
     }
 
     @Override
-    String getIncomingBody() {
+    Object getIncomingBody() {
         def value = parameters['message'].body
         if (value instanceof InputStream) {
             return value.text
