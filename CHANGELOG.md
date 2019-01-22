@@ -3,6 +3,7 @@
 
 # 2.0.19
 * Fix SOAP apikit invocation problem with WSDL location
+* Carve out `StreamUtils.withCursorAsList` helper
 
 # 2.0.18
 * Add ability to specify Maven profiles when the testing framework generates a classloader model. This is useful if you need to add a dependency that's solely used during testing

@@ -16,4 +16,21 @@ trait StreamUtils {
             cursor.close()
         }
     }
+
+    /**
+     * Gets the underlying list from a cursor iterator (e.g. for DB connectors)
+     * @param payload
+     * @param closure
+     */
+    List withCursorAsList(Object payload,
+                         Closure closure) {
+        assert payload.getClass().getName().contains('ManagedCursorIteratorProvider')
+        def cursor = payload.openCursor() as Iterator
+        try {
+            return closure(cursor.toList())
+        }
+        finally {
+            cursor.close()
+        }
+    }
 }
