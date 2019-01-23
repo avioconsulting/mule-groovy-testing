@@ -1,6 +1,8 @@
 package com.avioconsulting.mule.testing.invocation.listeners
 
-trait PortStuff {
+import com.avioconsulting.mule.testing.OpenPortLocator
+
+trait PortStuff implements OpenPortLocator {
     private static final String TEST_PORT_PROPERTY = 'avio.test.http.port'
     static int unusedPort = -1
 
@@ -10,27 +12,12 @@ trait PortStuff {
         // http listener gets go
         // ing before the properties object this method creates has had its values take effect
         if (unusedPort == -1) {
-            unusedPort = findUnusedPort()
+            unusedPort = getHttpPort()
             log.info 'Setting HTTP listener port to {}',
                      unusedPort
         }
         properties.put(TEST_PORT_PROPERTY,
                        unusedPort as String)
         properties
-    }
-
-    int findUnusedPort() {
-        (8088..8199).find { candidate ->
-            try {
-                def socket = new ServerSocket(candidate,
-                                              1,
-                                              InetAddress.loopbackAddress)
-                socket.close()
-                true
-            }
-            catch (IOException ignored) {
-                false
-            }
-        }
     }
 }

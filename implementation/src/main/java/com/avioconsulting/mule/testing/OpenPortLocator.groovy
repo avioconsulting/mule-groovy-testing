@@ -1,6 +1,6 @@
 package com.avioconsulting.mule.testing
 
-class OpenPortLocator {
+trait OpenPortLocator {
     static int getHttpPort() {
         (8088..8199).find { candidate ->
             try {

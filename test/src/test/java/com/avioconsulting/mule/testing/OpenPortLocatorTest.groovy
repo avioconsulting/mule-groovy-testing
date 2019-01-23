@@ -7,7 +7,7 @@ import static org.hamcrest.Matchers.equalTo
 import static org.hamcrest.Matchers.is
 import static org.junit.Assert.assertThat
 
-class OpenPortLocatorTest {
+class OpenPortLocatorTest implements OpenPortLocator {
     static int getExpectedPort() {
         // not sure why 8088 is occupied on Windows (nothing shows as listening on that port) but
         // took care of test once I changed this
@@ -22,7 +22,7 @@ class OpenPortLocatorTest {
         // arrange
 
         // act
-        def port = OpenPortLocator.httpPort
+        def port = httpPort
 
         // assert
         assertThat port,
@@ -38,7 +38,7 @@ class OpenPortLocatorTest {
         try {
 
             // act
-            def port = OpenPortLocator.httpPort
+            def port = httpPort
 
             // assert
             assertThat port,
