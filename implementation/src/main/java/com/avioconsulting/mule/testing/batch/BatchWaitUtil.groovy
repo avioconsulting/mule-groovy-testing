@@ -25,7 +25,7 @@ class BatchWaitUtil {
                             throwUnderlyingException)
         def jobsToWaitFor = batchListener.jobsToWaitFor
         try {
-            closure()
+            def result = closure()
             def getIncompletes = {
                 jobsToWaitFor - batchListener.batchJobResults.keySet()
             }
@@ -56,6 +56,7 @@ class BatchWaitUtil {
                 throw exception
             }
             assert failedJobs.isEmpty(): "Expected no failed job instances but got ${failedJobs}"
+            return result
         }
         finally {
             batchListener.end()

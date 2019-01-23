@@ -108,6 +108,15 @@ abstract class BaseJunitTest implements
                  closure)
     }
 
+    def waitForBatchCompletion(List<String> jobsToWaitFor = null,
+                               boolean throwUnderlyingException = false,
+                               Closure closure) {
+        waitForBatchCompletion(runtimeBridge,
+                               jobsToWaitFor,
+                               throwUnderlyingException,
+                               closure)
+    }
+
     def runSoapApikitFlow(String operation,
                           String apiKitFlowName = 'api-main',
                           @DelegatesTo(SoapInvoker) Closure closure) {
