@@ -1,6 +1,9 @@
 # 2.0
 (for Mule 4.1)
 
+# 2.0.20
+* Make `OpenPortLocator` a shareable trait
+
 # 2.0.19
 * Fix SOAP apikit invocation problem with WSDL location
 * Carve out `StreamUtils.withCursorAsList` helper
