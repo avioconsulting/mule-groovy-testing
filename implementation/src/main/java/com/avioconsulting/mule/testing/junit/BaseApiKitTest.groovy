@@ -25,8 +25,8 @@ abstract class BaseApiKitTest extends
     @Override
     Map getStartUpProperties() {
         super.getStartUpProperties() + [
-                'skip.apikit.validation'   : 'false',
-                'eturn.validation.failures': 'true'
+                'skip.apikit.validation'    : 'false',
+                'return.validation.failures': 'true'
         ]
     }
 
