@@ -52,6 +52,56 @@ class HttpTest extends
     }
 
     @Test
+    void mimeType_not_set() {
+        // arrange
+        def stuff = null
+        mockRestHttpCall('SomeSystem Call') {
+            json {
+                whenCalledWith { HttpRequesterInfo connectorInfo ->
+                    stuff = connectorInfo.mimeType
+                    [reply: 456]
+                }
+            }
+        }
+
+        // act
+        runFlow('restRequest') {
+            json {
+                inputPayload([foo: 123])
+            }
+        }
+
+        // assert
+        assertThat stuff,
+                   is(nullValue())
+    }
+
+    @Test
+    void mimeType_set() {
+        // arrange
+        def stuff = null
+        mockRestHttpCall('SomeSystem Call') {
+            json {
+                whenCalledWith { HttpRequesterInfo connectorInfo ->
+                    stuff = connectorInfo.mimeType
+                    [reply: 456]
+                }
+            }
+        }
+
+        // act
+        runFlow('restRequestMimeType') {
+            json {
+                inputPayload([foo: 123])
+            }
+        }
+
+        // assert
+        assertThat stuff,
+                   is(equalTo('application/xml'))
+    }
+
+    @Test
     void mocksProperly_from_flowVar() {
         // arrange
         def stuff = null

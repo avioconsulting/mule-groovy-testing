@@ -39,6 +39,33 @@ output application/json
             </ee:message>
         </ee:transform>
     </flow>
+    <flow name="restRequestMimeType">
+        <ee:transform doc:name="Transform Message">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+    key: payload.foo
+}]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+        <http:request config-ref="SomeSystem"
+                      path="/some_path"
+                      method="POST"
+                      doc:name="SomeSystem Call"
+                      outputMimeType="application/xml"/>
+        <ee:transform doc:name="Transform Message">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+    reply_key: payload.reply + 1
+}]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+    </flow>
     <flow name="javaPayloadForFormUrlEncoded">
         <ee:transform doc:name="Transform Message">
             <ee:message>
@@ -80,7 +107,7 @@ output application/java
                       path="/some_path"
                       method="POST"
                       doc:name="SomeSystem Call">
-            <http:body ><![CDATA[#[null]]]></http:body>
+            <http:body><![CDATA[#[null]]]></http:body>
         </http:request>
         <ee:transform doc:name="Transform Message">
             <ee:message>

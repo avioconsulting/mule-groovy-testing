@@ -1,6 +1,6 @@
 package com.avioconsulting.mule.testing.muleinterfaces.wrappers.connectors
 
-import com.avioconsulting.mule.testing.TestingFrameworkException
+
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.ConnectorInfo
 
 class HttpRequesterInfo extends
@@ -11,6 +11,7 @@ class HttpRequesterInfo extends
     private HttpValidatorWrapper validatorWrapper
     private final String uri
     private final body
+    private final String mimeType
 
     HttpRequesterInfo(String fileName,
                       Integer lineNumber,
@@ -41,6 +42,7 @@ class HttpRequesterInfo extends
         this.uri = "${host}${path}"
         this.validatorWrapper = new HttpValidatorWrapper(muleValidator,
                                                          this)
+        this.mimeType = parameters['outputMimeType']
     }
 
     private static Map convertMultiMap(Map map) {
@@ -51,6 +53,10 @@ class HttpRequesterInfo extends
 
     String getMethod() {
         this.method
+    }
+
+    String getMimeType() {
+        this.mimeType
     }
 
     Map<String, String> getQueryParams() {

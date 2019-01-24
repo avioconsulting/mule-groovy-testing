@@ -3,6 +3,7 @@
 
 # 2.0.20
 * Make `OpenPortLocator` a shareable trait
+* Allow testing mime types set on HTTP requester mocks
 
 # 2.0.19
 * Fix SOAP apikit invocation problem with WSDL location
