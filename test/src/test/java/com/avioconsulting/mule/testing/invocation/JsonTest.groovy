@@ -4,6 +4,7 @@ import com.avioconsulting.mule.testing.ConfigTrait
 import com.avioconsulting.mule.testing.SampleJacksonInput
 import com.avioconsulting.mule.testing.SampleJacksonOutput
 import com.avioconsulting.mule.testing.junit.BaseJunitTest
+import com.avioconsulting.mule.testing.muleinterfaces.wrappers.EventWrapper
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.InvokeExceptionWrapper
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
@@ -37,6 +38,28 @@ class JsonTest extends
         // assert
         assertThat result.result,
                    is(equalTo(123))
+    }
+
+    @Test
+    void correlation_id() {
+        // arrange
+        def correlationIdFromEvent = null
+
+        // act
+        def correlationIdFromWeaveInsideFlow = runFlow('correlationTest') {
+            java {
+                inputPayload(null)
+            }
+            withInputEvent { EventWrapper event ->
+                correlationIdFromEvent = event.correlationId
+                // have to return an event. we didn't mutate anything so just return tne same thing
+                event
+            }
+        }
+
+        // assert
+        assertThat correlationIdFromEvent,
+                   is(equalTo(correlationIdFromWeaveInsideFlow))
     }
 
     @Test

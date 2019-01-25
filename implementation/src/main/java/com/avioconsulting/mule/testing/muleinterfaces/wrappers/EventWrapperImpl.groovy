@@ -106,6 +106,11 @@ class EventWrapperImpl implements
     }
 
     @Override
+    String getCorrelationId() {
+        nativeEvent.correlationId
+    }
+
+    @Override
     MessageWrapper getMessage() {
         message
     }

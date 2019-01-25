@@ -34,4 +34,6 @@ interface EventWrapper {
                                          Map attributes,
                                          ConnectorInfo connectorInfo,
                                          boolean useRepeatableStream)
+
+    String getCorrelationId()
 }

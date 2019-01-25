@@ -1,6 +1,9 @@
 # 2.0
 (for Mule 4.1)
 
+# 2.0.21
+* Add `correlationId` getter support to `EventWrapper`
+
 # 2.0.20
 * Make `OpenPortLocator` a shareable trait
 * Allow testing mime types set on HTTP requester mocks

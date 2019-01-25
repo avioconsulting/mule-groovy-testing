@@ -20,6 +20,9 @@ output application/json
             </ee:message>
         </ee:transform>
     </flow>
+    <flow name="correlationTest">
+        <set-payload value="#[correlationId]"/>
+    </flow>
     <flow name="jsonTestReturnJavaObject">
         <flow-ref name="jsonTest" />
         <ee:transform doc:name="Transform Message">
