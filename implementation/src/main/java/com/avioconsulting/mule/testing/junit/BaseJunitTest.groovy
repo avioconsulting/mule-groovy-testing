@@ -37,6 +37,11 @@ abstract class BaseJunitTest implements
     // by using the constructor, we can have our setup stuff run before each test
     // which clarifies the output a bit when trying to examine each test
     BaseJunitTest() {
+        startMule()
+    }
+
+    // allow overriding
+    def startMule() {
         testState.startMule(this)
     }
 

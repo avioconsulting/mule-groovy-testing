@@ -3,6 +3,7 @@
 
 # 2.0.21
 * Add `correlationId` getter support to `EventWrapper`
+* Allow controlling Mule startup better from `BaseJunitTest`
 
 # 2.0.20
 * Make `OpenPortLocator` a shareable trait
