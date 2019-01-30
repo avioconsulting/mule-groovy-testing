@@ -7,7 +7,7 @@ trait HttpAttributeBuilder {
                                   Map queryParams,
                                   RuntimeBridgeTestSide runtimeBridge,
                                   String mimeType,
-                                  int port,
+                                  String host,
                                   Map additionalHeaders = [:]) {
         def urlParts = httpListenerPath.split('/')
         assert urlParts.last() == '*': 'Expected wildcard listener!'
@@ -26,7 +26,7 @@ trait HttpAttributeBuilder {
             [key.toString(), value.toString()]
         }
         def headers = [
-                host          : "localhost:${port}".toString(),
+                host          : host.toString(),
                 // Even though content type is set on the message/payload mediatype,
                 // apikit router in mule 4 depends on this
                 'content-type': mimeType

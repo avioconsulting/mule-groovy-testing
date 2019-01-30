@@ -1,6 +1,9 @@
 # 2.0
 (for Mule 4.1)
 
+# 2.0.22
+* Allow changing the simulated HTTP host header when invoking a SOAP apikit flow
+
 # 2.0.21
 * Add `correlationId` getter support to `EventWrapper`
 * Allow controlling Mule startup better from `BaseJunitTest`

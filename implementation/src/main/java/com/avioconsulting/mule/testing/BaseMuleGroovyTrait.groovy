@@ -310,10 +310,12 @@ trait BaseMuleGroovyTrait {
     EventWrapper runSoapApikitFlow(RuntimeBridgeTestSide bridge,
                                    String operation,
                                    String apiKitFlowName = 'api-main',
+                                   String host = 'localhost:9999',
                                    @DelegatesTo(SoapInvoker) Closure closure) {
         def invoker = new SoapApikitInvokerImpl(bridge,
                                                 apiKitFlowName,
                                                 operation,
+                                                host,
                                                 bridge)
         def code = closure.rehydrate(invoker,
                                      this,

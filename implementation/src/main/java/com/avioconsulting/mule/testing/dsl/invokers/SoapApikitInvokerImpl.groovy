@@ -21,13 +21,16 @@ class SoapApikitInvokerImpl extends
     private final String flowName
     private final InvokerEventFactory eventFactory
     private final RuntimeBridgeTestSide runtimeBridgeTestSide
+    private final String host
 
     SoapApikitInvokerImpl(InvokerEventFactory eventFactory,
                           String flowName,
                           String operation,
+                          String host,
                           RuntimeBridgeTestSide runtimeBridgeTestSide) {
         super(flowName,
               runtimeBridgeTestSide)
+        this.host = host
         this.runtimeBridgeTestSide = runtimeBridgeTestSide
         this.eventFactory = eventFactory
         this.flowName = flowName
@@ -66,7 +69,7 @@ class SoapApikitInvokerImpl extends
                                                    [:],
                                                    runtimeBridgeTestSide,
                                                    muleEvent.message.mimeType,
-                                                   9999,
+                                                   host,
                                                    additionalHeaders)
         muleEvent = muleEvent.withNewAttributes(attributes)
         log.info "Put together SOAP/Mule message {}",

@@ -124,10 +124,12 @@ abstract class BaseJunitTest implements
 
     def runSoapApikitFlow(String operation,
                           String apiKitFlowName = 'api-main',
+                          String host = 'localhost:9999',
                           @DelegatesTo(SoapInvoker) Closure closure) {
         runSoapApikitFlow(runtimeBridge,
                           operation,
                           apiKitFlowName,
+                          host,
                           closure)
     }
 }

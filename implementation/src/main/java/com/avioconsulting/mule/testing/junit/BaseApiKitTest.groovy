@@ -67,7 +67,7 @@ abstract class BaseApiKitTest extends
                                                    queryParams,
                                                    runtimeBridge,
                                                    event.message.mimeType,
-                                                   portNumberDoesNotMatter)
+                                                   "localhost:${portNumberDoesNotMatter}")
         logger.info 'APIkit flow invocation: simulating HTTP listener using attributes: {}',
                     attributes
         event.withNewAttributes(attributes)
