@@ -23,7 +23,9 @@ class SoapTest extends
         // arrange
         def input = new SOAPTestRequest().with {
             title = 'hello there'
-            approvalDate = getXmlDate(2018, 8, 07)
+            approvalDate = getXmlDate(2018,
+                                      8,
+                                      07)
             it
         }
 
@@ -44,7 +46,9 @@ class SoapTest extends
         // arrange
         def input = new SOAPTestRequest().with {
             title = 'hello there'
-            approvalDate = getXmlDate(2018, 8, 07)
+            approvalDate = getXmlDate(2018,
+                                      8,
+                                      07)
             it
         }
 
@@ -65,7 +69,9 @@ class SoapTest extends
         // arrange
         def input = new SOAPTestRequest().with {
             title = 'hello there'
-            approvalDate = getXmlDate(2018, 8, 07)
+            approvalDate = getXmlDate(2018,
+                                      8,
+                                      07)
             it
         }
 
@@ -80,5 +86,36 @@ class SoapTest extends
                    is(startsWith('<soap:Envelope'))
         assertThat payload,
                    is(containsString('<ns0:details>theTitle hello there'))
+    }
+
+    @Test
+    void custom_host() {
+        // arrange
+        def input = new SOAPTestRequest().with {
+            title = 'hello there'
+            approvalDate = getXmlDate(2018,
+                                      8,
+                                      07)
+            it
+        }
+        String loggedPayload = null
+        mockGeneric('Log stuff') {
+            raw {
+                whenCalledWith { typedValue ->
+                    loggedPayload = typedValue.value
+                }
+            }
+        }
+
+        // act
+        runSoapApikitFlow('operation1',
+                          'api-main',
+                          'otherhost:123') {
+            inputJaxbPayload(input)
+        }
+
+        // assert
+        assertThat loggedPayload,
+                   is(equalTo('otherhost:123'))
     }
 }

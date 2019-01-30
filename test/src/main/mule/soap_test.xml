@@ -252,8 +252,12 @@ ns ns0 http://www.avioconsulting.com/schemas/SOAPTest/v1
         </apikit-soap:router>
     </flow>
     <flow name="operation1:\soapkit-config">
-        <logger message="soap operation flow invoked ok" level="INFO"/>
-        <logger message="payload: #[payload]" level="INFO"/>
+        <set-variable variableName="preservedPayload"
+                      value="#[payload]"/>
+        <set-payload value="#[attributes.protocolHeaders.host]"/>
+        <logger message="soap operation flow invoked ok for #[payload]"
+                doc:name="Log stuff"
+                level="INFO"/>
         <ee:transform doc:name="Transform Message">
             <ee:message>
                 <ee:set-payload><![CDATA[%dw 2.0
@@ -262,7 +266,7 @@ ns ns0 http://www.avioconsulting.com/schemas/SOAPTest/v1
 ---
 {
 	ns0#SOAPTestResponse: {
-		ns0#details: 'theTitle ' ++ payload.body.ns0#SOAPTestRequest.title
+		ns0#details: 'theTitle ' ++ vars.preservedPayload.body.ns0#SOAPTestRequest.title
 	}
 }]]></ee:set-payload>
             </ee:message>
