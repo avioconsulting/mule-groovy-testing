@@ -439,4 +439,15 @@ trait BaseMuleGroovyTrait {
         mockingConfiguration.addMock(connectorName,
                                      soapFormatter.transformer)
     }
+
+    // can't just new up a Java class inside the app from our test because the app runs in a different
+    // classloader than our tests do
+    def <T> T instantiateJavaClassWithAppClassLoader(Class<T> klass,
+                                                     RuntimeBridgeTestSide runtimeBridge) {
+        // we can 'trick' Java by taking in a class/method generic which will be IDE friendly
+        // but we'll actually return an instance of the class loaded from the app's classloader instead
+        // but the generics will gone at that point so everything will just work
+        def klassFromApp = runtimeBridge.getAppClassloader().loadClass(klass.name)
+        klassFromApp.newInstance()
+    }
 }

@@ -18,8 +18,10 @@ class JavaTest extends
     @Test
     void javaObject() {
         // arrange
-        def input = new SimpleJavaClass()
-        input.howdy = '123'
+        def input = instantiateJavaClassWithAppClassLoader(SimpleJavaClass).with {
+            howdy = '123'
+            it
+        }
 
         // act
         def result = runFlow('javaFlow') {
@@ -31,8 +33,9 @@ class JavaTest extends
         // assert
         assertThat result,
                    is(equalTo([
-                           key  : '123',
-                           value: SimpleJavaClass.name
+                           key                    : '123',
+                           value                  : SimpleJavaClass.name,
+                           value_from_jacva_module: '123'
                    ]))
     }
 }

@@ -132,4 +132,11 @@ abstract class BaseJunitTest implements
                           host,
                           closure)
     }
+
+    // can't just new up a Java class inside the app from our test because the app runs in a different
+    // classloader than our tests do
+    def <T> T instantiateJavaClassWithAppClassLoader(Class<T> klass) {
+        instantiateJavaClassWithAppClassLoader(klass,
+                                               runtimeBridge)
+    }
 }
