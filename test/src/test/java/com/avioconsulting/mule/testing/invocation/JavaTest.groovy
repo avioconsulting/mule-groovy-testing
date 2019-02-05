@@ -18,6 +18,8 @@ class JavaTest extends
     @Test
     void javaObject() {
         // arrange
+        // you don't have to use this with java inputs but if your app serializes it (batch) or needs to
+        // know what the class is, it will expect it to be w/ the app's classloader
         def input = instantiateJavaClassWithAppClassLoader(SimpleJavaClass).with {
             howdy = '123'
             it

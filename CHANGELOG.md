@@ -3,7 +3,7 @@
 
 # 2.0.22
 * Allow changing the simulated HTTP host header when invoking a SOAP apikit flow
-* Convenience method for instantiating Java classes using the app's classloader
+* Convenience method (`instantiateJavaClassWithAppClassLoader`) for instantiating Java classes using the app's classloader
 
 # 2.0.21
 * Add `correlationId` getter support to `EventWrapper`
