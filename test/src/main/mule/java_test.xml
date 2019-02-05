@@ -2,12 +2,21 @@
 
 <mule xmlns="http://www.mulesoft.org/schema/mule/core"
       xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+      xmlns:java="http://www.mulesoft.org/schema/mule/java"
       xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/java http://www.mulesoft.org/schema/mule/java/current/mule-java.xsd
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
     <flow name="javaFlow">
-        <set-variable variableName="theClass" value="#[payload.class]"/>
+        <set-variable variableName="theClass"
+                      value="#[payload.class]"/>
+        <!-- Using java:invoke because it will try and access the input using the app's classloader
+         which is more realistic for how apps might work -->
+        <java:invoke class="com.avioconsulting.mule.testing.invocation.SimpleJavaClass"
+                     instance="#[payload]"
+                     method="getHowdy()"
+                     target="howdyFromJavaModule"/>
         <ee:transform doc:name="Transform Message">
             <ee:message>
                 <ee:set-payload><![CDATA[%dw 2.0
@@ -15,7 +24,8 @@ output application/java
 ---
 {
     key: payload.howdy,
-    value: vars.theClass
+    value: vars.theClass,
+    value_from_java_module: vars.howdyFromJavaModule
 }]]></ee:set-payload>
             </ee:message>
         </ee:transform>
