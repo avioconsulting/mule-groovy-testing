@@ -35,9 +35,9 @@ class JavaTest extends
         // assert
         assertThat result,
                    is(equalTo([
-                           key                    : '123',
-                           value                  : SimpleJavaClass.name,
-                           value_from_jacva_module: '123'
+                           key                   : '123',
+                           value                 : SimpleJavaClass.name,
+                           value_from_java_module: '123'
                    ]))
     }
 }
