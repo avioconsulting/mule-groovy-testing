@@ -1,6 +1,9 @@
 # 2.0
 (for Mule 4.1)
 
+# 2.0.23
+* Display configured properties when app under test is deployed
+
 # 2.0.22
 * Allow changing the simulated HTTP host header when invoking a SOAP apikit flow
 * Convenience method (`instantiateJavaClassWithAppClassLoader`) for instantiating Java classes using the app's classloader

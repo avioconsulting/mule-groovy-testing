@@ -98,6 +98,8 @@ trait BaseMuleGroovyTrait {
                 FileUtils.copyDirectory(dir,
                                         appSourceDir)
             }
+            logger.info 'Deploying with properties {}',
+                        testingConfiguration.startupProperties
             muleEngineContainer.deployApplication(artifactName,
                                                   appSourceDir.toURI(),
                                                   mockingConfiguration,
