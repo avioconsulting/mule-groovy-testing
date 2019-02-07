@@ -7,6 +7,8 @@ import groovy.transform.Immutable
 @Immutable
 class TestingConfiguration {
     Map startupProperties, classLoaderModel, artifactModel
+    // mavenProfiles isn't directly used but since we're using Groovy immutable, it will control the state
+    // of the 'deployed app' and cause an undeployment if they change, which is what we want.
     List<String> keepListenersOnForTheseFlows, mavenProfiles
     List<File> outputDirsToCopy
     BaseEngineConfig engineConfig
