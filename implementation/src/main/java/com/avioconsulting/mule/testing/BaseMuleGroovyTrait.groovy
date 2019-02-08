@@ -9,6 +9,7 @@ import com.avioconsulting.mule.testing.junit.TestingConfiguration
 import com.avioconsulting.mule.testing.muleinterfaces.MockingConfiguration
 import com.avioconsulting.mule.testing.muleinterfaces.RuntimeBridgeTestSide
 import com.avioconsulting.mule.testing.muleinterfaces.containers.BaseEngineConfig
+import com.avioconsulting.mule.testing.muleinterfaces.containers.Dependency
 import com.avioconsulting.mule.testing.muleinterfaces.containers.DescriptorGenerator
 import com.avioconsulting.mule.testing.muleinterfaces.containers.MuleEngineContainer
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.EventWrapper
@@ -195,6 +196,15 @@ trait BaseMuleGroovyTrait {
      * @return
      */
     List<String> getMavenProfiles() {
+        []
+    }
+
+    /**
+     * If you want some dependencies to be filtered out of your classloader model during the test runs
+     * You can override this method. Regular expressions are accepted
+     * @return
+     */
+    List<Dependency> getDependenciesToFilter() {
         []
     }
 
