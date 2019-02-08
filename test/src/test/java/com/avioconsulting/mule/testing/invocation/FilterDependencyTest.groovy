@@ -28,7 +28,7 @@ class FilterDependencyTest extends BaseJunitTest implements
                 new Dependency('org.mule.connectors',
                                'mule-wsc-connector',
                                '.*',
-                               '*')
+                               '.*')
         ]
     }
 

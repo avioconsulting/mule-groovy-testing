@@ -63,7 +63,8 @@ trait BaseMuleGroovyTrait {
                                        'classloader-model.json')
             def classLoaderModel = testingConfiguration.classLoaderModel
             def logger = getLogger()
-            classLoaderModel = filterDomainFromClassLoaderModel(classLoaderModel)
+            classLoaderModel = filterDependenciesFromClassLoaderModel(classLoaderModel,
+                                                                      testingConfiguration.dependenciesToFilter)
             def classLoaderModelJson = JsonOutput.prettyPrint(JsonOutput.toJson(classLoaderModel))
             logger.debug 'Using classloader model {}',
                          classLoaderModelJson
@@ -252,17 +253,31 @@ trait BaseMuleGroovyTrait {
                  'mule-artifact.json')
     }
 
-    // domains are trickier to deal with here. for now, we just won't load them
-    def filterDomainFromClassLoaderModel(Map classLoaderModel) {
+    def filterDependenciesFromClassLoaderModel(Map classLoaderModel,
+                                               List<Dependency> filters) {
         def dependencies = classLoaderModel.dependencies
         def domains = dependencies.findAll { dep ->
+            // domains are trickier to deal with here. for now, we just won't load them
             dep.artifactCoordinates.classifier == 'mule-domain'
         }
         if (domains.any()) {
             logger.info 'Removing domain {} from classloader model to make tests simpler',
                         domains
         }
-        def leanerDependencies = dependencies - domains
+        def otherMatches = filters.collect { filterDependency ->
+            dependencies.findAll { actualDependency ->
+                def coordinates = actualDependency.artifactCoordinates
+                coordinates.groupId.matches(filterDependency.groupId) &&
+                        coordinates.artifactId.matches(filterDependency.artifactId) &&
+                        coordinates.version.matches(filterDependency.version) &&
+                        actualDependency.uri.matches(filterDependency.filename)
+            }
+        }.flatten()
+        if (otherMatches.any()) {
+            logger.info 'Removing the following dependencies as requested by the getDependenciesToFilter() method: {}',
+                        otherMatches
+        }
+        def leanerDependencies = dependencies - domains - otherMatches
         return classLoaderModel + [dependencies: leanerDependencies]
     }
 
