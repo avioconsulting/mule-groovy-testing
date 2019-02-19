@@ -47,7 +47,9 @@ class XMLFormatterImpl implements XMLFormatter, IFormatter {
     }
 
     IFormatter withNewPayloadValidator(IPayloadValidator validator) {
-        new XMLFormatterImpl(eventFactory, validator)
+        new XMLFormatterImpl(eventFactory,
+                             validator,
+                             transformerUse)
     }
 
     IPayloadValidator getPayloadValidator() {

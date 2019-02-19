@@ -1,3 +1,6 @@
+# 1.0.31
+* Fix bug with `disableContentTypeCheck` on HTTP request mocks wth XML format
+
 # 1.0.30
 * Curry `MuleEvent` arguments in all mock closures, not just HTTP
 
