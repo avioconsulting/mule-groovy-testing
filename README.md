@@ -72,6 +72,12 @@ ${app.runtime} from this project by default -->
                 <goal>resolve</goal>
             </goals>
             <phase>generate-test-resources</phase>
+            <!-- mulePatches is optional -->
+            <configuration>
+                <mulePatches>
+                <patch>org.mule.patches:SE-9559-4.1.5:1.0</patch>
+                </mulePatches>
+            </configuration>
         </execution>
     </executions>
 </plugin>
