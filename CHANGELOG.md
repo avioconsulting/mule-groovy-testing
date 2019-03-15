@@ -1,6 +1,9 @@
 # 2.0
 (for Mule 4.1)
 
+# 2.0.25
+* Added `runSoapApikitFlowJaxbResultBody` method for unmarshalling SOAP body in response when invoking SOAP apikit flows using SOAPAction
+
 # 2.0.24
 * In case Maven profiles are not enough, add overrideable `getDependenciesToFilter()` method that allows you to filter dependencies from the classloader model during testing
 
