@@ -70,4 +70,21 @@ class JAXBMarshalHelper {
                                                 e)
         }
     }
+
+    def unmarshal(Document document) {
+        def unmarshaller = this.jaxbContext.createUnmarshaller()
+        log.info 'JAXB Unmarshaller received Document to unmarshal'
+        try {
+            def result = unmarshaller.unmarshal(document)
+            if (result instanceof JAXBElement) {
+                result.value
+            } else {
+                result
+            }
+        }
+        catch (e) {
+            throw new TestingFrameworkException('SOAP Mocks: Unable to marshal message. Do you need a different JAXB context?',
+                                                e)
+        }
+    }
 }

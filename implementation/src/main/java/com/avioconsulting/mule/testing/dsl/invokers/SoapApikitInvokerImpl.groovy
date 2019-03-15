@@ -12,6 +12,7 @@ import groovy.xml.XmlUtil
 import javax.wsdl.factory.WSDLFactory
 import javax.xml.namespace.QName
 import javax.xml.soap.MessageFactory
+import javax.xml.soap.MimeHeaders
 
 @Log4j2
 class SoapApikitInvokerImpl extends
@@ -107,5 +108,15 @@ class SoapApikitInvokerImpl extends
         assert soapOperation: "Expected a SOAP Action type attribute on the operation! e.g. <soap:operation\n" +
                 "                    soapOperation=\"http://www.avioconsulting.com/services/SOAPTest/v1/SOAPTest\"/>"
         soapOperation.soapActionURI
+    }
+
+    def transformOutput(EventWrapper event) {
+        def messageAsString = event.messageAsString
+        log.info 'About to unmarshal SOAP body portion of payload {}',
+                 messageAsString
+        def message = MessageFactory.newInstance()
+                .createMessage(new MimeHeaders(),
+                               new ByteArrayInputStream(messageAsString.bytes))
+        jaxbHelper.unmarshal(message.SOAPBody.extractContentAsDocument())
     }
 }

@@ -360,7 +360,21 @@ trait BaseMuleGroovyTrait {
                                         String apiKitFlowName = 'api-main',
                                         String host = 'localhost:9999',
                                         @DelegatesTo(SoapInvoker) Closure closure) {
-
+        def invoker = new SoapApikitInvokerImpl(bridge,
+                                                apiKitFlowName,
+                                                operation,
+                                                host,
+                                                bridge)
+        def code = closure.rehydrate(invoker,
+                                     this,
+                                     this)
+        code.resolveStrategy = Closure.DELEGATE_ONLY
+        code()
+        def event = invoker.event
+        def outputEvent = runFlow(bridge,
+                                  apiKitFlowName,
+                                  event)
+        invoker.transformOutput(outputEvent)
     }
 
     EventWrapper runFlow(RuntimeBridgeTestSide bridge,
