@@ -8,9 +8,9 @@
     <packaging>mule-application</packaging>
 
     <properties>
-        <!-- This does not mean this framework can only be used with 4.1.4. It's just what it's built/tested
+        <!-- This does not mean this framework can only be used with 4.1.5. It's just what it's built/tested
          against -->
-        <app.runtime>4.1.4</app.runtime>
+        <app.runtime>4.1.5</app.runtime>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <groovy.compiler.version>2.4.15</groovy.compiler.version>
@@ -131,7 +131,7 @@
             <plugin>
                 <groupId>com.avioconsulting.mule</groupId>
                 <artifactId>dependency-resolver-maven-plugin</artifactId>
-                <version>1.0.2</version>
+                <version>1.0.3</version>
                 <executions>
                     <execution>
                         <id>generate-dep-graph</id>
@@ -141,6 +141,11 @@
                         <phase>generate-test-resources</phase>
                     </execution>
                 </executions>
+                <configuration>
+                    <mulePatches>
+                        <patch>org.mule.patches:SE-9559-4.1.5:1.0</patch>
+                    </mulePatches>
+                </configuration>
             </plugin>
         </plugins>
     </build>
@@ -245,6 +250,12 @@
             <name>Mulesoft public repo</name>
             <url>https://repository.mulesoft.org/nexus/content/repositories/public</url>
             <layout>default</layout>
+        </repository>
+        <!-- patch testing -->
+        <repository>
+            <id>avio-releases</id>
+            <name>AVIO Releases Repository</name>
+            <url>https://devops.avioconsulting.com/nexus/repository/avio-releases/</url>
         </repository>
         <repository>
             <id>avio-mule-ee-releases</id>

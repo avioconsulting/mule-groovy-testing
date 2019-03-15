@@ -67,6 +67,7 @@ class MuleEngineContainer {
             def classLoaderFactory = getClassLoaderFactory(engineConfig,
                                                            dependencyJsonText)
             copyServices(classLoaderFactory.services)
+            copyPatches(classLoaderFactory.patches)
             def containerModulesClassLoader = classLoaderFactory.classLoader
             // see FilterOutNonTestingExtensionsClassLoader for why we're doing this
             def containerClassLoader = new FilterOutNonTestingExtensionsClassLoader(containerModulesClassLoader,
@@ -106,6 +107,21 @@ class MuleEngineContainer {
         services.each { svcUrl ->
             FileUtils.copyFileToDirectory(new File(svcUrl.toURI()),
                                           servicesDir)
+        }
+    }
+
+    private void copyPatches(List<URL> patches) {
+        def libDir = new File(muleHomeDirectory,
+                                   'lib')
+        def patchesDir = new File(libDir,
+                                  'patches')
+        patchesDir.mkdirs()
+        log.info 'Copying patches {} to {}',
+                 patches,
+                 patchesDir
+        patches.each { patchUrl ->
+            FileUtils.copyFileToDirectory(new File(patchUrl.toURI()),
+                                          patchesDir)
         }
     }
 

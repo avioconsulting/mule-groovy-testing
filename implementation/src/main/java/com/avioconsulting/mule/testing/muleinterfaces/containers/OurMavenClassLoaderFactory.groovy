@@ -10,6 +10,7 @@ class OurMavenClassLoaderFactory {
     private static final String EE_PATCHES_GROUP_ID = "com.mulesoft.mule.patches"
     private final ClassLoader classLoader
     private final List<URL> services
+    private final List<URL> patches
 
     OurMavenClassLoaderFactory(BaseEngineConfig engineConfig,
                                File muleHomeDirectory,
@@ -36,6 +37,11 @@ class OurMavenClassLoaderFactory {
         services.removeAll() { svcUrl ->
             filterAnalyticsPluginEnabled && svcUrl.toString().contains('api-gateway-contract-service')
         }
+        patches = bundleDependencies.findAll { d ->
+            isPatchDependency(d)
+        }.collect { d ->
+            d.URL
+        }
         def urls = (bundleDependencies - serviceDependencies).collect { dep ->
             dep.URL
         }
@@ -58,5 +64,9 @@ class OurMavenClassLoaderFactory {
 
     List<URL> getServices() {
         return services
+    }
+
+    List<URL> getPatches() {
+        return patches
     }
 }
