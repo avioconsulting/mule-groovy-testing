@@ -355,6 +355,14 @@ trait BaseMuleGroovyTrait {
                 event)
     }
 
+    def runSoapApikitFlowJaxbResultBody(RuntimeBridgeTestSide bridge,
+                                        String operation,
+                                        String apiKitFlowName = 'api-main',
+                                        String host = 'localhost:9999',
+                                        @DelegatesTo(SoapInvoker) Closure closure) {
+
+    }
+
     EventWrapper runFlow(RuntimeBridgeTestSide bridge,
                          String flowName,
                          EventWrapper event) {

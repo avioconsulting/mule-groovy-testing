@@ -133,6 +133,17 @@ abstract class BaseJunitTest implements
                           closure)
     }
 
+    def runSoapApikitFlowJaxbResultBody(String operation,
+                                        String apiKitFlowName = 'api-main',
+                                        String host = 'localhost:9999',
+                                        @DelegatesTo(SoapInvoker) Closure closure) {
+        runSoapApikitFlowJaxbResultBody(runtimeBridge,
+                                        operation,
+                                        apiKitFlowName,
+                                        host,
+                                        closure)
+    }
+
     // can't just new up a Java class inside the app from our test because the app runs in a different
     // classloader than our tests do
     def <T> T instantiateJavaClassWithAppClassLoader(Class<T> klass) {

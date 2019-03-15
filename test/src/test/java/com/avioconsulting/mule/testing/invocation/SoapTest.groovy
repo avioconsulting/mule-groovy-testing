@@ -89,6 +89,27 @@ class SoapTest extends
     }
 
     @Test
+    void runs_via_apikit_jaxb_response() {
+        // arrange
+        def input = new SOAPTestRequest().with {
+            title = 'hello there'
+            approvalDate = getXmlDate(2018,
+                                      8,
+                                      07)
+            it
+        }
+
+        // act
+        def result = runSoapApikitFlowJaxbResultBody('operation1') {
+            inputJaxbPayload(input)
+        } as SOAPTestResponse
+
+        // assert
+        assertThat result.details,
+                   is(equalTo('theTitle hello there'))
+    }
+
+    @Test
     void custom_host() {
         // arrange
         def input = new SOAPTestRequest().with {
