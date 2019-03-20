@@ -31,6 +31,10 @@ public class SourceDisableManager implements ComponentInitialStateManager {
 
     @Override
     public boolean mustStartMessageSource(Component component) {
+        // in lazy mode, when flows are loaded, this will be called w/ null
+        if (component == null) {
+            return false;
+        }
         String flowName = component.getLocation().getRootContainerName();
         return shouldFlowListenerBeEnabledMethod(flowName);
     }
