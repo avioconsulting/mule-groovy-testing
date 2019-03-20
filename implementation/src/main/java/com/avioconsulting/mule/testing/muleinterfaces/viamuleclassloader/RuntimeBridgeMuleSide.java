@@ -5,7 +5,6 @@ import org.apache.logging.log4j.Logger;
 import org.mule.runtime.api.artifact.Registry;
 import org.mule.runtime.api.component.TypedComponentIdentifier;
 import org.mule.runtime.api.component.location.ComponentLocation;
-import org.mule.runtime.api.component.location.ConfigurationComponentLocator;
 import org.mule.runtime.api.event.EventContext;
 import org.mule.runtime.api.exception.ErrorTypeRepository;
 import org.mule.runtime.api.message.Message;
@@ -20,6 +19,7 @@ import org.mule.runtime.core.api.streaming.StreamingManager;
 import org.mule.runtime.core.api.streaming.bytes.CursorStreamProviderFactory;
 import org.mule.runtime.core.internal.event.DefaultEventContext;
 import org.mule.runtime.core.internal.interception.DefaultInterceptionEvent;
+import org.mule.runtime.dsl.api.component.config.DefaultComponentLocation;
 
 import javax.xml.namespace.QName;
 import java.io.InputStream;
@@ -50,23 +50,26 @@ public class RuntimeBridgeMuleSide {
     }
 
     public Object lookupByName(String flowName) {
-        LazyComponentInitializer init = this.registry.lookupByType(LazyComponentInitializer.class).get();
-        ConfigurationComponentLocator locator = this.registry.lookupByType(ConfigurationComponentLocator.class).get();
-        // TODO: This sort of works, we just need to 1) identify the right flow, 2) only call this if we can't get the flow from the registry, and 3) figure out the exception we get as is
-        for (ComponentLocation loc : locator.findAllLocations()) {
-            if (loc.getComponentIdentifier().getType().equals(TypedComponentIdentifier.ComponentType.FLOW)) {
-                logger.info("Flow '{}' has not been lazily loaded yet, forcing load",
-                            flowName);
-                init.initializeComponents(new LazyComponentInitializer.ComponentLocationFilter() {
-                    @Override
-                    public boolean accept(ComponentLocation componentLocation) {
-                        return componentLocation.equals(loc);
-                    }
-                });
-                logger.info("Flow '{}' lazy load complete",
-                            flowName);
-            }
+        Optional<Object> flow = this.registry.lookupByName(flowName);
+        if (flow.isPresent()) {
+            return flow;
         }
+        // see lazyInit property (currently in BaseMuleGroovyTrait) for why we have to lazy load
+        // when we do lazy load, no flows will be started or initialized by default. so every time we want
+        // to run a new one, we need to initialize it
+        LazyComponentInitializer init = this.registry.lookupByType(LazyComponentInitializer.class).get();
+        init.initializeComponents(componentLocation -> {
+            if (componentLocation.getComponentIdentifier().getType().equals(TypedComponentIdentifier.ComponentType.FLOW)) {
+                assert componentLocation instanceof DefaultComponentLocation;
+                Optional<String> theName = ((DefaultComponentLocation) componentLocation).getName();
+                if (theName.isPresent() && theName.get().equals(flowName)) {
+                    logger.info("Flow '{}' has not been lazily loaded yet, forcing load",
+                                flowName);
+                    return true;
+                }
+            }
+            return false;
+        });
         return this.registry.lookupByName(flowName);
     }
 

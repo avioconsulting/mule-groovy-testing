@@ -113,12 +113,12 @@ trait BaseMuleGroovyTrait {
     }
 
     Map getStartUpProperties() {
-        // MUnit does this
-        // see org.mule.runtime.core.api.config.MuleDeploymentProperties
-        // might be the key to fixing the connection problem except it doesn't start any flow by default
-        // so our code breaks
+        // TODO: These could be overridden, need to 'bake them in' more
         [
                 'mule.application.deployment.lazyConnections'              : true,
+                // lazyInit is important, otherwise connectors that make connections (like SFTP)
+                // cannot be mocked because a connection attempt will fail before the mock
+                // interceptor is reached
                 'mule.application.deployment.lazyInit'                     : true,
                 'mule.application.deployment.lazyInit.enableXmlValidations': true
         ]
