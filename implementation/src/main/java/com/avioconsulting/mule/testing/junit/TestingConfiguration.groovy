@@ -15,10 +15,16 @@ class TestingConfiguration {
     List<File> outputDirsToCopy
     BaseEngineConfig engineConfig
     String mavenPomPath, repositoryDirectory
+    boolean lazyConnections, lazyInit, lazyInitXmlValidations
 
     Properties getStartupPropertiesAsJavaUtilProps() {
-        // Mule needs every value to be a string
-        def allStrings = startupProperties.collectEntries { key, value ->
+        def allStrings = ([
+                // see org.mule.runtime.core.api.config.MuleDeploymentProperties
+                'mule.application.deployment.lazyConnections'              : lazyConnections,
+                'mule.application.deployment.lazyInit'                     : lazyInit,
+                'mule.application.deployment.lazyInit.enableXmlValidations': lazyInitXmlValidations
+        ] + startupProperties).collectEntries { key, value ->
+            // Mule needs every value to be a string, doesn't like booleans that are not string
             [key.toString(), value.toString()]
         }
         new Properties(allStrings)

@@ -73,7 +73,10 @@ class TestState {
                                                                  test.outputDirsToCopy(),
                                                                  test.getBaseEngineConfig(),
                                                                  test.getMavenPomPath().absolutePath,
-                                                                 test.getRepositoryDirectory().absolutePath)
+                                                                 test.getRepositoryDirectory().absolutePath,
+                                                                 test.useLazyConnections,
+                                                                 test.useLazyInit,
+                                                                 test.lazyInitXmlValidations)
             if (failedConfigurations.containsKey(proposedTestingConfig)) {
                 def msg = 'Skipping load of application because this testing config previously failed to start'
                 log.error(msg)
