@@ -113,7 +113,15 @@ trait BaseMuleGroovyTrait {
     }
 
     Map getStartUpProperties() {
-        [:]
+        // MUnit does this
+        // see org.mule.runtime.core.api.config.MuleDeploymentProperties
+        // might be the key to fixing the connection problem except it doesn't start any flow by default
+        // so our code breaks
+        [
+                'mule.application.deployment.lazyConnections'              : true,
+                'mule.application.deployment.lazyInit'                     : true,
+                'mule.application.deployment.lazyInit.enableXmlValidations': true
+        ]
     }
 
     boolean isUseVerboseExceptions() {
