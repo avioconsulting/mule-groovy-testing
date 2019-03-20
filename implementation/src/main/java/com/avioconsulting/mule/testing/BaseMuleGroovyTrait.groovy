@@ -115,11 +115,12 @@ trait BaseMuleGroovyTrait {
     Map getStartUpProperties() {
         // TODO: These could be overridden, need to 'bake them in' more
         [
-                'mule.application.deployment.lazyConnections'              : true,
-                // lazyInit is important, otherwise connectors that make connections (like SFTP)
+                // lazyConnections is important  otherwise connectors that make connections (like SFTP)
                 // cannot be mocked because a connection attempt will fail before the mock
                 // interceptor is reached
-                'mule.application.deployment.lazyInit'                     : true,
+                'mule.application.deployment.lazyConnections'              : true,
+                // lazyInit is not required
+                //'mule.application.deployment.lazyInit'                     : true,
                 'mule.application.deployment.lazyInit.enableXmlValidations': true
         ]
     }
