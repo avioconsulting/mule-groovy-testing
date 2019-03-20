@@ -1,5 +1,7 @@
 package com.avioconsulting.mule.testing.muleinterfaces.viamuleclassloader;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.mule.runtime.api.artifact.Registry;
 import org.mule.runtime.api.component.TypedComponentIdentifier;
 import org.mule.runtime.api.component.location.ComponentLocation;
@@ -31,6 +33,7 @@ public class RuntimeBridgeMuleSide {
     // sides of the classloader divide
     private static final QName COMPONENT_LOCATION = new QName("mule",
                                                               "COMPONENT_LOCATION");
+    private static final Logger logger = LogManager.getLogger(RuntimeBridgeMuleSide.class);
     private final Registry registry;
     private final List<CompletableFuture<Void>> streamCompletionCallbacks = new ArrayList<>();
     private GroovyTestingBatchNotifyListener batchNotifyListener;
@@ -52,12 +55,16 @@ public class RuntimeBridgeMuleSide {
         // TODO: This sort of works, we just need to 1) identify the right flow, 2) only call this if we can't get the flow from the registry, and 3) figure out the exception we get as is
         for (ComponentLocation loc : locator.findAllLocations()) {
             if (loc.getComponentIdentifier().getType().equals(TypedComponentIdentifier.ComponentType.FLOW)) {
+                logger.info("Flow '{}' has not been lazily loaded yet, forcing load",
+                            flowName);
                 init.initializeComponents(new LazyComponentInitializer.ComponentLocationFilter() {
                     @Override
                     public boolean accept(ComponentLocation componentLocation) {
                         return componentLocation.equals(loc);
                     }
                 });
+                logger.info("Flow '{}' lazy load complete",
+                            flowName);
             }
         }
         return this.registry.lookupByName(flowName);
