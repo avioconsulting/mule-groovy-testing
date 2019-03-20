@@ -27,6 +27,7 @@ What hasn't been done yet/TODOs:
 * Easily mock any DQL/Devkit based connector
 * Boilerplate code from queue-error-strategies, how to test that
 * Mocking DB (you probably shouldn't do this anyways, better to spin up a DB in a Docker container if possible)
+* Mocking SFTP processors (NOT listeners) or anything that uses a connection. The underlying Mule interceptor code this framework relies on doesn't prevent Mule from trying to open a connection and if that fails, the mock code is never reached.
 
 # Setting up your project
 
