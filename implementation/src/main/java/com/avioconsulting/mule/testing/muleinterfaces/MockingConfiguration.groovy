@@ -9,6 +9,7 @@ import org.apache.logging.log4j.CloseableThreadContext
 class MockingConfiguration {
     private final Map<String, MuleMessageTransformer> mocks = [:]
     private final Map<String, Integer> keepListenersOnForTheseFlows
+    private final boolean lazyInitEnabled
     Object runtimeBridgeMuleSide
 
     MockingConfiguration(TestingConfiguration testingConfiguration) {
@@ -16,6 +17,11 @@ class MockingConfiguration {
             ->
             [flowName, 1]
         }
+        this.lazyInitEnabled = testingConfiguration.lazyInit
+    }
+
+    boolean isLazyInitEnabled() {
+        this.lazyInitEnabled
     }
 
     def clearMocks() {

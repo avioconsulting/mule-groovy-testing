@@ -182,7 +182,8 @@ class MuleEngineContainer {
         // this we have to do after the deployment
         def muleSide = deployListener.getRuntimeBridge(artifactName)
         new RuntimeBridgeTestSide(muleSide,
-                                  artifactName)
+                                  artifactName,
+                                  mockingConfiguration)
     }
 
     BaseEngineConfig getEngineConfig() {

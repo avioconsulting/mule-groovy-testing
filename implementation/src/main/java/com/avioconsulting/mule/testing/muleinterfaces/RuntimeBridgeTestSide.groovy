@@ -7,6 +7,7 @@ class RuntimeBridgeTestSide implements
         InvokerEventFactory,
         IFetchClassLoaders {
     private final Object runtimeBridgeMuleSide
+    private final MockingConfiguration mockingConfiguration
 
     String getArtifactName() {
         return artifactName
@@ -14,7 +15,9 @@ class RuntimeBridgeTestSide implements
     private final String artifactName
 
     RuntimeBridgeTestSide(Object runtimeBridgeMuleSide,
-                          String artifactName) {
+                          String artifactName,
+                          MockingConfiguration mockingConfiguration) {
+        this.mockingConfiguration = mockingConfiguration
         this.runtimeBridgeMuleSide = runtimeBridgeMuleSide
         this.artifactName = artifactName
     }
@@ -27,7 +30,8 @@ class RuntimeBridgeTestSide implements
     }
 
     private Object getNativeFlow(String flowName) {
-        def muleFlowOptional = runtimeBridgeMuleSide.lookupByName(flowName)
+        def muleFlowOptional = runtimeBridgeMuleSide.lookupByName(flowName,
+                                                                  mockingConfiguration.lazyInitEnabled)
         assert muleFlowOptional.isPresent(): "Flow with name '${flowName}' was not found. Are you using the right flow name?"
         muleFlowOptional.get()
     }

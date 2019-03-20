@@ -49,9 +49,11 @@ public class RuntimeBridgeMuleSide {
         cursorStreamProviderFactory = streamingManager.forBytes().getDefaultCursorProviderFactory();
     }
 
-    public Object lookupByName(String flowName) {
+    public Object lookupByName(String flowName,
+                               boolean lazyInitEnabled) {
         Optional<Object> flow = this.registry.lookupByName(flowName);
-        if (flow.isPresent()) {
+        // if we don't have lazy init on, we won't proceed further anyways
+        if (flow.isPresent() || !lazyInitEnabled) {
             return flow;
         }
         // see lazyInit property (currently in BaseMuleGroovyTrait) for why we have to lazy load
