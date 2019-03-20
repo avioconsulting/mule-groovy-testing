@@ -1,13 +1,16 @@
 package com.avioconsulting.mule.testing.muleinterfaces.viamuleclassloader;
 
 import org.mule.runtime.api.artifact.Registry;
+import org.mule.runtime.api.component.TypedComponentIdentifier;
 import org.mule.runtime.api.component.location.ComponentLocation;
+import org.mule.runtime.api.component.location.ConfigurationComponentLocator;
 import org.mule.runtime.api.event.EventContext;
 import org.mule.runtime.api.exception.ErrorTypeRepository;
 import org.mule.runtime.api.message.Message;
 import org.mule.runtime.api.metadata.DataType;
 import org.mule.runtime.api.metadata.MediaType;
 import org.mule.runtime.api.metadata.TypedValue;
+import org.mule.runtime.config.api.LazyComponentInitializer;
 import org.mule.runtime.core.api.MuleContext;
 import org.mule.runtime.core.api.construct.Flow;
 import org.mule.runtime.core.api.event.CoreEvent;
@@ -44,6 +47,19 @@ public class RuntimeBridgeMuleSide {
     }
 
     public Object lookupByName(String flowName) {
+        LazyComponentInitializer init = this.registry.lookupByType(LazyComponentInitializer.class).get();
+        ConfigurationComponentLocator locator = this.registry.lookupByType(ConfigurationComponentLocator.class).get();
+        // TODO: This sort of works, we just need to 1) identify the right flow, 2) only call this if we can't get the flow from the registry, and 3) figure out the exception we get as is
+        for (ComponentLocation loc : locator.findAllLocations()) {
+            if (loc.getComponentIdentifier().getType().equals(TypedComponentIdentifier.ComponentType.FLOW)) {
+                init.initializeComponents(new LazyComponentInitializer.ComponentLocationFilter() {
+                    @Override
+                    public boolean accept(ComponentLocation componentLocation) {
+                        return componentLocation.equals(loc);
+                    }
+                });
+            }
+        }
         return this.registry.lookupByName(flowName);
     }
 
