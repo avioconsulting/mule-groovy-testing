@@ -9,6 +9,7 @@ import org.apache.logging.log4j.CloseableThreadContext
 class MockingConfiguration {
     private final Map<String, MuleMessageTransformer> mocks = [:]
     private final Map<String, Integer> keepListenersOnForTheseFlows
+    private final boolean lazyInitEnabled
     Object runtimeBridgeMuleSide
 
     MockingConfiguration(TestingConfiguration testingConfiguration) {
@@ -16,6 +17,11 @@ class MockingConfiguration {
             ->
             [flowName, 1]
         }
+        this.lazyInitEnabled = testingConfiguration.lazyInit
+    }
+
+    boolean isLazyInitEnabled() {
+        this.lazyInitEnabled
     }
 
     def clearMocks() {
@@ -45,7 +51,34 @@ class MockingConfiguration {
                      Object parameters) {
         def mockProcess = mocks[connectorName]
         def params = (parameters as Map).collectEntries { key, value ->
-            [key, value.resolveValue()]
+            def resolved = null
+            try {
+                // parameters have to be 'resolved' before we can use them
+                // Parameters include things like the connector name that we're mocking, how it's configured
+                // the target (payload or variable), etc.
+                resolved = value.resolveValue()
+            }
+            catch (e) {
+                def logContext = CloseableThreadContext.push('Mock processor')
+                logContext.put('connector',
+                               connectorName)
+                logContext.put('parameterKey',
+                               key as String)
+                try {
+                    if (e.cause.getClass().name == 'org.mule.runtime.api.connection.ConnectionException') {
+                        log.info "Ignoring exception during parameter resolution because it is connection related and we're in a test: {}",
+                                 e.message
+                    } else {
+                        log.error "Unable to resolve parameter!",
+                                  e
+                        throw e
+                    }
+                }
+                finally {
+                    logContext.close()
+                }
+            }
+            [key, resolved]
         }
         def event = new InterceptEventWrapperImpl(interceptionEvent,
                                                   this.runtimeBridgeMuleSide)
@@ -79,6 +112,10 @@ class MockingConfiguration {
         finally {
             threadContext.close()
         }
+    }
+
+    Set<String> getKeepListenersOnForTheseFlows() {
+        this.keepListenersOnForTheseFlows.keySet()
     }
 
     boolean shouldFlowListenerBeEnabled(String flowName) {

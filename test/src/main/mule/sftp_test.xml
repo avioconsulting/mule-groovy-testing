@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:sftp="http://www.mulesoft.org/schema/mule/sftp"
+      xmlns="http://www.mulesoft.org/schema/mule/core"
+      xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/sftp http://www.mulesoft.org/schema/mule/sftp/current/mule-sftp.xsd">
+    <sftp:config name="SFTP_Config"
+                 doc:name="SFTP Config">
+        <sftp:connection host="some_server"
+                         port="22"
+                         username="doesnotmatter"
+                         password="doesnotmatter"/>
+    </sftp:config>
+    <flow name="move-stuff">
+        <sftp:move doc:name="Move the File"
+                   config-ref="SFTP_Config"
+                   sourcePath="theSourcePath"
+                   targetPath="theTargetPath"/>
+    </flow>
+</mule>

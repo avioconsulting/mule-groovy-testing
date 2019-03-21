@@ -101,7 +101,7 @@ trait BaseMuleGroovyTrait {
                                         appSourceDir)
             }
             logger.info 'Deploying with properties {}',
-                        testingConfiguration.startupProperties
+                        testingConfiguration.startupPropertiesAsJavaUtilProps
             muleEngineContainer.deployApplication(artifactName,
                                                   appSourceDir.toURI(),
                                                   mockingConfiguration,
@@ -114,6 +114,25 @@ trait BaseMuleGroovyTrait {
 
     Map getStartUpProperties() {
         [:]
+    }
+
+    boolean isUseLazyConnections() {
+        // lazyConnections is important  otherwise connectors that make connections (like SFTP)
+        // cannot be mocked because a connection attempt will fail before the mock
+        // interceptor is reached
+        true
+    }
+
+    boolean isUseLazyInit() {
+        // see isUseLazyConnections, lazyInit is not required to address that issue
+        // since our runner does a decent job of loading everything before the test starts, in order to
+        // keep the actual test method output less noisy, making this false by default
+        false
+    }
+
+    boolean isLazyInitXmlValidations() {
+        // if we do use lazy init, still want the validations
+        true
     }
 
     boolean isUseVerboseExceptions() {

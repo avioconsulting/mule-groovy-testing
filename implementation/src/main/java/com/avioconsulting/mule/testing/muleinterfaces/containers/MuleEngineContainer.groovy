@@ -112,7 +112,7 @@ class MuleEngineContainer {
 
     private void copyPatches(List<URL> patches) {
         def libDir = new File(muleHomeDirectory,
-                                   'lib')
+                              'lib')
         def patchesDir = new File(libDir,
                                   'patches')
         patchesDir.mkdirs()
@@ -181,8 +181,14 @@ class MuleEngineContainer {
                                            properties)
         // this we have to do after the deployment
         def muleSide = deployListener.getRuntimeBridge(artifactName)
-        new RuntimeBridgeTestSide(muleSide,
-                                  artifactName)
+        def testSide = new RuntimeBridgeTestSide(muleSide,
+                                                 artifactName,
+                                                 mockingConfiguration)
+        // if lazy init is on, then the source someone wants enabled won't be on without this
+        if (mockingConfiguration.lazyInitEnabled) {
+            testSide.startMessageSourceFlows()
+        }
+        testSide
     }
 
     BaseEngineConfig getEngineConfig() {

@@ -2,11 +2,14 @@ package com.avioconsulting.mule.testing.muleinterfaces
 
 import com.avioconsulting.mule.testing.InvokerEventFactory
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.*
+import groovy.util.logging.Log4j2
 
+@Log4j2
 class RuntimeBridgeTestSide implements
         InvokerEventFactory,
         IFetchClassLoaders {
     private final Object runtimeBridgeMuleSide
+    private final MockingConfiguration mockingConfiguration
 
     String getArtifactName() {
         return artifactName
@@ -14,7 +17,9 @@ class RuntimeBridgeTestSide implements
     private final String artifactName
 
     RuntimeBridgeTestSide(Object runtimeBridgeMuleSide,
-                          String artifactName) {
+                          String artifactName,
+                          MockingConfiguration mockingConfiguration) {
+        this.mockingConfiguration = mockingConfiguration
         this.runtimeBridgeMuleSide = runtimeBridgeMuleSide
         this.artifactName = artifactName
     }
@@ -27,7 +32,8 @@ class RuntimeBridgeTestSide implements
     }
 
     private Object getNativeFlow(String flowName) {
-        def muleFlowOptional = runtimeBridgeMuleSide.lookupByName(flowName)
+        def muleFlowOptional = runtimeBridgeMuleSide.lookupByName(flowName,
+                                                                  mockingConfiguration.lazyInitEnabled)
         assert muleFlowOptional.isPresent(): "Flow with name '${flowName}' was not found. Are you using the right flow name?"
         muleFlowOptional.get()
     }
@@ -94,5 +100,15 @@ class RuntimeBridgeTestSide implements
         new InvokeExceptionWrapper(cause,
                                    message,
                                    event)
+    }
+
+    def startMessageSourceFlows() {
+        def flows = mockingConfiguration.keepListenersOnForTheseFlows
+        log.info 'Starting message source flows {} since lazy init is on',
+                 flows
+        flows.each { flow ->
+            runtimeBridgeMuleSide.lookupByName(flow,
+                                               mockingConfiguration.lazyInitEnabled)
+        }
     }
 }

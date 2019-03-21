@@ -1,6 +1,9 @@
 package com.avioconsulting.mule.testing.muleinterfaces.viamuleclassloader;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.mule.runtime.api.artifact.Registry;
+import org.mule.runtime.api.component.TypedComponentIdentifier;
 import org.mule.runtime.api.component.location.ComponentLocation;
 import org.mule.runtime.api.event.EventContext;
 import org.mule.runtime.api.exception.ErrorTypeRepository;
@@ -8,6 +11,7 @@ import org.mule.runtime.api.message.Message;
 import org.mule.runtime.api.metadata.DataType;
 import org.mule.runtime.api.metadata.MediaType;
 import org.mule.runtime.api.metadata.TypedValue;
+import org.mule.runtime.config.api.LazyComponentInitializer;
 import org.mule.runtime.core.api.MuleContext;
 import org.mule.runtime.core.api.construct.Flow;
 import org.mule.runtime.core.api.event.CoreEvent;
@@ -15,6 +19,7 @@ import org.mule.runtime.core.api.streaming.StreamingManager;
 import org.mule.runtime.core.api.streaming.bytes.CursorStreamProviderFactory;
 import org.mule.runtime.core.internal.event.DefaultEventContext;
 import org.mule.runtime.core.internal.interception.DefaultInterceptionEvent;
+import org.mule.runtime.dsl.api.component.config.DefaultComponentLocation;
 
 import javax.xml.namespace.QName;
 import java.io.InputStream;
@@ -28,6 +33,7 @@ public class RuntimeBridgeMuleSide {
     // sides of the classloader divide
     private static final QName COMPONENT_LOCATION = new QName("mule",
                                                               "COMPONENT_LOCATION");
+    private static final Logger logger = LogManager.getLogger(RuntimeBridgeMuleSide.class);
     private final Registry registry;
     private final List<CompletableFuture<Void>> streamCompletionCallbacks = new ArrayList<>();
     private GroovyTestingBatchNotifyListener batchNotifyListener;
@@ -43,7 +49,29 @@ public class RuntimeBridgeMuleSide {
         cursorStreamProviderFactory = streamingManager.forBytes().getDefaultCursorProviderFactory();
     }
 
-    public Object lookupByName(String flowName) {
+    public Object lookupByName(String flowName,
+                               boolean lazyInitEnabled) {
+        Optional<Object> flow = this.registry.lookupByName(flowName);
+        // if we don't have lazy init on, we won't proceed further anyways
+        if (flow.isPresent() || !lazyInitEnabled) {
+            return flow;
+        }
+        // see lazyInit property (currently in BaseMuleGroovyTrait) for why we have to lazy load
+        // when we do lazy load, no flows will be started or initialized by default. so every time we want
+        // to run a new one, we need to initialize it
+        LazyComponentInitializer init = this.registry.lookupByType(LazyComponentInitializer.class).get();
+        init.initializeComponents(componentLocation -> {
+            if (componentLocation.getComponentIdentifier().getType().equals(TypedComponentIdentifier.ComponentType.FLOW)) {
+                assert componentLocation instanceof DefaultComponentLocation;
+                Optional<String> theName = ((DefaultComponentLocation) componentLocation).getName();
+                if (theName.isPresent() && theName.get().equals(flowName)) {
+                    logger.info("Flow '{}' has not been lazily loaded yet, forcing load",
+                                flowName);
+                    return true;
+                }
+            }
+            return false;
+        });
         return this.registry.lookupByName(flowName);
     }
 
