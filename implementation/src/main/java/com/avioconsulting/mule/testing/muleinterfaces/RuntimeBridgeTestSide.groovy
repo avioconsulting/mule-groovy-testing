@@ -2,7 +2,9 @@ package com.avioconsulting.mule.testing.muleinterfaces
 
 import com.avioconsulting.mule.testing.InvokerEventFactory
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.*
+import groovy.util.logging.Log4j2
 
+@Log4j2
 class RuntimeBridgeTestSide implements
         InvokerEventFactory,
         IFetchClassLoaders {
@@ -98,5 +100,15 @@ class RuntimeBridgeTestSide implements
         new InvokeExceptionWrapper(cause,
                                    message,
                                    event)
+    }
+
+    def startMessageSourceFlows() {
+        def flows = mockingConfiguration.keepListenersOnForTheseFlows
+        log.info 'Starting message source flows {} since lazy init is on',
+                 flows
+        flows.each { flow ->
+            runtimeBridgeMuleSide.lookupByName(flow,
+                                               mockingConfiguration.lazyInitEnabled)
+        }
     }
 }

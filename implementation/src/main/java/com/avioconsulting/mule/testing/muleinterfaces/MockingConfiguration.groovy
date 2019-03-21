@@ -114,6 +114,10 @@ class MockingConfiguration {
         }
     }
 
+    Set<String> getKeepListenersOnForTheseFlows() {
+        this.keepListenersOnForTheseFlows.keySet()
+    }
+
     boolean shouldFlowListenerBeEnabled(String flowName) {
         def keepListenerOn = keepListenersOnForTheseFlows.containsKey(flowName)
         if (keepListenerOn) {
