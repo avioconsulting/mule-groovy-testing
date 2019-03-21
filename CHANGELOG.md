@@ -1,6 +1,9 @@
 # 2.0
 (for Mule 4.1)
 
+# 2.0.27
+* Don't choke when mocking connectors that use connections
+
 # 2.0.26
 * Add ability to apply patches supplied via the `mulePatches` configuration setting in the `dependency-resolver-maven-plugin` Maven plugin
 # 2.0.25
