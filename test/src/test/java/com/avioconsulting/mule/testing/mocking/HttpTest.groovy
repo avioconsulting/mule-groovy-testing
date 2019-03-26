@@ -754,6 +754,6 @@ class HttpTest extends
         // assert
         assertThat 'We should not fail due to test framework machinery. The problem is in the code, plain and simple',
                    exception.message,
-                   is(containsString("Invalid input '-', expected Namespace"))
+                   is(containsString("Usually HTTP requesters have responseValidationSettings set on them. This one does not. This usually happens when the DW 2.0 logic that builds HTTP headers, query params, etc has a DW error in it. Check your DW logic in <http:headers> etc. carefully"))
     }
 }

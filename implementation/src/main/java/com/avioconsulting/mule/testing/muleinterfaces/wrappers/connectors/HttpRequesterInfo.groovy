@@ -23,6 +23,10 @@ class HttpRequesterInfo extends
               parameters)
         this.method = parameters['method'] as String
         def responseValidationSettings = parameters['responseValidationSettings']
+        if (!responseValidationSettings) {
+            // At the moment, there doesn't seem to be a way to get the actual DW problem that leads to this
+            throw new Exception('Usually HTTP requesters have responseValidationSettings set on them. This one does not. This usually happens when the DW 2.0 logic that builds HTTP headers, query params, etc has a DW error in it. Check your DW logic in <http:headers> etc. carefully')
+        }
         def muleValidator = responseValidationSettings.responseValidator
         if (!muleValidator) {
             // Even if you choose 'None' for response validator in Studio 7, Mule will still validate against 200,201 by default
