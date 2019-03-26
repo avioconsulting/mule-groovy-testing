@@ -22,7 +22,7 @@ output application/java
             </ee:message>
         </ee:transform>
     </flow>
-    <flow name="javaMockFlow">
+    <flow name="rawMockFlow">
         <logger doc:name="Something to mock"/>
         <ee:transform doc:name="Transform Message">
             <ee:message>
@@ -31,6 +31,23 @@ output application/java
 ---
 {
     key: payload
+}]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+    </flow>
+    <flow name="rawMockTargetFlow">
+        <java:invoke doc:name="Something to mock"
+                     class="does.not.matter"
+                     method="does.not.matter"
+                     instance="#[payload]"
+                     target="someVar"/>
+        <ee:transform doc:name="Transform Message">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/java
+---
+{
+    key: vars.someVar
 }]]></ee:set-payload>
             </ee:message>
         </ee:transform>

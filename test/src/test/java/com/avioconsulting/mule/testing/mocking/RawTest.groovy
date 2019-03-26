@@ -31,7 +31,40 @@ class RawTest extends
         }
 
         // act
-        def result = runFlow('javaMockFlow') {
+        def result = runFlow('rawMockFlow') {
+            java {
+                inputPayload('nope')
+            }
+        } as Map
+
+        // assert
+        assertThat result,
+                   is(equalTo([
+                           key: 'howdy'
+                   ]))
+        assertThat captured,
+                   is(equalTo('nope'))
+        assertThat actualClassName,
+                   is(equalTo('org.mule.runtime.api.metadata.TypedValue'))
+    }
+
+    @Test
+    void mock_target_value() {
+        // arrange
+        String captured = null
+        String actualClassName = null
+        mockGeneric('Something to mock') {
+            raw {
+                whenCalledWith { stuff ->
+                    actualClassName = stuff.getClass().name
+                    captured = stuff.value
+                    'howdy'
+                }
+            }
+        }
+
+        // act
+        def result = runFlow('rawMockTargetFlow') {
             java {
                 inputPayload('nope')
             }
