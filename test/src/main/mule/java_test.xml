@@ -22,6 +22,19 @@ output application/java
             </ee:message>
         </ee:transform>
     </flow>
+    <flow name="javaMockFlow">
+        <logger doc:name="Something to mock"/>
+        <ee:transform doc:name="Transform Message">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/java
+---
+{
+    key: payload
+}]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+    </flow>
     <flow name="javaFlowWithJavaInvokeUsage">
         <set-variable variableName="theClass"
                       value="#[payload.class]"/>
