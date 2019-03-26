@@ -445,7 +445,20 @@ output application/json
             </ee:message>
         </ee:transform>
     </flow>
-
+    <flow name="errorInHttpParamsTest">
+        <http:request config-ref="SomeSystem"
+                      path="/some_path/{howdy}"
+                      method="GET"
+                      doc:name="SomeSystem Call">
+            <http:headers>
+                <![CDATA[#[output application/java
+                ---
+                {
+                    Unquoted-Minus-Not-Allowed-In-Key: 'theHeaderValue'
+                }]]]>
+            </http:headers>
+        </http:request>
+    </flow>
     <flow name="headerTest">
         <ee:transform doc:name="Transform Message">
             <ee:message>

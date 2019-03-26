@@ -730,4 +730,30 @@ class HttpTest extends
         assertThat cause.message,
                    is(equalTo("HTTP POST on resource 'http://localhost:443/some_path' failed: Some timeout error."))
     }
+
+    @Test
+    void error_http_params() {
+        // arrange
+        mockRestHttpCall('SomeSystem Call') {
+            json {
+                whenCalledWith { Map incoming ->
+                    [foo: 123]
+                }
+            }
+        }
+
+        // act
+        def exception = shouldFail {
+            runFlow('errorInHttpParamsTest') {
+                json {
+                    inputPayload(null)
+                }
+            }
+        }
+
+        // assert
+        assertThat 'We should not fail due to test framework machinery. The problem is in the code, plain and simple',
+                   exception.message,
+                   is(containsString("Invalid input '-', expected Namespace"))
+    }
 }
