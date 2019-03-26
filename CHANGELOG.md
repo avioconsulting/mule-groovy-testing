@@ -5,6 +5,7 @@
 * Fix issue with mocking with `raw` and media/data types
 * When figuring out the mocked connector type, use a more robust approach (component identifier) rather than hints
 * Fix how non apikit `soap` invocations work to match the same nested `body` attribute that apikit puts things under
+* Fix SOAP invocation/mocking to use repeatable streams and work if accessed twice
 
 # 2.0.27
 * Don't choke when mocking connectors that use connections

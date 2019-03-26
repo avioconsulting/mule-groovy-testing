@@ -85,6 +85,8 @@ class EventWrapperImpl implements
                                       Map attributes,
                                       Closure finalPayloadConstructor) {
         def stream = new ByteArrayInputStream(xmlPayload.bytes)
+        stream = runtimeBridgeMuleSide.getMuleStreamCursor(this.nativeEvent,
+                                                           stream)
         def streamTypedValue = runtimeBridgeMuleSide.getSoapTypedValue(stream)
         def soapOutputPayload = finalPayloadConstructor(streamTypedValue)
         def targetVariable = connectorInfo.targetFlowVariable
