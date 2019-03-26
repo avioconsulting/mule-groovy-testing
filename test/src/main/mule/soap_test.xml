@@ -227,7 +227,7 @@ ns ns0 http://www.avioconsulting.com/schemas/SOAPTest/v1
 ---
 {
 	ns0#SOAPTestResponse: {
-		ns0#details: 'theTitle ' ++ payload.ns0#SOAPTestRequest.title
+		ns0#details: 'theTitle ' ++ payload.body.ns0#SOAPTestRequest.title
 	}
 }]]></ee:set-payload>
             </ee:message>
