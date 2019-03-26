@@ -45,14 +45,9 @@ class InterceptEventWrapperImpl extends
     @Override
     EventWrapper withVariable(String variableName,
                               Object value) {
-        this.nativeMuleEvent.addVariable(variableName,
-                                         value)
-        // just as described in withNewMessage above, you can't read new flowVars, so if we change, we track it
-        def newOverrides = this.variableOverrides + [(variableName): value]
-        return new InterceptEventWrapperImpl(this.nativeEvent,
-                                             this.message,
-                                             runtimeBridgeMuleSide,
-                                             newOverrides)
+        return withVariable(variableName,
+                            value,
+                            null)
     }
 
     @Override
