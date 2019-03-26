@@ -1,6 +1,9 @@
 # 2.0
 (for Mule 4.1)
 
+# 2.0.28
+* Fix issue with mocking with `raw` and media/data types
+
 # 2.0.27
 * Don't choke when mocking connectors that use connections
 

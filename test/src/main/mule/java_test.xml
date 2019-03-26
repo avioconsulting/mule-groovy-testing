@@ -41,6 +41,8 @@ output application/java
                      method="does.not.matter"
                      instance="#[payload]"
                      target="someVar"/>
+        <logger level="INFO"
+                message="payload is #[payload], flowVar is #[vars.someVar]"/>
         <ee:transform doc:name="Transform Message">
             <ee:message>
                 <ee:set-payload><![CDATA[%dw 2.0

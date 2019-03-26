@@ -59,11 +59,16 @@ class InterceptEventWrapperImpl extends
     EventWrapper withVariable(String variableName,
                               Object value,
                               String mediaType) {
-        def resolvedMediaType = runtimeBridgeMuleSide.getDataType(value,
-                                                                  mediaType)
-        this.nativeMuleEvent.addVariable(variableName,
-                                         value,
-                                         resolvedMediaType)
+        if (mediaType) {
+            def resolvedMediaType = runtimeBridgeMuleSide.getDataType(value,
+                                                                      mediaType)
+            this.nativeMuleEvent.addVariable(variableName,
+                                             value,
+                                             resolvedMediaType)
+        } else {
+            this.nativeMuleEvent.addVariable(variableName,
+                                             value)
+        }
         // just as described in withNewMessage above, you can't read new flowVars, so if we change, we track it
         def newOverrides = this.variableOverrides + [(variableName): value]
         return new InterceptEventWrapperImpl(this.nativeEvent,
