@@ -216,6 +216,8 @@ ns ns0 http://www.avioconsulting.com/schemas/SOAPTest/v1
     </flow>
     <flow name="soaptestFlowNoPayloadChange">
         <logger message="howdy"/>
+        <!-- JAXB unmarshal expects to find the SOAP body -->
+        <set-payload value="#[payload.body]"/>
     </flow>
     <flow name="\some\soap\flow">
         <logger message="invoked" level="INFO"/>

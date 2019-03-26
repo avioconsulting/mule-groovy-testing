@@ -28,6 +28,6 @@ class SoapOperationFlowInvokerImpl extends
         this.xmlMessageBuilder.build(xml,
                                      newEvent,
                                      flow,
-                                     XMLMessageBuilder.MessageType.Mule41Stream)
+                                     XMLMessageBuilder.MessageType.SoapInvocation)
     }
 }

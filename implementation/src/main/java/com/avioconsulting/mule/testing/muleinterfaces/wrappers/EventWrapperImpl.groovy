@@ -46,9 +46,9 @@ class EventWrapperImpl implements
     }
 
     @Override
-    EventWrapper withSoapPayload(String xmlPayload,
-                                 ConnectorInfo connectorInfo,
-                                 Map attributes) {
+    EventWrapper withSoapMockPayload(String xmlPayload,
+                                     ConnectorInfo connectorInfo,
+                                     Map attributes) {
         def stream = new ByteArrayInputStream(xmlPayload.bytes)
         def soapOutputPayloadClass = runtimeBridgeMuleSide
                 .getAppClassloader()
@@ -58,6 +58,33 @@ class EventWrapperImpl implements
                                                                    [:],
                                                                    // attachments
                                                                    [:]) // headers
+        return getSoapEvent(soapOutputPayload,
+                            connectorInfo,
+                            attributes)
+    }
+
+    @Override
+    EventWrapper withSoapInvokePayload(String xmlPayload,
+                                       ConnectorInfo connectorInfo,
+                                       Map attributes) {
+        def stream = new ByteArrayInputStream(xmlPayload.bytes)
+        def streamTypedValue = runtimeBridgeMuleSide.getSoapTypedValue(stream)
+        // ideally we'd build org.mule.module.soapkit.internal.SoapSubFlowPayload
+        // but that class is internal so we can't see it, so instead we build a hash map
+        // that looks like it
+        def soapOutputPayload = [
+                body       : streamTypedValue,
+                headers    : [:],
+                attachments: [:]
+        ]
+        return getSoapEvent(soapOutputPayload,
+                            connectorInfo,
+                            attributes)
+    }
+
+    private EventWrapper getSoapEvent(soapOutputPayload,
+                                      ConnectorInfo connectorInfo,
+                                      Map attributes) {
         def targetVariable = connectorInfo.targetFlowVariable
         if (targetVariable) {
             return withVariable(targetVariable,

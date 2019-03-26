@@ -20,9 +20,13 @@ interface EventWrapper {
                                 ConnectorInfo connectorInfo,
                                 String mediaType)
 
-    EventWrapper withSoapPayload(String xmlPayload,
-                                 ConnectorInfo connectorInfo,
-                                 Map attributes)
+    EventWrapper withSoapMockPayload(String xmlPayload,
+                                     ConnectorInfo connectorInfo,
+                                     Map attributes)
+
+    EventWrapper withSoapInvokePayload(String xmlPayload,
+                                       ConnectorInfo connectorInfo,
+                                       Map attributes)
 
     EventWrapper withNewPayload(Object payload,
                                 String mediaType,

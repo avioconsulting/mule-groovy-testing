@@ -12,7 +12,7 @@ class SOAPFormatterImpl extends XMLFormatterImpl implements SOAPFormatter {
 
     SOAPFormatterImpl(WsConsumerConnectorErrorTransformer errorTransformer,
                       SoapFaultTransformer soapFaultTransformer) {
-        super(XMLMessageBuilder.MessageType.Soap)
+        super(XMLMessageBuilder.MessageType.SoapMock)
         this.soapFaultTransformer = soapFaultTransformer
         this.errorTransformer = errorTransformer
     }

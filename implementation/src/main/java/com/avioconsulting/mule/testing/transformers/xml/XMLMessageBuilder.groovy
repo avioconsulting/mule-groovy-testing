@@ -8,7 +8,8 @@ class XMLMessageBuilder {
     private static final String XML_MEDIA_TYPE = 'application/xml'
     enum MessageType {
         Mule41Stream,
-        Soap
+        SoapMock,
+        SoapInvocation
     }
 
     EventWrapper build(String xmlPayload,
@@ -24,10 +25,14 @@ class XMLMessageBuilder {
                                                             messageProps,
                                                             connectorInfo,
                                                             true)
-            case MessageType.Soap:
-                return rewriteEvent.withSoapPayload(xmlPayload,
-                                                    connectorInfo,
-                                                    messageProps)
+            case MessageType.SoapMock:
+                return rewriteEvent.withSoapMockPayload(xmlPayload,
+                                                        connectorInfo,
+                                                        messageProps)
+            case MessageType.SoapInvocation:
+                return rewriteEvent.withSoapInvokePayload(xmlPayload,
+                                                          connectorInfo,
+                                                          messageProps)
             default:
                 throw new TestingFrameworkException("Unknown message type! ${messageType}")
         }
