@@ -49,42 +49,44 @@ class EventWrapperImpl implements
     EventWrapper withSoapMockPayload(String xmlPayload,
                                      ConnectorInfo connectorInfo,
                                      Map attributes) {
-        def stream = new ByteArrayInputStream(xmlPayload.bytes)
-        def soapOutputPayloadClass = runtimeBridgeMuleSide
-                .getAppClassloader()
-                .loadClass('org.mule.runtime.extension.api.soap.SoapOutputPayload')
-        def streamTypedValue = runtimeBridgeMuleSide.getSoapTypedValue(stream)
-        def soapOutputPayload = soapOutputPayloadClass.newInstance(streamTypedValue,
-                                                                   [:],
-                                                                   // attachments
-                                                                   [:]) // headers
-        return getSoapEvent(soapOutputPayload,
+        return getSoapEvent(xmlPayload,
                             connectorInfo,
-                            attributes)
+                            attributes) { streamTypedValue ->
+            def soapOutputPayloadClass = runtimeBridgeMuleSide
+                    .getAppClassloader()
+                    .loadClass('org.mule.runtime.extension.api.soap.SoapOutputPayload')
+            soapOutputPayloadClass.newInstance(streamTypedValue,
+                                               [:],
+                                               // attachments
+                                               [:]) // headers
+        }
     }
 
     @Override
     EventWrapper withSoapInvokePayload(String xmlPayload,
                                        ConnectorInfo connectorInfo,
                                        Map attributes) {
-        def stream = new ByteArrayInputStream(xmlPayload.bytes)
-        def streamTypedValue = runtimeBridgeMuleSide.getSoapTypedValue(stream)
-        // ideally we'd build org.mule.module.soapkit.internal.SoapSubFlowPayload
-        // but that class is internal so we can't see it, so instead we build a hash map
-        // that looks like it
-        def soapOutputPayload = [
-                body       : streamTypedValue,
-                headers    : [:],
-                attachments: [:]
-        ]
-        return getSoapEvent(soapOutputPayload,
+        return getSoapEvent(xmlPayload,
                             connectorInfo,
-                            attributes)
+                            attributes) { streamTypedValue ->
+            // ideally we'd build org.mule.module.soapkit.internal.SoapSubFlowPayload
+            // but that class is internal so we can't see it, so instead we build a hash map
+            // that looks like it
+            [
+                    body       : streamTypedValue,
+                    headers    : [:],
+                    attachments: [:]
+            ]
+        }
     }
 
-    private EventWrapper getSoapEvent(soapOutputPayload,
+    private EventWrapper getSoapEvent(String xmlPayload,
                                       ConnectorInfo connectorInfo,
-                                      Map attributes) {
+                                      Map attributes,
+                                      Closure finalPayloadConstructor) {
+        def stream = new ByteArrayInputStream(xmlPayload.bytes)
+        def streamTypedValue = runtimeBridgeMuleSide.getSoapTypedValue(stream)
+        def soapOutputPayload = finalPayloadConstructor(streamTypedValue)
         def targetVariable = connectorInfo.targetFlowVariable
         if (targetVariable) {
             return withVariable(targetVariable,
