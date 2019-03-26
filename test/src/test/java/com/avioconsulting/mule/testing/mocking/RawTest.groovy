@@ -2,6 +2,7 @@ package com.avioconsulting.mule.testing.mocking
 
 import com.avioconsulting.mule.testing.ConfigTrait
 import com.avioconsulting.mule.testing.junit.BaseJunitTest
+import com.avioconsulting.mule.testing.muleinterfaces.wrappers.ReturnWrapper
 import org.junit.Test
 
 import static org.hamcrest.Matchers.equalTo
@@ -59,6 +60,40 @@ class RawTest extends
                     actualClassName = stuff.getClass().name
                     captured = stuff.value
                     'howdy'
+                }
+            }
+        }
+
+        // act
+        def result = runFlow('rawMockTargetFlow') {
+            java {
+                inputPayload('nope')
+            }
+        } as Map
+
+        // assert
+        assertThat result,
+                   is(equalTo([
+                           key: 'howdy'
+                   ]))
+        assertThat captured,
+                   is(equalTo('nope'))
+        assertThat actualClassName,
+                   is(equalTo('org.mule.runtime.api.metadata.TypedValue'))
+    }
+
+    @Test
+    void mock_target_value_media_type_specified() {
+        // arrange
+        String captured = null
+        String actualClassName = null
+        mockGeneric('Something to mock') {
+            raw {
+                whenCalledWith { stuff ->
+                    actualClassName = stuff.getClass().name
+                    captured = stuff.value
+                    new ReturnWrapper('howdy',
+                                      'application/java')
                 }
             }
         }
