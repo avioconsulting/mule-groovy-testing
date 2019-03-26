@@ -65,6 +65,29 @@ class SoapTest extends
     }
 
     @Test
+    void read_stream_twice() {
+        // arrange
+        def input = new SOAPTestRequest().with {
+            title = 'hello there'
+            approvalDate = getXmlDate(2018,
+                                      8,
+                                      07)
+            it
+        }
+
+        // act
+        def result = runFlow('readStreamTwice') {
+            soap {
+                inputJaxbPayload(input)
+            }
+        } as SOAPTestResponse
+
+        // assert
+        assertThat result.details,
+                   is(equalTo('theTitle hello there'))
+    }
+
+    @Test
     void runs_via_apikit() {
         // arrange
         def input = new SOAPTestRequest().with {

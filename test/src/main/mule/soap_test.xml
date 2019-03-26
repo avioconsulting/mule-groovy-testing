@@ -235,6 +235,31 @@ ns ns0 http://www.avioconsulting.com/schemas/SOAPTest/v1
             </ee:message>
         </ee:transform>
     </flow>
+    <flow name="readStreamTwice">
+        <ee:transform doc:name="First read">
+            <ee:variables>
+                <ee:set-variable variableName="foobar"><![CDATA[%dw 2.0
+output application/java
+ns ns0 http://www.avioconsulting.com/schemas/SOAPTest/v1
+---
+payload.body.ns0#SOAPTestRequest.title]]></ee:set-variable>
+            </ee:variables>
+        </ee:transform>
+        <logger message="invoked with title #[vars.foobar]" level="INFO"/>
+        <ee:transform doc:name="Transform Message">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/xml
+ns ns0 http://www.avioconsulting.com/schemas/SOAPTest/v1
+---
+{
+	ns0#SOAPTestResponse: {
+		ns0#details: 'theTitle ' ++ payload.body.ns0#SOAPTestRequest.title
+	}
+}]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+    </flow>
     <flow name="api-main">
         <http:listener config-ref="test-http-listener-config"
                        path="/*"
