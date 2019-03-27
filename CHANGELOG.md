@@ -1,6 +1,9 @@
 # 2.0
 (for Mule 4.1)
 
+# 2.0.29
+* Fix issue where SOAPKit style invocation responses that include `body: {} write "application/xml"` were not handled properly. Now that style is encouraged and a warning is issued if you don't do that
+
 # 2.0.28
 * Fix issue with mocking with `raw` and media/data types
 * When figuring out the mocked connector type, use a more robust approach (component identifier) rather than hints
