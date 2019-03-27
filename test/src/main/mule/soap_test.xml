@@ -62,7 +62,7 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
                          responseTimeout="500">
         <http:request-connection host="localhost" port="8081"/>
         <http:response-validator>
-            <http:success-status-code-validator values="0..399,500" />
+            <http:success-status-code-validator values="0..399,500"/>
         </http:response-validator>
     </http:request-config>
     <wsc:config name="Web_Service_Consumer_Calculator_Custom_Transport_Config_Workaround">
@@ -119,8 +119,8 @@ ns ns0 http://www.avioconsulting.com/schemas/SOAPTest/v1
 	}
 }]]></ee:set-payload>
             </ee:message>
-            <ee:variables >
-                <ee:set-variable variableName="soapHeader" ><![CDATA[%dw 2.0
+            <ee:variables>
+                <ee:set-variable variableName="soapHeader"><![CDATA[%dw 2.0
 output application/xml
 ns h http://www.avioconsulting.com/schemas/SOAPTest/v1
 ---
@@ -134,7 +134,7 @@ ns h http://www.avioconsulting.com/schemas/SOAPTest/v1
         <wsc:consume config-ref="Web_Service_Consumer"
                      operation="operation1"
                      doc:name="A SOAP Call">
-            <wsc:message >
+            <wsc:message>
                 <wsc:headers><![CDATA[#[vars.soapHeader]]]></wsc:headers>
             </wsc:message>
         </wsc:consume>
@@ -222,8 +222,20 @@ ns ns0 http://www.avioconsulting.com/schemas/SOAPTest/v1
     <flow name="\some\soap\flow">
         <logger message="invoked" level="INFO"/>
         <ee:transform doc:name="Transform Message">
-            <ee:message>
-                <ee:set-payload><![CDATA[%dw 2.0
+            <ee:variables>
+                <ee:set-variable variableName="title"><![CDATA[%dw 2.0
+output application/java
+ns ns0 http://www.avioconsulting.com/schemas/SOAPTest/v1
+---
+payload.body.ns0#SOAPTestRequest.title
+]]></ee:set-variable>
+            </ee:variables>
+        </ee:transform>
+        <choice>
+            <when expression="#[vars.title contains 'do not wrap in body']">
+                <ee:transform doc:name="Transform Message">
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
 output application/xml
 ns ns0 http://www.avioconsulting.com/schemas/SOAPTest/v1
 ---
@@ -232,8 +244,27 @@ ns ns0 http://www.avioconsulting.com/schemas/SOAPTest/v1
 		ns0#details: 'theTitle ' ++ payload.body.ns0#SOAPTestRequest.title
 	}
 }]]></ee:set-payload>
-            </ee:message>
-        </ee:transform>
+                    </ee:message>
+                </ee:transform>
+            </when>
+            <otherwise>
+                <ee:transform doc:name="Transform Message">
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
+output application/java
+ns ns0 http://www.avioconsulting.com/schemas/SOAPTest/v1
+---
+{
+    body: {
+        ns0#SOAPTestResponse: {
+            ns0#details: 'theTitle ' ++ payload.body.ns0#SOAPTestRequest.title
+        }
+	} write "application/xml"
+}]]></ee:set-payload>
+                    </ee:message>
+                </ee:transform>
+            </otherwise>
+        </choice>
     </flow>
     <flow name="readStreamTwice">
         <ee:transform doc:name="First read">
@@ -286,8 +317,20 @@ ns ns0 http://www.avioconsulting.com/schemas/SOAPTest/v1
                 doc:name="Log stuff"
                 level="INFO"/>
         <ee:transform doc:name="Transform Message">
-            <ee:message>
-                <ee:set-payload><![CDATA[%dw 2.0
+            <ee:variables>
+                <ee:set-variable variableName="title"><![CDATA[%dw 2.0
+output application/java
+ns ns0 http://www.avioconsulting.com/schemas/SOAPTest/v1
+---
+vars.preservedPayload.body.ns0#SOAPTestRequest.title
+]]></ee:set-variable>
+            </ee:variables>
+        </ee:transform>
+        <choice>
+            <when expression="#[vars.title contains 'do not wrap in body']">
+                <ee:transform doc:name="Transform Message">
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
 output application/xml
 ns ns0 http://www.avioconsulting.com/schemas/SOAPTest/v1
 ---
@@ -296,8 +339,27 @@ ns ns0 http://www.avioconsulting.com/schemas/SOAPTest/v1
 		ns0#details: 'theTitle ' ++ vars.preservedPayload.body.ns0#SOAPTestRequest.title
 	}
 }]]></ee:set-payload>
-            </ee:message>
-        </ee:transform>
+                    </ee:message>
+                </ee:transform>
+            </when>
+            <otherwise>
+                <ee:transform doc:name="Transform Message">
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
+output application/java
+ns ns0 http://www.avioconsulting.com/schemas/SOAPTest/v1
+---
+{
+    body: {
+        ns0#SOAPTestResponse: {
+            ns0#details: 'theTitle ' ++ vars.preservedPayload.body.ns0#SOAPTestRequest.title
+        }
+	} write "application/xml"
+}]]></ee:set-payload>
+                    </ee:message>
+                </ee:transform>
+            </otherwise>
+        </choice>
     </flow>
     <flow name="calculatorSoapFaultFlow">
         <ee:transform doc:name="Transform Message">

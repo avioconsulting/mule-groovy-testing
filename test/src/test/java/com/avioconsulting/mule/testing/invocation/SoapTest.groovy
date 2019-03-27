@@ -19,7 +19,30 @@ class SoapTest extends
     }
 
     @Test
-    void input_output() {
+    void input_output_not_wrapped_in_body() {
+        // arrange
+        def input = new SOAPTestRequest().with {
+            title = 'hello there do not wrap in body'
+            approvalDate = getXmlDate(2018,
+                                      8,
+                                      07)
+            it
+        }
+
+        // act
+        def result = runFlow('\\some\\soap\\flow') {
+            soap {
+                inputJaxbPayload(input)
+            }
+        } as SOAPTestResponse
+
+        // assert
+        assertThat result.details,
+                   is(equalTo('theTitle hello there do not wrap in body'))
+    }
+
+    @Test
+    void input_output_wrapped_in_body() {
         // arrange
         def input = new SOAPTestRequest().with {
             title = 'hello there'
@@ -112,7 +135,28 @@ class SoapTest extends
     }
 
     @Test
-    void runs_via_apikit_jaxb_response() {
+    void runs_via_apikit_jaxb_response_not_wrapped_in_body() {
+        // arrange
+        def input = new SOAPTestRequest().with {
+            title = 'hello there do not wrap in body'
+            approvalDate = getXmlDate(2018,
+                                      8,
+                                      07)
+            it
+        }
+
+        // act
+        def result = runSoapApikitFlowJaxbResultBody('operation1') {
+            inputJaxbPayload(input)
+        } as SOAPTestResponse
+
+        // assert
+        assertThat result.details,
+                   is(equalTo('theTitle hello there do not wrap in body'))
+    }
+
+    @Test
+    void runs_via_apikit_jaxb_response_wrapped_in_body() {
         // arrange
         def input = new SOAPTestRequest().with {
             title = 'hello there'
