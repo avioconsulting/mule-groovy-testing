@@ -1,6 +1,9 @@
 # 2.0
 (for Mule 4.1)
 
+# 2.0.30
+* When invoking flows with `java {}` and no MIME type is provided, use `application/java` as a default value
+
 # 2.0.29
 * Fix issue where SOAPKit style invocation responses that include `body: {} write "application/xml"` were not handled properly. Now that style is encouraged and a warning is issued if you don't do that
 
