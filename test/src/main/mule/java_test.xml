@@ -76,4 +76,7 @@ output application/java
             </ee:message>
         </ee:transform>
     </flow>
+    <flow name="mimeTypeTest">
+        <set-payload value="#[payload.^.mimeType]"/>
+    </flow>
 </mule>
