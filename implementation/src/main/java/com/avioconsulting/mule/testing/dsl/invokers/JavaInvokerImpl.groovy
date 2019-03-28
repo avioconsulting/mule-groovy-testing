@@ -29,11 +29,9 @@ class JavaInvokerImpl implements
     }
 
     EventWrapper getEvent() {
-        mediaType ? eventFactory.getMuleEventWithPayload(inputObject,
-                                                         flowName,
-                                                         mediaType) :
-                eventFactory.getMuleEventWithPayload(inputObject,
-                                                     flowName)
+        eventFactory.getMuleEventWithPayload(inputObject,
+                                             flowName,
+                                             mediaType ?: 'application/java')
     }
 
     def transformOutput(EventWrapper event) {
