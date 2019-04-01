@@ -16,9 +16,4 @@ http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/cu
                     config-ref="vm-config"
                     doc:name="The Queue"/>
     </flow>
-    <flow name="vmRequest_NotString">
-        <vm:publish queueName="theQueue"
-                    config-ref="vm-config"
-                    doc:name="The Queue"/>
-    </flow>
 </mule>

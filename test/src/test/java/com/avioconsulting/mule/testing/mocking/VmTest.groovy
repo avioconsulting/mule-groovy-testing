@@ -17,7 +17,7 @@ class VmTest extends
     }
 
     @Test
-    void mocksProperly_Already_String() {
+    void mocksProperly_using_vm_shortcut() {
         // arrange
         SampleJacksonInput inputReceived = null
         mockVmReceive('The Queue') {
@@ -44,7 +44,7 @@ class VmTest extends
     }
 
     @Test
-    void mocksProperly_generic() {
+    void mocksProperly_using_generic_style() {
         // arrange
         SampleJacksonInput inputReceived = null
         mockGeneric('The Queue') {
