@@ -54,4 +54,12 @@ class FlowWrapper extends
         def lifecyleAwareConfig = configurationOptional.get()
         lifecyleAwareConfig.getValue()
     }
+
+    def start() {
+        nativeMuleObject.start()
+    }
+
+    def stop() {
+        nativeMuleObject.stop()
+    }
 }

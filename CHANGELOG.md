@@ -1,6 +1,9 @@
 # 2.0
 (for Mule 4.1)
 
+# 2.0.31
+* Expose flow `start()` and `stop()` methods
+
 # 2.0.30
 * When invoking flows with `java {}` and no MIME type is provided, use `application/java` as a default value
 
