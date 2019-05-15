@@ -12,4 +12,6 @@ interface MessageWrapper {
     List getMessageIteratorAsList()
 
     String getMimeType()
+
+    def getAttributes()
 }

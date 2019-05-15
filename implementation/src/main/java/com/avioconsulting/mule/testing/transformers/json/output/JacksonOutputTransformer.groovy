@@ -26,9 +26,7 @@ class JacksonOutputTransformer implements
         def jsonString = getJsonOutput(input)
         log.info 'Marshalled JSON {}',
                  jsonString
-        def attributes = getHttpResponseAttributes(200,
-                                                   'the reason',
-                                                   runtimeBridgeTestSide)
+        def attributes = originalMuleEvent.message.attributes
         originalMuleEvent.withNewStreamingPayload(jsonString,
                                                   'application/json',
                                                   attributes,
