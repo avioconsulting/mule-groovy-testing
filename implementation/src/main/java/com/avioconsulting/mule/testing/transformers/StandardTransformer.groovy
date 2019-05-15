@@ -28,15 +28,20 @@ class StandardTransformer<T extends ConnectorInfo> implements
         def curried = closureCurrier.curryClosure(closure,
                                                   muleEvent,
                                                   connectorInfo)
+        // now we don't have to worry about feeding event or connector info into the test's
+        // mock closure, let's transform the event into the format the test mock wants it in
         def input = inputTransformer.transformInput(muleEvent,
                                                     connectorInfo)
+        // now we can actually evaluate the whenCalledWith closure
         def closureResponse = connectorInfo.evaluateClosure(muleEvent,
                                                             input,
                                                             curried)
+        // now we have a response, let's go ahead and create a new event
+        // with the right format
         def event = outputTransformer.transformOutput(closureResponse.response,
                                                       muleEvent,
                                                       connectorInfo)
-        // allows the connector wrapper to make any last changes
+        // allows the connector wrapper to make any last changes to attributes, etc.
         connectorInfo.transformEvent(event,
                                      closureResponse)
     }
