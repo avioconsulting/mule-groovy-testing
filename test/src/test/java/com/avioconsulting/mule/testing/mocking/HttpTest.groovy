@@ -216,6 +216,35 @@ class HttpTest extends
     }
 
     @Test
+    void mocks_Properly_target_value_other_than_payload() {
+        // arrange
+        def stuff = null
+        mockRestHttpCall('SomeSystem Call') {
+            json {
+                whenCalledWith { Map incoming ->
+                    setHttpReturnCode(201)
+                    stuff = incoming
+                    [reply: 456]
+                }
+            }
+        }
+
+        // act
+        def result = runFlow('restRequestAttributesToFlowVar') {
+            json {
+                inputPayload([foo: 123])
+            }
+        }
+
+        // assert
+        assertThat stuff,
+                   is(equalTo([key: 123]))
+        assertThat 'original payload of 123 + our HTTP status code of 201',
+                   result,
+                   is(equalTo([reply_key: 123+201]))
+    }
+
+    @Test
     void mocksProperly_raw() {
         // arrange
         def stuff = null

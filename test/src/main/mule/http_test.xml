@@ -147,6 +147,34 @@ output application/json
             </ee:message>
         </ee:transform>
     </flow>
+    <flow name="restRequestAttributesToFlowVar">
+        <ee:transform doc:name="Transform Message">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+    key: payload.foo
+}]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+        <http:request config-ref="SomeSystem"
+                      path="/some_path"
+                      method="POST"
+                      doc:name="SomeSystem Call"
+                      target="stuff"
+                      targetValue="#[attributes]"/>
+        <ee:transform doc:name="Transform Message">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+    reply_key: vars.stuff.statusCode + payload.key
+}]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+    </flow>
     <flow name="restRequestFromFlowVar">
         <ee:transform doc:name="Transform Message">
             <ee:variables>
