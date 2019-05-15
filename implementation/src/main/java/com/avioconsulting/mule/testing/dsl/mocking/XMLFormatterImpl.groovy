@@ -13,17 +13,12 @@ class XMLFormatterImpl<T extends ConnectorInfo> implements
         XMLFormatter,
         IFormatter<T> {
     protected MuleMessageTransformer<T> transformer
-    // TODO: Refactor our error code to be evaluated with a closure context such that you can call httpConnectError() in the deepest closure and have the closure "reverse curried" to add the event and connector to it. then our error transformers can throw directly
     private XMLTransformer xmlTransformer
     private final MessageType messageType
 
     XMLFormatterImpl(MessageType messageType = MessageType.Mule41Stream) {
         // most of the time, this should be a sensible default
         this.messageType = messageType
-    }
-
-    protected def notifyImpendingFault() {
-        this.xmlTransformer.notifyImpendingFault()
     }
 
     def whenCalledWithJaxb(Class inputJaxbClass,
