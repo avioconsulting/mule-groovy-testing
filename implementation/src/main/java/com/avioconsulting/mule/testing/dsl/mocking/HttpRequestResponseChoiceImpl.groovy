@@ -1,6 +1,5 @@
 package com.avioconsulting.mule.testing.dsl.mocking
 
-
 import com.avioconsulting.mule.testing.muleinterfaces.RuntimeBridgeTestSide
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.connectors.HttpRequesterInfo
 import com.avioconsulting.mule.testing.transformers.TransformerChain
@@ -17,8 +16,7 @@ class HttpRequestResponseChoiceImpl extends
     private final HttpConnectorErrorTransformer httpConnectorErrorTransformer
 
     HttpRequestResponseChoiceImpl(RuntimeBridgeTestSide runtimeBridgeTestSide) {
-        super(runtimeBridgeTestSide)
-        httpValidationTransformer = new HttpValidationTransformer(runtimeBridgeTestSide)
+        httpValidationTransformer = new HttpValidationTransformer()
         httpGetTransformer = new HttpGetTransformer()
         httpConnectorErrorTransformer = new HttpConnectorErrorTransformer(runtimeBridgeTestSide)
     }

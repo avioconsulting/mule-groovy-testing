@@ -1,7 +1,6 @@
 package com.avioconsulting.mule.testing.dsl.mocking
 
 import com.avioconsulting.mule.testing.muleinterfaces.MuleMessageTransformer
-import com.avioconsulting.mule.testing.muleinterfaces.RuntimeBridgeTestSide
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.ConnectorInfo
 import com.avioconsulting.mule.testing.transformers.ClosureCurrier
 import com.avioconsulting.mule.testing.transformers.StandardTransformer
@@ -14,17 +13,14 @@ class JsonFormatterImpl<T extends ConnectorInfo> implements
     private MuleMessageTransformer<T> transformer
     private final ClosureCurrier<T> closureCurrier
     private JacksonOutputTransformer outputTransformer
-    private final RuntimeBridgeTestSide runtimeBridgeTestSide
 
-    JsonFormatterImpl(ClosureCurrier<T> closureCurrier,
-                      RuntimeBridgeTestSide runtimeBridgeTestSide) {
-        this.runtimeBridgeTestSide = runtimeBridgeTestSide
+    JsonFormatterImpl(ClosureCurrier<T> closureCurrier) {
         this.closureCurrier = closureCurrier
     }
 
     def whenCalledWith(Closure closure) {
         def input = new JacksonInputTransformer<T>(Map)
-        outputTransformer = new JacksonOutputTransformer(runtimeBridgeTestSide)
+        outputTransformer = new JacksonOutputTransformer()
         this.transformer = new StandardTransformer<T>(closure,
                                                       closureCurrier,
                                                       input,
@@ -34,7 +30,7 @@ class JsonFormatterImpl<T extends ConnectorInfo> implements
     def whenCalledWith(Class inputClass,
                        Closure closure) {
         def input = new JacksonInputTransformer<T>(inputClass)
-        outputTransformer = new JacksonOutputTransformer(runtimeBridgeTestSide)
+        outputTransformer = new JacksonOutputTransformer()
         this.transformer = new StandardTransformer<T>(closure,
                                                       closureCurrier,
                                                       input,

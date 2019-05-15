@@ -36,8 +36,7 @@ class FlowRunnerImpl implements
 
     def json(@DelegatesTo(JsonInvoker) Closure closure) {
         def jsonInvoker = new JsonInvokerImpl(invokerEventFactory,
-                                              flow,
-                                              runtimeBridge)
+                                              flow)
         invoker = jsonInvoker
         this.closure = closure
     }

@@ -19,12 +19,9 @@ class JsonInvokerImpl implements
     private boolean inputOnly
     private final InvokerEventFactory invokerEventFactory
     private final FlowWrapper flow
-    private final RuntimeBridgeTestSide runtimeBridgeTestSide
 
     JsonInvokerImpl(InvokerEventFactory invokerEventFactory,
-                    FlowWrapper flow,
-                    RuntimeBridgeTestSide runtimeBridgeTestSide) {
-        this.runtimeBridgeTestSide = runtimeBridgeTestSide
+                    FlowWrapper flow) {
         this.flow = flow
         this.invokerEventFactory = invokerEventFactory
         this.outputOnly = false
@@ -70,7 +67,7 @@ class JsonInvokerImpl implements
     private setInputTransformer(inputObject) {
         assert !(inputObject instanceof Class): 'Use outputOnly if a only an output class is being supplied!'
         this.inputObject = inputObject
-        transformBeforeCallingFlow = new JacksonOutputTransformer(runtimeBridgeTestSide)
+        transformBeforeCallingFlow = new JacksonOutputTransformer()
     }
 
     EventWrapper getEvent() {

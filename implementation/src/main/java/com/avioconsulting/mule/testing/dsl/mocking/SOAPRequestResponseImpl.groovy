@@ -14,7 +14,6 @@ class SOAPRequestResponseImpl extends
 
     SOAPRequestResponseImpl(RuntimeBridgeTestSide runtimeBridgeTestSide,
                             Closure closure) {
-        super(runtimeBridgeTestSide)
         this.httpConnectorErrorTransformer = new WsConsumerConnectorErrorTransformer(runtimeBridgeTestSide)
         this.soapFaultTransformer = new SoapFaultTransformer(runtimeBridgeTestSide)
         def soapFormatter = new SOAPFormatterImpl(httpConnectorErrorTransformer,
