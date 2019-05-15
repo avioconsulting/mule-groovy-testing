@@ -1,6 +1,7 @@
 package com.avioconsulting.mule.testing.dsl.invokers
 
 import com.avioconsulting.mule.testing.InvokerEventFactory
+import com.avioconsulting.mule.testing.muleinterfaces.RuntimeBridgeTestSide
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.EventWrapper
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.FlowWrapper
 import com.avioconsulting.mule.testing.transformers.InputTransformer
@@ -18,9 +19,12 @@ class JsonInvokerImpl implements
     private boolean inputOnly
     private final InvokerEventFactory invokerEventFactory
     private final FlowWrapper flow
+    private final RuntimeBridgeTestSide runtimeBridgeTestSide
 
     JsonInvokerImpl(InvokerEventFactory invokerEventFactory,
-                    FlowWrapper flow) {
+                    FlowWrapper flow,
+                    RuntimeBridgeTestSide runtimeBridgeTestSide) {
+        this.runtimeBridgeTestSide = runtimeBridgeTestSide
         this.flow = flow
         this.invokerEventFactory = invokerEventFactory
         this.outputOnly = false
@@ -66,7 +70,7 @@ class JsonInvokerImpl implements
     private setInputTransformer(inputObject) {
         assert !(inputObject instanceof Class): 'Use outputOnly if a only an output class is being supplied!'
         this.inputObject = inputObject
-        transformBeforeCallingFlow = new JacksonOutputTransformer()
+        transformBeforeCallingFlow = new JacksonOutputTransformer(runtimeBridgeTestSide)
     }
 
     EventWrapper getEvent() {

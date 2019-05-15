@@ -18,7 +18,7 @@ abstract class SoapInvokerBaseImpl implements
 
     SoapInvokerBaseImpl(String flowName,
                         RuntimeBridgeTestSide runtimeBridgeTestSide) {
-        this.xmlMessageBuilder = new XMLMessageBuilder()
+        this.xmlMessageBuilder = new XMLMessageBuilder(runtimeBridgeTestSide)
         this.flow = runtimeBridgeTestSide.getFlow(flowName)
     }
 

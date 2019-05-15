@@ -21,7 +21,6 @@ class JacksonOutputTransformer implements
     }
 
     JacksonOutputTransformer(RuntimeBridgeTestSide runtimeBridgeTestSide) {
-
         this.runtimeBridgeTestSide = runtimeBridgeTestSide
     }
 
