@@ -1,7 +1,6 @@
 package com.avioconsulting.mule.testing.transformers.xml
 
 import com.avioconsulting.mule.testing.muleinterfaces.MuleMessageTransformer
-import com.avioconsulting.mule.testing.muleinterfaces.RuntimeBridgeTestSide
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.ConnectorInfo
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.EventWrapper
 import com.avioconsulting.mule.testing.transformers.ClosureCurrier
@@ -17,8 +16,7 @@ class XMLGroovyParserTransformer<T extends ConnectorInfo> extends
     private final ClosureCurrier closureCurrier = new ClosureCurrier<T>()
 
     XMLGroovyParserTransformer(Closure closure,
-                               XMLMessageBuilder.MessageType messageType,
-                               RuntimeBridgeTestSide runtimeBridgeTestSide) {
+                               XMLMessageBuilder.MessageType messageType) {
         super()
         this.messageType = messageType
         this.closure = closure

@@ -18,8 +18,7 @@ class XMLJAXBTransformer<T extends ConnectorInfo> extends
 
     XMLJAXBTransformer(Closure closure,
                        Class inputJaxbClass,
-                       XMLMessageBuilder.MessageType messageType,
-                       RuntimeBridgeTestSide runtimeBridgeTestSide) {
+                       XMLMessageBuilder.MessageType messageType) {
         super()
         this.messageType = messageType
         this.closure = closure
