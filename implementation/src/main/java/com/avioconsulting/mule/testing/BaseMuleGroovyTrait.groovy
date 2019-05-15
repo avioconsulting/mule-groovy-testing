@@ -444,7 +444,7 @@ trait BaseMuleGroovyTrait {
     def mockRestHttpCall(MockingConfiguration mockingConfiguration,
                          RuntimeBridgeTestSide bridge,
                          String connectorName,
-                         @DelegatesTo(HttpRequestResponseChoice) Closure closure) {
+                         @DelegatesTo(StandardRequestResponse) Closure closure) {
         def formatterChoice = new HttpRequestResponseChoiceImpl(bridge)
         def code = closure.rehydrate(formatterChoice,
                                      this,

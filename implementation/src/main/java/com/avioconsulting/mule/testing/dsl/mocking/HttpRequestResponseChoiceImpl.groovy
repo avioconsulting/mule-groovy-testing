@@ -8,9 +8,7 @@ import com.avioconsulting.mule.testing.transformers.http.HttpGetTransformer
 import com.avioconsulting.mule.testing.transformers.http.HttpValidationTransformer
 
 class HttpRequestResponseChoiceImpl extends
-        StandardRequestResponseImpl<HttpRequesterInfo>
-        implements
-                HttpRequestResponseChoice {
+        StandardRequestResponseImpl<HttpRequesterInfo> {
     private final HttpValidationTransformer httpValidationTransformer
     private final HttpGetTransformer httpGetTransformer
     private final HttpConnectorErrorTransformer httpConnectorErrorTransformer
