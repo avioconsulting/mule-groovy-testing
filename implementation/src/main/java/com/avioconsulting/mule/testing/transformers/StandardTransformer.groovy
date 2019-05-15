@@ -30,11 +30,14 @@ class StandardTransformer<T extends ConnectorInfo> implements
                                                   connectorInfo)
         def input = inputTransformer.transformInput(muleEvent,
                                                     connectorInfo)
-        def result = connectorInfo.evaluateClosure(muleEvent,
-                                                   input,
-                                                   curried)
-        outputTransformer.transformOutput(result,
-                                          muleEvent,
-                                          connectorInfo)
+        def closureResponse = connectorInfo.evaluateClosure(muleEvent,
+                                                            input,
+                                                            curried)
+        def event = outputTransformer.transformOutput(closureResponse.response,
+                                                      muleEvent,
+                                                      connectorInfo)
+        // allows the connector wrapper to make any last changes
+        connectorInfo.transformEvent(event,
+                                     closureResponse)
     }
 }

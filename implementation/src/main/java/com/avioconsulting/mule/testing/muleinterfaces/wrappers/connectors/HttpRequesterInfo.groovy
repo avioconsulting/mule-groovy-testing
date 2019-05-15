@@ -4,9 +4,10 @@ import com.avioconsulting.mule.testing.dsl.mocking.ErrorThrowing
 import com.avioconsulting.mule.testing.muleinterfaces.HttpAttributeBuilder
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.ConnectorInfo
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.EventWrapper
+import com.avioconsulting.mule.testing.transformers.http.HttpClosureEvalResponse
 
 class HttpRequesterInfo extends
-        ConnectorInfo implements HttpFunctionality {
+        ConnectorInfo<HttpClosureEvalResponse> implements HttpFunctionality {
     private final String method
     private final Map<String, String> queryParams
     private final Map<String, String> headers
@@ -129,9 +130,9 @@ class HttpRequesterInfo extends
     }
 
     @Override
-    def evaluateClosure(EventWrapper event,
-                        Object input,
-                        Closure closure) {
+    HttpClosureEvalResponse evaluateClosure(EventWrapper event,
+                                            Object input,
+                                            Closure closure) {
         // there might be a better way to do this but this will allow specific connectors
         // to handle stuff inside "whenCalledWith" like error triggering, etc.
         def statusCode = 200
@@ -162,13 +163,21 @@ class HttpRequesterInfo extends
         closure = closure.rehydrate(errorHandler,
                                     closure.owner,
                                     closure.thisObject)
-        def result = super.evaluateClosure(event,
-                                           input,
-                                           closure)
+        def result = closure.parameterTypes.size() == 0 ? closure() : closure(input)
         validator.validate(statusCode,
                            'Test framework told us to',
                            ['X-Some-Header': '123'],
                            result)
-        return result
+        new HttpClosureEvalResponse(httpStatus: statusCode,
+                                    response: result)
+    }
+
+    @Override
+    EventWrapper transformEvent(EventWrapper incomingEvent,
+                                HttpClosureEvalResponse closureResponse) {
+        // will allow rest of flow to use our mocked HTTP status via attributes
+        def attributes = getHttpResponseAttributes(closureResponse.httpStatus,
+                                                   'the reason')
+        incomingEvent.withNewAttributes(attributes)
     }
 }

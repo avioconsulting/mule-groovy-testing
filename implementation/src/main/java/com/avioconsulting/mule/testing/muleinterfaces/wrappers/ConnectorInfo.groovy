@@ -1,6 +1,8 @@
 package com.avioconsulting.mule.testing.muleinterfaces.wrappers
 
-class ConnectorInfo {
+import com.avioconsulting.mule.testing.transformers.ClosureEvaluationResponse
+
+class ConnectorInfo<TClosureResponse extends ClosureEvaluationResponse> {
     private final Map<String, Object> parameters
     private final String fileName, container
     private final int lineNumber
@@ -54,9 +56,15 @@ class ConnectorInfo {
         null
     }
 
-    def evaluateClosure(EventWrapper event,
-                        Object input,
-                        Closure closure) {
-        closure.parameterTypes.size() == 0 ? closure() : closure(input)
+    TClosureResponse evaluateClosure(EventWrapper event,
+                                     Object input,
+                                     Closure closure) {
+        def result = closure.parameterTypes.size() == 0 ? closure() : closure(input)
+        new ClosureEvaluationResponse(result)
+    }
+
+    EventWrapper transformEvent(EventWrapper incomingEvent,
+                                TClosureResponse closureResponse) {
+        incomingEvent
     }
 }
