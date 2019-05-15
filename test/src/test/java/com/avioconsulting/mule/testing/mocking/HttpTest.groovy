@@ -610,21 +610,27 @@ class HttpTest extends
     @Test
     void connect_error_sets_payload_properly() {
         // arrange
+        mockRestHttpCall('SomeSystem Call') {
+            json {
+                whenCalledWith {
+                    httpConnectError()
+                }
+            }
+        }
 
         // act
+        def result = runFlow('errorPayloadTest') {
+            json {
+                inputPayload([input_payload: 123])
+            }
+        } as Map
 
         // assert
-        fail 'write the test'
-    }
-
-    @Test
-    void connect_error_sets_payload_properly_from_mock_response() {
-        // arrange
-
-        // act
-
-        // assert
-        fail 'write the test'
+        assertThat 'The real Mule engine will NOT return error payloads in #[payload], it will return the payload before the connector failure',
+                   result,
+                   is(equalTo([
+                           reply_key: [input_payload: 123]
+                   ]))
     }
 
     @Test
