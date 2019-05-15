@@ -1,7 +1,6 @@
 package com.avioconsulting.mule.testing.transformers.xml
 
 import com.avioconsulting.mule.testing.muleinterfaces.MuleMessageTransformer
-import com.avioconsulting.mule.testing.muleinterfaces.RuntimeBridgeTestSide
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.ConnectorInfo
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.EventWrapper
 import com.avioconsulting.mule.testing.transformers.ClosureCurrier
@@ -33,10 +32,6 @@ class XMLJAXBTransformer<T extends ConnectorInfo> extends
                                                   event,
                                                   connectorInfo)
         def reply = closure(strongTypedPayload)
-        // TODO: Remove this once we get closure context, see XMLTransformer
-        if (impendingFault) {
-            return event
-        }
         String xml = reply instanceof File ? reply.text : helper.getMarshalled(reply)
         this.xmlMessageBuilder.build(xml,
                                      event,
