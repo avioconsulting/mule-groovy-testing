@@ -1,6 +1,9 @@
 # 2.0
 (for Mule 4.1)
 
+# 2.0.32
+* Fix HTTP mock response attribute support
+
 # 2.0.31
 * Expose flow `start()` and `stop()` methods
 
