@@ -1,10 +1,12 @@
 package com.avioconsulting.mule.testing.transformers.xml
 
 import com.avioconsulting.mule.testing.TestingFrameworkException
+import com.avioconsulting.mule.testing.muleinterfaces.HttpAttributeBuilder
+import com.avioconsulting.mule.testing.muleinterfaces.RuntimeBridgeTestSide
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.ConnectorInfo
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.EventWrapper
 
-class XMLMessageBuilder {
+class XMLMessageBuilder implements HttpAttributeBuilder {
     private static final String XML_MEDIA_TYPE = 'application/xml'
     enum MessageType {
         Mule41Stream,
@@ -16,8 +18,10 @@ class XMLMessageBuilder {
                        EventWrapper rewriteEvent,
                        ConnectorInfo connectorInfo,
                        MessageType messageType,
+                       RuntimeBridgeTestSide runtimeBridgeTestSide,
                        Integer httpStatus = null) {
-        def messageProps = getXmlProperties(httpStatus)
+        def messageProps = getXmlAttributes(httpStatus,
+                                            runtimeBridgeTestSide)
         switch (messageType) {
             case MessageType.Mule41Stream:
                 return rewriteEvent.withNewStreamingPayload(xmlPayload,
@@ -38,12 +42,12 @@ class XMLMessageBuilder {
         }
     }
 
-    private static LinkedHashMap<String, String> getXmlProperties(Integer httpStatus) {
+    private def getXmlAttributes(Integer httpStatus,
+                                 RuntimeBridgeTestSide runtimeBridgeTestSide) {
         // need some of these props for SOAP mock to work properly
-        def messageProps = [:]
-        if (httpStatus != null) {
-            messageProps['http.status'] = httpStatus
-        }
-        messageProps
+        def status = httpStatus ?: 200
+        getHttpResponseAttributes(status,
+                                  'the reason',
+                                  runtimeBridgeTestSide)
     }
 }

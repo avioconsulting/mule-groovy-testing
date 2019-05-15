@@ -48,7 +48,7 @@ class EventWrapperImpl implements
     @Override
     EventWrapper withSoapMockPayload(String xmlPayload,
                                      ConnectorInfo connectorInfo,
-                                     Map attributes) {
+                                     Object attributes) {
         return getSoapEvent(xmlPayload,
                             connectorInfo,
                             attributes) { streamTypedValue ->
@@ -65,7 +65,7 @@ class EventWrapperImpl implements
     @Override
     EventWrapper withSoapInvokePayload(String xmlPayload,
                                        ConnectorInfo connectorInfo,
-                                       Map attributes) {
+                                       Object attributes) {
         return getSoapEvent(xmlPayload,
                             connectorInfo,
                             attributes) { streamTypedValue ->
@@ -82,7 +82,7 @@ class EventWrapperImpl implements
 
     private EventWrapper getSoapEvent(String xmlPayload,
                                       ConnectorInfo connectorInfo,
-                                      Map attributes,
+                                      Object attributes,
                                       Closure finalPayloadConstructor) {
         def stream = new ByteArrayInputStream(xmlPayload.bytes)
         stream = runtimeBridgeMuleSide.getMuleStreamCursor(this.nativeEvent,
@@ -106,7 +106,7 @@ class EventWrapperImpl implements
     EventWrapper withNewPayload(Object payload,
                                 String mediaType,
                                 ConnectorInfo connectorInfo,
-                                Map attributes) {
+                                Object attributes) {
         def targetVariable = connectorInfo.targetFlowVariable
         // if we have a target variable, we should preserve the payload but still update attributes
         def payloadToUse = targetVariable ? this.message.payload : payload
@@ -124,7 +124,7 @@ class EventWrapperImpl implements
     @Override
     EventWrapper withNewStreamingPayload(String payload,
                                          String mediaType,
-                                         Map attributes,
+                                         Object attributes,
                                          ConnectorInfo connectorInfo,
                                          boolean useRepeatableStream) {
         def stream = new ByteArrayInputStream(payload.bytes)

@@ -461,7 +461,7 @@ output application/json
                 <http:success-status-code-validator values="200,201"/>
             </http:response-validator>
         </http:request>
-        <set-variable variableName="theStatus" value="#[attributes.'http.status']"/>
+        <set-variable variableName="theStatus" value="#[attributes.statusCode]"/>
         <ee:transform doc:name="Transform Message">
             <ee:message>
                 <ee:set-payload><![CDATA[%dw 2.0

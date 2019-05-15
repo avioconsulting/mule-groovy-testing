@@ -22,20 +22,20 @@ interface EventWrapper {
 
     EventWrapper withSoapMockPayload(String xmlPayload,
                                      ConnectorInfo connectorInfo,
-                                     Map attributes)
+                                     Object attributes)
 
     EventWrapper withSoapInvokePayload(String xmlPayload,
                                        ConnectorInfo connectorInfo,
-                                       Map attributes)
+                                       Object attributes)
 
     EventWrapper withNewPayload(Object payload,
                                 String mediaType,
                                 ConnectorInfo connectorInfo,
-                                Map attributes)
+                                Object attributes)
 
     EventWrapper withNewStreamingPayload(String payload,
                                          String mediaType,
-                                         Map attributes,
+                                         Object attributes,
                                          ConnectorInfo connectorInfo,
                                          boolean useRepeatableStream)
 

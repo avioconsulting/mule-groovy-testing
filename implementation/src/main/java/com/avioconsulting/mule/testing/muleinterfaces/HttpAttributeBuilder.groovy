@@ -1,6 +1,26 @@
 package com.avioconsulting.mule.testing.muleinterfaces
 
 trait HttpAttributeBuilder {
+    def getHttpResponseAttributes(int statusCode,
+                                  String reasonPhrase,
+                                  RuntimeBridgeTestSide runtimeBridge,
+                                  Map additionalHeaders = [:]) {
+        def appClassLoader = runtimeBridge.appClassloader
+        def multiMapClass = appClassLoader.loadClass('org.mule.runtime.api.util.MultiMap')
+        def getMultiMap = { Map incoming ->
+            multiMapClass.newInstance(incoming)
+        }
+        def attrClass = appClassLoader.loadClass('org.mule.extension.http.api.HttpResponseAttributes')
+//        public HttpResponseAttributes(int statusCode, String reasonPhrase, MultiMap<String, String> headers) {
+//            super(headers);
+//            this.statusCode = statusCode;
+//            this.reasonPhrase = reasonPhrase;
+//        }
+        attrClass.newInstance(statusCode,
+                              reasonPhrase,
+                              getMultiMap(additionalHeaders))
+    }
+
     def getHttpRequestAttributes(String httpListenerPath,
                                  String method,
                                  String path,
