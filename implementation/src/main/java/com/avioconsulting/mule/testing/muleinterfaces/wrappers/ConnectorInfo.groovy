@@ -53,4 +53,8 @@ class ConnectorInfo {
     Object getIncomingBody() {
         null
     }
+
+    def closureEvaluator(EventWrapper event) {
+        new Object()
+    }
 }

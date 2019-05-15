@@ -30,6 +30,12 @@ class StandardTransformer<T extends ConnectorInfo> implements
                                                   connectorInfo)
         def input = inputTransformer.transformInput(muleEvent,
                                                     connectorInfo)
+        // there might be a better way to do this but this will allow specific connectors
+        // to handle stuff inside "whenCalledWith" like error triggering, etc.
+        def closureHandler = connectorInfo.closureEvaluator(muleEvent)
+        curried = curried.rehydrate(closureHandler,
+                                    curried.owner,
+                                    curried.thisObject)
         def result = curried.parameterTypes.size() == 0 ? curried() : curried(input)
         outputTransformer.transformOutput(result,
                                           muleEvent,

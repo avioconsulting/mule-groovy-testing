@@ -1,7 +1,9 @@
 package com.avioconsulting.mule.testing.muleinterfaces.wrappers.connectors
 
+import com.avioconsulting.mule.testing.dsl.mocking.ErrorThrowing
 import com.avioconsulting.mule.testing.muleinterfaces.HttpAttributeBuilder
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.ConnectorInfo
+import com.avioconsulting.mule.testing.muleinterfaces.wrappers.EventWrapper
 
 class HttpRequesterInfo extends
         ConnectorInfo implements HttpFunctionality {
@@ -110,5 +112,26 @@ class HttpRequesterInfo extends
                                         reasonPhrase,
                                         appClassLoader,
                                         additionalHeaders)
+    }
+
+    @Override
+    def closureEvaluator(EventWrapper event) {
+        new ErrorThrowing() {
+            @Override
+            def setHttpReturnCode(Integer code) {
+                println 'we got it!'
+                return null
+            }
+
+            @Override
+            def httpConnectError() {
+                return null
+            }
+
+            @Override
+            def httpTimeoutError() {
+                return null
+            }
+        }
     }
 }
