@@ -1,6 +1,6 @@
 package com.avioconsulting.mule.testing.dsl.mocking
 
-
+import com.avioconsulting.mule.testing.muleinterfaces.RuntimeBridgeTestSide
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.ConnectorInfo
 import com.avioconsulting.mule.testing.transformers.ClosureCurrier
 import com.avioconsulting.mule.testing.transformers.TransformerChain
@@ -10,8 +10,10 @@ abstract class StandardRequestResponseImpl<T extends ConnectorInfo> implements
     protected IFormatter formatter
     private Closure closure
     protected final ClosureCurrier closureCurrier
+    private final RuntimeBridgeTestSide runtimeBridgeTestSide
 
-    StandardRequestResponseImpl() {
+    StandardRequestResponseImpl(RuntimeBridgeTestSide runtimeBridgeTestSide) {
+        this.runtimeBridgeTestSide = runtimeBridgeTestSide
         this.closureCurrier = new ClosureCurrier<T>()
     }
 
@@ -27,12 +29,13 @@ abstract class StandardRequestResponseImpl<T extends ConnectorInfo> implements
     }
 
     def json(@DelegatesTo(JsonFormatter) Closure closure) {
-        useFormatter(new JsonFormatterImpl(closureCurrier),
+        useFormatter(new JsonFormatterImpl(closureCurrier,
+                                           runtimeBridgeTestSide),
                      closure)
     }
 
     def xml(@DelegatesTo(XMLFormatter) Closure closure) {
-        useFormatter(new XMLFormatterImpl(),
+        useFormatter(new XMLFormatterImpl(runtimeBridgeTestSide),
                      closure)
     }
 

@@ -1,6 +1,7 @@
 package com.avioconsulting.mule.testing.dsl.mocking
 
-import com.avioconsulting.mule.testing.muleinterfaces.IFetchClassLoaders
+
+import com.avioconsulting.mule.testing.muleinterfaces.RuntimeBridgeTestSide
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.connectors.SoapConsumerInfo
 import com.avioconsulting.mule.testing.transformers.TransformerChain
 import com.avioconsulting.mule.testing.transformers.http.SoapFaultTransformer
@@ -11,10 +12,11 @@ class SOAPRequestResponseImpl extends
     private final WsConsumerConnectorErrorTransformer httpConnectorErrorTransformer
     private final SoapFaultTransformer soapFaultTransformer
 
-    SOAPRequestResponseImpl(IFetchClassLoaders fetchAppClassLoader,
+    SOAPRequestResponseImpl(RuntimeBridgeTestSide runtimeBridgeTestSide,
                             Closure closure) {
-        this.httpConnectorErrorTransformer = new WsConsumerConnectorErrorTransformer(fetchAppClassLoader)
-        this.soapFaultTransformer = new SoapFaultTransformer(fetchAppClassLoader)
+        super(runtimeBridgeTestSide)
+        this.httpConnectorErrorTransformer = new WsConsumerConnectorErrorTransformer(runtimeBridgeTestSide)
+        this.soapFaultTransformer = new SoapFaultTransformer(runtimeBridgeTestSide)
         def soapFormatter = new SOAPFormatterImpl(httpConnectorErrorTransformer,
                                                   soapFaultTransformer)
         useFormatter(soapFormatter,

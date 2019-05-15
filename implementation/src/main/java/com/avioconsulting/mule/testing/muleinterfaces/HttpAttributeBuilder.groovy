@@ -3,9 +3,8 @@ package com.avioconsulting.mule.testing.muleinterfaces
 trait HttpAttributeBuilder {
     def getHttpResponseAttributes(int statusCode,
                                   String reasonPhrase,
-                                  RuntimeBridgeTestSide runtimeBridge,
+                                  ClassLoader appClassLoader,
                                   Map additionalHeaders = [:]) {
-        def appClassLoader = runtimeBridge.appClassloader
         def multiMapClass = appClassLoader.loadClass('org.mule.runtime.api.util.MultiMap')
         def getMultiMap = { Map incoming ->
             multiMapClass.newInstance(incoming)

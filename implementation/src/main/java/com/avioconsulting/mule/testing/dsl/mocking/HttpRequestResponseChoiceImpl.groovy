@@ -17,7 +17,7 @@ class HttpRequestResponseChoiceImpl extends
     private final HttpConnectorErrorTransformer httpConnectorErrorTransformer
 
     HttpRequestResponseChoiceImpl(RuntimeBridgeTestSide runtimeBridgeTestSide) {
-        super()
+        super(runtimeBridgeTestSide)
         httpValidationTransformer = new HttpValidationTransformer(runtimeBridgeTestSide)
         httpGetTransformer = new HttpGetTransformer()
         httpConnectorErrorTransformer = new HttpConnectorErrorTransformer(runtimeBridgeTestSide)

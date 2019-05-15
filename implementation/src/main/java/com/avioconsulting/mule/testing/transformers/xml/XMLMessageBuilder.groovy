@@ -18,7 +18,6 @@ class XMLMessageBuilder implements HttpAttributeBuilder {
                        EventWrapper rewriteEvent,
                        ConnectorInfo connectorInfo,
                        MessageType messageType,
-                       RuntimeBridgeTestSide runtimeBridgeTestSide,
                        Integer httpStatus = null) {
         def messageProps = getXmlAttributes(httpStatus,
                                             runtimeBridgeTestSide)

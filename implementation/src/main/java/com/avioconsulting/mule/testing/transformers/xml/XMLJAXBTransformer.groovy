@@ -20,7 +20,7 @@ class XMLJAXBTransformer<T extends ConnectorInfo> extends
                        Class inputJaxbClass,
                        XMLMessageBuilder.MessageType messageType,
                        RuntimeBridgeTestSide runtimeBridgeTestSide) {
-        super(runtimeBridgeTestSide)
+        super()
         this.messageType = messageType
         this.closure = closure
         this.helper = new JAXBMarshalHelper(inputJaxbClass)

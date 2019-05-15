@@ -1,7 +1,6 @@
 package com.avioconsulting.mule.testing.transformers.json.output
 
 import com.avioconsulting.mule.testing.muleinterfaces.HttpAttributeBuilder
-import com.avioconsulting.mule.testing.muleinterfaces.RuntimeBridgeTestSide
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.ConnectorInfo
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.EventWrapper
 import com.avioconsulting.mule.testing.transformers.OutputTransformer
@@ -14,14 +13,9 @@ class JacksonOutputTransformer implements
         HttpAttributeBuilder {
     private boolean useRepeatableStream = true
     def mapper = new ObjectMapper()
-    private final RuntimeBridgeTestSide runtimeBridgeTestSide
 
     def nonRepeatableStream() {
         this.useRepeatableStream = false
-    }
-
-    JacksonOutputTransformer(RuntimeBridgeTestSide runtimeBridgeTestSide) {
-        this.runtimeBridgeTestSide = runtimeBridgeTestSide
     }
 
     EventWrapper transformOutput(Object input,

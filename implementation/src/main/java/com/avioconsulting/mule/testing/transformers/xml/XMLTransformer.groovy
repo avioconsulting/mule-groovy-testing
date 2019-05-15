@@ -9,8 +9,8 @@ abstract class XMLTransformer<T extends ConnectorInfo> implements IHaveStateToRe
     // TODO: Refactor our error code to be evaluated with a closure context such that you can call httpConnectError() in the deepest closure and have the closure "reverse curried" to add the event and connector to it. then our error transformers can throw directly. See XMLFormatterImpl
     private boolean impendingFault
 
-    XMLTransformer(RuntimeBridgeTestSide runtimeBridgeTestSide) {
-        this.xmlMessageBuilder = new XMLMessageBuilder(runtimeBridgeTestSide)
+    XMLTransformer() {
+        this.xmlMessageBuilder = new XMLMessageBuilder()
         reset()
     }
 

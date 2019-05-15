@@ -1,21 +1,17 @@
 package com.avioconsulting.mule.testing.transformers.http
 
-import com.avioconsulting.mule.testing.muleinterfaces.HttpAttributeBuilder
+
 import com.avioconsulting.mule.testing.muleinterfaces.MuleMessageTransformer
-import com.avioconsulting.mule.testing.muleinterfaces.RuntimeBridgeTestSide
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.EventWrapper
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.connectors.HttpRequesterInfo
 import com.avioconsulting.mule.testing.transformers.IHaveStateToReset
 
 class HttpValidationTransformer implements
         IHaveStateToReset,
-        MuleMessageTransformer<HttpRequesterInfo>,
-        HttpAttributeBuilder {
+        MuleMessageTransformer<HttpRequesterInfo> {
     private Integer httpReturnCode
-    private final RuntimeBridgeTestSide runtimeBridgeTestSide
 
-    HttpValidationTransformer(RuntimeBridgeTestSide runtimeBridgeTestSide) {
-        this.runtimeBridgeTestSide = runtimeBridgeTestSide
+    HttpValidationTransformer() {
         reset()
     }
 

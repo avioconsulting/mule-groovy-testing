@@ -20,7 +20,7 @@ class XMLMapTransformer<T extends ConnectorInfo> extends
     XMLMapTransformer(Closure closure,
                       XMLMessageBuilder.MessageType messageType,
                       RuntimeBridgeTestSide runtimeBridgeTestSide) {
-        super(runtimeBridgeTestSide)
+        super()
         this.messageType = messageType
         this.closure = closure
     }
