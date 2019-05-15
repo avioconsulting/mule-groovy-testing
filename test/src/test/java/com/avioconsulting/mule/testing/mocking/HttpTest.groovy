@@ -243,7 +243,7 @@ class HttpTest extends
                    is(equalTo([key: 123]))
         assertThat 'original payload of 123 + our HTTP status code of 201',
                    result,
-                   is(equalTo([reply_key: 123+201]))
+                   is(equalTo([reply_key: 123 + 201]))
     }
 
     @Test
@@ -554,6 +554,42 @@ class HttpTest extends
         assertThat cause.info['Error type'],
                    is(equalTo('HTTP:NOT_FOUND'))
     }
+
+    @Test
+    void status_code_error_sets_payload_properly() {
+        // arrange
+        mockRestHttpCall('SomeSystem Call') {
+            json {
+                whenCalledWith {
+                    setHttpReturnCode(404)
+                    [should_not_see_http_response_here: 456]
+                }
+            }
+        }
+
+        // act
+        def result = runFlow('errorPayloadTest') {
+            json {
+                inputPayload([input_payload: 123])
+            }
+        } as Map
+
+        // assert
+        assertThat 'The real Mule engine will NOT return error payloads in #[payload], it will return the payload before the connector failure',
+                   result,
+                   is(equalTo([input_payload: 123]))
+    }
+
+    @Test
+    void connect_error_sets_payload_properly() {
+        // arrange
+
+        // act
+
+        // assert
+        fail 'write the test'
+    }
+
 
     @Test
     void http_return_error_code_default_validator_fail() {

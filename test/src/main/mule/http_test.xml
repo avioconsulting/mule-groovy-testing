@@ -473,6 +473,30 @@ output application/json
             </ee:message>
         </ee:transform>
     </flow>
+    <flow name="errorPayloadTest">
+        <http:request config-ref="SomeSystem"
+                      path="/some_path"
+                      method="GET"
+                      doc:name="SomeSystem Call">
+            <http:response-validator>
+                <http:success-status-code-validator values="200,201"/>
+            </http:response-validator>
+        </http:request>
+        <error-handler>
+            <on-error-continue>
+                <ee:transform doc:name="Transform Message">
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+    reply_key: payload
+}]]></ee:set-payload>
+                    </ee:message>
+                </ee:transform>
+            </on-error-continue>
+        </error-handler>
+    </flow>
     <flow name="errorInHttpParamsTest">
         <http:request config-ref="SomeSystem"
                       path="/some_path/{howdy}"
