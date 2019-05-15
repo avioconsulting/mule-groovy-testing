@@ -21,7 +21,8 @@ class HttpValidationTransformer implements
         muleEvent = muleEvent.withNewAttributes(attributes)
         connectorInfo.validator.validate(this.httpReturnCode,
                                          'Test framework told us to',
-                                         ['X-Some-Header': '123'])
+                                         ['X-Some-Header': '123'],
+                                         muleEvent)
         return muleEvent
     }
 
