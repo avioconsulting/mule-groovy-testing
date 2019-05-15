@@ -581,6 +581,31 @@ class HttpTest extends
     }
 
     @Test
+    void status_code_error_sets_payload_properly_from_mock_response() {
+        // arrange
+        mockRestHttpCall('SomeSystem Call') {
+            json {
+                whenCalledWith {
+                    setHttpReturnCode(404)
+                    [sys_error_here: 456]
+                }
+            }
+        }
+
+        // act
+        def result = runFlow('errorCaptureSystemResponsePayloadTest') {
+            json {
+                inputPayload([input_payload: 123])
+            }
+        } as Map
+
+        // assert
+        assertThat 'We explicitly tried to get the error in this flow',
+                   result,
+                   is(equalTo([sys_error_here: 456]))
+    }
+
+    @Test
     void connect_error_sets_payload_properly() {
         // arrange
 
@@ -590,6 +615,15 @@ class HttpTest extends
         fail 'write the test'
     }
 
+    @Test
+    void connect_error_sets_payload_properly_from_mock_response() {
+        // arrange
+
+        // act
+
+        // assert
+        fail 'write the test'
+    }
 
     @Test
     void http_return_error_code_default_validator_fail() {
