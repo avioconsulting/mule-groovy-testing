@@ -224,7 +224,7 @@ class HttpTest extends
         mockRestHttpCall('SomeSystem Call') {
             json {
                 whenCalledWith { Map incoming ->
-                    setHttpReturnCode(201)
+                    setHttpStatusCode(201)
                     stuff = incoming
                     [reply: 456]
                 }
@@ -475,7 +475,7 @@ class HttpTest extends
         mockRestHttpCall('SomeSystem Call') {
             json {
                 whenCalledWith {
-                    setHttpReturnCode(201)
+                    setHttpStatusCode(201)
                     [reply: 456]
                 }
             }
@@ -499,7 +499,7 @@ class HttpTest extends
         mockRestHttpCall('SomeSystem Call') {
             json {
                 whenCalledWith {
-                    setHttpReturnCode(202)
+                    setHttpStatusCode(202)
                     [reply: 456]
                 }
             }
@@ -525,7 +525,7 @@ class HttpTest extends
         mockRestHttpCall('SomeSystem Call') {
             json {
                 whenCalledWith {
-                    setHttpReturnCode(404)
+                    setHttpStatusCode(404)
                     [reply: 456]
                 }
             }
@@ -561,7 +561,7 @@ class HttpTest extends
         mockRestHttpCall('SomeSystem Call') {
             json {
                 whenCalledWith {
-                    setHttpReturnCode(404)
+                    setHttpStatusCode(404)
                     [should_not_see_http_response_here: 456]
                 }
             }
@@ -586,7 +586,7 @@ class HttpTest extends
         mockRestHttpCall('SomeSystem Call') {
             json {
                 whenCalledWith {
-                    setHttpReturnCode(404)
+                    setHttpStatusCode(404)
                     [sys_error_here: 456]
                 }
             }
@@ -631,7 +631,7 @@ class HttpTest extends
         mockRestHttpCall('SomeSystem Call') {
             json {
                 whenCalledWith {
-                    setHttpReturnCode(404)
+                    setHttpStatusCode(404)
                     [reply: 456]
                 }
             }
@@ -672,7 +672,7 @@ class HttpTest extends
                 whenCalledWith {
                     if (returnError) {
                         logger.info 'Returning 500 error from mock'
-                        setHttpReturnCode(500)
+                        setHttpStatusCode(500)
                         return
                     }
                     logger.info 'Returning success from mock'

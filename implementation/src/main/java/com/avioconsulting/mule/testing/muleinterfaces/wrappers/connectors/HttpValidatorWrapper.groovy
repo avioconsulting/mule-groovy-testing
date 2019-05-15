@@ -37,7 +37,7 @@ class HttpValidatorWrapper {
     def validate(int statusCode,
                  String reasonPhrase,
                  Map<String, String> headers,
-                 EventWrapper event) {
+                 Object errorResponse) {
         def httpRequest = httpRequestBuilder
                 .method(httpMethod)
                 .uri(httpUri)
@@ -48,8 +48,7 @@ class HttpValidatorWrapper {
                                                                  multiMap)
         def result = this.muleResultBuilder
                 .attributes(httpResponseAttr)
-                // this will become the "error response" from the mocked system
-                .output(event.message.payload)
+                .output(errorResponse)
                 .build()
         try {
             muleValidator.validate(result,

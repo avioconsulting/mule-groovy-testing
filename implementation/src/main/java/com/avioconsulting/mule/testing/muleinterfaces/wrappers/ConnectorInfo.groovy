@@ -54,7 +54,9 @@ class ConnectorInfo {
         null
     }
 
-    def closureEvaluator(EventWrapper event) {
-        new Object()
+    def evaluateClosure(EventWrapper event,
+                        Object input,
+                        Closure closure) {
+        closure.parameterTypes.size() == 0 ? closure() : closure(input)
     }
 }

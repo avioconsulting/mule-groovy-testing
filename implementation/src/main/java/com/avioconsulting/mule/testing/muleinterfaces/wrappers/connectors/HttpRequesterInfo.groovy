@@ -114,24 +114,61 @@ class HttpRequesterInfo extends
                                         additionalHeaders)
     }
 
+    private def throwConnectException() {
+        def exception = getConnectionException(uri,
+                                               method,
+                                               appClassLoader)
+        throw exception
+    }
+
+    private def throwTimeOutException() {
+        def exception = getTimeoutException(uri,
+                                            method,
+                                            appClassLoader)
+        throw exception
+    }
+
     @Override
-    def closureEvaluator(EventWrapper event) {
-        new ErrorThrowing() {
+    def evaluateClosure(EventWrapper event,
+                        Object input,
+                        Closure closure) {
+        // there might be a better way to do this but this will allow specific connectors
+        // to handle stuff inside "whenCalledWith" like error triggering, etc.
+        def statusCode = 200
+        def connector = this
+        def errorHandler = new ErrorThrowing() {
             @Override
-            def setHttpReturnCode(Integer code) {
-                println 'we got it!'
+            def setHttpStatusCode(int code) {
+                // will allow us to grab the desired code and then use the output from the closure
+                // to populate a prospective error message
+                statusCode = code
                 return null
             }
 
             @Override
             def httpConnectError() {
+                // immediate is OK
+                connector.throwConnectException()
                 return null
             }
 
             @Override
             def httpTimeoutError() {
+                // immediate is OK
+                connector.throwTimeOutException()
                 return null
             }
         }
+        closure = closure.rehydrate(errorHandler,
+                                    closure.owner,
+                                    closure.thisObject)
+        def result = super.evaluateClosure(event,
+                                           input,
+                                           closure)
+        validator.validate(statusCode,
+                           'Test framework told us to',
+                           ['X-Some-Header': '123'],
+                           result)
+        return result
     }
 }

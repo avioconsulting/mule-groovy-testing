@@ -27,12 +27,6 @@ class TransformerChain<T extends ConnectorInfo> implements
 
     EventWrapper transform(EventWrapper event,
                            T connectorInfo) {
-        // needs to happen before inject because at that point transformers are actually running
-        transformers.each { transformer ->
-            if (transformer instanceof IHaveStateToReset) {
-                transformer.reset()
-            }
-        }
         def result = transformers.inject(event) { EventWrapper output, transformer ->
             transformer.transform(output,
                                   connectorInfo)

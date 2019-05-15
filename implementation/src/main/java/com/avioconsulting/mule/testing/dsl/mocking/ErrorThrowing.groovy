@@ -1,7 +1,7 @@
 package com.avioconsulting.mule.testing.dsl.mocking
 
 interface ErrorThrowing {
-    def setHttpReturnCode(Integer code)
+    def setHttpStatusCode(int code)
 
     def httpConnectError()
 
