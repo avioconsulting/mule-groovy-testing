@@ -17,6 +17,7 @@ class XMLGroovyParserTransformer<T extends ConnectorInfo> extends
 
     XMLGroovyParserTransformer(Closure closure,
                                XMLMessageBuilder.MessageType messageType) {
+        super()
         this.messageType = messageType
         this.closure = closure
     }

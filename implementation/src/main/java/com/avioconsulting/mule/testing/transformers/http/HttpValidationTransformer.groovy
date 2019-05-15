@@ -16,9 +16,8 @@ class HttpValidationTransformer implements
 
     EventWrapper transform(EventWrapper muleEvent,
                            HttpRequesterInfo connectorInfo) {
-        def attributes = [
-                'http.status': this.httpReturnCode
-        ]
+        def attributes = connectorInfo.getHttpResponseAttributes(this.httpReturnCode,
+                                                                 'the reason')
         muleEvent = muleEvent.withNewAttributes(attributes)
         connectorInfo.validator.validate(this.httpReturnCode,
                                          'Test framework told us to',

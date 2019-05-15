@@ -1,6 +1,7 @@
 package com.avioconsulting.mule.testing.transformers.xml
 
 import com.avioconsulting.mule.testing.muleinterfaces.MuleMessageTransformer
+import com.avioconsulting.mule.testing.muleinterfaces.RuntimeBridgeTestSide
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.ConnectorInfo
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.EventWrapper
 import com.avioconsulting.mule.testing.transformers.ClosureCurrier
@@ -18,6 +19,7 @@ class XMLJAXBTransformer<T extends ConnectorInfo> extends
     XMLJAXBTransformer(Closure closure,
                        Class inputJaxbClass,
                        XMLMessageBuilder.MessageType messageType) {
+        super()
         this.messageType = messageType
         this.closure = closure
         this.helper = new JAXBMarshalHelper(inputJaxbClass)

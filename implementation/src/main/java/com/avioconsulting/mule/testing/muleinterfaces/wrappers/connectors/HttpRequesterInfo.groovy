@@ -1,6 +1,6 @@
 package com.avioconsulting.mule.testing.muleinterfaces.wrappers.connectors
 
-
+import com.avioconsulting.mule.testing.muleinterfaces.HttpAttributeBuilder
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.ConnectorInfo
 
 class HttpRequesterInfo extends
@@ -12,6 +12,11 @@ class HttpRequesterInfo extends
     private final String uri
     private final body
     private final String mimeType
+    private final ClassLoader appClassLoader
+
+    // don't make HttpAttributeBuilder publicly visible
+    private class InnerHttp implements HttpAttributeBuilder {
+    }
 
     HttpRequesterInfo(String fileName,
                       Integer lineNumber,
@@ -28,11 +33,11 @@ class HttpRequesterInfo extends
             throw new Exception('Usually HTTP requesters have responseValidationSettings set on them. This one does not. This usually happens when the DW 2.0 logic that builds HTTP headers, query params, etc has a DW error in it. Check your DW logic in <http:headers> etc. carefully')
         }
         def muleValidator = responseValidationSettings.responseValidator
+        appClassLoader = responseValidationSettings.getClass().classLoader
         if (!muleValidator) {
             // Even if you choose 'None' for response validator in Studio 7, Mule will still validate against 200,201 by default
             // but if none is picked, we won't see a validator
             // so we just build one using the app's classloader
-            def appClassLoader = responseValidationSettings.getClass().classLoader
             muleValidator = getValidator(appClassLoader)
         }
         // it's a MultiMap, keep Mule runtime classes away from our tests
@@ -95,5 +100,15 @@ class HttpRequesterInfo extends
             return value.text
         }
         return value
+    }
+
+    def getHttpResponseAttributes(int statusCode,
+                                  String reasonPhrase,
+                                  Map additionalHeaders = [:]) {
+        def inner = new InnerHttp()
+        inner.getHttpResponseAttributes(statusCode,
+                                        reasonPhrase,
+                                        appClassLoader,
+                                        additionalHeaders)
     }
 }

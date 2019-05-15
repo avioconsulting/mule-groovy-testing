@@ -1,14 +1,33 @@
 package com.avioconsulting.mule.testing.muleinterfaces
 
 trait HttpAttributeBuilder {
-    def getHttpListenerAttributes(String httpListenerPath,
-                                  String method,
-                                  String path,
-                                  Map queryParams,
-                                  RuntimeBridgeTestSide runtimeBridge,
-                                  String mimeType,
-                                  String host,
+    def getHttpResponseAttributes(int statusCode,
+                                  String reasonPhrase,
+                                  ClassLoader appClassLoader,
                                   Map additionalHeaders = [:]) {
+        def multiMapClass = appClassLoader.loadClass('org.mule.runtime.api.util.MultiMap')
+        def getMultiMap = { Map incoming ->
+            multiMapClass.newInstance(incoming)
+        }
+        def attrClass = appClassLoader.loadClass('org.mule.extension.http.api.HttpResponseAttributes')
+//        public HttpResponseAttributes(int statusCode, String reasonPhrase, MultiMap<String, String> headers) {
+//            super(headers);
+//            this.statusCode = statusCode;
+//            this.reasonPhrase = reasonPhrase;
+//        }
+        attrClass.newInstance(statusCode,
+                              reasonPhrase,
+                              getMultiMap(additionalHeaders))
+    }
+
+    def getHttpRequestAttributes(String httpListenerPath,
+                                 String method,
+                                 String path,
+                                 Map queryParams,
+                                 RuntimeBridgeTestSide runtimeBridge,
+                                 String mimeType,
+                                 String host,
+                                 Map additionalHeaders = [:]) {
         def urlParts = httpListenerPath.split('/')
         assert urlParts.last() == '*': 'Expected wildcard listener!'
         urlParts = urlParts[0..-2]

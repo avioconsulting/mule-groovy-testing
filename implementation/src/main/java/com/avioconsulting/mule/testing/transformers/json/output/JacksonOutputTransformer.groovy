@@ -1,5 +1,6 @@
 package com.avioconsulting.mule.testing.transformers.json.output
 
+import com.avioconsulting.mule.testing.muleinterfaces.HttpAttributeBuilder
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.ConnectorInfo
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.EventWrapper
 import com.avioconsulting.mule.testing.transformers.OutputTransformer
@@ -8,7 +9,8 @@ import groovy.util.logging.Log4j2
 
 @Log4j2
 class JacksonOutputTransformer implements
-        OutputTransformer {
+        OutputTransformer,
+        HttpAttributeBuilder {
     private boolean useRepeatableStream = true
     def mapper = new ObjectMapper()
 
@@ -24,12 +26,10 @@ class JacksonOutputTransformer implements
         def jsonString = getJsonOutput(input)
         log.info 'Marshalled JSON {}',
                  jsonString
-        def messageProps = [
-                'http.status': '200'
-        ]
+        def attributes = originalMuleEvent.message.attributes
         originalMuleEvent.withNewStreamingPayload(jsonString,
                                                   'application/json',
-                                                  messageProps,
+                                                  attributes,
                                                   connectorInfo,
                                                   this.useRepeatableStream)
     }

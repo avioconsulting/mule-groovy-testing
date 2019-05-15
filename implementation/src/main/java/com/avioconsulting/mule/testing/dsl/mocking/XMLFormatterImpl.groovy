@@ -1,6 +1,7 @@
 package com.avioconsulting.mule.testing.dsl.mocking
 
 import com.avioconsulting.mule.testing.muleinterfaces.MuleMessageTransformer
+import com.avioconsulting.mule.testing.muleinterfaces.RuntimeBridgeTestSide
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.ConnectorInfo
 import com.avioconsulting.mule.testing.transformers.xml.XMLGroovyParserTransformer
 import com.avioconsulting.mule.testing.transformers.xml.XMLJAXBTransformer

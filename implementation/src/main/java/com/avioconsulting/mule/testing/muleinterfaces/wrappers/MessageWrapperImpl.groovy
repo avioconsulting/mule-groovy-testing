@@ -97,6 +97,11 @@ class MessageWrapperImpl implements
     }
 
     @Override
+    def getAttributes() {
+        this.muleMessage.getAttributes()
+    }
+
+    @Override
     Class getDataTypeClass() {
         dataType.getType()
     }
