@@ -64,14 +64,14 @@ class SoapApikitInvokerImpl extends
         def additionalHeaders = [
                 'SOAPAction': soapAction
         ]
-        def attributes = getHttpListenerAttributes('/*',
-                                                   'POST',
-                                                   '/',
-                                                   [:],
-                                                   runtimeBridgeTestSide,
-                                                   muleEvent.message.mimeType,
-                                                   host,
-                                                   additionalHeaders)
+        def attributes = getHttpRequestAttributes('/*',
+                                                  'POST',
+                                                  '/',
+                                                  [:],
+                                                  runtimeBridgeTestSide,
+                                                  muleEvent.message.mimeType,
+                                                  host,
+                                                  additionalHeaders)
         muleEvent = muleEvent.withNewAttributes(attributes)
         log.info "Put together SOAP/Mule message {}",
                  muleEvent.toString()

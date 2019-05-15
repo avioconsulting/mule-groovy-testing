@@ -1,14 +1,14 @@
 package com.avioconsulting.mule.testing.muleinterfaces
 
 trait HttpAttributeBuilder {
-    def getHttpListenerAttributes(String httpListenerPath,
-                                  String method,
-                                  String path,
-                                  Map queryParams,
-                                  RuntimeBridgeTestSide runtimeBridge,
-                                  String mimeType,
-                                  String host,
-                                  Map additionalHeaders = [:]) {
+    def getHttpRequestAttributes(String httpListenerPath,
+                                 String method,
+                                 String path,
+                                 Map queryParams,
+                                 RuntimeBridgeTestSide runtimeBridge,
+                                 String mimeType,
+                                 String host,
+                                 Map additionalHeaders = [:]) {
         def urlParts = httpListenerPath.split('/')
         assert urlParts.last() == '*': 'Expected wildcard listener!'
         urlParts = urlParts[0..-2]

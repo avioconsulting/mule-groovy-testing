@@ -61,13 +61,13 @@ abstract class BaseApiKitTest extends
         // then the listener config never tries to actually bind to the port. therefore the port
         // does not matter
         def portNumberDoesNotMatter = 9999
-        def attributes = getHttpListenerAttributes(httpListenerPath,
-                                                   method,
-                                                   path,
-                                                   queryParams,
-                                                   runtimeBridge,
-                                                   event.message.mimeType,
-                                                   "localhost:${portNumberDoesNotMatter}")
+        def attributes = getHttpRequestAttributes(httpListenerPath,
+                                                  method,
+                                                  path,
+                                                  queryParams,
+                                                  runtimeBridge,
+                                                  event.message.mimeType,
+                                                  "localhost:${portNumberDoesNotMatter}")
         logger.info 'APIkit flow invocation: simulating HTTP listener using attributes: {}',
                     attributes
         event.withNewAttributes(attributes)
