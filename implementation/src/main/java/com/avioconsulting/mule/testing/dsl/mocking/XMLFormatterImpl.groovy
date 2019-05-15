@@ -4,10 +4,13 @@ import com.avioconsulting.mule.testing.muleinterfaces.MuleMessageTransformer
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.ConnectorInfo
 import com.avioconsulting.mule.testing.transformers.ClosureCurrier
 import com.avioconsulting.mule.testing.transformers.StandardTransformer
-import com.avioconsulting.mule.testing.transformers.xml.XMLGroovyParserTransformer
-import com.avioconsulting.mule.testing.transformers.xml.XMLJAXBTransformer
+import com.avioconsulting.mule.testing.transformers.xml.JAXBMarshalHelper
 import com.avioconsulting.mule.testing.transformers.xml.XMLMessageBuilder.MessageType
+import com.avioconsulting.mule.testing.transformers.xml.input.GroovyInputTransformer
+import com.avioconsulting.mule.testing.transformers.xml.input.JaxbInputTransformer
 import com.avioconsulting.mule.testing.transformers.xml.input.MapInputTransformer
+import com.avioconsulting.mule.testing.transformers.xml.output.GroovyOutputTransformer
+import com.avioconsulting.mule.testing.transformers.xml.output.JaxbOutputTransformer
 import com.avioconsulting.mule.testing.transformers.xml.output.MapOutputTransformer
 
 class XMLFormatterImpl<T extends ConnectorInfo> implements
@@ -25,9 +28,12 @@ class XMLFormatterImpl<T extends ConnectorInfo> implements
 
     def whenCalledWithJaxb(Class inputJaxbClass,
                            Closure closure) {
-        def t = new XMLJAXBTransformer<T>(closure,
-                                          inputJaxbClass,
-                                          messageType)
+        def helper = new JAXBMarshalHelper(inputJaxbClass)
+        def t = new StandardTransformer(closure,
+                                        closureCurrier,
+                                        new JaxbInputTransformer<T>(helper),
+                                        new JaxbOutputTransformer(messageType,
+                                                                  helper))
         this.transformer = t
     }
 
@@ -40,8 +46,10 @@ class XMLFormatterImpl<T extends ConnectorInfo> implements
     }
 
     def whenCalledWithGroovyXmlParser(Closure closure) {
-        def t = new XMLGroovyParserTransformer(closure,
-                                               messageType)
+        def t = new StandardTransformer(closure,
+                                        closureCurrier,
+                                        new GroovyInputTransformer<T>(),
+                                        new GroovyOutputTransformer(messageType))
         this.transformer = t
     }
 
