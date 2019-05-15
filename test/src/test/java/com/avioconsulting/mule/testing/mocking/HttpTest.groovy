@@ -9,6 +9,7 @@ import com.avioconsulting.mule.testing.muleinterfaces.wrappers.connectors.HttpRe
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 import groovy.util.logging.Log4j2
+import org.junit.Ignore
 import org.junit.Test
 
 import static groovy.test.GroovyAssert.shouldFail
@@ -216,6 +217,7 @@ class HttpTest extends
     }
 
     @Test
+    @Ignore('no support for this yet')
     void mocks_Properly_target_value_other_than_payload() {
         // arrange
         def stuff = null
