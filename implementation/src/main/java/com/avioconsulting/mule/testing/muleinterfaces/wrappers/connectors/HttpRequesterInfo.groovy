@@ -5,6 +5,7 @@ import com.avioconsulting.mule.testing.muleinterfaces.HttpAttributeBuilder
 import com.avioconsulting.mule.testing.muleinterfaces.IFetchClassLoaders
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.ConnectorInfo
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.EventWrapper
+import com.avioconsulting.mule.testing.transformers.ClosureCurrier
 import com.avioconsulting.mule.testing.transformers.http.HttpClosureEvalResponse
 
 class HttpRequesterInfo extends
@@ -135,7 +136,8 @@ class HttpRequesterInfo extends
     @Override
     HttpClosureEvalResponse evaluateClosure(EventWrapper event,
                                             Object input,
-                                            Closure closure) {
+                                            Closure closure,
+                                            ClosureCurrier closureCurrier) {
         // there might be a better way to do this but this will allow specific connectors
         // to handle stuff inside "whenCalledWith" like error triggering, etc.
         def statusCode = 200
@@ -166,7 +168,10 @@ class HttpRequesterInfo extends
         closure = closure.rehydrate(errorHandler,
                                     closure.owner,
                                     closure.thisObject)
-        def result = closure.parameterTypes.size() == 0 ? closure() : closure(input)
+        def curried = closureCurrier.curryClosure(closure,
+                                                  event,
+                                                  this)
+        def result = curried.parameterTypes.size() == 0 ? curried() : curried(input)
         validator.validate(statusCode,
                            'Test framework told us to',
                            ['X-Some-Header': '123'],

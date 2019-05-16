@@ -1,6 +1,7 @@
 package com.avioconsulting.mule.testing.muleinterfaces.wrappers
 
 import com.avioconsulting.mule.testing.muleinterfaces.IFetchClassLoaders
+import com.avioconsulting.mule.testing.transformers.ClosureCurrier
 import com.avioconsulting.mule.testing.transformers.ClosureEvaluationResponse
 
 class ConnectorInfo<TClosureResponse extends ClosureEvaluationResponse> {
@@ -62,8 +63,12 @@ class ConnectorInfo<TClosureResponse extends ClosureEvaluationResponse> {
 
     TClosureResponse evaluateClosure(EventWrapper event,
                                      Object input,
-                                     Closure closure) {
-        def result = closure.parameterTypes.size() == 0 ? closure() : closure(input)
+                                     Closure closure,
+                                     ClosureCurrier closureCurrier) {
+        def curried = closureCurrier.curryClosure(closure,
+                                                  event,
+                                                  this)
+        def result = curried.parameterTypes.size() == 0 ? curried() : curried(input)
         new ClosureEvaluationResponse(result)
     }
 

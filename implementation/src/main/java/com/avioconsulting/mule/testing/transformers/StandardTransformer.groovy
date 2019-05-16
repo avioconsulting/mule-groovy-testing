@@ -23,11 +23,6 @@ class StandardTransformer<T extends ConnectorInfo> implements
 
     EventWrapper transform(EventWrapper muleEvent,
                            T connectorInfo) {
-        // if they're only requesting optional curried values (e.g. HTTP requestor params)
-        // then we don't want to call their closure with an input value
-        def curried = closureCurrier.curryClosure(closure,
-                                                  muleEvent,
-                                                  connectorInfo)
         // now we don't have to worry about feeding event or connector info into the test's
         // mock closure, let's transform the event into the format the test mock wants it in
         def input = inputTransformer.transformInput(muleEvent,
@@ -35,7 +30,8 @@ class StandardTransformer<T extends ConnectorInfo> implements
         // now we can actually evaluate the whenCalledWith closure
         def closureResponse = connectorInfo.evaluateClosure(muleEvent,
                                                             input,
-                                                            curried)
+                                                            closure,
+                                                            closureCurrier)
         // now we have a response, let's go ahead and create a new event
         // with the right format
         def event = outputTransformer.transformOutput(closureResponse.response,
