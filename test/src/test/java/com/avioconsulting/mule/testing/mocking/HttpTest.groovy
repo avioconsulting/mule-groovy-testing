@@ -634,8 +634,8 @@ class HttpTest extends
         assertThat 'We explicitly tried to get the error in this flow',
                    result,
                    is(equalTo([
-                           error_payload   : [sys_error_here: 456],
-                           error_attributes: 'foobar'
+                           error_payload    : [sys_error_here: 456],
+                           error_status_code: '404'
                    ]))
     }
 

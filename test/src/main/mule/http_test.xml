@@ -516,7 +516,7 @@ output application/json
 ---
 {
     error_payload: error.errorMessage.payload,
-    error_attributes: error.errorMessage.attributes
+    error_status_code: error.errorMessage.attributes.statusCode
 }]]></ee:set-payload>
                     </ee:message>
                 </ee:transform>
