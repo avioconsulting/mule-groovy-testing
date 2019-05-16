@@ -7,6 +7,8 @@ import groovy.json.JsonSlurper
 import groovy.util.logging.Log4j2
 import org.apache.commons.io.FileUtils
 
+import java.util.zip.ZipInputStream
+
 @Log4j2
 class MuleEngineContainer {
     private final BaseEngineConfig engineConfig
@@ -137,14 +139,32 @@ class MuleEngineContainer {
                  servicesDir
         // Mule 4.1.x allowed placing the services JAR in here
         // 4.2.0 needs them expanded
-        def antBuilder = new AntBuilder()
         services.each { svcUrl ->
             def serviceFile = new File(svcUrl.toURI())
             def serviceDestDir = new File(servicesDir,
                                           serviceFile.name.replace('-mule-service.jar',
                                                                    ''))
-            antBuilder.unzip(src: serviceFile,
-                             dest: serviceDestDir)
+            def zipStream = new ZipInputStream(new FileInputStream(serviceFile))
+            def zipEntry = zipStream.nextEntry
+            def buffer = new byte[1024]
+            while (zipEntry != null) {
+                if (!zipEntry.directory) {
+                    def destFile = new File(serviceDestDir,
+                                            zipEntry.name)
+                    destFile.parentFile.mkdirs()
+                    def fos = new FileOutputStream(destFile)
+                    int len
+                    while ((len = zipStream.read(buffer)) > 0) {
+                        fos.write(buffer,
+                                  0,
+                                  len)
+                    }
+                    fos.close()
+                }
+                zipEntry = zipStream.getNextEntry()
+            }
+            zipStream.closeEntry()
+            zipStream.close()
         }
         serviceJsonFile.text = desiredServiceJson
     }
