@@ -41,8 +41,6 @@ class MuleEngineContainer {
         try {
             this.engineConfig = engineConfig
             muleHomeDirectory = new File('.mule')
-            def muleStartedFile = new File(muleHomeDirectory,
-                                           'mule-started.json')
             String dependencyJsonText = MuleEngineContainer.getResourceAsStream('/mule4_dependencies.json')?.text
             assert dependencyJsonText: 'Unable to find the /mule4_dependencies.json resource. Did you forget to use the dependency-resolver-maven-plugin plugin in your pom to generate it?'
             if (engineConfig.verboseExceptions) {
@@ -55,8 +53,21 @@ class MuleEngineContainer {
                                'true')
             log.info "Checking for temporary .mule directory at ${muleHomeDirectory.absolutePath}"
             if (muleHomeDirectory.exists()) {
-                log.info "Removing ${muleHomeDirectory.absolutePath} to ensure clean state"
-                FileUtils.deleteDirectory(muleHomeDirectory)
+                def remove = [
+                        '.mule',
+                        'apps',
+                        'lib',
+                        'logs',
+                        'conf'
+                ]
+                log.info 'Removing {} from {} to ensure clean state',
+                         remove,
+                         muleHomeDirectory.absolutePath
+                remove.each { dir ->
+                    def dirFile = new File(muleHomeDirectory,
+                                           dir)
+                    FileUtils.deleteDirectory(dirFile)
+                }
             }
             def confDirectory = new File(muleHomeDirectory,
                                          'conf')
@@ -80,7 +91,6 @@ class MuleEngineContainer {
                 def containerKlass = containerClassLoader.loadClass('org.mule.runtime.module.launcher.MuleContainer')
                 container = containerKlass.newInstance()
                 container.start(false)
-                muleStartedFile.text = dependencyJsonText
                 def deployListenerKlass = containerClassLoader.loadClass('com.avioconsulting.mule.testing.muleinterfaces.viamuleclassloader.TestingFrameworkDeployListener')
                 deployListener = deployListenerKlass.newInstance()
                 container.deploymentService.addDeploymentListener(deployListener)
@@ -101,19 +111,27 @@ class MuleEngineContainer {
     private void copyServices(List<URL> services) {
         def servicesDir = new File(muleHomeDirectory,
                                    'services')
-        log.info 'Unzipping services {} to {}',
-                 services,
-                 servicesDir
-        // Mule 4.1.x allowed placing the services JAR in here
-        // 4.2.0 needs them expanded
-        def antBuilder = new AntBuilder()
-        services.each { svcUrl ->
-            def serviceFile = new File(svcUrl.toURI())
-            def serviceDestDir = new File(servicesDir,
-                                          serviceFile.name.replace('-mule-service.jar',
-                                                                   ''))
-            antBuilder.unzip(src: serviceFile,
-                             dest: serviceDestDir)
+        def createServices = true
+        if (servicesDir.exists()) {
+            createServices = false
+        }
+        if (createServices) {
+            log.info 'Unzipping services {} to {}',
+                     services,
+                     servicesDir
+            // Mule 4.1.x allowed placing the services JAR in here
+            // 4.2.0 needs them expanded
+            def antBuilder = new AntBuilder()
+            services.each { svcUrl ->
+                def serviceFile = new File(svcUrl.toURI())
+                def serviceDestDir = new File(servicesDir,
+                                              serviceFile.name.replace('-mule-service.jar',
+                                                                       ''))
+                antBuilder.unzip(src: serviceFile,
+                                 dest: serviceDestDir)
+            }
+        } else {
+            log.info 'Using existing services'
         }
     }
 
