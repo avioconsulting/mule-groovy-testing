@@ -6,10 +6,13 @@ import com.avioconsulting.mule.testing.muleinterfaces.wrappers.ConnectorInfo
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.CustomErrorWrapperException
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.EventWrapper
 import com.avioconsulting.mule.testing.transformers.ClosureEvaluationResponse
+import groovy.util.logging.Log4j2
+import groovy.xml.DOMBuilder
 
 import javax.xml.namespace.QName
 import java.util.concurrent.TimeoutException
 
+@Log4j2
 class SoapConsumerInfo extends
         ConnectorInfo implements HttpFunctionality {
     private final boolean customTransport
@@ -24,6 +27,35 @@ class SoapConsumerInfo extends
     private Class dispatchExceptionClass = {
         appClassLoader.loadClass('org.mule.runtime.soap.api.exception.DispatchingException')
     }()
+
+    @Lazy
+    private Class middleSoapFaultClass = {
+        getSoapClass('org.mule.soap.api.exception.SoapFaultException')
+    }()
+
+    @Lazy
+    private Class outerSoapFaultClass = {
+        getSoapClass('org.mule.extension.ws.internal.error.SoapFaultMessageAwareException')
+    }()
+
+    @Lazy
+    private Class cxfSoapFaultClass = {
+        getSoapClass('org.apache.cxf.binding.soap.SoapFault')
+    }()
+
+    private Class getSoapClass(String klass) {
+        def artifactClassLoaders = appClassLoader.parent.getArtifactPluginClassLoaders() as List<ClassLoader>
+        def value = artifactClassLoaders.findResult { ClassLoader cl ->
+            try {
+                cl.loadClass(klass)
+            }
+            catch (ClassNotFoundException e) {
+                return null
+            }
+        }
+        assert value: "Was not able to load ${klass} properly. Do you have the WSC consumer module in your POM?"
+        value
+    }
 
 
     SoapConsumerInfo(String fileName,
@@ -146,16 +178,52 @@ class SoapConsumerInfo extends
                                         'CANNOT_DISPATCH')
     }
 
+    def throwSoapFault(String message,
+                       QName faultCode,
+                       QName subCode,
+                       Closure detailClosure) {
+        if (customHttpTransportConfigured) {
+            if (!validatorWorkaroundConfigured) {
+                log.warn 'You are throwing a SOAP fault from a SOAP mock on a WSC config with a custom transport configured. When you have this configuration, Mule will treat the likely HTTP 500 coming back from the SOAP server as an exception and never get to the SOAP fault. The testing framework is mirroring this behavior so that you know it is happening. You may want to configure a response validator on the custom transport/request config with a success range of 0..399,500 so that it stays out of the way.'
+            }
+            // We have no easy way of getting a validator setup
+            validator.validate(500,
+                               'some fault',
+                               [:])
+        }
+        def detailResult = detailClosure(DOMBuilder.newInstance())
+        def detailString = detailResult ? detailResult.serialize() : '<detail/>'
+        def cxfException = cxfSoapFaultClass.newInstance(message,
+                                                         faultCode)
+        def muleException = middleSoapFaultClass.newInstance(faultCode,
+                                                             subCode,
+                                                             '<?xml version="1.0" encoding="UTF-8"?>' + detailString,
+                                                             message,
+                                                             null,
+                                                             // node
+                                                             null,
+                                                             cxfException) as Throwable
+        throw new CustomErrorWrapperException(outerSoapFaultClass.newInstance(muleException) as Throwable,
+                                              'WSC',
+                                              'SOAP_FAULT')
+
+    }
+
     @Override
     ClosureEvaluationResponse evaluateClosure(EventWrapper event,
                                               Object input,
                                               Closure closure) {
+        def connectorInfo = this
         def errorHandler = new SOAPErrorThrowing() {
             @Override
             def soapFault(String message,
                           QName faultCode,
                           QName subCode) {
-                return null
+                soapFault(message,
+                          faultCode,
+                          subCode) { builder ->
+                    null
+                }
             }
 
             @Override
@@ -163,7 +231,10 @@ class SoapConsumerInfo extends
                           QName faultCode,
                           QName subCode,
                           Closure detailMarkupBuilderClosure) {
-                return null
+                connectorInfo.throwSoapFault(message,
+                                             faultCode,
+                                             subCode,
+                                             detailMarkupBuilderClosure)
             }
 
             // TODO: Better class structure/remove this
