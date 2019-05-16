@@ -1,8 +1,8 @@
 # 2.0
 (for Mule 4.1)
 
-# 2.0.34 (unreleased)
-* 4.2.0 compat
+# 2.0.34
+* 4.2.0 compatibility
 
 # 2.0.33
 * Fix how errors are handled in terms of error payload and original payload when mocks throw errors
