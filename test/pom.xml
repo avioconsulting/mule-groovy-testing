@@ -127,7 +127,7 @@
                     </systemPropertyVariables>
                 </configuration>
                 <executions>
-                    <!-- TODO: 1. Figure out why, only in Maven, we cannot run the SOAP mocking tests alongside the others. -->
+                    <!-- TODO: 1. Figure out why, only in Maven, we cannot run the SOAP mocking tests alongside the others. has something to do with what Maven does to JAXB generated class and the ObjectFactory -->
                     <execution>
                         <id>default-test</id>
                         <goals>
