@@ -635,7 +635,7 @@ class HttpTest extends
                    result,
                    is(equalTo([
                            error_payload    : [sys_error_here: 456],
-                           error_status_code: '404'
+                           error_status_code: 404
                    ]))
     }
 
