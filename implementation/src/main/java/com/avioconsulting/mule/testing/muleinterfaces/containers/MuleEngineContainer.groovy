@@ -135,6 +135,10 @@ class MuleEngineContainer {
             log.info 'Using existing services'
             return
         }
+        // In mule 4.1, all you had to do was copy the service JARS to .mule/services
+        // Then mule would unzip them into .mule/.mule/services
+        // In 4.2.0, that doesn't work any more (you'll see scheduler service complaints)
+        // we have to unzip the JARs
         if (muleVersion.startsWith('4.1')) {
             copyServicesFor41(services,
                               servicesDir)
