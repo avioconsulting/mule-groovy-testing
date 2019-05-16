@@ -2,6 +2,7 @@ package com.avioconsulting.mule.testing.muleinterfaces.containers
 
 import com.avioconsulting.mule.testing.muleinterfaces.MockingConfiguration
 import com.avioconsulting.mule.testing.muleinterfaces.RuntimeBridgeTestSide
+import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 import groovy.util.logging.Log4j2
 import org.apache.commons.io.FileUtils
@@ -111,28 +112,41 @@ class MuleEngineContainer {
     private void copyServices(List<URL> services) {
         def servicesDir = new File(muleHomeDirectory,
                                    'services')
-        def createServices = true
-        if (servicesDir.exists()) {
-            createServices = false
-        }
-        if (createServices) {
-            log.info 'Unzipping services {} to {}',
-                     services,
-                     servicesDir
-            // Mule 4.1.x allowed placing the services JAR in here
-            // 4.2.0 needs them expanded
-            def antBuilder = new AntBuilder()
-            services.each { svcUrl ->
-                def serviceFile = new File(svcUrl.toURI())
-                def serviceDestDir = new File(servicesDir,
-                                              serviceFile.name.replace('-mule-service.jar',
-                                                                       ''))
-                antBuilder.unzip(src: serviceFile,
-                                 dest: serviceDestDir)
+        def extractServices = true
+        // our 'cache' from last time, unzipping is slow
+        def serviceJsonFile = new File(muleHomeDirectory,
+                                       'services.json')
+        def desiredServiceJson = JsonOutput.toJson(services.sort())
+        if (servicesDir.exists() && serviceJsonFile.exists()) {
+            if (serviceJsonFile.text == desiredServiceJson) {
+                extractServices = false
             }
-        } else {
-            log.info 'Using existing services'
         }
+        if (servicesDir.exists() && extractServices) {
+            log.info 'Existing services directory is out of date, cleaning out'
+            FileUtils.deleteDirectory(servicesDir)
+            servicesDir.mkdirs()
+        }
+        if (!extractServices) {
+            log.info 'Using existing services'
+            return
+        }
+
+        log.info 'Unzipping services {} to {}',
+                 services,
+                 servicesDir
+        // Mule 4.1.x allowed placing the services JAR in here
+        // 4.2.0 needs them expanded
+        def antBuilder = new AntBuilder()
+        services.each { svcUrl ->
+            def serviceFile = new File(svcUrl.toURI())
+            def serviceDestDir = new File(servicesDir,
+                                          serviceFile.name.replace('-mule-service.jar',
+                                                                   ''))
+            antBuilder.unzip(src: serviceFile,
+                             dest: serviceDestDir)
+        }
+        serviceJsonFile.text = desiredServiceJson
     }
 
     private void copyPatches(List<URL> patches) {
