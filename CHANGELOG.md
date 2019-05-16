@@ -1,6 +1,11 @@
 # 2.0
 (for Mule 4.1)
 
+# 2.0.33 (unreleased)
+* Fix how errors are handled in terms of error payload and original payload when mocks throw errors
+* Streamline HTTP/SOAP mock error handling
+* When setting status code in HTTP request mocks, `setHttpReturnCode` has now become `setHttpStatusCode`
+
 # 2.0.32
 * Fix HTTP mock response attribute support
 
