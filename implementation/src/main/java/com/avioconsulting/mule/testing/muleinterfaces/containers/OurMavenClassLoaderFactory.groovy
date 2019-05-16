@@ -11,10 +11,19 @@ class OurMavenClassLoaderFactory {
     private final ClassLoader classLoader
     private final List<URL> services
     private final List<URL> patches
+    private static final List<String> ANALYTICS_SERVICES = [
+            'api-gateway-contract-service',
+            'api-gateway-events-collector-service'
+    ]
+    private final String muleVersion
 
     OurMavenClassLoaderFactory(BaseEngineConfig engineConfig,
                                File muleHomeDirectory,
                                List<Dependency> runtimeDependencyGraph) {
+        def bomDependency = runtimeDependencyGraph.find { d ->
+            d.artifactId == 'mule-runtime-impl-bom'
+        }
+        muleVersion = bomDependency.version
         def bundleDependencies = runtimeDependencyGraph.sort { d1, d2 ->
             if (isPatchDependency(d1)) {
                 return -1
@@ -35,8 +44,19 @@ class OurMavenClassLoaderFactory {
             svcDep.URL
         }
         services.removeAll() { svcUrl ->
-            filterAnalyticsPluginEnabled && svcUrl.toString().contains('api-gateway-contract-service')
+            filterAnalyticsPluginEnabled && ANALYTICS_SERVICES.any { analyticsService ->
+                svcUrl.toString().contains(analyticsService)
+            }
         }
+        if (services.any { svcUrl -> svcUrl.toString().contains('mule-service-http-ee') }) {
+            // these 2 services collide
+            services.removeAll { svcUrl ->
+                def svcString = svcUrl.toString()
+                svcString.contains('mule-service-http') && !svcString.contains('mule-service-http-ee')
+            }
+        }
+        // our dependency plugin generates DUPEs
+        services = services.unique()
         patches = bundleDependencies.findAll { d ->
             isPatchDependency(d)
         }.collect { d ->
@@ -68,5 +88,9 @@ class OurMavenClassLoaderFactory {
 
     List<URL> getPatches() {
         return patches
+    }
+
+    String getMuleVersion() {
+        return muleVersion
     }
 }

@@ -2,9 +2,12 @@ package com.avioconsulting.mule.testing.muleinterfaces.containers
 
 import com.avioconsulting.mule.testing.muleinterfaces.MockingConfiguration
 import com.avioconsulting.mule.testing.muleinterfaces.RuntimeBridgeTestSide
+import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 import groovy.util.logging.Log4j2
 import org.apache.commons.io.FileUtils
+
+import java.util.zip.ZipInputStream
 
 @Log4j2
 class MuleEngineContainer {
@@ -41,8 +44,6 @@ class MuleEngineContainer {
         try {
             this.engineConfig = engineConfig
             muleHomeDirectory = new File('.mule')
-            def muleStartedFile = new File(muleHomeDirectory,
-                                           'mule-started.json')
             String dependencyJsonText = MuleEngineContainer.getResourceAsStream('/mule4_dependencies.json')?.text
             assert dependencyJsonText: 'Unable to find the /mule4_dependencies.json resource. Did you forget to use the dependency-resolver-maven-plugin plugin in your pom to generate it?'
             if (engineConfig.verboseExceptions) {
@@ -55,8 +56,21 @@ class MuleEngineContainer {
                                'true')
             log.info "Checking for temporary .mule directory at ${muleHomeDirectory.absolutePath}"
             if (muleHomeDirectory.exists()) {
-                log.info "Removing ${muleHomeDirectory.absolutePath} to ensure clean state"
-                FileUtils.deleteDirectory(muleHomeDirectory)
+                def remove = [
+                        '.mule',
+                        'apps',
+                        'lib',
+                        'logs',
+                        'conf'
+                ]
+                log.info 'Removing {} from {} to ensure clean state',
+                         remove,
+                         muleHomeDirectory.absolutePath
+                remove.each { dir ->
+                    def dirFile = new File(muleHomeDirectory,
+                                           dir)
+                    FileUtils.deleteDirectory(dirFile)
+                }
             }
             def confDirectory = new File(muleHomeDirectory,
                                          'conf')
@@ -66,7 +80,8 @@ class MuleEngineContainer {
             createAppsDirectory()
             def classLoaderFactory = getClassLoaderFactory(engineConfig,
                                                            dependencyJsonText)
-            copyServices(classLoaderFactory.services)
+            setupServices(classLoaderFactory.services,
+                          classLoaderFactory.muleVersion)
             copyPatches(classLoaderFactory.patches)
             def containerModulesClassLoader = classLoaderFactory.classLoader
             // see FilterOutNonTestingExtensionsClassLoader for why we're doing this
@@ -80,7 +95,6 @@ class MuleEngineContainer {
                 def containerKlass = containerClassLoader.loadClass('org.mule.runtime.module.launcher.MuleContainer')
                 container = containerKlass.newInstance()
                 container.start(false)
-                muleStartedFile.text = dependencyJsonText
                 def deployListenerKlass = containerClassLoader.loadClass('com.avioconsulting.mule.testing.muleinterfaces.viamuleclassloader.TestingFrameworkDeployListener')
                 deployListener = deployListenerKlass.newInstance()
                 container.deploymentService.addDeploymentListener(deployListener)
@@ -98,15 +112,87 @@ class MuleEngineContainer {
         }
     }
 
-    private void copyServices(List<URL> services) {
+    private void setupServices(List<URL> services,
+                               String muleVersion) {
         def servicesDir = new File(muleHomeDirectory,
                                    'services')
+        def extractServices = true
+        // our 'cache' from last time, unzipping is slow
+        def serviceJsonFile = new File(muleHomeDirectory,
+                                       'services.json')
+        def desiredServiceJson = JsonOutput.toJson(services.sort())
+        if (servicesDir.exists() && serviceJsonFile.exists()) {
+            if (serviceJsonFile.text == desiredServiceJson) {
+                extractServices = false
+            }
+        }
+        if (servicesDir.exists() && extractServices) {
+            log.info 'Existing services directory is out of date, cleaning out'
+            FileUtils.deleteDirectory(servicesDir)
+            servicesDir.mkdirs()
+        }
+        if (!extractServices) {
+            log.info 'Using existing services'
+            return
+        }
+        // In mule 4.1, all you had to do was copy the service JARS to .mule/services
+        // Then mule would unzip them into .mule/.mule/services
+        // In 4.2.0, that doesn't work any more (you'll see scheduler service complaints)
+        // we have to unzip the JARs
+        if (muleVersion.startsWith('4.1')) {
+            copyServicesFor41(services,
+                              servicesDir)
+        } else {
+            unzipServicesFor420(services,
+                                servicesDir)
+        }
+        serviceJsonFile.text = desiredServiceJson
+    }
+
+    private static void copyServicesFor41(List<URL> services,
+                                          File servicesDir) {
         log.info 'Copying services {} to {}',
                  services,
                  servicesDir
         services.each { svcUrl ->
             FileUtils.copyFileToDirectory(new File(svcUrl.toURI()),
                                           servicesDir)
+        }
+    }
+
+    private static void unzipServicesFor420(List<URL> services,
+                                            File servicesDir) {
+        log.info 'Unzipping services {} to {}',
+                 services,
+                 servicesDir
+        // Mule 4.1.x allowed placing the services JAR in here
+        // 4.2.0 needs them expanded
+        services.each { svcUrl ->
+            def serviceFile = new File(svcUrl.toURI())
+            def serviceDestDir = new File(servicesDir,
+                                          serviceFile.name.replace('-mule-service.jar',
+                                                                   ''))
+            def zipStream = new ZipInputStream(new FileInputStream(serviceFile))
+            def zipEntry = zipStream.nextEntry
+            def buffer = new byte[1024]
+            while (zipEntry != null) {
+                if (!zipEntry.directory) {
+                    def destFile = new File(serviceDestDir,
+                                            zipEntry.name)
+                    destFile.parentFile.mkdirs()
+                    def fos = new FileOutputStream(destFile)
+                    int len
+                    while ((len = zipStream.read(buffer)) > 0) {
+                        fos.write(buffer,
+                                  0,
+                                  len)
+                    }
+                    fos.close()
+                }
+                zipEntry = zipStream.getNextEntry()
+            }
+            zipStream.closeEntry()
+            zipStream.close()
         }
     }
 
