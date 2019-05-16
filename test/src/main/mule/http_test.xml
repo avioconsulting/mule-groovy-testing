@@ -490,7 +490,8 @@ output application/json
 output application/json
 ---
 {
-    reply_key: payload
+    reply_key: payload,
+    reply_attributes: attributes
 }]]></ee:set-payload>
                     </ee:message>
                 </ee:transform>
@@ -513,7 +514,10 @@ output application/json
                         <ee:set-payload><![CDATA[%dw 2.0
 output application/json
 ---
-error.errorMessage.payload]]></ee:set-payload>
+{
+    error_payload: error.errorMessage.payload,
+    error_attributes: error.errorMessage.attributes
+}]]></ee:set-payload>
                     </ee:message>
                 </ee:transform>
             </on-error-continue>

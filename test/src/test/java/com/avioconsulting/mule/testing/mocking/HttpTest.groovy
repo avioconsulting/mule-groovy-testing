@@ -602,7 +602,8 @@ class HttpTest extends
         assertThat 'The real Mule engine will NOT return error payloads in #[payload], it will return the payload before the connector failure',
                    result,
                    is(equalTo([
-                           reply_key: [input_payload: 123]
+                           reply_key       : [input_payload: 123],
+                           reply_attributes: null
                    ]))
     }
 
@@ -628,7 +629,10 @@ class HttpTest extends
         // assert
         assertThat 'We explicitly tried to get the error in this flow',
                    result,
-                   is(equalTo([sys_error_here: 456]))
+                   is(equalTo([
+                           error_payload: [sys_error_here: 456],
+                           error_attributes: 'foobar'
+                   ]))
     }
 
     @Test
