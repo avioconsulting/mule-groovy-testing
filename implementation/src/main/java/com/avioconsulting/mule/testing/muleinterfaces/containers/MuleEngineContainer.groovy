@@ -101,12 +101,19 @@ class MuleEngineContainer {
     private void copyServices(List<URL> services) {
         def servicesDir = new File(muleHomeDirectory,
                                    'services')
-        log.info 'Copying services {} to {}',
+        log.info 'Unzipping services {} to {}',
                  services,
                  servicesDir
+        // Mule 4.1.x allowed placing the services JAR in here
+        // 4.2.0 needs them expanded
+        def antBuilder = new AntBuilder()
         services.each { svcUrl ->
-            FileUtils.copyFileToDirectory(new File(svcUrl.toURI()),
-                                          servicesDir)
+            def serviceFile = new File(svcUrl.toURI())
+            def serviceDestDir = new File(servicesDir,
+                                          serviceFile.name.replace('-mule-service.jar',
+                                                                   ''))
+            antBuilder.unzip(src: serviceFile,
+                             dest: serviceDestDir)
         }
     }
 
