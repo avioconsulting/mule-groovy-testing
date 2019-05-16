@@ -169,7 +169,7 @@ class SoapConsumerInfo extends
             // TODO: Better class structure/remove this
             @Override
             def setHttpStatusCode(int code) {
-                return null
+                throw new Exception('Should be no need to change the HTTP status code on a SOAP reply')
             }
 
             @Override
