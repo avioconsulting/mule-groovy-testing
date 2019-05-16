@@ -83,9 +83,11 @@ class MockingConfiguration {
         def event = new InterceptEventWrapperImpl(interceptionEvent,
                                                   this.runtimeBridgeMuleSide)
         def factory = new ConnectorInfoFactory()
+        def fetch = new FetchClassLoaders(runtimeBridgeMuleSide)
         def connectorInfo = factory.getConnectorInfo(componentLocation,
                                                      connectorName,
-                                                     params)
+                                                     params,
+                                                     fetch)
         def threadContext = CloseableThreadContext.push('Mock processor')
         threadContext.put('connector',
                           connectorInfo.name)

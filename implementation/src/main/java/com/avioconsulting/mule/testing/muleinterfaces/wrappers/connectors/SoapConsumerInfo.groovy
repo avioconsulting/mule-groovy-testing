@@ -2,6 +2,7 @@ package com.avioconsulting.mule.testing.muleinterfaces.wrappers.connectors
 
 import com.avioconsulting.mule.testing.TestingFrameworkException
 import com.avioconsulting.mule.testing.dsl.mocking.SOAPErrorThrowing
+import com.avioconsulting.mule.testing.muleinterfaces.IFetchClassLoaders
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.ConnectorInfo
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.CustomErrorWrapperException
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.EventWrapper
@@ -22,10 +23,9 @@ class SoapConsumerInfo extends
     private HttpValidatorWrapper validatorWrapper
     // all SOAP requests are POSTs
     private static final String SOAP_METHOD = 'POST'
-    private final ClassLoader appClassLoader
     @Lazy
     private Class dispatchExceptionClass = {
-        appClassLoader.loadClass('org.mule.runtime.soap.api.exception.DispatchingException')
+        fetchClassLoaders.appClassloader.loadClass('org.mule.runtime.soap.api.exception.DispatchingException')
     }()
 
     @Lazy
@@ -44,7 +44,7 @@ class SoapConsumerInfo extends
     }()
 
     private Class getSoapClass(String klass) {
-        def artifactClassLoaders = appClassLoader.parent.getArtifactPluginClassLoaders() as List<ClassLoader>
+        def artifactClassLoaders = fetchClassLoaders.appClassloader.getArtifactPluginClassLoaders() as List<ClassLoader>
         def value = artifactClassLoaders.findResult { ClassLoader cl ->
             try {
                 cl.loadClass(klass)
@@ -61,15 +61,16 @@ class SoapConsumerInfo extends
     SoapConsumerInfo(String fileName,
                      Integer lineNumber,
                      String container,
-                     Map<String, Object> parameters) {
+                     Map<String, Object> parameters,
+                     IFetchClassLoaders fetchClassLoaders) {
         super(fileName,
               lineNumber,
               container,
-              parameters)
+              parameters,
+              fetchClassLoaders)
         def connection = parameters['connection']
         def transportConfig = connection.transportConfiguration
         this.customTransport = transportConfig.getClass().getName().contains('CustomHttpTransportConfiguration')
-        this.appClassLoader = transportConfig.getClass().classLoader
         this.uri = connection.info.address
         this.headers = parameters['message'].headers?.text
         Object validator = null
@@ -151,7 +152,7 @@ class SoapConsumerInfo extends
         if (customHttpTransportConfigured) {
             exception = getConnectionException(uri,
                                                SOAP_METHOD,
-                                               appClassLoader)
+                                               fetchClassLoaders.appClassloader)
         } else {
             exception = wrapWithCustom(dispatchExceptionClass.newInstance('An error occurred while sending the SOAP request') as Throwable)
         }
@@ -163,7 +164,7 @@ class SoapConsumerInfo extends
         if (customHttpTransportConfigured) {
             exception = getTimeoutException(uri,
                                             SOAP_METHOD,
-                                            appClassLoader)
+                                            fetchClassLoaders.appClassloader)
         } else {
             exception = wrapWithCustom(dispatchExceptionClass.newInstance('The SOAP request timed out',
                                                                           new TimeoutException('HTTP timeout!')) as Throwable)
@@ -187,9 +188,11 @@ class SoapConsumerInfo extends
                 log.warn 'You are throwing a SOAP fault from a SOAP mock on a WSC config with a custom transport configured. When you have this configuration, Mule will treat the likely HTTP 500 coming back from the SOAP server as an exception and never get to the SOAP fault. The testing framework is mirroring this behavior so that you know it is happening. You may want to configure a response validator on the custom transport/request config with a success range of 0..399,500 so that it stays out of the way.'
             }
             // We have no easy way of getting a validator setup
+            def emptyResponse = new ByteArrayOutputStream()
             validator.validate(500,
                                'some fault',
-                               [:])
+                               [:],
+                               emptyResponse)
         }
         def detailResult = detailClosure(DOMBuilder.newInstance())
         def detailString = detailResult ? detailResult.serialize() : '<detail/>'

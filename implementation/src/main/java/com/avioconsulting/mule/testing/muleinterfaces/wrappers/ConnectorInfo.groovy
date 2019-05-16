@@ -1,5 +1,6 @@
 package com.avioconsulting.mule.testing.muleinterfaces.wrappers
 
+import com.avioconsulting.mule.testing.muleinterfaces.IFetchClassLoaders
 import com.avioconsulting.mule.testing.transformers.ClosureEvaluationResponse
 
 class ConnectorInfo<TClosureResponse extends ClosureEvaluationResponse> {
@@ -7,11 +8,14 @@ class ConnectorInfo<TClosureResponse extends ClosureEvaluationResponse> {
     private final String fileName, container
     private final int lineNumber
     String name
+    protected final IFetchClassLoaders fetchClassLoaders
 
     ConnectorInfo(String fileName,
                   Integer lineNumber,
                   String container,
-                  Map<String, Object> parameters) {
+                  Map<String, Object> parameters,
+                  IFetchClassLoaders fetchClassLoaders) {
+        this.fetchClassLoaders = fetchClassLoaders
         this.lineNumber = lineNumber
         this.container = container
         this.fileName = fileName

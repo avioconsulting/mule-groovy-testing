@@ -2,6 +2,7 @@ package com.avioconsulting.mule.testing.muleinterfaces.wrappers.connectors
 
 import com.avioconsulting.mule.testing.dsl.mocking.ErrorThrowing
 import com.avioconsulting.mule.testing.muleinterfaces.HttpAttributeBuilder
+import com.avioconsulting.mule.testing.muleinterfaces.IFetchClassLoaders
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.ConnectorInfo
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.EventWrapper
 import com.avioconsulting.mule.testing.transformers.http.HttpClosureEvalResponse
@@ -24,11 +25,13 @@ class HttpRequesterInfo extends
     HttpRequesterInfo(String fileName,
                       Integer lineNumber,
                       String container,
-                      Map<String, Object> parameters) {
+                      Map<String, Object> parameters,
+                      IFetchClassLoaders fetchClassLoaders) {
         super(fileName,
               lineNumber,
               container,
-              parameters)
+              parameters,
+              fetchClassLoaders)
         this.method = parameters['method'] as String
         def responseValidationSettings = parameters['responseValidationSettings']
         if (!responseValidationSettings) {
@@ -36,7 +39,7 @@ class HttpRequesterInfo extends
             throw new Exception('Usually HTTP requesters have responseValidationSettings set on them. This one does not. This usually happens when the DW 2.0 logic that builds HTTP headers, query params, etc has a DW error in it. Check your DW logic in <http:headers> etc. carefully')
         }
         def muleValidator = responseValidationSettings.responseValidator
-        appClassLoader = responseValidationSettings.getClass().classLoader
+        appClassLoader = fetchClassLoaders.appClassloader
         if (!muleValidator) {
             // Even if you choose 'None' for response validator in Studio 7, Mule will still validate against 200,201 by default
             // but if none is picked, we won't see a validator
