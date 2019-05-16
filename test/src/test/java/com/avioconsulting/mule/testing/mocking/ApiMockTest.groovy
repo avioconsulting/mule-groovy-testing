@@ -275,7 +275,7 @@ class ApiMockTest extends
         mockRestHttpCall('the name of our connector') {
             json {
                 whenCalledWith(String) { HttpRequesterInfo httpInfo ->
-                    setHttpReturnCode(404)
+                    setHttpStatusCode(404)
                     'new payload'
                 }
             }
