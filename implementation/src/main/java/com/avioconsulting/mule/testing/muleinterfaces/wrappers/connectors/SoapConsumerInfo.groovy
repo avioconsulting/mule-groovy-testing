@@ -1,7 +1,7 @@
 package com.avioconsulting.mule.testing.muleinterfaces.wrappers.connectors
 
 import com.avioconsulting.mule.testing.TestingFrameworkException
-import com.avioconsulting.mule.testing.dsl.mocking.SoapErrorThrowing
+import com.avioconsulting.mule.testing.dsl.mocking.SOAPErrorThrowing
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.ConnectorInfo
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.CustomErrorWrapperException
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.EventWrapper
@@ -150,7 +150,7 @@ class SoapConsumerInfo extends
     ClosureEvaluationResponse evaluateClosure(EventWrapper event,
                                               Object input,
                                               Closure closure) {
-        def errorHandler = new SoapErrorThrowing() {
+        def errorHandler = new SOAPErrorThrowing() {
             @Override
             def soapFault(String message,
                           QName faultCode,
