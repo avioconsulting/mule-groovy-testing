@@ -2,6 +2,7 @@ package com.avioconsulting.mule.testing.mocking
 
 import com.avioconsulting.mule.testing.ConfigTrait
 import com.avioconsulting.mule.testing.junit.BaseJunitTest
+import com.avioconsulting.mule.testing.muleinterfaces.wrappers.EventWrapper
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.InvokeExceptionWrapper
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.ReturnWrapper
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.StreamUtils
@@ -596,14 +597,17 @@ class HttpTest extends
             json {
                 inputPayload([input_payload: 123])
             }
+            withInputEvent { EventWrapper event ->
+                event.withNewAttributes([input_attribute: 42])
+            }
         } as Map
 
         // assert
-        assertThat 'The real Mule engine will NOT return error payloads in #[payload], it will return the payload before the connector failure',
+        assertThat 'The real Mule engine will NOT return error payloads in #[payload], it will return the payload before the connector failure. Same w/ attributes',
                    result,
                    is(equalTo([
                            reply_key       : [input_payload: 123],
-                           reply_attributes: null
+                           reply_attributes: [input_attribute: 42]
                    ]))
     }
 
@@ -630,7 +634,7 @@ class HttpTest extends
         assertThat 'We explicitly tried to get the error in this flow',
                    result,
                    is(equalTo([
-                           error_payload: [sys_error_here: 456],
+                           error_payload   : [sys_error_here: 456],
                            error_attributes: 'foobar'
                    ]))
     }
@@ -651,13 +655,17 @@ class HttpTest extends
             json {
                 inputPayload([input_payload: 123])
             }
+            withInputEvent { EventWrapper event ->
+                event.withNewAttributes([input_attribute: 42])
+            }
         } as Map
 
         // assert
-        assertThat 'The real Mule engine will NOT return error payloads in #[payload], it will return the payload before the connector failure',
+        assertThat 'The real Mule engine will NOT return error payloads in #[payload], it will return the payload before the connector failure. Same w/ attributes',
                    result,
                    is(equalTo([
-                           reply_key: [input_payload: 123]
+                           reply_key       : [input_payload: 123],
+                           reply_attributes: [input_attribute: 42]
                    ]))
     }
 
