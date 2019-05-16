@@ -312,11 +312,16 @@ public class MockingProcessorInterceptor implements ProcessorInterceptor {
         }
     }
 
+    // not using action.fail(Throwable) because if you supply the raw exception, flow error handlers will not
+    // receive the error type. action.fail(ErrorType) would then prevent other useful exception
+    // details from being passed along. We have our own implementation that sets the error type
+    // and exception details properly, just like the real ModuleExceptionHandler would
     private CompletableFuture<InterceptionEvent> fail(InterceptionEvent event,
                                                       InterceptionAction action,
                                                       Throwable exception,
                                                       String namespace,
                                                       String errorTypeCode) {
+        // we need errorType to set the error on the event and we need the identifier to do that
         ComponentIdentifier errorComponentIdentifier = ComponentIdentifier.builder()
                 .namespace(namespace)
                 .name(errorTypeCode)
