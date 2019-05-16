@@ -444,7 +444,7 @@ trait BaseMuleGroovyTrait {
     def mockRestHttpCall(MockingConfiguration mockingConfiguration,
                          RuntimeBridgeTestSide bridge,
                          String connectorName,
-                         @DelegatesTo(HttpRequestResponseChoice) Closure closure) {
+                         @DelegatesTo(StandardRequestResponse) Closure closure) {
         def formatterChoice = new HttpRequestResponseChoiceImpl(bridge)
         def code = closure.rehydrate(formatterChoice,
                                      this,
@@ -499,11 +499,9 @@ trait BaseMuleGroovyTrait {
     }
 
     def mockSoapCall(MockingConfiguration mockingConfiguration,
-                     RuntimeBridgeTestSide bridge,
                      String connectorName,
                      @DelegatesTo(SOAPFormatter) Closure closure) {
-        def soapFormatter = new SOAPRequestResponseImpl(bridge,
-                                                        closure)
+        def soapFormatter = new SOAPRequestResponseImpl(closure)
         mockingConfiguration.addMock(connectorName,
                                      soapFormatter.transformer)
     }

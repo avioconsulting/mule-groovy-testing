@@ -5,9 +5,8 @@ import com.avioconsulting.mule.testing.muleinterfaces.wrappers.*
 import groovy.util.logging.Log4j2
 
 @Log4j2
-class RuntimeBridgeTestSide implements
-        InvokerEventFactory,
-        IFetchClassLoaders {
+class RuntimeBridgeTestSide extends FetchClassLoaders
+        implements InvokerEventFactory {
     private final Object runtimeBridgeMuleSide
     private final MockingConfiguration mockingConfiguration
 
@@ -19,6 +18,7 @@ class RuntimeBridgeTestSide implements
     RuntimeBridgeTestSide(Object runtimeBridgeMuleSide,
                           String artifactName,
                           MockingConfiguration mockingConfiguration) {
+        super(runtimeBridgeMuleSide)
         this.mockingConfiguration = mockingConfiguration
         this.runtimeBridgeMuleSide = runtimeBridgeMuleSide
         this.artifactName = artifactName
@@ -77,15 +77,6 @@ class RuntimeBridgeTestSide implements
 
     def dispose() {
         runtimeBridgeMuleSide.dispose()
-    }
-
-    ClassLoader getAppClassloader() {
-        runtimeBridgeMuleSide.getAppClassloader()
-    }
-
-    @Override
-    ClassLoader getRuntimeClassLoader() {
-        runtimeBridgeMuleSide.getRuntimeClassLoader()
     }
 
     BatchNotifyListenerWrapper getBatchNotifyListener() {

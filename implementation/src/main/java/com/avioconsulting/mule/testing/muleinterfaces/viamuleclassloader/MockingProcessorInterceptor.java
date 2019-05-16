@@ -14,6 +14,7 @@ import org.mule.runtime.api.message.ErrorType;
 import org.mule.runtime.core.api.processor.Processor;
 import org.mule.runtime.core.internal.exception.MessagingException;
 import org.mule.runtime.core.internal.interception.DefaultInterceptionEvent;
+import org.mule.runtime.core.internal.message.InternalEvent;
 import org.mule.runtime.core.internal.processor.TryScope;
 import org.mule.runtime.extension.api.error.ErrorTypeDefinition;
 import org.mule.runtime.extension.api.exception.ModuleException;
@@ -32,10 +33,7 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 import static org.mule.runtime.core.api.util.ClassUtils.withContextClassLoader;
@@ -314,11 +312,16 @@ public class MockingProcessorInterceptor implements ProcessorInterceptor {
         }
     }
 
+    // not using action.fail(Throwable) because if you supply the raw exception, flow error handlers will not
+    // receive the error type. action.fail(ErrorType) would then prevent other useful exception
+    // details from being passed along. We have our own implementation that sets the error type
+    // and exception details properly, just like the real ModuleExceptionHandler would
     private CompletableFuture<InterceptionEvent> fail(InterceptionEvent event,
                                                       InterceptionAction action,
                                                       Throwable exception,
                                                       String namespace,
                                                       String errorTypeCode) {
+        // we need errorType to set the error on the event and we need the identifier to do that
         ComponentIdentifier errorComponentIdentifier = ComponentIdentifier.builder()
                 .namespace(namespace)
                 .name(errorTypeCode)
@@ -329,6 +332,15 @@ public class MockingProcessorInterceptor implements ProcessorInterceptor {
             throw new RuntimeException("Unable to lookup error type! " + errorComponentIdentifier);
         }
         DefaultInterceptionEvent eventImpl = (DefaultInterceptionEvent) event;
+        // if we're going to set an error, we need to set the non-error payload/message (meaning the request)
+        // before our error is thrown BEFORE setting the error. if we don't, the payload will be lost
+        // with the interceptedInput.
+        // this should "synchronize" the output interception event with the input before we add our error in
+        eventImpl.message(eventImpl.getMessage());
+        Map<String, Object> variables = new HashMap<>(eventImpl.getVariables());
+        eventImpl.variables(variables);
+        eventImpl.session(eventImpl.getSession());
+        // now our original stuff will be preserved, we can add the error on top
         eventImpl.setError(errorType.get(),
                            exception);
         Processor processor = getProcessor(action);

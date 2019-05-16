@@ -1,5 +1,7 @@
 package com.avioconsulting.mule.testing.muleinterfaces.wrappers
 
+import com.avioconsulting.mule.testing.muleinterfaces.FetchClassLoaders
+
 import javax.xml.namespace.QName
 
 class FlowWrapper extends
@@ -17,7 +19,8 @@ class FlowWrapper extends
               getComponentLocationField(nativeMuleObject,
                                         'lineInFile') as Integer,
               'n/a',
-              [:])
+              [:],
+              new FetchClassLoaders(runtimeBridgeMuleSide))
         this.runtimeBridgeMuleSide = runtimeBridgeMuleSide
         this.nativeMuleObject = nativeMuleObject
         this.name = name

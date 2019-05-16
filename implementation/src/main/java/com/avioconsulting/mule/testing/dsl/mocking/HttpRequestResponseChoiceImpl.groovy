@@ -3,22 +3,14 @@ package com.avioconsulting.mule.testing.dsl.mocking
 import com.avioconsulting.mule.testing.muleinterfaces.RuntimeBridgeTestSide
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.connectors.HttpRequesterInfo
 import com.avioconsulting.mule.testing.transformers.TransformerChain
-import com.avioconsulting.mule.testing.transformers.http.HttpConnectorErrorTransformer
 import com.avioconsulting.mule.testing.transformers.http.HttpGetTransformer
-import com.avioconsulting.mule.testing.transformers.http.HttpValidationTransformer
 
 class HttpRequestResponseChoiceImpl extends
-        StandardRequestResponseImpl<HttpRequesterInfo>
-        implements
-                HttpRequestResponseChoice {
-    private final HttpValidationTransformer httpValidationTransformer
+        StandardRequestResponseImpl<HttpRequesterInfo> {
     private final HttpGetTransformer httpGetTransformer
-    private final HttpConnectorErrorTransformer httpConnectorErrorTransformer
 
     HttpRequestResponseChoiceImpl(RuntimeBridgeTestSide runtimeBridgeTestSide) {
-        httpValidationTransformer = new HttpValidationTransformer()
         httpGetTransformer = new HttpGetTransformer()
-        httpConnectorErrorTransformer = new HttpConnectorErrorTransformer(runtimeBridgeTestSide)
     }
 
     TransformerChain<HttpRequesterInfo> getTransformer() {
@@ -26,20 +18,6 @@ class HttpRequestResponseChoiceImpl extends
         def transformerChain = super.transformer
         // HTTP GET operations need to 'erase' payload before any attempts to deserialize the payload, etc.
         transformerChain.prependTransformer(httpGetTransformer)
-        transformerChain.addTransformer(httpValidationTransformer)
-        transformerChain.addTransformer(httpConnectorErrorTransformer)
         transformerChain
-    }
-
-    def setHttpReturnCode(Integer code) {
-        httpValidationTransformer.httpReturnCode = code
-    }
-
-    def httpConnectError() {
-        this.httpConnectorErrorTransformer.triggerConnectException()
-    }
-
-    def httpTimeoutError() {
-        this.httpConnectorErrorTransformer.triggerTimeoutException()
     }
 }

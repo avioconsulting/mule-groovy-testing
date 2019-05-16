@@ -8,7 +8,8 @@ import com.avioconsulting.mule.testing.muleinterfaces.wrappers.connectors.SoapCo
 class ConnectorInfoFactory {
     ConnectorInfo getConnectorInfo(Object componentLocation,
                                    String name,
-                                   Map params) {
+                                   Map params,
+                                   IFetchClassLoaders fetchClassLoaders) {
         String fileName = componentLocation.fileName.get()
         String container = componentLocation.getRootContainerName()
         Integer lineInFile = componentLocation.lineInFile.get() as Integer
@@ -22,17 +23,20 @@ class ConnectorInfoFactory {
                 return new HttpRequesterInfo(fileName,
                                              lineInFile,
                                              container,
-                                             params)
+                                             params,
+                                             fetchClassLoaders)
             } else if (identifier.namespace == 'wsc' && identifier.name == 'consume') {
                 return new SoapConsumerInfo(fileName,
                                             lineInFile,
                                             container,
-                                            params)
+                                            params,
+                                            fetchClassLoaders)
             }
             new ConnectorInfo(fileName,
                               lineInFile,
                               container,
-                              params)
+                              params,
+                              fetchClassLoaders)
         }()
         info.with {
             it.name = name

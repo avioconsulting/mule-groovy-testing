@@ -1,5 +1,6 @@
 package com.avioconsulting.mule.testing.muleinterfaces.wrappers.connectors
 
+import com.avioconsulting.mule.testing.muleinterfaces.wrappers.EventWrapper
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.ModuleExceptionWrapper
 
 class HttpValidatorWrapper {
@@ -35,7 +36,8 @@ class HttpValidatorWrapper {
 
     def validate(int statusCode,
                  String reasonPhrase,
-                 Map<String, String> headers) {
+                 Map<String, String> headers,
+                 Object errorResponse) {
         def httpRequest = httpRequestBuilder
                 .method(httpMethod)
                 .uri(httpUri)
@@ -46,7 +48,7 @@ class HttpValidatorWrapper {
                                                                  multiMap)
         def result = this.muleResultBuilder
                 .attributes(httpResponseAttr)
-                .output(new ByteArrayInputStream())
+                .output(errorResponse)
                 .build()
         try {
             muleValidator.validate(result,

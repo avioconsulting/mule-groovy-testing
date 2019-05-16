@@ -4,7 +4,6 @@ import com.avioconsulting.mule.testing.BaseMuleGroovyTrait
 import com.avioconsulting.mule.testing.dsl.invokers.BatchRunner
 import com.avioconsulting.mule.testing.dsl.invokers.FlowRunner
 import com.avioconsulting.mule.testing.dsl.invokers.SoapInvoker
-import com.avioconsulting.mule.testing.dsl.mocking.HttpRequestResponseChoice
 import com.avioconsulting.mule.testing.dsl.mocking.SOAPFormatter
 import com.avioconsulting.mule.testing.dsl.mocking.StandardRequestResponse
 import com.avioconsulting.mule.testing.dsl.mocking.sfdc.Choice
@@ -63,7 +62,7 @@ abstract class BaseJunitTest implements
     }
 
     def mockRestHttpCall(String connectorName,
-                         @DelegatesTo(HttpRequestResponseChoice) Closure closure) {
+                         @DelegatesTo(StandardRequestResponse) Closure closure) {
         mockRestHttpCall(mockingConfiguration,
                          runtimeBridge,
                          connectorName,
@@ -73,7 +72,6 @@ abstract class BaseJunitTest implements
     def mockSoapCall(String connectorName,
                      @DelegatesTo(SOAPFormatter) Closure closure) {
         mockSoapCall(mockingConfiguration,
-                     runtimeBridge,
                      connectorName,
                      closure)
     }

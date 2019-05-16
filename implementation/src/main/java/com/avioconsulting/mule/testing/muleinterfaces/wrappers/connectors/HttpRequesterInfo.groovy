@@ -1,10 +1,15 @@
 package com.avioconsulting.mule.testing.muleinterfaces.wrappers.connectors
 
+import com.avioconsulting.mule.testing.dsl.mocking.ErrorThrowing
 import com.avioconsulting.mule.testing.muleinterfaces.HttpAttributeBuilder
+import com.avioconsulting.mule.testing.muleinterfaces.IFetchClassLoaders
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.ConnectorInfo
+import com.avioconsulting.mule.testing.muleinterfaces.wrappers.EventWrapper
+import com.avioconsulting.mule.testing.transformers.ClosureCurrier
+import com.avioconsulting.mule.testing.transformers.http.HttpClosureEvalResponse
 
 class HttpRequesterInfo extends
-        ConnectorInfo implements HttpFunctionality {
+        ConnectorInfo<HttpClosureEvalResponse> implements HttpFunctionality {
     private final String method
     private final Map<String, String> queryParams
     private final Map<String, String> headers
@@ -21,11 +26,13 @@ class HttpRequesterInfo extends
     HttpRequesterInfo(String fileName,
                       Integer lineNumber,
                       String container,
-                      Map<String, Object> parameters) {
+                      Map<String, Object> parameters,
+                      IFetchClassLoaders fetchClassLoaders) {
         super(fileName,
               lineNumber,
               container,
-              parameters)
+              parameters,
+              fetchClassLoaders)
         this.method = parameters['method'] as String
         def responseValidationSettings = parameters['responseValidationSettings']
         if (!responseValidationSettings) {
@@ -33,7 +40,7 @@ class HttpRequesterInfo extends
             throw new Exception('Usually HTTP requesters have responseValidationSettings set on them. This one does not. This usually happens when the DW 2.0 logic that builds HTTP headers, query params, etc has a DW error in it. Check your DW logic in <http:headers> etc. carefully')
         }
         def muleValidator = responseValidationSettings.responseValidator
-        appClassLoader = responseValidationSettings.getClass().classLoader
+        appClassLoader = fetchClassLoaders.appClassloader
         if (!muleValidator) {
             // Even if you choose 'None' for response validator in Studio 7, Mule will still validate against 200,201 by default
             // but if none is picked, we won't see a validator
@@ -110,5 +117,75 @@ class HttpRequesterInfo extends
                                         reasonPhrase,
                                         appClassLoader,
                                         additionalHeaders)
+    }
+
+    private def throwConnectException() {
+        def exception = getConnectionException(uri,
+                                               method,
+                                               appClassLoader)
+        throw exception
+    }
+
+    private def throwTimeOutException() {
+        def exception = getTimeoutException(uri,
+                                            method,
+                                            appClassLoader)
+        throw exception
+    }
+
+    @Override
+    HttpClosureEvalResponse evaluateClosure(EventWrapper event,
+                                            Object input,
+                                            Closure closure,
+                                            ClosureCurrier closureCurrier) {
+        // there might be a better way to do this but this will allow specific connectors
+        // to handle stuff inside "whenCalledWith" like error triggering, etc.
+        def statusCode = 200
+        def connector = this
+        def errorHandler = new ErrorThrowing() {
+            @Override
+            def setHttpStatusCode(int code) {
+                // will allow us to grab the desired code and then use the output from the closure
+                // to populate a prospective error message
+                statusCode = code
+                return null
+            }
+
+            @Override
+            def httpConnectError() {
+                // immediate is OK
+                connector.throwConnectException()
+                return null
+            }
+
+            @Override
+            def httpTimeoutError() {
+                // immediate is OK
+                connector.throwTimeOutException()
+                return null
+            }
+        }
+        closure = closure.rehydrate(errorHandler,
+                                    closure.owner,
+                                    closure.thisObject)
+        def curried = closureCurrier.curryClosure(closure,
+                                                  event,
+                                                  this)
+        def result = curried.parameterTypes.size() == 0 ? curried() : curried(input)
+        validator.validate(statusCode,
+                           'Test framework told us to',
+                           ['X-Some-Header': '123'],
+                           result)
+        new HttpClosureEvalResponse(httpStatus: statusCode,
+                                    response: result)
+    }
+
+    @Override
+    EventWrapper transformEvent(EventWrapper incomingEvent,
+                                HttpClosureEvalResponse closureResponse) {
+        // will allow rest of flow to use our mocked HTTP status via attributes
+        def attributes = getHttpResponseAttributes(closureResponse.httpStatus,
+                                                   'the reason')
+        incomingEvent.withNewAttributes(attributes)
     }
 }
