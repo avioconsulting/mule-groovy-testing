@@ -11,6 +11,10 @@ class OurMavenClassLoaderFactory {
     private final ClassLoader classLoader
     private final List<URL> services
     private final List<URL> patches
+    private static final List<String> ANALYTICS_SERVICES = [
+            'api-gateway-contract-service',
+            'api-gateway-events-collector-service'
+    ]
 
     OurMavenClassLoaderFactory(BaseEngineConfig engineConfig,
                                File muleHomeDirectory,
@@ -35,7 +39,9 @@ class OurMavenClassLoaderFactory {
             svcDep.URL
         }
         services.removeAll() { svcUrl ->
-            filterAnalyticsPluginEnabled && svcUrl.toString().contains('api-gateway-contract-service')
+            filterAnalyticsPluginEnabled && ANALYTICS_SERVICES.any { analyticsService ->
+                svcUrl.toString().contains(analyticsService)
+            }
         }
         patches = bundleDependencies.findAll { d ->
             isPatchDependency(d)
