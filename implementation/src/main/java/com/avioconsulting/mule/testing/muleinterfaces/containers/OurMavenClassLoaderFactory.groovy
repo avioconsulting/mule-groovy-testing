@@ -15,10 +15,15 @@ class OurMavenClassLoaderFactory {
             'api-gateway-contract-service',
             'api-gateway-events-collector-service'
     ]
+    private final String muleVersion
 
     OurMavenClassLoaderFactory(BaseEngineConfig engineConfig,
                                File muleHomeDirectory,
                                List<Dependency> runtimeDependencyGraph) {
+        def bomDependency = runtimeDependencyGraph.find { d ->
+            d.artifactId == 'mule-runtime-impl-bom'
+        }
+        muleVersion = bomDependency.version
         def bundleDependencies = runtimeDependencyGraph.sort { d1, d2 ->
             if (isPatchDependency(d1)) {
                 return -1
@@ -81,5 +86,9 @@ class OurMavenClassLoaderFactory {
 
     List<URL> getPatches() {
         return patches
+    }
+
+    String getMuleVersion() {
+        return muleVersion
     }
 }

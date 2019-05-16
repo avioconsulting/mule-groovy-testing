@@ -80,7 +80,8 @@ class MuleEngineContainer {
             createAppsDirectory()
             def classLoaderFactory = getClassLoaderFactory(engineConfig,
                                                            dependencyJsonText)
-            copyServices(classLoaderFactory.services)
+            setupServices(classLoaderFactory.services,
+                          classLoaderFactory.muleVersion)
             copyPatches(classLoaderFactory.patches)
             def containerModulesClassLoader = classLoaderFactory.classLoader
             // see FilterOutNonTestingExtensionsClassLoader for why we're doing this
@@ -111,7 +112,8 @@ class MuleEngineContainer {
         }
     }
 
-    private void copyServices(List<URL> services) {
+    private void setupServices(List<URL> services,
+                               String muleVersion) {
         def servicesDir = new File(muleHomeDirectory,
                                    'services')
         def extractServices = true
@@ -133,7 +135,29 @@ class MuleEngineContainer {
             log.info 'Using existing services'
             return
         }
+        if (muleVersion.startsWith('4.1')) {
+            copyServicesFor41(services,
+                              servicesDir)
+        } else {
+            unzipServicesFor420(services,
+                                servicesDir)
+        }
+        serviceJsonFile.text = desiredServiceJson
+    }
 
+    private static void copyServicesFor41(List<URL> services,
+                                          File servicesDir) {
+        log.info 'Copying services {} to {}',
+                 services,
+                 servicesDir
+        services.each { svcUrl ->
+            FileUtils.copyFileToDirectory(new File(svcUrl.toURI()),
+                                          servicesDir)
+        }
+    }
+
+    private static void unzipServicesFor420(List<URL> services,
+                                            File servicesDir) {
         log.info 'Unzipping services {} to {}',
                  services,
                  servicesDir
@@ -166,7 +190,6 @@ class MuleEngineContainer {
             zipStream.closeEntry()
             zipStream.close()
         }
-        serviceJsonFile.text = desiredServiceJson
     }
 
     private void copyPatches(List<URL> patches) {
