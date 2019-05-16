@@ -494,6 +494,30 @@ class HttpTest extends
     }
 
     @Test
+    void http_return_set_201_code_closure_curry() {
+        // arrange
+        mockRestHttpCall('SomeSystem Call') {
+            json {
+                whenCalledWith { HttpRequesterInfo ignored ->
+                    setHttpStatusCode(201)
+                    [reply: 456]
+                }
+            }
+        }
+
+        // act
+        def result = runFlow('queryParametersHttpStatus') {
+            json {
+                inputPayload([foo: 123])
+            }
+        }
+
+        // assert
+        assertThat result,
+                   is(equalTo([reply_key: 201]))
+    }
+
+    @Test
     void http_return_error_code_custom() {
         // arrange
         mockRestHttpCall('SomeSystem Call') {
