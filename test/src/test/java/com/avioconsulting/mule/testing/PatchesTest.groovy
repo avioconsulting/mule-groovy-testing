@@ -3,8 +3,7 @@ package com.avioconsulting.mule.testing
 import com.avioconsulting.mule.testing.junit.BaseJunitTest
 import org.junit.Test
 
-import static org.hamcrest.Matchers.containsString
-import static org.hamcrest.Matchers.is
+import static org.hamcrest.Matchers.*
 import static org.junit.Assert.assertThat
 
 class PatchesTest extends
@@ -23,7 +22,7 @@ class PatchesTest extends
                                                               '**/*')
 
         // assert
-        assertThat serverPatches.join(','),
-                   is(containsString('SE-9559-4.1.5-1.0.jar'))
+        assertThat serverPatches,
+                   is(equalTo([]))
     }
 }
