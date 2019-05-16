@@ -43,6 +43,13 @@ class OurMavenClassLoaderFactory {
                 svcUrl.toString().contains(analyticsService)
             }
         }
+        if (services.any { svcUrl -> svcUrl.toString().contains('mule-service-http-ee') }) {
+            // these 2 services collide
+            services.removeAll { svcUrl ->
+                def svcString = svcUrl.toString()
+                svcString.contains('mule-service-http') && !svcString.contains('mule-service-http-ee')
+            }
+        }
         patches = bundleDependencies.findAll { d ->
             isPatchDependency(d)
         }.collect { d ->
