@@ -55,6 +55,8 @@ class OurMavenClassLoaderFactory {
                 svcString.contains('mule-service-http') && !svcString.contains('mule-service-http-ee')
             }
         }
+        // our dependency plugin generates DUPEs
+        services = services.unique()
         patches = bundleDependencies.findAll { d ->
             isPatchDependency(d)
         }.collect { d ->
