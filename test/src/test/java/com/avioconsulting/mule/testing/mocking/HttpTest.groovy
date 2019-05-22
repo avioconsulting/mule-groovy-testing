@@ -545,6 +545,34 @@ class HttpTest extends
     }
 
     @Test
+    void http_return_error_code_raw() {
+        // arrange
+        mockRestHttpCall('SomeSystem Call') {
+            raw {
+                whenCalledWith {
+                    setHttpStatusCode(202)
+                    def map = [reply: 456]
+                    new ReturnWrapper(JsonOutput.toJson(map),
+                                      'application/json')
+                }
+            }
+        }
+
+        // act
+        def result = shouldFail {
+            runFlow('queryParametersHttpStatus') {
+                json {
+                    inputPayload([foo: 123])
+                }
+            }
+        }
+
+        // assert
+        assertThat result.message,
+                   is(containsString("HTTP GET on resource 'http://localhost:443/some_path/there' failed with status code 202."))
+    }
+
+    @Test
     void http_return_error_code() {
         // arrange
         mockRestHttpCall('SomeSystem Call') {
