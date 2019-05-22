@@ -640,6 +640,39 @@ class HttpTest extends
     }
 
     @Test
+    void status_code_error_sets_payload_properly_raw() {
+        // arrange
+        mockRestHttpCall('SomeSystem Call') {
+            raw {
+                whenCalledWith {
+                    setHttpStatusCode(404)
+                    def map = [should_not_see_http_response_here: 456]
+                    new ReturnWrapper(JsonOutput.toJson(map),
+                                      'application/json')
+                }
+            }
+        }
+
+        // act
+        def result = runFlow('errorPayloadTest') {
+            json {
+                inputPayload([input_payload: 123])
+            }
+            withInputEvent { EventWrapper event ->
+                event.withNewAttributes([input_attribute: 42])
+            }
+        } as Map
+
+        // assert
+        assertThat 'The real Mule engine will NOT return error payloads in #[payload], it will return the payload before the connector failure. Same w/ attributes',
+                   result,
+                   is(equalTo([
+                           reply_key       : [input_payload: 123],
+                           reply_attributes: [input_attribute: 42]
+                   ]))
+    }
+
+    @Test
     void status_code_error_sets_payload_properly_from_mock_response() {
         // arrange
         mockRestHttpCall('SomeSystem Call') {
@@ -647,6 +680,36 @@ class HttpTest extends
                 whenCalledWith {
                     setHttpStatusCode(404)
                     [sys_error_here: 456]
+                }
+            }
+        }
+
+        // act
+        def result = runFlow('errorCaptureSystemResponsePayloadTest') {
+            json {
+                inputPayload([input_payload: 123])
+            }
+        } as Map
+
+        // assert
+        assertThat 'We explicitly tried to get the error in this flow',
+                   result,
+                   is(equalTo([
+                           error_payload    : [sys_error_here: 456],
+                           error_status_code: 404
+                   ]))
+    }
+
+    @Test
+    void status_code_error_sets_payload_properly_from_mock_response_raw() {
+        // arrange
+        mockRestHttpCall('SomeSystem Call') {
+            raw {
+                whenCalledWith {
+                    setHttpStatusCode(404)
+                    def map = [sys_error_here: 456]
+                    new ReturnWrapper(JsonOutput.toJson(map),
+                                      'application/json')
                 }
             }
         }
