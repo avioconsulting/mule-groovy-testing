@@ -1,11 +1,13 @@
 package com.avioconsulting.mule.testing.muleinterfaces.wrappers.connectors
 
-import com.avioconsulting.mule.testing.muleinterfaces.wrappers.EventWrapper
+
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.ModuleExceptionWrapper
+import com.avioconsulting.mule.testing.muleinterfaces.wrappers.ReturnWrapper
 
 class HttpValidatorWrapper {
     private final Object muleValidator
     private final Class httpResponseAttrClass
+    private final Class mediaTypeClass
     private final Class multiMapClass
     private final Object httpRequestBuilder
     private final Object muleResultBuilder
@@ -32,6 +34,7 @@ class HttpValidatorWrapper {
         this.httpRequestBuilder = httpRequestClass.builder()
         def muleResultClass = muleClassLoader.loadClass('org.mule.runtime.extension.api.runtime.operation.Result')
         this.muleResultBuilder = muleResultClass.builder()
+        this.mediaTypeClass = muleClassLoader.loadClass('org.mule.runtime.api.metadata.MediaType')
     }
 
     def validate(int statusCode,
@@ -46,9 +49,14 @@ class HttpValidatorWrapper {
         def httpResponseAttr = httpResponseAttrClass.newInstance(statusCode,
                                                                  reasonPhrase,
                                                                  multiMap)
-        def result = this.muleResultBuilder
+        def builder = this.muleResultBuilder
                 .attributes(httpResponseAttr)
-                .output(errorResponse)
+        // ReturnWrapper is used when a test mock needs to explicitly pass a media type in
+        if (errorResponse instanceof ReturnWrapper) {
+            builder = builder.mediaType(mediaTypeClass.parse(errorResponse.mediaType))
+            errorResponse = errorResponse.payload
+        }
+        def result = builder.output(errorResponse)
                 .build()
         try {
             muleValidator.validate(result,

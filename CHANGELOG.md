@@ -1,6 +1,9 @@
 # 2.0
 (for Mule 4.1)
 
+# 2.0.35
+* Fix issue with `ReturnWrapper` and raw
+
 # 2.0.34
 * 4.2.0 compatibility
 
