@@ -1,6 +1,9 @@
 # 2.0
 (for Mule 4.1)
 
+# 2.0.36
+* Upgrade `slf4j-api` dependency to 1.7.5 from 1.7.25 and explicitly specify a log4j2-slf4j-impl version that works with our version of log4j2. Should reduce collisions in projects
+
 # 2.0.35
 * Fix issue with `ReturnWrapper` and raw
 
