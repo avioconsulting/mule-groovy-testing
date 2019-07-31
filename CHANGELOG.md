@@ -2,7 +2,7 @@
 (for Mule 4.1)
 
 # 2.0.37
-* Add `isGenerateXmlSchemas` (false by default) that will dump generated XML schemas from Mule extensions and core into `.mule/schemas_from_testing_framework`
+* BETA of add `isGenerateXmlSchemas` (false/off by default) that will dump generated XML schemas from Mule extensions and core into `.mule/schemas_from_testing_framework`
 
 # 2.0.36
 * Upgrade `slf4j-api` dependency to 1.7.5 from 1.7.25 and explicitly specify a log4j2-slf4j-impl version that works with our version of log4j2. Should reduce collisions in projects
