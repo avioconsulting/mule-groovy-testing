@@ -12,6 +12,8 @@ public class GroovyMuleTestFrameworkClassLoader extends URLClassLoader {
     }
 
     private static boolean shouldInterceptExtensionSchemaGen(String name) {
+        // this get's called over and over again for each app so we can't rely on a setting from
+        // when this classloader is instantiated
         // can't DRY this because of classloader configurations
         String schemaGenProperty = System.getProperty("internal.avio.groovy.test.generate.xml.schemas");
         if (schemaGenProperty == null || schemaGenProperty.equals("false")) {
