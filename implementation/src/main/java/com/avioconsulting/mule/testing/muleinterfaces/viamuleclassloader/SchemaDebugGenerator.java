@@ -16,7 +16,7 @@ public class SchemaDebugGenerator extends DefaultExtensionSchemaGenerator {
     public String generate(ExtensionModel extensionModel,
                            DslResolvingContext dslContext) {
         String schema = super.generate(extensionModel, dslContext);
-        if (!System.getProperty("avio.groovy.test.generate.xml.schemas").equals("true")) {
+        if (!System.getProperty("internal.avio.groovy.test.generate.xml.schemas").equals("true")) {
             return schema;
         }
         File schemaDir = new File(System.getProperty("mule.home"),

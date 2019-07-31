@@ -13,7 +13,7 @@ public class GroovyMuleTestFrameworkClassLoader extends URLClassLoader {
 
     private static boolean shouldInterceptExtensionSchemaGen(String name) {
         // can't DRY this because of classloader configurations
-        String schemaGenProperty = System.getProperty("avio.groovy.test.generate.xml.schemas");
+        String schemaGenProperty = System.getProperty("internal.avio.groovy.test.generate.xml.schemas");
         if (schemaGenProperty == null || schemaGenProperty.equals("false")) {
             return false;
         }
