@@ -28,11 +28,6 @@ class ApikitFlowInvokeTest extends
         ]
     }
 
-    @Override
-    boolean isGenerateXmlSchemas() {
-        true
-    }
-
     @Test
     void runApiKitFlow() {
         // arrange
