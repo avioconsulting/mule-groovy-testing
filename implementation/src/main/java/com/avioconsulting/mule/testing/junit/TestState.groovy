@@ -76,7 +76,8 @@ class TestState {
                                                                  test.getRepositoryDirectory().absolutePath,
                                                                  test.useLazyConnections,
                                                                  test.useLazyInit,
-                                                                 test.lazyInitXmlValidations)
+                                                                 test.lazyInitXmlValidations,
+                                                                 test.generateXmlSchemas)
             if (failedConfigurations.containsKey(proposedTestingConfig)) {
                 def msg = 'Skipping load of application because this testing config previously failed to start'
                 log.error(msg)

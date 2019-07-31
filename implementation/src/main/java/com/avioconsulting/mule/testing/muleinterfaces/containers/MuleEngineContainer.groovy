@@ -274,6 +274,19 @@ class MuleEngineContainer {
         if (mockingConfiguration.lazyInitEnabled) {
             testSide.startMessageSourceFlows()
         }
+        if (mockingConfiguration.generateXmlSchemas) {
+            Map<String, String> schemas = muleSide.getExtensionSchemas()
+            def schemaDir = new File(muleHomeDirectory,
+                                     'schemas_from_testing_framework')
+            schemaDir.mkdirs()
+            schemas.each { fileName, schemaContents ->
+                def file = new File(schemaDir,
+                                    fileName)
+                log.info 'Writing XML schema to {}',
+                         file
+                file.text = schemaContents
+            }
+        }
         testSide
     }
 

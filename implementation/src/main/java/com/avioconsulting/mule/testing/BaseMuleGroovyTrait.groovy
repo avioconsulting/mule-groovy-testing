@@ -135,6 +135,10 @@ trait BaseMuleGroovyTrait {
         true
     }
 
+    boolean isGenerateXmlSchemas() {
+        false
+    }
+
     boolean isUseVerboseExceptions() {
         false
     }

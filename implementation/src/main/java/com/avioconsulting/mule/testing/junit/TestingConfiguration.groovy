@@ -15,7 +15,7 @@ class TestingConfiguration {
     List<File> outputDirsToCopy
     BaseEngineConfig engineConfig
     String mavenPomPath, repositoryDirectory
-    boolean lazyConnections, lazyInit, lazyInitXmlValidations
+    boolean lazyConnections, lazyInit, lazyInitXmlValidations, generateXmlSchemas
 
     Properties getStartupPropertiesAsJavaUtilProps() {
         def allStrings = ([
