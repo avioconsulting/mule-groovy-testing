@@ -1,5 +1,6 @@
 package com.avioconsulting.mule.testing.invocation
 
+import com.avioconsulting.mule.testing.BaseMuleGroovyTrait
 import com.avioconsulting.mule.testing.ConfigTrait
 import com.avioconsulting.mule.testing.SampleJacksonInput
 import com.avioconsulting.mule.testing.SampleJacksonOutput

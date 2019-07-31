@@ -10,6 +10,7 @@ class MockingConfiguration {
     private final Map<String, MuleMessageTransformer> mocks = [:]
     private final Map<String, Integer> keepListenersOnForTheseFlows
     private final boolean lazyInitEnabled
+    private final boolean generateXmlSchemas
     Object runtimeBridgeMuleSide
 
     MockingConfiguration(TestingConfiguration testingConfiguration) {
@@ -18,10 +19,15 @@ class MockingConfiguration {
             [flowName, 1]
         }
         this.lazyInitEnabled = testingConfiguration.lazyInit
+        this.generateXmlSchemas = testingConfiguration.generateXmlSchemas
     }
 
     boolean isLazyInitEnabled() {
         this.lazyInitEnabled
+    }
+
+    boolean isGenerateXmlSchemas() {
+        this.generateXmlSchemas
     }
 
     def clearMocks() {
