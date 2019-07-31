@@ -1,6 +1,9 @@
 # 2.0
 (for Mule 4.1)
 
+# 2.0.39
+* Fix issues with schema gen
+
 # 2.0.38
 * Allow turning on XML schema generation without changing code using `-Davio.groovy.test.generate.xml.schemas=true`
 
