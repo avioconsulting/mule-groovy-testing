@@ -69,8 +69,8 @@ class OurMavenClassLoaderFactory {
                                   'conf').toURI().toString() + '/'))
         // we need ourselves to be resolvable for our bridge classes, etc.
         urls.add(OurMavenClassLoaderFactory.protectionDomain.codeSource.location)
-        classLoader = new GroovyMuleClassLoader(urls.toArray(new URL[0]),
-                                                JdkOnlyClassLoaderFactory.create())
+        classLoader = new GroovyMuleTestFrameworkClassLoader(urls.toArray(new URL[0]),
+                                                             JdkOnlyClassLoaderFactory.create())
     }
 
     private static boolean isPatchDependency(Dependency dependency) {

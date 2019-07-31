@@ -5,9 +5,9 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.Enumeration;
 
-public class GroovyMuleClassLoader extends URLClassLoader {
-    public GroovyMuleClassLoader(URL[] urls,
-                                 ClassLoader parent) {
+public class GroovyMuleTestFrameworkClassLoader extends URLClassLoader {
+    public GroovyMuleTestFrameworkClassLoader(URL[] urls,
+                                              ClassLoader parent) {
         super(urls, parent);
     }
 

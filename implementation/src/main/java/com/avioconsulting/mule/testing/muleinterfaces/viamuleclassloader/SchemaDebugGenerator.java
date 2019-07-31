@@ -8,7 +8,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
-// see GroovyMuleClassLoader for how we substitute this in for Mule's DefaultExtensionSchemaGenerator implementation
+// see GroovyMuleTestFrameworkClassLoader for how we substitute this in for Mule's DefaultExtensionSchemaGenerator implementation
 public class SchemaDebugGenerator extends DefaultExtensionSchemaGenerator {
     // the only way to generate dynamic schemas from Mule extensions BEFORE the app loads (and possibly fails)
     // is to dump them to files write as they are generated
