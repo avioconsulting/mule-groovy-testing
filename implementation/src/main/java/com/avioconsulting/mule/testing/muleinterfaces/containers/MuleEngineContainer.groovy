@@ -276,6 +276,22 @@ class MuleEngineContainer {
         if (mockingConfiguration.lazyInitEnabled) {
             testSide.startMessageSourceFlows()
         }
+        // we have an overridden SchemaDebugGenerator that will dump schemas as the app loads
+        // we also want to do this because this will cover ALL schemas in all extensions, including Mule core
+        if (mockingConfiguration.generateXmlSchemas) {
+            Map<String, String> schemas = muleSide.getExtensionSchemas()
+            def schemaDir = new File(muleHomeDirectory,
+                                     'schemas_from_testing_framework')
+            schemaDir.mkdirs()
+            schemas.each { fileName, schemaContents ->
+                def file = new File(schemaDir,
+                                    fileName)
+                log.info 'Writing XML schema to {}',
+                         file
+                file.text = schemaContents
+            }
+        }
+
         testSide
     }
 

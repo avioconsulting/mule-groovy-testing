@@ -5,9 +5,11 @@ import org.apache.logging.log4j.Logger;
 import org.mule.runtime.api.artifact.Registry;
 import org.mule.runtime.api.component.TypedComponentIdentifier;
 import org.mule.runtime.api.component.location.ComponentLocation;
+import org.mule.runtime.api.dsl.DslResolvingContext;
 import org.mule.runtime.api.event.EventContext;
 import org.mule.runtime.api.exception.ErrorTypeRepository;
 import org.mule.runtime.api.message.Message;
+import org.mule.runtime.api.meta.model.ExtensionModel;
 import org.mule.runtime.api.metadata.DataType;
 import org.mule.runtime.api.metadata.MediaType;
 import org.mule.runtime.api.metadata.TypedValue;
@@ -20,12 +22,11 @@ import org.mule.runtime.core.api.streaming.bytes.CursorStreamProviderFactory;
 import org.mule.runtime.core.internal.event.DefaultEventContext;
 import org.mule.runtime.core.internal.interception.DefaultInterceptionEvent;
 import org.mule.runtime.dsl.api.component.config.DefaultComponentLocation;
+import org.mule.runtime.module.extension.internal.capability.xml.schema.DefaultExtensionSchemaGenerator;
 
 import javax.xml.namespace.QName;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 public class RuntimeBridgeMuleSide {
@@ -176,6 +177,19 @@ public class RuntimeBridgeMuleSide {
 
     public ClassLoader getAppClassloader() {
         return getMuleContext().getExecutionClassLoader();
+    }
+
+    public Map<String, String> getExtensionSchemas() {
+        Set<ExtensionModel> extensions = getMuleContext().getExtensionManager().getExtensions();
+        DslResolvingContext resolvingContext = DslResolvingContext.getDefault(extensions);
+        DefaultExtensionSchemaGenerator schemaGenerator = new DefaultExtensionSchemaGenerator();
+        Map<String,String> map = new HashMap<>();
+        for (ExtensionModel model : extensions) {
+            String schema = schemaGenerator.generate(model, resolvingContext);
+            String filename = model.getXmlDslModel().getXsdFileName();
+            map.put(filename, schema);
+        }
+        return map;
     }
 
     public ErrorTypeRepository getErrorTypeRepository() {
