@@ -1,6 +1,9 @@
 # 2.0
 (for Mule 4.1)
 
+# 2.0.38
+* Allow turning on XML schema generation without changing code using `-Davio.groovy.test.generate.xml.schemas=true`
+
 # 2.0.37
 * BETA of add `isGenerateXmlSchemas` (false/off by default) that will dump generated XML schemas from Mule extensions and core into `.mule/schemas_from_testing_framework`
 

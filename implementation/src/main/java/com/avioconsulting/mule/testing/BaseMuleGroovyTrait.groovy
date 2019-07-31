@@ -136,7 +136,9 @@ trait BaseMuleGroovyTrait {
     }
 
     boolean isGenerateXmlSchemas() {
-        false
+        // Allows doing this without changing the code but if you want to enable this with code, you can
+        def prop = System.getProperty(MuleEngineContainer.GENERATE_SCHEMA_PROPERTY)
+        prop != null && prop == 'true'
     }
 
     boolean isUseVerboseExceptions() {

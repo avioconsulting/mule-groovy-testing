@@ -11,6 +11,7 @@ import java.util.zip.ZipInputStream
 
 @Log4j2
 class MuleEngineContainer {
+    public static final String GENERATE_SCHEMA_PROPERTY = 'avio.groovy.test.generate.xml.schemas'
     private final BaseEngineConfig engineConfig
     private final Object container
     private final Object deployListener
@@ -260,7 +261,7 @@ class MuleEngineContainer {
                                             URI application,
                                             MockingConfiguration mockingConfiguration,
                                             Properties properties) {
-        System.setProperty('avio.groovy.test.generate.xml.schemas',
+        System.setProperty(GENERATE_SCHEMA_PROPERTY,
                            mockingConfiguration.generateXmlSchemas.toString())
         // have to do this before we deploy to catch the event
         deployListener.setMockingConfiguration(artifactName,
