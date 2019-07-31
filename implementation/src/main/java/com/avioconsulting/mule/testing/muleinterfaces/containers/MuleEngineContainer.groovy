@@ -260,6 +260,8 @@ class MuleEngineContainer {
                                             URI application,
                                             MockingConfiguration mockingConfiguration,
                                             Properties properties) {
+        System.setProperty('avio.groovy.test.generate.xml.schemas',
+                           mockingConfiguration.generateXmlSchemas.toString())
         // have to do this before we deploy to catch the event
         deployListener.setMockingConfiguration(artifactName,
                                                mockingConfiguration)
@@ -273,19 +275,6 @@ class MuleEngineContainer {
         // if lazy init is on, then the source someone wants enabled won't be on without this
         if (mockingConfiguration.lazyInitEnabled) {
             testSide.startMessageSourceFlows()
-        }
-        if (mockingConfiguration.generateXmlSchemas) {
-            Map<String, String> schemas = muleSide.getExtensionSchemas()
-            def schemaDir = new File(muleHomeDirectory,
-                                     'schemas_from_testing_framework')
-            schemaDir.mkdirs()
-            schemas.each { fileName, schemaContents ->
-                def file = new File(schemaDir,
-                                    fileName)
-                log.info 'Writing XML schema to {}',
-                         file
-                file.text = schemaContents
-            }
         }
         testSide
     }
