@@ -21,7 +21,7 @@ public class SchemaDebugGenerator extends DefaultExtensionSchemaGenerator {
         }
         File schemaDir = new File(System.getProperty("mule.home"),
                                   "schemas_from_testing_framework");
-        assert schemaDir.exists() || schemaDir.mkdir();
+        schemaDir.mkdir();
         File schemaFile = new File(schemaDir,
                                    extensionModel.getXmlDslModel().getXsdFileName());
         FileWriter writer = null;
