@@ -1,6 +1,9 @@
 # 2.0
 (for Mule 4.1)
 
+# 2.0.40
+* Allow specifying Maven settings for classloader model/artifact descriptor generation
+
 # 2.0.39
 * Fix issues with schema gen
 

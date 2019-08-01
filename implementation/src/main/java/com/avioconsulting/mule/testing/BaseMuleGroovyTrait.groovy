@@ -225,6 +225,10 @@ trait BaseMuleGroovyTrait {
         []
     }
 
+    String getMavenSettingsFilePath() {
+        null
+    }
+
     /**
      * If you want some dependencies to be filtered out of your classloader model during the test runs
      * You can override this method. Regular expressions are accepted
@@ -243,7 +247,8 @@ trait BaseMuleGroovyTrait {
                                 muleArtifactDirectory,
                                 mavenPomPath,
                                 propertiesForMavenGeneration,
-                                mavenProfiles)
+                                mavenProfiles,
+                                mavenSettingsFilePath)
     }
 
     File getClassLoaderModelFile() {

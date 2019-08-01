@@ -14,7 +14,7 @@ class TestingConfiguration {
     List<Dependency> dependenciesToFilter = []
     List<File> outputDirsToCopy
     BaseEngineConfig engineConfig
-    String mavenPomPath, repositoryDirectory
+    String mavenPomPath, repositoryDirectory, mavenSettingsFilePath
     boolean lazyConnections, lazyInit, lazyInitXmlValidations, generateXmlSchemas
 
     Properties getStartupPropertiesAsJavaUtilProps() {

@@ -74,6 +74,7 @@ class TestState {
                                                                  test.getBaseEngineConfig(),
                                                                  test.getMavenPomPath().absolutePath,
                                                                  test.getRepositoryDirectory().absolutePath,
+                                                                 test.mavenSettingsFilePath,
                                                                  test.useLazyConnections,
                                                                  test.useLazyInit,
                                                                  test.lazyInitXmlValidations,
