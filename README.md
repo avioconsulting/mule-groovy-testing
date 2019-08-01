@@ -21,6 +21,7 @@ Differences from MUnit:
 
 What hasn't been done yet/TODOs:
 
+* Deal with the style of patch with the infamous July 2019 security issue which involves a runtime patch containing other patches
 * Automatically detect whether a flow being invoked has an HTTP listener with non-repeatable streams turned on and use a non repeatable stream in that case
 * Automatically detect whether an HTTP requester being mocked has non-repeatable streams turned on and use a non repeatable stream in that case
 * Invoking SalesForce upsert and query (DQL not supported in Studio 7 yet)
@@ -72,13 +73,7 @@ ${app.runtime} from this project by default -->
             <goals>
                 <goal>resolve</goal>
             </goals>
-            <phase>generate-test-resources</phase>
-            <!-- mulePatches is optional -->
-            <configuration>
-                <mulePatches>
-                <patch>org.mule.patches:SE-9559-4.1.5:1.0</patch>
-                </mulePatches>
-            </configuration>
+            <phase>generate-test-resources</phase>            
         </execution>
     </executions>
 </plugin>
@@ -92,8 +87,8 @@ ${app.runtime} from this project by default -->
         <scope>provided</scope>
     </dependency>
 </dependencies>
-
 ```
+
 3. Add dependencies on this test framework to your Mule project's pom.xml:
 ```xml
 <dependency>
@@ -178,4 +173,39 @@ runApiKitFlow('PATCH', '/mappings') {
         httpStatus = actualStatus
     }
 }
+```
+
+# Runtime Patches
+
+You might find yourself in a situation where the runtime itself has a problem that prevents your tests from running properly and Mulesoft has issued a patch for it. To handle that, follow this process:
+
+NOTE: "Meta-patches" like the July 2019 security issue are not supported yet. It would not be hard to adapt to them but just have not spent the time.
+
+1. Download the patch from the Mule website/support case/etc.
+2. Deploy the patch to your own Nexus/Artifactory server using a command like this:
+`mvn deploy:deploy-file -Dfile=SE-10506-4.1.5.jar -DrepositoryId=avio-releases -Durl=https://devops.avioconsulting.com/nexus/repository/avio-releases -DgroupId=org.mule.patches -DartifactId=SE-10506-4.1.5 -Dversion=1.0`.
+`repositoryId` needs to match the `server` ID in `~/.m2/settings.xml` for credential purposes.
+3. Ensure the `dependency-resolver-maven-plugin` configuration looks like below. The syntax is `groupId:artifactId:version` you used to deploy in step 2.
+
+```xml
+<plugin>
+    <groupId>com.avioconsulting.mule</groupId>
+    <artifactId>dependency-resolver-maven-plugin</artifactId>
+    <version>1.0.2</version>
+    <executions>
+        <execution>
+            <id>generate-dep-graph</id>
+            <goals>
+                <goal>resolve</goal>
+            </goals>
+            <phase>generate-test-resources</phase>
+            <!-- mulePatches is optional -->
+            <configuration>
+                <mulePatches>
+                    <patch>org.mule.patches:SE-9559-4.1.5:1.0</patch>
+                </mulePatches>
+            </configuration>
+        </execution>
+    </executions>
+</plugin>
 ```
