@@ -42,6 +42,29 @@ class JavaTest extends
     }
 
     @Test
+    void subflow() {
+        // arrange
+        def input = new SimpleJavaClass().with {
+            howdy = '123'
+            it
+        }
+
+        // act
+        def result = runFlow('theSubFlow') {
+            java {
+                inputPayload(input)
+            }
+        }
+
+        // assert
+        assertThat result,
+                   is(equalTo([
+                           key  : '123',
+                           value: SimpleJavaClass.name
+                   ]))
+    }
+
+    @Test
     void defaultMimeType() {
         // arrange
         def input = new SimpleJavaClass().with {

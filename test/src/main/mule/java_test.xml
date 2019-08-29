@@ -35,6 +35,20 @@ output application/java
             </ee:message>
         </ee:transform>
     </flow>
+    <sub-flow name="theSubFlow">
+        <set-variable variableName="theClass" value="#[payload.class]"/>
+        <ee:transform doc:name="Transform Message">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/java
+---
+{
+    key: payload.howdy,
+    value: vars.theClass
+}]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+    </sub-flow>
     <flow name="rawMockTargetFlow">
         <java:invoke doc:name="Something to mock"
                      class="does.not.matter"
