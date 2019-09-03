@@ -29,7 +29,7 @@ class FlowWrapper extends
     private static Object getComponentLocationField(Object nativeMuleObject,
                                                     String field) {
         def componentLocation = getComponentLocation(nativeMuleObject)
-        componentLocation[field].get()
+        componentLocation?.getAt(field)?.get()
     }
 
     private static Object getComponentLocation(Object nativeMuleObject) {

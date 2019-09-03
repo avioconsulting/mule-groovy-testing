@@ -32,8 +32,8 @@ class RuntimeBridgeTestSide extends FetchClassLoaders
     }
 
     private Object getNativeFlow(String flowName) {
-        def muleFlowOptional = runtimeBridgeMuleSide.lookupByName(flowName,
-                                                                  mockingConfiguration.lazyInitEnabled)
+        def muleFlowOptional = runtimeBridgeMuleSide.getFlowOrSubflow(flowName,
+                                                                      mockingConfiguration.lazyInitEnabled)
         assert muleFlowOptional.isPresent(): "Flow with name '${flowName}' was not found. Are you using the right flow name?"
         muleFlowOptional.get()
     }

@@ -7,7 +7,7 @@ import com.avioconsulting.mule.testing.transformers.ClosureEvaluationResponse
 class ConnectorInfo<TClosureResponse extends ClosureEvaluationResponse> {
     private final Map<String, Object> parameters
     private final String fileName, container
-    private final int lineNumber
+    private final Integer lineNumber
     String name
     protected final IFetchClassLoaders fetchClassLoaders
 

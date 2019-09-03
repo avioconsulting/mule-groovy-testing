@@ -5,6 +5,7 @@ import org.apache.logging.log4j.Logger;
 import org.mule.runtime.api.artifact.Registry;
 import org.mule.runtime.api.component.TypedComponentIdentifier;
 import org.mule.runtime.api.component.location.ComponentLocation;
+import org.mule.runtime.api.deployment.management.ComponentInitialStateManager;
 import org.mule.runtime.api.dsl.DslResolvingContext;
 import org.mule.runtime.api.event.EventContext;
 import org.mule.runtime.api.exception.ErrorTypeRepository;
@@ -14,15 +15,20 @@ import org.mule.runtime.api.metadata.DataType;
 import org.mule.runtime.api.metadata.MediaType;
 import org.mule.runtime.api.metadata.TypedValue;
 import org.mule.runtime.config.api.LazyComponentInitializer;
+import org.mule.runtime.config.internal.factories.FlowRefFactoryBean;
 import org.mule.runtime.core.api.MuleContext;
 import org.mule.runtime.core.api.construct.Flow;
 import org.mule.runtime.core.api.event.CoreEvent;
+import org.mule.runtime.core.api.processor.Processor;
 import org.mule.runtime.core.api.streaming.StreamingManager;
 import org.mule.runtime.core.api.streaming.bytes.CursorStreamProviderFactory;
+import org.mule.runtime.core.internal.construct.DefaultFlowBuilder;
 import org.mule.runtime.core.internal.event.DefaultEventContext;
 import org.mule.runtime.core.internal.interception.DefaultInterceptionEvent;
+import org.mule.runtime.core.internal.processor.chain.SubflowMessageProcessorChainBuilder;
 import org.mule.runtime.dsl.api.component.config.DefaultComponentLocation;
 import org.mule.runtime.module.extension.internal.capability.xml.schema.DefaultExtensionSchemaGenerator;
+import org.springframework.context.ApplicationContext;
 
 import javax.xml.namespace.QName;
 import java.io.InputStream;
@@ -50,12 +56,41 @@ public class RuntimeBridgeMuleSide {
         cursorStreamProviderFactory = streamingManager.forBytes().getDefaultCursorProviderFactory();
     }
 
-    public Object lookupByName(String flowName,
+    public Object getFlowOrSubflow(String flowName,
+                                   boolean lazyInitEnabled) {
+        // If this is a subflow, create a flow on the fly with a flow ref inside it
+        Object flow = lookupByName(flowName,
+                                   lazyInitEnabled);
+        Optional<Object> optional = (Optional<Object>) flow;
+        if (optional.isPresent() && optional.get() instanceof SubflowMessageProcessorChainBuilder) {
+            Optional<ComponentInitialStateManager> mgr = this.registry.lookupByType(ComponentInitialStateManager.class);
+            DefaultFlowBuilder flowBuilder = new DefaultFlowBuilder("someFlow",
+                                                                    getMuleContext(),
+                                                                    mgr.get());
+            try {
+                FlowRefFactoryBean flowRefFactoryBean = new FlowRefFactoryBean();
+                flowRefFactoryBean.setMuleContext(getMuleContext());
+                flowRefFactoryBean.setApplicationContext(appContextOpt.get());
+                flowRefFactoryBean.setName(flowName);
+                Processor processor = flowRefFactoryBean.doGetObject();
+                flowBuilder.processors(processor);
+                Flow flowStronglyTyped = flowBuilder.build();
+                flowStronglyTyped.initialise();
+                flowStronglyTyped.start();
+                flow = Optional.of(flowStronglyTyped);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return flow;
+    }
+
+    public Object lookupByName(String objectName,
                                boolean lazyInitEnabled) {
-        Optional<Object> flow = this.registry.lookupByName(flowName);
+        Optional<Object> theObject = this.registry.lookupByName(objectName);
         // if we don't have lazy init on, we won't proceed further anyways
-        if (flow.isPresent() || !lazyInitEnabled) {
-            return flow;
+        if (theObject.isPresent() || !lazyInitEnabled) {
+            return theObject;
         }
         // see lazyInit property (currently in BaseMuleGroovyTrait) for why we have to lazy load
         // when we do lazy load, no flows will be started or initialized by default. so every time we want
@@ -65,15 +100,15 @@ public class RuntimeBridgeMuleSide {
             if (componentLocation.getComponentIdentifier().getType().equals(TypedComponentIdentifier.ComponentType.FLOW)) {
                 assert componentLocation instanceof DefaultComponentLocation;
                 Optional<String> theName = ((DefaultComponentLocation) componentLocation).getName();
-                if (theName.isPresent() && theName.get().equals(flowName)) {
+                if (theName.isPresent() && theName.get().equals(objectName)) {
                     logger.info("Flow '{}' has not been lazily loaded yet, forcing load",
-                                flowName);
+                                objectName);
                     return true;
                 }
             }
             return false;
         });
-        return this.registry.lookupByName(flowName);
+        return this.registry.lookupByName(objectName);
     }
 
     public Object getMessageBuilder() {
@@ -183,7 +218,7 @@ public class RuntimeBridgeMuleSide {
         Set<ExtensionModel> extensions = getMuleContext().getExtensionManager().getExtensions();
         DslResolvingContext resolvingContext = DslResolvingContext.getDefault(extensions);
         DefaultExtensionSchemaGenerator schemaGenerator = new DefaultExtensionSchemaGenerator();
-        Map<String,String> map = new HashMap<>();
+        Map<String, String> map = new HashMap<>();
         for (ExtensionModel model : extensions) {
             String schema = schemaGenerator.generate(model, resolvingContext);
             String filename = model.getXmlDslModel().getXsdFileName();
