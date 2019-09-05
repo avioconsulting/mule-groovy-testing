@@ -16,6 +16,7 @@ import org.mule.runtime.api.metadata.MediaType;
 import org.mule.runtime.api.metadata.TypedValue;
 import org.mule.runtime.config.api.LazyComponentInitializer;
 import org.mule.runtime.config.internal.factories.FlowRefFactoryBean;
+import org.mule.runtime.core.api.Injector;
 import org.mule.runtime.core.api.MuleContext;
 import org.mule.runtime.core.api.construct.Flow;
 import org.mule.runtime.core.api.event.CoreEvent;
@@ -69,8 +70,8 @@ public class RuntimeBridgeMuleSide {
                                                                     mgr.get());
             try {
                 FlowRefFactoryBean flowRefFactoryBean = new FlowRefFactoryBean();
-                flowRefFactoryBean.setMuleContext(getMuleContext());
-                flowRefFactoryBean.setApplicationContext(appContextOpt.get());
+                Injector injector = getMuleContext().getInjector();
+                injector.inject(flowRefFactoryBean);
                 flowRefFactoryBean.setName(flowName);
                 Processor processor = flowRefFactoryBean.doGetObject();
                 flowBuilder.processors(processor);
