@@ -65,14 +65,18 @@ public class RuntimeBridgeMuleSide {
         Optional<Object> optional = (Optional<Object>) flow;
         if (optional.isPresent() && optional.get() instanceof SubflowMessageProcessorChainBuilder) {
             Optional<ComponentInitialStateManager> mgr = this.registry.lookupByType(ComponentInitialStateManager.class);
+            MuleContext muleContext = getMuleContext();
             DefaultFlowBuilder flowBuilder = new DefaultFlowBuilder("someFlow",
-                                                                    getMuleContext(),
+                                                                    muleContext,
                                                                     mgr.get());
             try {
                 FlowRefFactoryBean flowRefFactoryBean = new FlowRefFactoryBean();
-                Injector injector = getMuleContext().getInjector();
+                Injector injector = muleContext.getInjector();
                 injector.inject(flowRefFactoryBean);
+                // injector doesn't handle this
+                flowRefFactoryBean.setMuleContext(muleContext);
                 flowRefFactoryBean.setName(flowName);
+                // TODO: Still need to set location, can't work without that because FlowRefFactoryBean uses this: muleArtifactContext.getPrototypeBeanWithRootContainer(name, this.getRootContainerLocation().toString());
                 Processor processor = flowRefFactoryBean.doGetObject();
                 flowBuilder.processors(processor);
                 Flow flowStronglyTyped = flowBuilder.build();
