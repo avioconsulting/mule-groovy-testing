@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module name="Testing API Mocking Capability"
         prefix="module-hello"
+        namespace="http://www.mulesoft.org/schema/mule/module-hello"
         doc:description="This module relies entirely in runtime provided components (no other Plugin dependencies)"
         xmlns="http://www.mulesoft.org/schema/mule/module"
         xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
@@ -10,7 +11,9 @@
         xsi:schemaLocation="http://www.mulesoft.org/schema/mule/module http://www.mulesoft.org/schema/mule/module/current/mule-module.xsd
         http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
            http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+    <property name="property_responseTimeout" displayName="responseTimeout" type="number" defaultValue="20000" summary="HTTP Response Timeout (ms)"/>
     <http:request-config name="httpreq-config"
+                         responseTimeout="#[vars.property_responseTimeout]"
                          basePath="/">
         <http:request-connection host="www.google.com"
                                  protocol="HTTP"

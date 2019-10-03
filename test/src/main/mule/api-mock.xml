@@ -8,9 +8,10 @@
       xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
       http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
 http://www.mulesoft.org/schema/mule/module-hello http://www.mulesoft.org/schema/mule/module-hello/current/mule-module-hello.xsd">
+    <module-hello:config name="foo"/>
     <flow name="fooFlow">
         <logger message="calling module"/>
-        <module-hello:do-stuff-post doc:name="the name of our connector"/>
+        <module-hello:do-stuff-post config-ref="foo" doc:name="the name of our connector"/>
         <logger message="done calling module, transforming output to java"/>
         <ee:transform doc:name="Transform Message">
             <ee:message>
@@ -23,7 +24,7 @@ payload]]></ee:set-payload>
     </flow>
     <flow name="fooGetFlow">
         <logger message="calling module"/>
-        <module-hello:do-stuff-get doc:name="the name of our connector" inputParam="#[payload]"/>
+        <module-hello:do-stuff-get config-ref="foo" doc:name="the name of our connector" inputParam="#[payload]"/>
         <logger message="done calling module, transforming output to java"/>
         <ee:transform doc:name="Transform Message">
             <ee:message>
@@ -39,7 +40,7 @@ payload]]></ee:set-payload>
         <try>
             <logger message="something"
                     level="INFO"/>
-            <module-hello:do-stuff-get doc:name="the name of our connector" inputParam="#[payload]"/>
+            <module-hello:do-stuff-get config-ref="foo" doc:name="the name of our connector" inputParam="#[payload]"/>
         </try>
         <logger message="done calling module, transforming output to java"/>
         <ee:transform doc:name="Transform Message">
@@ -54,7 +55,7 @@ payload]]></ee:set-payload>
     <flow name="fooGetFlowTryLoggerAfterConnector">
         <logger message="calling module"/>
         <try>
-            <module-hello:do-stuff-get doc:name="the name of our connector" inputParam="#[payload]"/>
+            <module-hello:do-stuff-get config-ref="foo" doc:name="the name of our connector" inputParam="#[payload]"/>
             <logger message="something"
                     level="INFO"/>
         </try>
@@ -71,7 +72,7 @@ payload]]></ee:set-payload>
     <flow name="fooGetFlowTryConnectorFirst">
         <logger message="calling module"/>
         <try>
-            <module-hello:do-stuff-get doc:name="the name of our connector" inputParam="#[payload]"/>
+            <module-hello:do-stuff-get config-ref="foo" doc:name="the name of our connector" inputParam="#[payload]"/>
         </try>
         <logger message="done calling module, transforming output to java"/>
         <ee:transform doc:name="Transform Message">
@@ -86,7 +87,7 @@ payload]]></ee:set-payload>
     <flow name="fooGetFlowTryErrorHandler">
         <logger message="calling module"/>
         <try>
-            <module-hello:do-stuff-get doc:name="the name of our connector" inputParam="#[payload]"/>
+            <module-hello:do-stuff-get config-ref="foo" doc:name="the name of our connector" inputParam="#[payload]"/>
             <error-handler>
                 <on-error-propagate enableNotifications="true"
                                     logException="true"
