@@ -31,14 +31,14 @@ class InterceptorClassLoaderTest extends
         }
 
         // assert
+        println "raw results ${result}"
         assertThat result.size(),
                    is(equalTo(3))
         assertThat result[0],
                    is(equalTo('our debug enabled true'))
         assertThat result[1],
                    is(startsWith('the classloader before paging is org.mule.runtime.module.artifact.api.classloader.MuleArtifactClassLoader[domain/default/app/tests-for-the-test'))
-        assertThat 'if this is wrong, then we will see connector-test-classpath in the result',
-                   result[2],
-                   is(startsWith('the classloader now is org.mule.runtime.deployment.model.internal.application.MuleApplicationClassLoader[domain/default/app/tests-for-the-test'))
+        assertThat result[2],
+                   is(startsWith('the classloader now is org.mule.runtime.module.artifact.api.classloader.MuleArtifactClassLoader[domain/default/app/tests-for-the-test'))
     }
 }
