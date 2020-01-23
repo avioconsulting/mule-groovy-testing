@@ -11,6 +11,7 @@ import org.mule.runtime.api.interception.InterceptionEvent;
 import org.mule.runtime.api.interception.ProcessorInterceptor;
 import org.mule.runtime.api.interception.ProcessorParameterValue;
 import org.mule.runtime.api.message.ErrorType;
+import org.mule.runtime.api.meta.MuleVersion;
 import org.mule.runtime.core.api.processor.Processor;
 import org.mule.runtime.core.internal.exception.MessagingException;
 import org.mule.runtime.core.internal.interception.DefaultInterceptionEvent;
@@ -30,6 +31,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -60,6 +62,7 @@ public class MockingProcessorInterceptor implements ProcessorInterceptor {
     private final Method getErrorTypeRepositoryMethod;
     private final Object mockingConfiguration;
     private final ClassLoader appClassLoader;
+    private final MuleVersion muleVersion;
     // The assumption here is that our call to a module/Exchange wrapped API, since it's just a chain container
     // will be on the same thread, so we can "pass" the name of the connector down to the next invocation
     // of this interceptor w/ ThreadLocal. See usages in this class for more info
@@ -67,6 +70,16 @@ public class MockingProcessorInterceptor implements ProcessorInterceptor {
 
     MockingProcessorInterceptor(Object mockingConfiguration,
                                 ClassLoader appClassLoader) {
+        // this comes from the dependencies we've wired up so it's a way to get what version
+        // of mule we are running under
+        InputStream muleRuntimeVersion = MockingProcessorInterceptor.class.getResourceAsStream("/META-INF/maven/org.mule.runtime/mule-core/pom.properties");
+        Properties properties = new Properties();
+        try {
+            properties.load(muleRuntimeVersion);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        this.muleVersion = new MuleVersion(properties.getProperty("version"));
         this.mockingConfiguration = mockingConfiguration;
         this.appClassLoader = appClassLoader;
         try {
@@ -125,6 +138,10 @@ public class MockingProcessorInterceptor implements ProcessorInterceptor {
     }
 
     private CompletableFuture<InterceptionEvent> doProceed(InterceptionAction action) {
+        MuleVersion muleFixedThisIn = new MuleVersion("4.2.2");
+        if (this.muleVersion.atLeast(muleFixedThisIn)) {
+            return action.proceed();
+        }
         // for some reason, org.mule.runtime.core.internal.processor.interceptor.ReactiveAroundInterceptorAdapter
         // in its doAround method changes the thread context classloader to the one that loaded the interceptor
         // class. The problem with that is it causes problems with non-mocked connectors that
