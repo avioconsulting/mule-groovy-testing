@@ -10,7 +10,7 @@
     <properties>
         <!-- This does not mean this framework can only be used with 4.2.0. It's just what it's built/tested
          against -->
-        <app.runtime>4.2.0</app.runtime>
+        <app.runtime>4.2.2</app.runtime>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <groovy.compiler.version>2.4.15</groovy.compiler.version>
@@ -212,7 +212,7 @@
         <dependency>
             <groupId>org.mule.connectors</groupId>
             <artifactId>mule-wsc-connector</artifactId>
-            <version>1.2.1</version>
+            <version>1.3.4</version>
             <classifier>mule-plugin</classifier>
         </dependency>
         <dependency>

@@ -93,7 +93,8 @@ class MockingConfiguration {
         def connectorInfo = factory.getConnectorInfo(componentLocation,
                                                      connectorName,
                                                      params,
-                                                     fetch)
+                                                     fetch,
+                                                     new LookupFromRegistryWithMuleBridge(this.runtimeBridgeMuleSide))
         def threadContext = CloseableThreadContext.push('Mock processor')
         threadContext.put('connector',
                           connectorInfo.name)

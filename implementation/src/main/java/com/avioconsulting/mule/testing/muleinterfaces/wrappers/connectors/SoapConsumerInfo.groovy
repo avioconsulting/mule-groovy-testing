@@ -3,6 +3,7 @@ package com.avioconsulting.mule.testing.muleinterfaces.wrappers.connectors
 import com.avioconsulting.mule.testing.TestingFrameworkException
 import com.avioconsulting.mule.testing.dsl.mocking.SOAPErrorThrowing
 import com.avioconsulting.mule.testing.muleinterfaces.IFetchClassLoaders
+import com.avioconsulting.mule.testing.muleinterfaces.ILookupFromRegistry
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.ConnectorInfo
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.CustomErrorWrapperException
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.EventWrapper
@@ -43,6 +44,7 @@ class SoapConsumerInfo extends
     private Class cxfSoapFaultClass = {
         getSoapClass('org.apache.cxf.binding.soap.SoapFault')
     }()
+    private final ILookupFromRegistry lookupFromRegistry
 
     private Class getSoapClass(String klass) {
         def artifactClassLoaders = fetchClassLoaders.appClassloader.getArtifactPluginClassLoaders() as List<ClassLoader>
@@ -63,12 +65,14 @@ class SoapConsumerInfo extends
                      Integer lineNumber,
                      String container,
                      Map<String, Object> parameters,
-                     IFetchClassLoaders fetchClassLoaders) {
+                     IFetchClassLoaders fetchClassLoaders,
+                     ILookupFromRegistry lookupFromRegistry) {
         super(fileName,
               lineNumber,
               container,
               parameters,
               fetchClassLoaders)
+        this.lookupFromRegistry = lookupFromRegistry
         def connection = parameters['connection']
         def transportConfig = connection.transportConfiguration
         this.customTransport = transportConfig.getClass().getName().contains('CustomHttpTransportConfiguration')
@@ -91,7 +95,7 @@ class SoapConsumerInfo extends
                                                          this.uri)
     }
 
-    private static def findValidator(transportConfig,
+    private def findValidator(transportConfig,
                                      Map<String, Object> parameters) {
         def getPrivateFieldValue = { Object object,
                                      String fieldName ->
@@ -106,8 +110,8 @@ class SoapConsumerInfo extends
             field.get(object)
         }
         def requesterConfigName = getPrivateFieldValue(transportConfig,
-                                                       'requesterConfig')
-        def requesterConfig = parameters['client'].registry.lookupByName(requesterConfigName).value.configuration.value
+                                                       'requesterConfig') as String
+        def requesterConfig = lookupFromRegistry.lookupByName(requesterConfigName).get().configuration.value
         def responseSettings = getPrivateFieldValue(requesterConfig,
                                                     'responseSettings')
         getPrivateFieldValue(responseSettings,

@@ -9,7 +9,8 @@ class ConnectorInfoFactory {
     ConnectorInfo getConnectorInfo(Object componentLocation,
                                    String name,
                                    Map params,
-                                   IFetchClassLoaders fetchClassLoaders) {
+                                   IFetchClassLoaders fetchClassLoaders,
+                                   ILookupFromRegistry lookupFromRegistry) {
         String fileName = componentLocation.fileName.get()
         String container = componentLocation.getRootContainerName()
         Integer lineInFile = componentLocation.lineInFile.get() as Integer
@@ -30,7 +31,8 @@ class ConnectorInfoFactory {
                                             lineInFile,
                                             container,
                                             params,
-                                            fetchClassLoaders)
+                                            fetchClassLoaders,
+                                            lookupFromRegistry)
             }
             new ConnectorInfo(fileName,
                               lineInFile,

@@ -8,9 +8,9 @@
     <packaging>jar</packaging>
 
     <properties>
-        <!-- This does not mean this framework can only be used with 4.2.0. It's just what it's built/tested
+        <!-- This does not mean this framework can only be used with 4.2.2. It's just what it's built/tested
          against -->
-        <app.runtime>4.2.0</app.runtime>
+        <app.runtime>4.2.2</app.runtime>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <groovy.compiler.version>2.4.15</groovy.compiler.version>

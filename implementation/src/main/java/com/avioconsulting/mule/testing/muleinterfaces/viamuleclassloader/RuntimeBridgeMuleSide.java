@@ -50,6 +50,10 @@ public class RuntimeBridgeMuleSide {
         cursorStreamProviderFactory = streamingManager.forBytes().getDefaultCursorProviderFactory();
     }
 
+    public Optional<Object> lookupByName(String name) {
+        return this.registry.lookupByName(name);
+    }
+
     public Object lookupByName(String flowName,
                                boolean lazyInitEnabled) {
         Optional<Object> flow = this.registry.lookupByName(flowName);
