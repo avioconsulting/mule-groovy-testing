@@ -1,6 +1,5 @@
 package com.avioconsulting.mule.testing.invocation
 
-
 import com.avioconsulting.mule.testing.ConfigTrait
 import com.avioconsulting.mule.testing.SampleJacksonInput
 import com.avioconsulting.mule.testing.SampleJacksonOutput
@@ -104,5 +103,28 @@ class ApikitFlowInvokeTest extends
         // assert
         assertThat result.result,
                    is(equalTo(133))
+    }
+
+    @Test
+    void runApiKitFlow_headers() {
+        // arrange
+
+        // act
+        def result = runApiKitFlow('GET',
+                                   '/resourceforheader',
+                                   null,
+                                   [
+                                           key: 'nope'
+                                   ]) {
+            json {
+                outputOnly(Map)
+            }
+        } as Map
+
+        // assert
+        assertThat result,
+                   is(equalTo([
+                           key: 'nope'
+                   ]))
     }
 }

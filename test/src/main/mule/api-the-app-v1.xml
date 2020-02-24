@@ -74,4 +74,16 @@ output application/json
             </ee:message>
         </ee:transform>
     </flow>
+    <flow name="get:\resourceforheader:api-the-app-v1-config">
+        <ee:transform doc:name="Transform Message">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+    key: attributes.Headers.foo
+}]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+    </flow>
 </mule>

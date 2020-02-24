@@ -33,6 +33,7 @@ abstract class BaseApiKitTest extends
     def runApiKitFlow(String httpMethod,
                       String path,
                       Map queryParams = null,
+                      Map headers = [:],
                       @DelegatesTo(FlowRunner) Closure closure) {
         def flow = runtimeBridge.getFlow(flowName)
         def runner = new FlowRunnerImpl(runtimeBridge,
