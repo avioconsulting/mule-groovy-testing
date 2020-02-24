@@ -52,6 +52,9 @@ class FlowRunnerImpl extends FlowRunnerLiteImpl implements
     @Override
     def transformOutput(EventWrapper event) {
         def response = super.transformOutput(event)
-        return muleOutputEventHook ? muleOutputEventHook(response) : response
+        if (muleOutputEventHook) {
+            muleOutputEventHook(event)
+        }
+        return response
     }
 }
