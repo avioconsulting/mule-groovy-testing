@@ -1,7 +1,10 @@
 # 2.0
 (for Mule 4.1)
 
-# 2.0.41 (unreleased)
+# 2.0.42
+* Fix issue where using `runApiKitFlow` in `BaseApiKitTest` did not allow you to customize headers
+
+# 2.0.41 (limited release)
 * Fix regression with soap mocking in 4.2.2
 
 # 2.0.40
