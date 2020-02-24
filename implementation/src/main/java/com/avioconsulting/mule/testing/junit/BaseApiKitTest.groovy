@@ -47,7 +47,8 @@ abstract class BaseApiKitTest extends
         def inputEvent = setHttpProps(runner.event,
                                       httpMethod,
                                       path,
-                                      queryParams)
+                                      queryParams,
+                                      headers)
         def outputEvent = runFlow(runtimeBridge,
                                   flowName,
                                   inputEvent)
@@ -57,7 +58,8 @@ abstract class BaseApiKitTest extends
     private EventWrapper setHttpProps(EventWrapper event,
                                       String method,
                                       String path,
-                                      Map queryParams) {
+                                      Map queryParams,
+                                      Map headers) {
         // unless the sources/listeners are enabled (not required for apikit in Mule 4, unlike Mule 3)
         // then the listener config never tries to actually bind to the port. therefore the port
         // does not matter
@@ -68,7 +70,8 @@ abstract class BaseApiKitTest extends
                                                   queryParams,
                                                   runtimeBridge,
                                                   event.message.mimeType,
-                                                  "localhost:${portNumberDoesNotMatter}")
+                                                  "localhost:${portNumberDoesNotMatter}",
+                                                  headers)
         logger.info 'APIkit flow invocation: simulating HTTP listener using attributes: {}',
                     attributes
         event.withNewAttributes(attributes)

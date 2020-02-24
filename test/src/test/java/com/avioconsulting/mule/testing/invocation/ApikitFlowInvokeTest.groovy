@@ -114,7 +114,7 @@ class ApikitFlowInvokeTest extends
                                    '/resourceforheader',
                                    null,
                                    [
-                                           key: 'nope'
+                                           foo: 'nope'
                                    ]) {
             json {
                 outputOnly(Map)
