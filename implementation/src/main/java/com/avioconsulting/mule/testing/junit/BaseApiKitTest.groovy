@@ -1,8 +1,8 @@
 package com.avioconsulting.mule.testing.junit
 
 
-import com.avioconsulting.mule.testing.dsl.invokers.FlowRunner
-import com.avioconsulting.mule.testing.dsl.invokers.FlowRunnerImpl
+import com.avioconsulting.mule.testing.dsl.invokers.FlowRunnerLiteImpl
+import com.avioconsulting.mule.testing.dsl.invokers.FlowRunnerWithoutEventControl
 import com.avioconsulting.mule.testing.muleinterfaces.HttpAttributeBuilder
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.EventWrapper
 
@@ -34,25 +34,33 @@ abstract class BaseApiKitTest extends
                       String path,
                       Map queryParams = null,
                       Map headers = [:],
-                      @DelegatesTo(FlowRunner) Closure closure) {
+                      // since we control the event creation heavily here with our http request attributes
+                      // make it explicit that you can't customize (FlowRunner interface implies you can,
+                      // FlowRunnerWithoutEventControl implies you cannot)
+                      @DelegatesTo(FlowRunnerWithoutEventControl) Closure closure) {
         def flow = runtimeBridge.getFlow(flowName)
-        def runner = new FlowRunnerImpl(runtimeBridge,
-                                        flow,
-                                        flowName)
-        def code = closure.rehydrate(runner,
-                                     this,
-                                     this)
-        code.resolveStrategy = Closure.DELEGATE_ONLY
-        code()
-        def inputEvent = setHttpProps(runner.event,
-                                      httpMethod,
-                                      path,
-                                      queryParams,
-                                      headers)
-        def outputEvent = runFlow(runtimeBridge,
-                                  flowName,
-                                  inputEvent)
-        runner.transformOutput(outputEvent)
+        def runner = new FlowRunnerLiteImpl(flow,
+                                            runtimeBridge,
+                                            flowName)
+        try {
+            def code = closure.rehydrate(runner,
+                                         this,
+                                         this)
+            code.resolveStrategy = Closure.DELEGATE_ONLY
+            code()
+            def inputEvent = setHttpProps(runner.event,
+                                          httpMethod,
+                                          path,
+                                          queryParams,
+                                          headers)
+            def outputEvent = runFlow(runtimeBridge,
+                                      flowName,
+                                      inputEvent)
+            runner.transformOutput(outputEvent)
+        }
+        finally {
+            runner.closeLogContext()
+        }
     }
 
     private EventWrapper setHttpProps(EventWrapper event,
