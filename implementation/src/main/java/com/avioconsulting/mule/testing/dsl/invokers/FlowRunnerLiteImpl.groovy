@@ -1,6 +1,7 @@
 package com.avioconsulting.mule.testing.dsl.invokers
 
 import com.avioconsulting.mule.testing.InvokerEventFactory
+import com.avioconsulting.mule.testing.TestingFrameworkException
 import com.avioconsulting.mule.testing.muleinterfaces.RuntimeBridgeTestSide
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.EventWrapper
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.FlowWrapper
@@ -18,6 +19,7 @@ class FlowRunnerLiteImpl implements FlowRunnerWithoutEventControl {
     protected final RuntimeBridgeTestSide runtimeBridge
     protected final String flowName
     private final CloseableThreadContext.Instance threadContext
+    private Closure muleOutputEventHook = null
 
     FlowRunnerLiteImpl(FlowWrapper flow,
                        RuntimeBridgeTestSide runtimeBridge,
@@ -71,11 +73,32 @@ class FlowRunnerLiteImpl implements FlowRunnerWithoutEventControl {
         if (event != null) {
             response = invoker.transformOutput(event)
         }
+        if (muleOutputEventHook) {
+            muleOutputEventHook(event)
+        }
         return response
     }
 
     def closeLogContext() {
         log.info 'Completed flow execution'
         threadContext.close()
+    }
+
+    def withOutputEvent(Closure closure) {
+        muleOutputEventHook = closure
+    }
+
+    def withOutputHttpStatus(Closure closure) {
+        withOutputEvent { EventWrapper outputEvent ->
+            if (outputEvent == null) {
+                throw new TestingFrameworkException(
+                        'A null event was returned (filter?) so No HTTP status was returned from your flow. With the real flow, an HTTP status of 200 will usually be set by default so this test is usually not required.')
+            }
+            def status = outputEvent.getVariable('httpStatus')?.value as Integer
+            if (!status) {
+                throw new TestingFrameworkException('No HTTP status was returned from your flow in the httpStatus variable. Did you forget?')
+            }
+            closure(status)
+        }
     }
 }

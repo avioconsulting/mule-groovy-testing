@@ -6,4 +6,8 @@ interface FlowRunnerWithoutEventControl {
     def java(@DelegatesTo(JavaInvoker) Closure closure)
 
     def soap(@DelegatesTo(SoapInvoker) Closure closure)
+
+    def withOutputEvent(Closure closure)
+
+    def withOutputHttpStatus(Closure closure)
 }

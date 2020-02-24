@@ -1,6 +1,9 @@
 # 2.0
 (for Mule 4.1)
 
+# 2.0.43
+* Previous changes went too far and disabled output event support too
+
 # 2.0.42
 * Fix issue where using `runApiKitFlow` in `BaseApiKitTest` did not allow you to customize headers
 
