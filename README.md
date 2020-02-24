@@ -21,6 +21,7 @@ Differences from MUnit:
 
 What hasn't been done yet/TODOs:
 
+* Figure out a cleaner way to generate up to date artifact descriptors/classloader models either by inheriting Maven settings when we call Maven OR by getting rid of Maven entirely
 * Deal with the style of patch with the infamous July 2019 security issue which involves a runtime patch containing other patches
 * Automatically detect whether a flow being invoked has an HTTP listener with non-repeatable streams turned on and use a non repeatable stream in that case
 * Automatically detect whether an HTTP requester being mocked has non-repeatable streams turned on and use a non repeatable stream in that case
