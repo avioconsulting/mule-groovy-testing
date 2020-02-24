@@ -15,6 +15,7 @@ class TestState {
     private RuntimeBridgeTestSide runtimeBridge
     private final Map<TestingConfiguration, Integer> failedConfigurations = [:]
     private final List<String> newConfigs = []
+    private String criticalFailure = null
     Map cachedClassLoaderModel
 
     MockingConfiguration getMockingConfiguration() {
@@ -56,13 +57,24 @@ class TestState {
     }
 
     void startMule(BaseJunitTest test) {
+        if (criticalFailure) {
+            log.error 'Unable to start Mule because of critical failure in previous test {}',
+                      criticalFailure
+            throw new Exception('critical failure')
+        }
         def threadContext = CloseableThreadContext.putAll([
                 testClass: test.getClass().getName()
         ])
         try {
-            if (!cachedClassLoaderModel) {
-                // testing config needs this
-                populateClassLoaderModel(test)
+            try {
+                if (!cachedClassLoaderModel) {
+                    // testing config needs this
+                    populateClassLoaderModel(test)
+                }
+            }
+            catch (e) {
+                criticalFailure = test
+                throw e
             }
             def proposedTestingConfig = new TestingConfiguration(test.getStartUpProperties(),
                                                                  test.getClassLoaderModel(),
