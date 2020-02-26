@@ -292,6 +292,6 @@ class ApiMockTest extends
 
         // assert
         assertThat exception.message,
-                   is(equalTo('org.mule.runtime.core.internal.exception.MessagingException: HTTP GET on resource \'http://www.google.com:80/stuff\' failed: not found (404).; ErrorType: MODULE-HELLO:NOT_FOUND'))
+                   is(equalTo('org.mule.runtime.core.internal.exception.MessagingException: HTTP GET on resource \'/stuff\' failed: not found (404).; ErrorType: MODULE-HELLO:NOT_FOUND'))
     }
 }

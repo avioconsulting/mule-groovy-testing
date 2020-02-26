@@ -135,7 +135,7 @@ class BatchInvokeTest extends
 
         // assert
         assertThat result.message,
-                   is(equalTo("HTTP POST on resource 'http://localhost:443/some_path' failed: Some timeout error."))
+                   is(equalTo("HTTP POST on resource '/some_path' failed: Some timeout error."))
     }
 
     @Test
