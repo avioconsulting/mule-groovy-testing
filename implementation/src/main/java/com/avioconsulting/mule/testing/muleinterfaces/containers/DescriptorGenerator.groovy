@@ -182,6 +182,7 @@ class DescriptorGenerator implements EnvironmentDetector {
     private void runMavenWithHome(String mavenHome) {
         def mavenInvokeRequest = new DefaultInvocationRequest()
         mavenInvokeRequest.setPomFile(mavenPomPath)
+        mavenInvokeRequest.setUpdateSnapshots(true)
         def mavenProps = propertiesForMavenGeneration
         if (mavenProps) {
             log.info 'Invoking maven with properties {}',
