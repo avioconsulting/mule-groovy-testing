@@ -52,10 +52,7 @@ class HttpRequesterInfo extends
         this.body = requestBuilder.body
         this.queryParams = convertMultiMap(requestBuilder.queryParams) as Map<String, String>
         this.headers = convertMultiMap(requestBuilder.headers) as Map<String, String>
-        def uriParams = parameters['client'].defaultUriParameters
-        def host = "${uriParams.scheme.scheme}://${uriParams.host}:${uriParams.port}"
-        def path = requestBuilder.replaceUriParams(parameters['uriSettings'].path)
-        this.uri = "${host}${path}"
+        this.uri = requestBuilder.replaceUriParams(parameters['uriSettings'].path)
         this.validatorWrapper = new HttpValidatorWrapper(muleValidator,
                                                          this)
         this.mimeType = parameters['outputMimeType']

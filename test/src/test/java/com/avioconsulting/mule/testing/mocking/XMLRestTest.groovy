@@ -367,7 +367,7 @@ class XMLRestTest extends
                            rootElement: [key: '123']
                    ])))
         assertThat actualInfo.uri,
-                   is(equalTo('http://localhost:443/some_path'))
+                   is(equalTo('/some_path'))
     }
 
     @Test
@@ -402,6 +402,6 @@ class XMLRestTest extends
         assertThat mockedData.name() as String,
                    is(equalTo('rootElement'))
         assertThat actualInfo.uri,
-                   is(equalTo('http://localhost:443/some_path'))
+                   is(equalTo('/some_path'))
     }
 }

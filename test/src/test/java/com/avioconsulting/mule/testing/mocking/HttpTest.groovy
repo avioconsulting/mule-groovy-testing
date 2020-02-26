@@ -541,7 +541,7 @@ class HttpTest extends
 
         // assert
         assertThat result.message,
-                   is(containsString("HTTP GET on resource 'http://localhost:443/some_path/there' failed with status code 202."))
+                   is(containsString("HTTP GET on resource '/some_path/there' failed with status code 202."))
     }
 
     @Test
@@ -569,7 +569,7 @@ class HttpTest extends
 
         // assert
         assertThat result.message,
-                   is(containsString("HTTP GET on resource 'http://localhost:443/some_path/there' failed with status code 202."))
+                   is(containsString("HTTP GET on resource '/some_path/there' failed with status code 202."))
     }
 
     @Test
@@ -601,7 +601,7 @@ class HttpTest extends
         assertThat causeOfCause.getClass().name,
                    is(equalTo('org.mule.extension.http.api.request.validator.ResponseValidatorTypedException'))
         assertThat cause.message,
-                   is(equalTo("HTTP GET on resource 'http://localhost:443/some_path/there' failed: not found (404)."))
+                   is(equalTo("HTTP GET on resource '/some_path/there' failed: not found (404)."))
         assertThat causeOfCause.getClass().name,
                    is(equalTo('org.mule.extension.http.api.request.validator.ResponseValidatorTypedException'))
         assertThat cause.info['Error type'],
@@ -789,7 +789,7 @@ class HttpTest extends
         assertThat causeOfCause.getClass().name,
                    is(equalTo('org.mule.extension.http.api.request.validator.ResponseValidatorTypedException'))
         assertThat cause.message,
-                   is(equalTo("HTTP GET on resource 'http://localhost:443/some_path/there' failed: not found (404)."))
+                   is(equalTo("HTTP GET on resource '/some_path/there' failed: not found (404)."))
         assertThat causeOfCause.getClass().name,
                    is(equalTo('org.mule.extension.http.api.request.validator.ResponseValidatorTypedException'))
         assertThat cause.info['Error type'],
@@ -929,7 +929,7 @@ class HttpTest extends
         assertThat cause.info['Error type'],
                    is(equalTo('HTTP:CONNECTIVITY'))
         assertThat cause.message,
-                   is(equalTo("HTTP POST on resource 'http://localhost:443/some_path' failed: Connection refused."))
+                   is(equalTo("HTTP POST on resource '/some_path' failed: Connection refused."))
     }
 
     @Test
@@ -964,7 +964,7 @@ class HttpTest extends
         assertThat cause.info['Error type'],
                    is(equalTo('HTTP:TIMEOUT'))
         assertThat cause.message,
-                   is(equalTo("HTTP POST on resource 'http://localhost:443/some_path' failed: Some timeout error."))
+                   is(equalTo("HTTP POST on resource '/some_path' failed: Some timeout error."))
     }
 
     @Test

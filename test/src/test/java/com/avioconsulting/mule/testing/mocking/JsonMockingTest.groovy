@@ -97,7 +97,7 @@ class JsonMockingTest extends
                    is(equalTo([stuff: '123']))
         assert actualUri
         assertThat actualUri,
-                   is(equalTo('http://localhost:443/some_path/there'))
+                   is(equalTo('/some_path/there'))
         assertThat result,
                    is(equalTo([reply_key: 457]))
     }
@@ -133,7 +133,7 @@ class JsonMockingTest extends
                    is(equalTo([stuff: '123']))
         assert actualUri
         assertThat actualUri,
-                   is(equalTo('http://localhost:443/some_path/there'))
+                   is(equalTo('/some_path/there'))
         assertThat result,
                    is(equalTo([reply_key: 457]))
     }
