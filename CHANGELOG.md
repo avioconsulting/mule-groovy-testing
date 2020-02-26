@@ -1,6 +1,10 @@
 # 2.0
 (for Mule 4.1)
 
+# 2.0.44
+* BREAKING change: The `uri` property on `HttpRequesterInfo` now only returns the path, not the host and port
+* Prevent descriptor generation from failing due to Maven snapshot stubbornness
+
 # 2.0.43
 * Previous changes went too far and disabled output event support too
 * Fix issue with tests continuing to run when we have a showstopper type failure in the mvn/descriptor generate code (e.g. maven auth problems)
