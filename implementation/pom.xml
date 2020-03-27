@@ -88,11 +88,12 @@
                 <executions>
                     <execution>
                         <id>dostuff</id>
-                        <phase>package</phase>
+                        <phase>prepare-package</phase>
                         <goals>
                             <goal>generate-daemons</goal>
                         </goals>
                         <configuration>
+                            <!-- We want to rely on ~/.m2/repo for this -->
                             <generateRepository>false</generateRepository>
                             <daemons>
                                 <daemon>
