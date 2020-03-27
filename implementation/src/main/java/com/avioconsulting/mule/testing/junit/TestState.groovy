@@ -26,6 +26,10 @@ class TestState {
         return runtimeBridge
     }
 
+    TestState(MuleEngineContainer alreadyRunning = null) {
+        this.muleEngineContainer = alreadyRunning
+    }
+
     void startEngine(BaseJunitTest test,
                      TestingConfiguration proposedConfig) {
         if (!muleEngineContainer) {
