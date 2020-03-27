@@ -109,6 +109,10 @@
                                             <includes>
                                                 <include>macosx-universal-64</include>
                                             </includes>
+                                            <configuration>
+                                                <configuration.directory.in.classpath.first>../target/classes</configuration.directory.in.classpath.first>
+                                                <configuration.directory.in.classpath.last>../target/test-classes</configuration.directory.in.classpath.last>
+                                            </configuration>
                                         </generatorConfiguration>
                                     </generatorConfigurations>
                                 </daemon>
