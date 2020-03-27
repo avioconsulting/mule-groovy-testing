@@ -26,6 +26,14 @@
     </distributionManagement>
 
     <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+            <resource>
+                <directory>${project.build.directory}/generated-resources/appassembler/jsw</directory>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <artifactId>maven-source-plugin</artifactId>
@@ -88,7 +96,7 @@
                 <executions>
                     <execution>
                         <id>dostuff</id>
-                        <phase>prepare-package</phase>
+                        <phase>generate-resources</phase>
                         <goals>
                             <goal>generate-daemons</goal>
                         </goals>
