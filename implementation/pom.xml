@@ -93,15 +93,23 @@
                             <goal>generate-daemons</goal>
                         </goals>
                         <configuration>
-                            <repositoryLayout>flat</repositoryLayout>
+                            <generateRepository>false</generateRepository>
                             <daemons>
                                 <daemon>
-                                    <id>app1</id>
+                                    <id>muleTestEngine</id>
                                     <wrapperMainClass>org.tanukisoftware.wrapper.WrapperSimpleApp</wrapperMainClass>
                                     <mainClass>com.avioconsulting.mule.testing.junit.BackgroundRunner</mainClass>
                                     <platforms>
                                         <platform>jsw</platform>
                                     </platforms>
+                                    <generatorConfigurations>
+                                        <generatorConfiguration>
+                                            <generator>jsw</generator>
+                                            <includes>
+                                                <include>macosx-universal-64</include>
+                                            </includes>
+                                        </generatorConfiguration>
+                                    </generatorConfigurations>
                                 </daemon>
                             </daemons>
                         </configuration>
