@@ -1,5 +1,7 @@
-package com.avioconsulting.mule.testing.junit
+package com.avioconsulting.mule.testing.background
 
+import com.avioconsulting.mule.testing.junit.BaseJunitTest
+import com.avioconsulting.mule.testing.junit.TestState
 import com.avioconsulting.mule.testing.muleinterfaces.containers.BaseEngineConfig
 import com.avioconsulting.mule.testing.muleinterfaces.containers.MuleEngineContainer
 
