@@ -1,5 +1,6 @@
 package com.avioconsulting.mule.testing.background
 
+
 import org.junit.internal.runners.model.ReflectiveCallable
 import org.junit.runners.model.FrameworkMethod
 
@@ -20,7 +21,8 @@ class ProxyFrameworkMethod extends FrameworkMethod {
         return new ReflectiveCallable() {
             @Override
             protected Object runReflectiveCall() throws Throwable {
-                return method.invoke(target, params);
+                return method.invoke(target,
+                                     params);
             }
         }.run()
     }
