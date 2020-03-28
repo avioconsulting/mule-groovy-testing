@@ -19,11 +19,13 @@ import java.util.regex.Pattern
 class MuleGroovyJunitRunner extends
         BlockJUnit4ClassRunner implements EnvironmentDetector {
     static boolean listenerSetup = false
-    private boolean remoteClient
+
+    private boolean isRemoteClient() {
+        System.getenv('RUN_REMOTE') == '1'
+    }
 
     MuleGroovyJunitRunner(Class<?> klass) throws InitializationError {
         super(klass)
-        remoteClient = System.getenv('RUN_REMOTE') == '1'
         // TODO: Separate method (or even class)
         if (remoteClient) {
             def wrapperDir = new File('.mule',

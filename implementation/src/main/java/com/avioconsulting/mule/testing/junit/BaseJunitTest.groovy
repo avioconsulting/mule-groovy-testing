@@ -36,7 +36,10 @@ abstract class BaseJunitTest implements
     // by using the constructor, we can have our setup stuff run before each test
     // which clarifies the output a bit when trying to examine each test
     BaseJunitTest() {
-        startMule()
+        // TODO: Share code w/ runner, this == 1 means we're the client side
+        if (System.getenv('RUN_REMOTE') != '1') {
+            startMule()
+        }
     }
 
     // allow overriding
