@@ -107,7 +107,7 @@
                                 <daemon>
                                     <id>muleTestEngine</id>
                                     <wrapperMainClass>org.tanukisoftware.wrapper.WrapperSimpleApp</wrapperMainClass>
-                                    <mainClass>com.avioconsulting.mule.testing.junit.BackgroundRunner</mainClass>
+                                    <mainClass>com.avioconsulting.mule.testing.junit.BackgroundProcess</mainClass>
                                     <platforms>
                                         <platform>jsw</platform>
                                     </platforms>

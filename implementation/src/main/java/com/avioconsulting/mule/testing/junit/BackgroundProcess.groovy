@@ -3,14 +3,14 @@ package com.avioconsulting.mule.testing.junit
 import com.avioconsulting.mule.testing.muleinterfaces.containers.BaseEngineConfig
 import com.avioconsulting.mule.testing.muleinterfaces.containers.MuleEngineContainer
 
-class BackgroundRunner {
+class BackgroundProcess {
     static void main(String[] args) {
-        new BackgroundRunner()
+        new BackgroundProcess()
     }
 
     private TestState testState
 
-    BackgroundRunner() {
+    BackgroundProcess() {
         def config = new BaseEngineConfig(BaseEngineConfig.defaultFilters,
                                           true)
         def container = new MuleEngineContainer(config)
