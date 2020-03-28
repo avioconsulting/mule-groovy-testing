@@ -18,7 +18,7 @@ class ServerHandler extends SimpleChannelInboundHandler<String> {
             response = 'see ya\r\n'
             close = true
         } else {
-            response = 'nope\r\n'
+            response = "nope i will not run ${request}\r\n"
         }
         def future = ctx.write(response)
         if (close) {
@@ -33,7 +33,7 @@ class ServerHandler extends SimpleChannelInboundHandler<String> {
 
     @Override
     void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-        cause.printStackTrace();
-        ctx.close();
+        cause.printStackTrace()
+        ctx.close()
     }
 }

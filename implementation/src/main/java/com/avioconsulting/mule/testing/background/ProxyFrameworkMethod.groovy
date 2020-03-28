@@ -1,7 +1,6 @@
 package com.avioconsulting.mule.testing.background
 
 
-import org.junit.internal.runners.model.ReflectiveCallable
 import org.junit.runners.model.FrameworkMethod
 
 import java.lang.reflect.Method
@@ -24,5 +23,11 @@ class ProxyFrameworkMethod extends FrameworkMethod {
         def msg = "test method: ${method}\r\n".toString()
         println "firing off msg to channel: ${msg}"
         modifiedTestClass.channel.writeAndFlush(msg).sync()
+        def clientHandler = modifiedTestClass.clientHandler
+        synchronized (clientHandler.result) {
+            clientHandler.result.wait()
+            def response = clientHandler.result.remove(0)
+            println "got response ${response}"
+        }
     }
 }
