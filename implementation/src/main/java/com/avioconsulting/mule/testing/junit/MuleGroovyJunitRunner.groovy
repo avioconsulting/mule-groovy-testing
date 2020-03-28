@@ -1,11 +1,13 @@
 package com.avioconsulting.mule.testing.junit
 
 import com.avioconsulting.mule.testing.EnvironmentDetector
+import com.avioconsulting.mule.testing.background.ModifiedTestClass
 import groovy.util.logging.Log4j2
 import org.junit.runner.notification.RunNotifier
 import org.junit.runners.BlockJUnit4ClassRunner
 import org.junit.runners.model.FrameworkMethod
 import org.junit.runners.model.InitializationError
+import org.junit.runners.model.TestClass
 
 @Log4j2
 class MuleGroovyJunitRunner extends
@@ -38,5 +40,10 @@ class MuleGroovyJunitRunner extends
 
         super.runChild(method,
                        notifier)
+    }
+
+    @Override
+    protected TestClass createTestClass(Class<?> testClass) {
+        System.getenv('RUN_REMOTE') == '1' ? new ModifiedTestClass(testClass) : super.createTestClass(testClass)
     }
 }

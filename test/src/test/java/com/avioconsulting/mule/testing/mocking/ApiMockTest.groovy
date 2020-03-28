@@ -5,6 +5,7 @@ import com.avioconsulting.mule.testing.junit.BaseJunitTest
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.EventWrapper
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.connectors.HttpRequesterInfo
 import groovy.util.logging.Log4j2
+import org.junit.Before
 import org.junit.Test
 
 import static groovy.test.GroovyAssert.shouldFail
@@ -18,6 +19,11 @@ class ApiMockTest extends
         ConfigTrait {
     List<String> getConfigResources() {
         ['api-mock.xml']
+    }
+
+    @Before
+    void foo() {
+        println 'hi'
     }
 
     @Test
