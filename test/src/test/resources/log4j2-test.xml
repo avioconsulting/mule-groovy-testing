@@ -8,7 +8,7 @@
 
     <Loggers>
         <AsyncLogger name="com.avioconsulting.mule.testing.connectortest.internal" level="DEBUG"/>
-
+        <AsyncLogger name="com.avioconsulting.mule.testing.background" level="DEBUG"/>
         <!-- Http Logger shows wire traffic on DEBUG. -->
         <AsyncLogger name="org.mule.service.http.impl.service.HttpMessageLogger" level="DEBUG"/>
         <AsyncLogger name="org.mule.service.http" level="WARN"/>
