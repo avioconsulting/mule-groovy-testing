@@ -1,26 +1,22 @@
 package com.avioconsulting.mule.testing.background
 
+import groovy.json.JsonSlurper
 import io.netty.channel.ChannelFutureListener
 import io.netty.channel.ChannelHandlerContext
 import io.netty.channel.SimpleChannelInboundHandler
+import org.junit.runners.model.FrameworkMethod
 
 class ServerHandler extends SimpleChannelInboundHandler<String> {
-
     @Override
     protected void channelRead0(ChannelHandlerContext ctx,
                                 String request) throws Exception {
         def close = false
-        println "got request ${request}"
-        String response
-        if (request.isEmpty()) {
-            response = 'please type something\r\n'
-        } else if (request == 'bye') {
-            response = 'see ya\r\n'
-            close = true
-        } else {
-            response = "nope i will not run ${request}\r\n"
-        }
-        def future = ctx.write(response)
+        def parsedRequest = new JsonSlurper().parseText(request)
+        def testKlass = Class.forName(parsedRequest.klass)
+        def testMethod = testKlass.getMethod(parsedRequest.method)
+        def frameworkMethod = new FrameworkMethod(testMethod)
+        frameworkMethod.invokeExplosively(testKlass.newInstance())
+        def future = ctx.write('done\r\n')
         if (close) {
             future.addListener(ChannelFutureListener.CLOSE)
         }
