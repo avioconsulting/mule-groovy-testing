@@ -5,11 +5,7 @@ import com.avioconsulting.mule.testing.junit.TestState
 import com.avioconsulting.mule.testing.muleinterfaces.containers.BaseEngineConfig
 import com.avioconsulting.mule.testing.muleinterfaces.containers.MuleEngineContainer
 import io.netty.bootstrap.ServerBootstrap
-import io.netty.channel.Channel
-import io.netty.channel.ChannelInitializer
-import io.netty.channel.ChannelOption
 import io.netty.channel.nio.NioEventLoopGroup
-import io.netty.channel.socket.SocketChannel
 import io.netty.channel.socket.nio.NioServerSocketChannel
 
 class BackgroundProcess {
@@ -26,8 +22,8 @@ class BackgroundProcess {
         this.testState = new TestState(container)
         // ensure any tests we run already see our established state
         BaseJunitTest.testState = testState
-        println 'starting netty event loop'
-        def bossGroup = new NioEventLoopGroup()
+        println 'starting netty event loop with 1 thread'
+        def bossGroup = new NioEventLoopGroup(1)
         def workerGroup = new NioEventLoopGroup()
         try {
             def bootstrap = new ServerBootstrap()
@@ -35,7 +31,8 @@ class BackgroundProcess {
                             workerGroup)
                     .channel(NioServerSocketChannel)
                     .childHandler(new ServerInitializer())
-            def channelFuture = bootstrap.bind(8888).sync()
+            def channelFuture = bootstrap.bind('localhost',
+                                               8888).sync()
             channelFuture.channel().closeFuture().sync()
         } finally {
             workerGroup.shutdownGracefully()

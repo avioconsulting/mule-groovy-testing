@@ -1,8 +1,14 @@
 package com.avioconsulting.mule.testing.junit
 
 import com.avioconsulting.mule.testing.EnvironmentDetector
+import com.avioconsulting.mule.testing.background.ClientHandler
+import com.avioconsulting.mule.testing.background.ClientInitializer
 import com.avioconsulting.mule.testing.background.ModifiedTestClass
 import groovy.util.logging.Log4j2
+import io.netty.bootstrap.Bootstrap
+import io.netty.channel.Channel
+import io.netty.channel.nio.NioEventLoopGroup
+import io.netty.channel.socket.nio.NioSocketChannel
 import org.apache.commons.io.FileUtils
 import org.apache.maven.shared.utils.Os
 import org.junit.runner.notification.RunNotifier
@@ -19,15 +25,17 @@ import java.util.regex.Pattern
 class MuleGroovyJunitRunner extends
         BlockJUnit4ClassRunner implements EnvironmentDetector {
     static boolean listenerSetup = false
+    static NioEventLoopGroup eventLoopGroup
+    static Channel channel
+    static ClientHandler clientHandler
 
-    private boolean isRemoteClient() {
+    static boolean isRemoteClient() {
         System.getenv('RUN_REMOTE') == '1'
     }
 
-    MuleGroovyJunitRunner(Class<?> klass) throws InitializationError {
-        super(klass)
+    static {
         // TODO: Separate method (or even class)
-        if (remoteClient) {
+        if (isRemoteClient()) {
             def wrapperDir = new File('.mule',
                                       'wrapper')
             def binDir = new File(wrapperDir,
@@ -84,8 +92,19 @@ class MuleGroovyJunitRunner extends
                 assert process.waitFor() == 0
                 println 'Wrapper launched successfully'
             }
-            println 'nope'
         }
+        eventLoopGroup = new NioEventLoopGroup()
+        clientHandler = new ClientHandler()
+        def b = new Bootstrap()
+        b.group(eventLoopGroup)
+                .channel(NioSocketChannel)
+                .handler(new ClientInitializer(clientHandler))
+        channel = b.connect('localhost',
+                            8888).sync().channel()
+    }
+
+    MuleGroovyJunitRunner(Class<?> klass) throws InitializationError {
+        super(klass)
     }
 
     @Override
@@ -114,6 +133,8 @@ class MuleGroovyJunitRunner extends
 
     @Override
     protected TestClass createTestClass(Class<?> testClass) {
-        remoteClient ? new ModifiedTestClass(testClass) : super.createTestClass(testClass)
+        remoteClient ? new ModifiedTestClass(testClass,
+                                             channel,
+                                             clientHandler) : super.createTestClass(testClass)
     }
 }

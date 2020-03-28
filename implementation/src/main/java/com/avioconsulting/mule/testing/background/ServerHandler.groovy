@@ -5,16 +5,12 @@ import io.netty.channel.ChannelHandlerContext
 import io.netty.channel.SimpleChannelInboundHandler
 
 class ServerHandler extends SimpleChannelInboundHandler<String> {
-    @Override
-    void channelActive(ChannelHandlerContext ctx) throws Exception {
-        ctx.write('hello from the server side\\r\\n')
-        ctx.flush()
-    }
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx,
                                 String request) throws Exception {
         def close = false
+        println "got request ${request}"
         String response
         if (request.isEmpty()) {
             response = 'please type something\r\n'
@@ -33,5 +29,11 @@ class ServerHandler extends SimpleChannelInboundHandler<String> {
     @Override
     void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
         ctx.flush()
+    }
+
+    @Override
+    void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
+        cause.printStackTrace();
+        ctx.close();
     }
 }

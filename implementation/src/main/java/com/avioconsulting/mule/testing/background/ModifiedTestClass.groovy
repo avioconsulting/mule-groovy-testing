@@ -1,6 +1,6 @@
 package com.avioconsulting.mule.testing.background
 
-
+import io.netty.channel.Channel
 import org.junit.runners.model.FrameworkField
 import org.junit.runners.model.FrameworkMethod
 import org.junit.runners.model.TestClass
@@ -14,8 +14,15 @@ class ModifiedTestClass extends TestClass {
      * an expensive process (we hope in future JDK's it will not be.) Therefore,
      * try to share instances of {@code TestClass} where possible.
      */
-    ModifiedTestClass(Class<?> clazz) {
+    final Channel channel
+    final ClientHandler clientHandler
+
+    ModifiedTestClass(Class<?> clazz,
+                      Channel channel,
+                      ClientHandler clientHandler) {
         super(clazz)
+        this.clientHandler = clientHandler
+        this.channel = channel
     }
 
     @Override
@@ -25,7 +32,8 @@ class ModifiedTestClass extends TestClass {
                                    fieldsForAnnotations)
         methodsForAnnotations.each { k, v ->
             methodsForAnnotations[k] = v.collect { fm ->
-                new ProxyFrameworkMethod(fm.method)
+                new ProxyFrameworkMethod(fm.method,
+                                         this)
             }
         }
     }

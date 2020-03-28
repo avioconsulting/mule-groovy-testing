@@ -10,20 +10,19 @@ class ProxyFrameworkMethod extends FrameworkMethod {
     /**
      * Returns a new {@code FrameworkMethod} for {@code method}
      */
-    ProxyFrameworkMethod(Method method) {
+    private final ModifiedTestClass modifiedTestClass
+
+    ProxyFrameworkMethod(Method method,
+                         ModifiedTestClass modifiedTestClass) {
         super(method)
+        this.modifiedTestClass = modifiedTestClass
     }
 
     @Override
     Object invokeExplosively(Object target,
                              Object... params) throws Throwable {
-        // TODO: Invoke remotely
-        return new ReflectiveCallable() {
-            @Override
-            protected Object runReflectiveCall() throws Throwable {
-                return method.invoke(target,
-                                     params);
-            }
-        }.run()
+        def msg = "test method: ${method}\r\n".toString()
+        println "firing off msg to channel: ${msg}"
+        modifiedTestClass.channel.writeAndFlush(msg).sync()
     }
 }
