@@ -9,6 +9,7 @@ import io.netty.channel.Channel
 import io.netty.channel.ChannelInitializer
 import io.netty.channel.ChannelOption
 import io.netty.channel.nio.NioEventLoopGroup
+import io.netty.channel.socket.SocketChannel
 import io.netty.channel.socket.nio.NioServerSocketChannel
 
 class BackgroundProcess {
@@ -33,14 +34,7 @@ class BackgroundProcess {
             bootstrap.group(bossGroup,
                             workerGroup)
                     .channel(NioServerSocketChannel)
-                    .childHandler(new ChannelInitializer() {
-                        protected void initChannel(Channel channel) throws Exception {
-                            channel.pipeline().addLast(new ServerHandler())
-                        }
-                    }).option(ChannelOption.SO_BACKLOG,
-                              128)
-                    .childOption(ChannelOption.SO_KEEPALIVE,
-                                 true)
+                    .childHandler(new ServerInitializer())
             def channelFuture = bootstrap.bind(8888).sync()
             channelFuture.channel().closeFuture().sync()
         } finally {

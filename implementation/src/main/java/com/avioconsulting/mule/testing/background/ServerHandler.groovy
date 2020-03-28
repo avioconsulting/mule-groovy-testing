@@ -1,19 +1,37 @@
 package com.avioconsulting.mule.testing.background
 
-import io.netty.buffer.ByteBuf
+import io.netty.channel.ChannelFutureListener
 import io.netty.channel.ChannelHandlerContext
-import io.netty.channel.ChannelInboundHandlerAdapter
+import io.netty.channel.SimpleChannelInboundHandler
 
-class ServerHandler extends ChannelInboundHandlerAdapter {
+class ServerHandler extends SimpleChannelInboundHandler<String> {
     @Override
-    void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        println 'got a message!'
-        (msg as ByteBuf).release()
+    void channelActive(ChannelHandlerContext ctx) throws Exception {
+        ctx.write('hello from the server side\\r\\n')
+        ctx.flush()
     }
 
     @Override
-    void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        cause.printStackTrace()
-        ctx.close()
+    protected void channelRead0(ChannelHandlerContext ctx,
+                                String request) throws Exception {
+        def close = false
+        String response
+        if (request.isEmpty()) {
+            response = 'please type something\r\n'
+        } else if (request == 'bye') {
+            response = 'see ya\r\n'
+            close = true
+        } else {
+            response = 'nope\r\n'
+        }
+        def future = ctx.write(response)
+        if (close) {
+            future.addListener(ChannelFutureListener.CLOSE)
+        }
+    }
+
+    @Override
+    void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
+        ctx.flush()
     }
 }
