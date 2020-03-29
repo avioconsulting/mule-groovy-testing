@@ -36,8 +36,10 @@ class ProxyFrameworkMethod extends FrameworkMethod {
             def asMap = objectMapper.readValue(response,
                                                Map)
             asMap.logs.each { log ->
+                // CaptureAppender "serialized" these for us
                 def level = Level.toLevel(log.level as String)
                 def logger = LogManager.getLogger(log.logger as String)
+                // will allow messages to be re-logged using the same class the background process logged them under
                 logger.log(level,
                            log.message as String)
             }

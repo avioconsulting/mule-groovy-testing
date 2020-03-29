@@ -20,6 +20,7 @@ class CaptureAppender implements Appender {
 
     @Override
     void append(LogEvent logEvent) {
+        // we can't easily serialize this to JSON so just get the parts we care about
         def eventMap = [
                 level  : logEvent.level.name(),
                 message: logEvent.message.formattedMessage,
