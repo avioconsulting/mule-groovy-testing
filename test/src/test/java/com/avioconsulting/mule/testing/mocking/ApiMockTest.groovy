@@ -21,11 +21,6 @@ class ApiMockTest extends
         ['api-mock.xml']
     }
 
-    @Before
-    void foo() {
-        println 'hi'
-    }
-
     @Test
     void mocks_post() {
         // arrange

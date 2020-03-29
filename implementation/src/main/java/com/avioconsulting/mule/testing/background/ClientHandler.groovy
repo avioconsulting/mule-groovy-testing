@@ -13,8 +13,7 @@ class ClientHandler extends SimpleChannelInboundHandler<String> {
     @Override
     protected void channelRead0(ChannelHandlerContext ctx,
                                 String response) throws Exception {
-        println "received ${response}"
-        synchronized(this.result) {
+        synchronized (this.result) {
             this.result << response
             this.result.notify()
         }

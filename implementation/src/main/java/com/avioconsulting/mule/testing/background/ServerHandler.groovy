@@ -1,16 +1,19 @@
 package com.avioconsulting.mule.testing.background
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 import groovy.util.logging.Log4j2
 import io.netty.channel.ChannelFutureListener
 import io.netty.channel.ChannelHandlerContext
 import io.netty.channel.SimpleChannelInboundHandler
+import org.apache.logging.log4j.core.Logger
 import org.junit.runners.model.FrameworkMethod
 
 @Log4j2
 class ServerHandler extends SimpleChannelInboundHandler<String> {
     private final Map<String, Object> testClasses = [:]
+    private final ObjectMapper objectMapper = new ObjectMapper()
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx,
@@ -22,6 +25,13 @@ class ServerHandler extends SimpleChannelInboundHandler<String> {
         }
         def klassName = parsedRequest.klass as String
         Object testObject
+        def actualLogger = log as Logger
+        def testAppender = actualLogger.appenders[CaptureAppender.TEST_APPENDER] as CaptureAppender
+        if (!testAppender) {
+            log.info 'Adding test appender so we can ship logs to the client'
+            testAppender = new CaptureAppender()
+            actualLogger.addAppender(testAppender)
+        }
         if (testClasses.containsKey(klassName)) {
             testObject = testClasses[klassName]
         } else {
@@ -32,7 +42,17 @@ class ServerHandler extends SimpleChannelInboundHandler<String> {
         log.info "Invoking ${testMethod} on behalf of the client"
         def frameworkMethod = new FrameworkMethod(testMethod)
         frameworkMethod.invokeExplosively(testObject)
-        def future = ctx.write('done\r\n')
+        def responseMap = [
+                logs: testAppender.allLogEvents.collect { e ->
+                    [
+                            level  : e.level.name(),
+                            message: e.message.formattedMessage,
+                            logger : e.loggerName
+                    ]
+                }
+        ]
+        def response = objectMapper.writeValueAsString(responseMap)
+        def future = ctx.write(response + '\r\n')
         if (close) {
             future.addListener(ChannelFutureListener.CLOSE)
         }
