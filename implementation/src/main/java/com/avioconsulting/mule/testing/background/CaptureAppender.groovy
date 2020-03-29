@@ -7,12 +7,12 @@ import org.apache.logging.log4j.core.LogEvent
 
 class CaptureAppender implements Appender {
     public static final String TEST_APPENDER = 'test_appender'
-    private final List<LogEvent> capturedEvents = []
+    private final List<Map> capturedEvents = []
     private ErrorHandler errorHandler
 
-    List<LogEvent> getAllLogEvents() {
+    List<Map> getAllLogEvents() {
         synchronized (capturedEvents) {
-            def copy = new ArrayList<LogEvent>(capturedEvents)
+            def copy = new ArrayList<Map>(capturedEvents)
             capturedEvents.clear()
             return copy
         }
@@ -20,8 +20,13 @@ class CaptureAppender implements Appender {
 
     @Override
     void append(LogEvent logEvent) {
+        def eventMap = [
+                level  : logEvent.level.name(),
+                message: logEvent.message.formattedMessage,
+                logger : logEvent.loggerName
+        ]
         synchronized (capturedEvents) {
-            capturedEvents << logEvent
+            capturedEvents << eventMap
         }
     }
 
@@ -52,7 +57,7 @@ class CaptureAppender implements Appender {
 
     @Override
     State getState() {
-        return null
+        State.STARTED
     }
 
     @Override

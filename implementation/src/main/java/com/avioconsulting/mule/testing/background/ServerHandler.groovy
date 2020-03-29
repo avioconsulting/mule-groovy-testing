@@ -7,13 +7,16 @@ import groovy.util.logging.Log4j2
 import io.netty.channel.ChannelFutureListener
 import io.netty.channel.ChannelHandlerContext
 import io.netty.channel.SimpleChannelInboundHandler
-import org.apache.logging.log4j.core.Logger
+import org.apache.logging.log4j.Level
+import org.apache.logging.log4j.LogManager
+import org.apache.logging.log4j.core.LoggerContext
 import org.junit.runners.model.FrameworkMethod
 
 @Log4j2
 class ServerHandler extends SimpleChannelInboundHandler<String> {
     private final Map<String, Object> testClasses = [:]
     private final ObjectMapper objectMapper = new ObjectMapper()
+    private static CaptureAppender captureAppender
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx,
@@ -25,12 +28,14 @@ class ServerHandler extends SimpleChannelInboundHandler<String> {
         }
         def klassName = parsedRequest.klass as String
         Object testObject
-        def actualLogger = log as Logger
-        def testAppender = actualLogger.appenders[CaptureAppender.TEST_APPENDER] as CaptureAppender
-        if (!testAppender) {
-            log.info 'Adding test appender so we can ship logs to the client'
-            testAppender = new CaptureAppender()
-            actualLogger.addAppender(testAppender)
+        if (!captureAppender) {
+            log.info 'Creating test appender so we can ship logs to the client'
+            captureAppender = new CaptureAppender()
+            def context = LogManager.getContext(false) as LoggerContext
+            context.configuration.addAppender(captureAppender)
+            context.configuration.getRootLogger().addAppender(captureAppender,
+                                                              Level.INFO,
+                                                              null)
         }
         if (testClasses.containsKey(klassName)) {
             testObject = testClasses[klassName]
@@ -43,13 +48,7 @@ class ServerHandler extends SimpleChannelInboundHandler<String> {
         def frameworkMethod = new FrameworkMethod(testMethod)
         frameworkMethod.invokeExplosively(testObject)
         def responseMap = [
-                logs: testAppender.allLogEvents.collect { e ->
-                    [
-                            level  : e.level.name(),
-                            message: e.message.formattedMessage,
-                            logger : e.loggerName
-                    ]
-                }
+                logs: captureAppender.allLogEvents
         ]
         def response = objectMapper.writeValueAsString(responseMap)
         def future = ctx.write(response + '\r\n')
