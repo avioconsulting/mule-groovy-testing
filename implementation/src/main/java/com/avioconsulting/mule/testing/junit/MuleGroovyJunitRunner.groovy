@@ -93,9 +93,11 @@ class MuleGroovyJunitRunner extends
                 def launch = new File(binDir,
                                       Os.isFamily(Os.FAMILY_WINDOWS) ? 'muleTestEngine.bat' : 'muleTestEngine')
                 log.info "Launching wrapper using ${launch.absolutePath}"
-                def process = new ProcessBuilder(launch.absolutePath,
-                                                 'start')
-                        .redirectErrorStream(true)
+                def processBuilder = new ProcessBuilder(launch.absolutePath,
+                                                        'start')
+                // we don't want the background process to inherit this from us because we need it to start the engine
+                processBuilder.environment().remove('RUN_REMOTE')
+                def process = processBuilder.redirectErrorStream(true)
                         .start()
                 process.inputStream.eachLine { log.info it }
                 assert process.waitFor() == 0
