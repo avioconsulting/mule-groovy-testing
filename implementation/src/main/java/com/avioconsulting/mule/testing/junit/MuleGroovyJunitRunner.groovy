@@ -43,7 +43,7 @@ class MuleGroovyJunitRunner extends
             def logsDir = new File(wrapperDir,
                                    'logs')
             if (!wrapperDir.exists()) {
-                println "Wrapper does not yet exist at ${wrapperDir.absolutePath}, building"
+                log.info "Wrapper does not yet exist at ${wrapperDir.absolutePath}, building"
                 def resource = MuleGroovyJunitRunner.getResource('/muleTestEngine')
                 assert resource: 'Have you run the app assembler build?'
                 wrapperDir.mkdirs()
@@ -83,33 +83,49 @@ class MuleGroovyJunitRunner extends
                                     '')
                 newWrapperConfText += lines.join('\n')
                 wrapperConfFile.text = newWrapperConfText
-                println 'Wrapper setup complete'
+                log.info 'Wrapper setup complete'
             }
             def pidFile = new File(logsDir,
                                    'muleTestEngine.pid')
             if (pidFile.exists()) {
-                println "Wrapper already running at PID ${pidFile.text}"
+                log.info "Wrapper already running at PID ${pidFile.text}"
             } else {
                 def launch = new File(binDir,
                                       Os.isFamily(Os.FAMILY_WINDOWS) ? 'muleTestEngine.bat' : 'muleTestEngine')
-                println "Launching wrapper using ${launch.absolutePath}"
+                log.info "Launching wrapper using ${launch.absolutePath}"
                 def process = new ProcessBuilder(launch.absolutePath,
                                                  'start')
                         .redirectErrorStream(true)
                         .start()
                 process.inputStream.eachLine { log.info it }
                 assert process.waitFor() == 0
-                println 'Wrapper launched successfully'
+                log.info 'Wrapper launched successfully'
             }
         }
-        eventLoopGroup = new NioEventLoopGroup()
-        clientHandler = new ClientHandler()
-        def b = new Bootstrap()
-        b.group(eventLoopGroup)
-                .channel(NioSocketChannel)
-                .handler(new ClientInitializer(clientHandler))
-        channel = b.connect('localhost',
-                            8888).sync().channel()
+        Throwable exception = null
+        10.times {
+            if (channel != null && exception == null) {
+                return
+            }
+            try {
+                eventLoopGroup = new NioEventLoopGroup()
+                clientHandler = new ClientHandler()
+                def b = new Bootstrap()
+                b.group(eventLoopGroup)
+                        .channel(NioSocketChannel)
+                        .handler(new ClientInitializer(clientHandler))
+                channel = b.connect('localhost',
+                                    8888).sync().channel()
+                exception = null
+            } catch (e) {
+                exception = e
+                log.info "Server not up yet, waiting 100 ms and retrying"
+                Thread.sleep(100)
+            }
+        }
+        if (exception) {
+            throw exception
+        }
     }
 
     MuleGroovyJunitRunner(Class<?> klass) throws InitializationError {
