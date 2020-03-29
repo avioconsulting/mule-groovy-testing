@@ -62,7 +62,7 @@ class MuleGroovyJunitRunner extends
                                                   permissions)
                 }
                 def classpaths = System.getProperty('java.class.path').split(File.pathSeparator)
-                def withWrapper = ['lib/wrapper.jar'] + classpaths.toList()
+                def withWrapper = ['.mule/wrapper/lib/wrapper.jar'] + classpaths.toList()
                 def lines = withWrapper.withIndex().collect { cp, index ->
                     "wrapper.java.classpath.${index + 1}=${cp}"
                 }
@@ -70,8 +70,17 @@ class MuleGroovyJunitRunner extends
                                        'etc')
                 def wrapperConfFile = new File(confDir,
                                                'wrapper.conf')
-                def newWrapperConfText = wrapperConfFile.text.replaceAll(Pattern.compile(/wrapper\.java\.classpath\.\d+=.*/),
-                                                                         '')
+                // we'll use our classpath now (not when this lib was built) to avoid .m2 resolution issues, etc.
+                def newWrapperConfText = wrapperConfFile.text
+                // need to use a different directory to find all of our test stuff
+                        .replace('wrapper.working.dir=..',
+                                 'wrapper.working.dir=../../..')
+                        .replace('wrapper.java.library.path.1=lib',
+                                 'wrapper.java.library.path.1=.mule/wrapper/lib')
+                        .replace('wrapper.logfile=../logs/wrapper.log',
+                                 'wrapper.logfile=.mule/wrapper/logs/wrapper.log')
+                        .replaceAll(Pattern.compile(/wrapper\.java\.classpath\.\d+=.*/),
+                                    '')
                 newWrapperConfText += lines.join('\n')
                 wrapperConfFile.text = newWrapperConfText
                 println 'Wrapper setup complete'
