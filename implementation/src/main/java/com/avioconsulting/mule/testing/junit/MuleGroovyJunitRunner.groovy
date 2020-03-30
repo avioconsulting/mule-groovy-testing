@@ -103,30 +103,30 @@ class MuleGroovyJunitRunner extends
                 assert process.waitFor() == 0
                 log.info 'Wrapper launched successfully'
             }
-        }
-        Throwable exception = null
-        10.times {
-            if (channel != null && exception == null) {
-                return
+            Throwable exception = null
+            10.times {
+                if (channel != null && exception == null) {
+                    return
+                }
+                try {
+                    eventLoopGroup = new NioEventLoopGroup()
+                    clientHandler = new ClientHandler()
+                    def b = new Bootstrap()
+                    b.group(eventLoopGroup)
+                            .channel(NioSocketChannel)
+                            .handler(new ClientInitializer(clientHandler))
+                    channel = b.connect('localhost',
+                                        8888).sync().channel()
+                    exception = null
+                } catch (e) {
+                    exception = e
+                    log.info "Server not up yet, waiting 100 ms and retrying"
+                    Thread.sleep(100)
+                }
             }
-            try {
-                eventLoopGroup = new NioEventLoopGroup()
-                clientHandler = new ClientHandler()
-                def b = new Bootstrap()
-                b.group(eventLoopGroup)
-                        .channel(NioSocketChannel)
-                        .handler(new ClientInitializer(clientHandler))
-                channel = b.connect('localhost',
-                                    8888).sync().channel()
-                exception = null
-            } catch (e) {
-                exception = e
-                log.info "Server not up yet, waiting 100 ms and retrying"
-                Thread.sleep(100)
+            if (exception) {
+                throw exception
             }
-        }
-        if (exception) {
-            throw exception
         }
     }
 
