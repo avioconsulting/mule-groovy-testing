@@ -1,5 +1,6 @@
 package com.avioconsulting.mule.testing.background
 
+import com.avioconsulting.mule.testing.muleinterfaces.wrappers.InvokeExceptionWrapper
 import com.fasterxml.jackson.databind.ObjectMapper
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
@@ -46,10 +47,31 @@ class ServerHandler extends SimpleChannelInboundHandler<String> {
         def testMethod = testObject.class.getMethod(parsedRequest.method)
         log.info "Invoking ${testMethod} on behalf of the client"
         def frameworkMethod = new FrameworkMethod(testMethod)
-        frameworkMethod.invokeExplosively(testObject)
-        def responseMap = [
-                logs: captureAppender.allLogEvents
-        ]
+        Map responseMap
+        Throwable e = null
+        try {
+            frameworkMethod.invokeExplosively(testObject)
+            responseMap = [
+                    logs: captureAppender.allLogEvents
+            ]
+        } catch (InvokeExceptionWrapper ew) {
+            // message and event are not serializable (but we don't need them here anyways)
+            e = new InvokeExceptionWrapper(ew.cause as Exception,
+                                           null,
+                                           null)
+        }
+        if (e) {
+            new ByteArrayOutputStream().withCloseable { bos ->
+                new ObjectOutputStream(bos).withCloseable { oos ->
+                    oos.flush()
+                    oos.writeObject(e)
+                    responseMap = [
+                            exception: Base64.encoder.encode(bos.toByteArray()),
+                            logs     : captureAppender.allLogEvents
+                    ]
+                }
+            }
+        }
         def response = objectMapper.writeValueAsString(responseMap)
         def future = ctx.write(response + '\r\n')
         if (close) {

@@ -43,6 +43,16 @@ class ProxyFrameworkMethod extends FrameworkMethod {
                 logger.log(level,
                            log.message as String)
             }
+            def exception = asMap.exception
+            if (exception) {
+                new ByteArrayInputStream(Base64.decoder.decode(exception)).withCloseable { bis ->
+                    new ObjectInputStream(bis).withCloseable { ois ->
+                        def e = ois.readObject() as Throwable
+                        throw e
+                    }
+                }
+            }
         }
+        return null
     }
 }

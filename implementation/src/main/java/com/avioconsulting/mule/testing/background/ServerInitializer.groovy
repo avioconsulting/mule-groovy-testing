@@ -11,7 +11,7 @@ class ServerInitializer extends ChannelInitializer<SocketChannel> {
     @Override
     protected void initChannel(SocketChannel socketChannel) throws Exception {
         def pipeline = socketChannel.pipeline()
-        pipeline.addLast(new DelimiterBasedFrameDecoder(8192,
+        pipeline.addLast(new DelimiterBasedFrameDecoder(500000,
                                                         Delimiters.lineDelimiter()))
         pipeline.addLast(new StringDecoder())
         pipeline.addLast(new StringEncoder())
