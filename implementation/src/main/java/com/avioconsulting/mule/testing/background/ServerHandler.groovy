@@ -1,5 +1,6 @@
 package com.avioconsulting.mule.testing.background
 
+import com.avioconsulting.mule.testing.muleinterfaces.RuntimeBridgeTestSide
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.InvokeExceptionWrapper
 import com.fasterxml.jackson.databind.ObjectMapper
 import groovy.json.JsonOutput
@@ -18,6 +19,7 @@ class ServerHandler extends SimpleChannelInboundHandler<String> {
     private final Map<String, Object> testClasses = [:]
     private final ObjectMapper objectMapper = new ObjectMapper()
     private static CaptureAppender captureAppender
+    private static boolean appenderAddedToApp
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx,
@@ -43,6 +45,18 @@ class ServerHandler extends SimpleChannelInboundHandler<String> {
         } else {
             def testKlass = Class.forName(klassName)
             testObject = testKlass.newInstance()
+        }
+        if (!appenderAddedToApp) {
+            appenderAddedToApp = true
+            def bridge = testObject.getRuntimeBridge() as RuntimeBridgeTestSide
+            println "app classloader is ${bridge.getAppClassloader()}"
+            def appLogManagerClass = bridge.getAppClassloader().loadClass(LogManager.name)
+            def context = appLogManagerClass.getContext(false)
+            // This doesn't work because they are based on appender interfaces from different classloaders
+            context.configuration.addAppender(captureAppender)
+            context.configuration.getRootLogger().addAppender(captureAppender,
+                                                              Level.INFO,
+                                                              null)
         }
         def testMethod = testObject.class.getMethod(parsedRequest.method)
         log.info "Invoking ${testMethod} on behalf of the client"
