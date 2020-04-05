@@ -19,7 +19,6 @@ class ServerHandler extends SimpleChannelInboundHandler<String> {
     private final Map<String, Object> testClasses = [:]
     private final ObjectMapper objectMapper = new ObjectMapper()
     private static CaptureAppender captureAppender
-    private static boolean appenderAddedToApp
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx,
@@ -46,27 +45,17 @@ class ServerHandler extends SimpleChannelInboundHandler<String> {
             def testKlass = Class.forName(klassName)
             testObject = testKlass.newInstance()
         }
-        if (!appenderAddedToApp) {
-            appenderAddedToApp = true
-            def bridge = testObject.getRuntimeBridge() as RuntimeBridgeTestSide
-            println "app classloader is ${bridge.getAppClassloader()}"
-            def appLogManagerClass = bridge.getAppClassloader().loadClass(LogManager.name)
-            def context = appLogManagerClass.getContext(false)
-            // This doesn't work because they are based on appender interfaces from different classloaders
-            context.configuration.addAppender(captureAppender)
-            context.configuration.getRootLogger().addAppender(captureAppender,
-                                                              Level.INFO,
-                                                              null)
-        }
         def testMethod = testObject.class.getMethod(parsedRequest.method)
         log.info "Invoking ${testMethod} on behalf of the client"
         def frameworkMethod = new FrameworkMethod(testMethod)
         Map responseMap
         Throwable e = null
+        def bridge = testObject.getRuntimeBridge() as RuntimeBridgeTestSide
         try {
             frameworkMethod.invokeExplosively(testObject)
+            def logEvents = captureAppender.allLogEvents + bridge.allLogEvents
             responseMap = [
-                    logs: captureAppender.allLogEvents
+                    logs: logEvents
             ]
         } catch (InvokeExceptionWrapper ew) {
             // message and event are not serializable (but we don't need them here anyways)
@@ -75,13 +64,16 @@ class ServerHandler extends SimpleChannelInboundHandler<String> {
                                            null)
         }
         if (e) {
+            // avoid issues with serializing events in Mule exceptions
+            def cleanerException = new Exception(e.message)
             new ByteArrayOutputStream().withCloseable { bos ->
                 new ObjectOutputStream(bos).withCloseable { oos ->
                     oos.flush()
-                    oos.writeObject(e)
+                    oos.writeObject(cleanerException)
+                    def logEvents = captureAppender.allLogEvents + bridge.allLogEvents
                     responseMap = [
                             exception: Base64.encoder.encodeToString(bos.toByteArray()),
-                            logs     : captureAppender.allLogEvents
+                            logs     : logEvents
                     ]
                 }
             }

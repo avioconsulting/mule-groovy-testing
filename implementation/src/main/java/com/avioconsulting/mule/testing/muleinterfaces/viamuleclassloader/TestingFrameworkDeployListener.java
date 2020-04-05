@@ -45,9 +45,9 @@ public class TestingFrameworkDeployListener implements DeploymentListener {
         try {
             Class<?> mockingConfigClass = mockingConfiguration.getClass();
             Method setter = mockingConfigClass.getDeclaredMethod("setRuntimeBridgeMuleSide",
-                                                                 Object.class);
+                    Object.class);
             setter.invoke(mockingConfiguration,
-                          bridge);
+                    bridge);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -64,15 +64,15 @@ public class TestingFrameworkDeployListener implements DeploymentListener {
         // this classloader is the MuleApplicationClassLoader
         ClassLoader appClassLoader = Thread.currentThread().getContextClassLoader();
         MockingProcessorInterceptorFactory interceptorFactory = new MockingProcessorInterceptorFactory(mockingConfiguration,
-                                                                                                       appClassLoader);
+                appClassLoader);
         custSvc.registerCustomServiceImpl("muleGroovyTestingProcessorIntFactory",
-                                          interceptorFactory);
+                interceptorFactory);
         custSvc.overrideDefaultServiceImpl(ComponentInitialStateManager.SERVICE_ID,
-                                           new SourceDisableManager(mockingConfiguration));
+                new SourceDisableManager(mockingConfiguration));
         GroovyTestingBatchNotifyListener batchListener = new GroovyTestingBatchNotifyListener();
         this.batchListeners.put(artifactName, batchListener);
         custSvc.registerCustomServiceImpl("muleGroovyBatchListener",
-                                          batchListener);
+                batchListener);
     }
 
     public RuntimeBridgeMuleSide getRuntimeBridge(String artifactName) {
@@ -82,6 +82,6 @@ public class TestingFrameworkDeployListener implements DeploymentListener {
     public void setMockingConfiguration(String artifactName,
                                         Object mockingConfiguration) {
         this.mockingConfigurations.put(artifactName,
-                                       mockingConfiguration);
+                mockingConfiguration);
     }
 }

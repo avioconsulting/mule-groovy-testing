@@ -102,4 +102,8 @@ class RuntimeBridgeTestSide extends FetchClassLoaders
                                                mockingConfiguration.lazyInitEnabled)
         }
     }
+
+    List<Map> getAllLogEvents() {
+        runtimeBridgeMuleSide.getAllLogEvents()
+    }
 }

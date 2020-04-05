@@ -1,7 +1,11 @@
 package com.avioconsulting.mule.testing.muleinterfaces.viamuleclassloader;
 
+import com.avioconsulting.mule.testing.background.CaptureAppender;
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.config.Configuration;
 import org.mule.runtime.api.artifact.Registry;
 import org.mule.runtime.api.component.TypedComponentIdentifier;
 import org.mule.runtime.api.component.location.ComponentLocation;
@@ -33,12 +37,13 @@ public class RuntimeBridgeMuleSide {
     // ideally this code would be shared with FlowWrapper but they are on different
     // sides of the classloader divide
     private static final QName COMPONENT_LOCATION = new QName("mule",
-                                                              "COMPONENT_LOCATION");
+            "COMPONENT_LOCATION");
     private static final Logger logger = LogManager.getLogger(RuntimeBridgeMuleSide.class);
     private final Registry registry;
     private final List<CompletableFuture<Void>> streamCompletionCallbacks = new ArrayList<>();
     private GroovyTestingBatchNotifyListener batchNotifyListener;
     private final CursorStreamProviderFactory cursorStreamProviderFactory;
+    private final CaptureAppender captureAppender;
 
     RuntimeBridgeMuleSide(Registry registry) {
         this.registry = registry;
@@ -48,6 +53,17 @@ public class RuntimeBridgeMuleSide {
         }
         StreamingManager streamingManager = streamingManagerOptional.get();
         cursorStreamProviderFactory = streamingManager.forBytes().getDefaultCursorProviderFactory();
+        LoggerContext context = (LoggerContext) LogManager.getContext(false);
+        Configuration config = context.getConfiguration();
+        captureAppender = new CaptureAppender();
+        config.addAppender(captureAppender);
+        config.getRootLogger().addAppender(captureAppender,
+                Level.INFO,
+                null);
+    }
+
+    List<Map<String, String>> getAllLogEvents() {
+        return this.captureAppender.getAllLogEvents();
     }
 
     public Optional<Object> lookupByName(String name) {
@@ -71,7 +87,7 @@ public class RuntimeBridgeMuleSide {
                 Optional<String> theName = ((DefaultComponentLocation) componentLocation).getName();
                 if (theName.isPresent() && theName.get().equals(flowName)) {
                     logger.info("Flow '{}' has not been lazily loaded yet, forcing load",
-                                flowName);
+                            flowName);
                     return true;
                 }
             }
@@ -131,7 +147,7 @@ public class RuntimeBridgeMuleSide {
             throw new RuntimeException("Factory won't accept our stream!");
         }
         return cursorStreamProviderFactory.of(getCoreEvent(muleEvent),
-                                              stream);
+                stream);
     }
 
     private static CoreEvent getCoreEvent(Object muleEvent) {
@@ -163,9 +179,9 @@ public class RuntimeBridgeMuleSide {
         // which will make it impossible to get at the payload
         ComponentLocation location = (ComponentLocation) flow.getAnnotation(COMPONENT_LOCATION);
         EventContext context = new DefaultEventContext(flow,
-                                                       location,
-                                                       null,
-                                                       Optional.of(externalCompletionCallback));
+                location,
+                null,
+                Optional.of(externalCompletionCallback));
         return CoreEvent.builder(context)
                 .message((Message) muleMessage)
                 .build();
@@ -187,7 +203,7 @@ public class RuntimeBridgeMuleSide {
         Set<ExtensionModel> extensions = getMuleContext().getExtensionManager().getExtensions();
         DslResolvingContext resolvingContext = DslResolvingContext.getDefault(extensions);
         DefaultExtensionSchemaGenerator schemaGenerator = new DefaultExtensionSchemaGenerator();
-        Map<String,String> map = new HashMap<>();
+        Map<String, String> map = new HashMap<>();
         for (ExtensionModel model : extensions) {
             String schema = schemaGenerator.generate(model, resolvingContext);
             String filename = model.getXmlDslModel().getXsdFileName();
@@ -211,7 +227,7 @@ public class RuntimeBridgeMuleSide {
 
     public <T> TypedValue<T> getSoapTypedValue(T soapOutputPayload) {
         return new TypedValue<T>(soapOutputPayload,
-                                 DataType.XML_STRING);
+                DataType.XML_STRING);
     }
 
     public GroovyTestingBatchNotifyListener getBatchNotifyListener() {
@@ -221,4 +237,6 @@ public class RuntimeBridgeMuleSide {
     public void setBatchNotifyListener(GroovyTestingBatchNotifyListener batchNotifyListener) {
         this.batchNotifyListener = batchNotifyListener;
     }
+
+
 }
