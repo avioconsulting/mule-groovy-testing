@@ -66,7 +66,7 @@ class ServerHandler extends SimpleChannelInboundHandler<String> {
                     oos.flush()
                     oos.writeObject(e)
                     responseMap = [
-                            exception: Base64.encoder.encode(bos.toByteArray()),
+                            exception: Base64.encoder.encodeToString(bos.toByteArray()),
                             logs     : captureAppender.allLogEvents
                     ]
                 }
