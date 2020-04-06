@@ -8,12 +8,14 @@ import groovy.util.logging.Log4j2
 import io.netty.channel.ChannelFutureListener
 import io.netty.channel.ChannelHandlerContext
 import io.netty.channel.SimpleChannelInboundHandler
+import org.apache.commons.io.FileUtils
 import org.junit.runners.model.FrameworkMethod
 
 @Log4j2
 class ServerHandler extends SimpleChannelInboundHandler<String> {
-    private final Map<String, Object> testClasses = [:]
-    private final ObjectMapper objectMapper = new ObjectMapper()
+    private static final Map<String, Object> testClasses = [:]
+    private static final ObjectMapper objectMapper = new ObjectMapper()
+    private static boolean counterFileInit
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx,
@@ -21,6 +23,10 @@ class ServerHandler extends SimpleChannelInboundHandler<String> {
         def close = false
         def parsedRequest = new JsonSlurper().parseText(request)
         def guid = UUID.randomUUID().toString()
+        if (!counterFileInit) {
+            counterFileInit = true
+            FileUtils.deleteQuietly(new File('.mule/wrapper/logs/linecount.txt'))
+        }
         log.info "---begin log guid ${guid}---"
         if (log.debugEnabled) {
             log.debug "Received request from client: ${JsonOutput.prettyPrint(request)}"

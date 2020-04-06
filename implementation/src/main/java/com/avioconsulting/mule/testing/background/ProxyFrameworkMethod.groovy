@@ -2,8 +2,6 @@ package com.avioconsulting.mule.testing.background
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import groovy.json.JsonOutput
-import org.apache.logging.log4j.Level
-import org.apache.logging.log4j.LogManager
 import org.junit.runners.model.FrameworkMethod
 
 import java.lang.reflect.Method
@@ -37,7 +35,12 @@ class ProxyFrameworkMethod extends FrameworkMethod {
                                                Map)
             def guid = asMap.guid
             def inSection = false
-            new File('.mule/wrapper/logs/wrapper.log').eachLine { line ->
+            def lineCount = new File('.mule/wrapper/logs/linecount.txt')
+            def startingLineNumber = lineCount.exists() ? Integer.valueOf(lineCount.text) : 0
+            println "starting with line ${startingLineNumber}"
+            def totalLines = 0
+            new File('.mule/wrapper/logs/wrapper.log').eachLine(startingLineNumber) { line ->
+                totalLines++
                 if (line.contains("---begin log guid ${guid}---")) {
                     inSection = true
                 } else if (inSection) {
@@ -48,6 +51,7 @@ class ProxyFrameworkMethod extends FrameworkMethod {
                     }
                 }
             }
+            lineCount.text = (totalLines - 1).toString()
             def exception = asMap.exception
             if (exception) {
                 new ByteArrayInputStream(Base64.decoder.decode(exception)).withCloseable { bis ->
