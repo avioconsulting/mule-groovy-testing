@@ -16,6 +16,7 @@ class ServerHandler extends SimpleChannelInboundHandler<String> {
     private static final Map<String, Object> testClasses = [:]
     private static final ObjectMapper objectMapper = new ObjectMapper()
     private static boolean counterFileInit
+    static final File lineCountFile = new File('.mule/wrapper/logs/linecount.txt')
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx,
@@ -25,7 +26,7 @@ class ServerHandler extends SimpleChannelInboundHandler<String> {
         def guid = UUID.randomUUID().toString()
         if (!counterFileInit) {
             counterFileInit = true
-            FileUtils.deleteQuietly(new File('.mule/wrapper/logs/linecount.txt'))
+            FileUtils.deleteQuietly(lineCountFile)
         }
         log.info "---begin log guid ${guid}---"
         if (log.debugEnabled) {

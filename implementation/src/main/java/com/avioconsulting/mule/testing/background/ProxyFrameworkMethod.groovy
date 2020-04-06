@@ -11,6 +11,7 @@ class ProxyFrameworkMethod extends FrameworkMethod {
      * Returns a new {@code FrameworkMethod} for {@code method}
      */
     private final ModifiedTestClass modifiedTestClass
+    private static final File lineCountFile = ServerHandler.lineCountFile
 
     ProxyFrameworkMethod(Method method,
                          ModifiedTestClass modifiedTestClass) {
@@ -35,9 +36,7 @@ class ProxyFrameworkMethod extends FrameworkMethod {
                                                Map)
             def guid = asMap.guid
             def inSection = false
-            def lineCount = new File('.mule/wrapper/logs/linecount.txt')
-            def startingLineNumber = lineCount.exists() ? Integer.valueOf(lineCount.text) : 0
-            println "starting with line ${startingLineNumber}"
+            def startingLineNumber = lineCountFile.exists() ? Integer.valueOf(lineCountFile.text) : 0
             def totalLines = 0
             new File('.mule/wrapper/logs/wrapper.log').eachLine(startingLineNumber) { line ->
                 totalLines++
@@ -51,7 +50,7 @@ class ProxyFrameworkMethod extends FrameworkMethod {
                     }
                 }
             }
-            lineCount.text = (totalLines - 1).toString()
+            lineCountFile.text = (totalLines - 1).toString()
             def exception = asMap.exception
             if (exception) {
                 new ByteArrayInputStream(Base64.decoder.decode(exception)).withCloseable { bis ->
