@@ -15,6 +15,7 @@ class MuleEngineContainer {
     private final Object container
     private final Object deployListener
     private final File muleHomeDirectory
+    private List<String> deployedApps = []
     @Lazy
     private static String testingFrameworkVersion = {
         def resourceStream = MuleEngineContainer.getResourceAsStream('/META-INF/maven/com.avioconsulting.mule/testing/pom.properties')
@@ -251,15 +252,15 @@ class MuleEngineContainer {
         container.shutdown()
     }
 
-    def undeployApplication(RuntimeBridgeTestSide app) {
+    synchronized def undeployApplication(RuntimeBridgeTestSide app) {
         app.dispose()
         container.deploymentService.undeploy(app.artifactName)
     }
 
-    RuntimeBridgeTestSide deployApplication(String artifactName,
-                                            URI application,
-                                            MockingConfiguration mockingConfiguration,
-                                            Properties properties) {
+    synchronized RuntimeBridgeTestSide deployApplication(String artifactName,
+                                                         URI application,
+                                                         MockingConfiguration mockingConfiguration,
+                                                         Properties properties) {
         // we're using this property to "communicate" with SchemaDebugGenerator inside Mule's classloader
         System.setProperty('internal.avio.groovy.test.generate.xml.schemas',
                            mockingConfiguration.generateXmlSchemas.toString())
