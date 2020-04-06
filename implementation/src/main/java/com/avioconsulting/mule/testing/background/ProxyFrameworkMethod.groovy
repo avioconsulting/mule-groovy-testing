@@ -35,13 +35,18 @@ class ProxyFrameworkMethod extends FrameworkMethod {
             def objectMapper = new ObjectMapper()
             def asMap = objectMapper.readValue(response,
                                                Map)
-            asMap.logs.each { log ->
-                // CaptureAppender "serialized" these for us
-                def level = Level.toLevel(log.level as String)
-                def logger = LogManager.getLogger(log.logger as String)
-                // will allow messages to be re-logged using the same class the background process logged them under
-                logger.log(level,
-                           log.message as String)
+            def guid = asMap.guid
+            def inSection = false
+            new File('.mule/wrapper/logs/wrapper.log').eachLine { line ->
+                if (line.contains("---begin log guid ${guid}---")) {
+                    inSection = true
+                } else if (inSection) {
+                    if (line.contains("---end log guid ${guid}---")) {
+                        inSection = false
+                    } else {
+                        println line
+                    }
+                }
             }
             def exception = asMap.exception
             if (exception) {

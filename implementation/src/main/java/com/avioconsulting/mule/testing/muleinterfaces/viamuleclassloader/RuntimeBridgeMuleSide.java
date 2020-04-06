@@ -1,11 +1,7 @@
 package com.avioconsulting.mule.testing.muleinterfaces.viamuleclassloader;
 
-import com.avioconsulting.mule.testing.background.CaptureAppender;
-import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.config.Configuration;
 import org.mule.runtime.api.artifact.Registry;
 import org.mule.runtime.api.component.TypedComponentIdentifier;
 import org.mule.runtime.api.component.location.ComponentLocation;
@@ -43,7 +39,6 @@ public class RuntimeBridgeMuleSide {
     private final List<CompletableFuture<Void>> streamCompletionCallbacks = new ArrayList<>();
     private GroovyTestingBatchNotifyListener batchNotifyListener;
     private final CursorStreamProviderFactory cursorStreamProviderFactory;
-    private final CaptureAppender captureAppender;
 
     RuntimeBridgeMuleSide(Registry registry) {
         this.registry = registry;
@@ -53,18 +48,8 @@ public class RuntimeBridgeMuleSide {
         }
         StreamingManager streamingManager = streamingManagerOptional.get();
         cursorStreamProviderFactory = streamingManager.forBytes().getDefaultCursorProviderFactory();
-        LoggerContext context = (LoggerContext) LogManager.getContext(false);
-        Configuration config = context.getConfiguration();
-        captureAppender = new CaptureAppender();
-        config.addAppender(captureAppender);
-        config.getRootLogger().addAppender(captureAppender,
-                Level.INFO,
-                null);
     }
 
-    List<Map<String, String>> getAllLogEvents() {
-        return this.captureAppender.getAllLogEvents();
-    }
 
     public Optional<Object> lookupByName(String name) {
         return this.registry.lookupByName(name);
