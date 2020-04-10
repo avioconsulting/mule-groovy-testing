@@ -10,7 +10,6 @@ import com.avioconsulting.mule.testing.muleinterfaces.MockingConfiguration
 import com.avioconsulting.mule.testing.muleinterfaces.RuntimeBridgeTestSide
 import com.avioconsulting.mule.testing.muleinterfaces.containers.BaseEngineConfig
 import com.avioconsulting.mule.testing.muleinterfaces.containers.Dependency
-import com.avioconsulting.mule.testing.muleinterfaces.containers.DescriptorGenerator
 import com.avioconsulting.mule.testing.muleinterfaces.containers.MuleEngineContainer
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.EventWrapper
 import groovy.json.JsonOutput
@@ -197,11 +196,6 @@ trait BaseMuleGroovyTrait {
                  'mule-artifact.json')
     }
 
-    // if the maven generation used to create artifact descriptors needs properties
-    Properties getPropertiesForMavenGeneration() {
-        null
-    }
-
     File getMavenPomDirectory() {
         projectDirectory
     }
@@ -217,38 +211,12 @@ trait BaseMuleGroovyTrait {
     }
 
     /**
-     * If you need certain Maven profiles to be activated while calling Maven
-     * to generate the classloader model, include them here
-     * @return
-     */
-    List<String> getMavenProfiles() {
-        []
-    }
-
-    String getMavenSettingsFilePath() {
-        null
-    }
-
-    /**
      * If you want some dependencies to be filtered out of your classloader model during the test runs
      * You can override this method. Regular expressions are accepted
      * @return
      */
     List<Dependency> getDependenciesToFilter() {
         []
-    }
-
-    private DescriptorGenerator getDescriptorGenerator() {
-        new DescriptorGenerator(classLoaderModelFile,
-                                classLoaderModelTestFile,
-                                skinnyMuleArtifactDescriptorPath,
-                                classesDirectory,
-                                buildOutputDirectory,
-                                muleArtifactDirectory,
-                                mavenPomPath,
-                                propertiesForMavenGeneration,
-                                mavenProfiles,
-                                mavenSettingsFilePath)
     }
 
     File getClassLoaderModelFile() {
