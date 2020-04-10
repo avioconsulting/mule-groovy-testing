@@ -224,24 +224,12 @@ trait BaseMuleGroovyTrait {
                  'classloader-model.json')
     }
 
-    File getClassLoaderModelTestFile() {
-        // putting this in buildOutputDirectory (e.g. target) rather than
-        // muleArtifactDirectory because we do not want this file in the finished product/JAR
-        // this file is also deterministic on the maven profiles that generated it so we need those in here
-        def mavenProfileString = mavenProfiles.join('-')
-        def filename = "classloader-model-test${mavenProfileString ? '-' + mavenProfileString : mavenProfileString}.json"
-        new File(buildOutputDirectory,
-                 filename)
-    }
-
     /**
      * Default implementation
      * @return
      */
     Map getClassLoaderModel() {
-        def generator = getDescriptorGenerator()
-        generator.regenerateClassLoaderModelAndArtifactDescriptor()
-        def file = classLoaderModelTestFile
+        def file = getClassLoaderModelFile()
         assert file.exists(): "Could not find ${file}. Has the Mule Maven plugin built your project yet? If you are not going to create this file yourself, you might want to run DescriptorGenerator.regenerateClassLoaderModelAndArtifactDescriptor()"
         new JsonSlurper().parse(file) as Map
     }

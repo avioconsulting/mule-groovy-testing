@@ -43,28 +43,44 @@ What hasn't been done yet/TODOs:
     <groovy.compiler.version>2.4.15</groovy.compiler.version>
 </properties>
 ...
-<plugin>
-    <artifactId>maven-compiler-plugin</artifactId>
-    <version>3.6.1</version>
-    <configuration>
-        <compilerId>groovy-eclipse-compiler</compilerId>
-    </configuration>
-    <dependencies>
-        <dependency>
-            <groupId>org.codehaus.groovy</groupId>
-            <artifactId>groovy-eclipse-compiler</artifactId>
-            <version>3.0.0-01</version>
-        </dependency>
-        <dependency>
-            <groupId>org.codehaus.groovy</groupId>
-            <artifactId>groovy-eclipse-batch</artifactId>
-            <version>${groovy.compiler.version}-02</version>
-        </dependency>
-    </dependencies>
-</plugin>
-<!-- Since Mule 4.x has a different classloading model, this will resolve all of the Mule 4 engine dependencies
-needed to run tests outside of the project AND outside of the testing framework itself. Will use
-${app.runtime} from this project by default -->
+<build>
+    <!-- This resources section isn't required but it will help IntelliJ, if you choose
+         to use IntelliJ, immediately understand the src/main/mule needs to be
+        "compiled" to target/classes when it builds the project -->
+    <resources>
+        <resource>
+            <directory>${project.basedir}/src/main/resources</directory>
+        </resource>
+        <resource>
+            <directory>${project.basedir}/src/main/mule</directory>
+        </resource>
+    </resources>
+    <plugins>
+        <plugin>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <version>3.6.1</version>
+            <configuration>
+                <compilerId>groovy-eclipse-compiler</compilerId>
+            </configuration>
+            <dependencies>
+                <dependency>
+                    <groupId>org.codehaus.groovy</groupId>
+                    <artifactId>groovy-eclipse-compiler</artifactId>
+                    <version>3.0.0-01</version>
+                </dependency>
+                <dependency>
+                    <groupId>org.codehaus.groovy</groupId>
+                    <artifactId>groovy-eclipse-batch</artifactId>
+                    <version>${groovy.compiler.version}-02</version>
+                </dependency>
+            </dependencies>
+        </plugin>
+    </plugins>
+</build>
+<!-- Since Mule 4.x has a different classloading model where the engine's
+dependencies are not included in Mule applications, this will resolve all
+ of the Mule 4 engine dependencies needed to run tests and put their locations in a file called `mule4_dependencies.json` that the testing
+framework will use to load the engine. Will use ${app.runtime} from this project by default to determine what Mule version to use. -->
 <plugin>
     <groupId>com.avioconsulting.mule</groupId>
     <artifactId>dependency-resolver-maven-plugin</artifactId>
@@ -117,6 +133,8 @@ ${app.runtime} from this project by default -->
     </configuration>
 </plugin>
 ```
+
+6. Running - You can use Studio/Eclipse (with Groovy's Eclipse plugin) or IntellIJ. IntelliJ will provide the better experience. If you do use IntelliJ, under Preferences->Build/Execution/Deployment->Build Tools->Maven->Importing, change `Phase to be used for folders update` to `generate-test-resources`. Then whenever you update Maven folders, this will ensure that any generated code AND the `mule4_dependencies.json` file are created inside the `target` directory. 
 
 # Test Classes
 
