@@ -4,7 +4,7 @@ pipeline {
     environment {
         jdk = 'jdk8'
         mvn = 'Maven 3'
-        version = "1.0.${env.BUILD_NUMBER}"
+        version = "2.0.${env.BUILD_NUMBER}"
         standard_avio_mvn_settings = '3144821b-28b7-414d-99b5-10ce1bee8c09'
     }
 
@@ -20,7 +20,6 @@ pipeline {
                     // would usually use package but we have a multi module interdependent project
                     quietMaven 'clean install'
                 }
-                archiveArtifacts 'cli/target/appassembler/**/*'
             }
 
             options {
