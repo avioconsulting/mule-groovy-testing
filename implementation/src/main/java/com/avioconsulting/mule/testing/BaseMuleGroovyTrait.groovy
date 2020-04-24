@@ -230,7 +230,7 @@ trait BaseMuleGroovyTrait {
      */
     Map getClassLoaderModel() {
         def file = getClassLoaderModelFile()
-        assert file.exists(): "Could not find ${file}. Has the Mule Maven plugin built your project yet? If you are not going to create this file yourself, you might want to run DescriptorGenerator.regenerateClassLoaderModelAndArtifactDescriptor()"
+        assert file.exists(): "Could not find ${file}. Has the Mule Maven plugin built your project yet? Run mvn clean test-compile to ensure that and the artifact descriptor are created"
         new JsonSlurper().parse(file) as Map
     }
 
