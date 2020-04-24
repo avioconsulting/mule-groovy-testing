@@ -18,6 +18,14 @@
     </properties>
 
     <build>
+        <resources>
+            <resource>
+                <directory>${project.basedir}/src/main/resources</directory>
+            </resource>
+            <resource>
+                <directory>${project.basedir}/src/main/mule</directory>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -137,20 +145,7 @@
                         <configuration>
                             <excludes>
                                 <exclude>**/mocking/SoapTest.java</exclude>
-                                <exclude>**/invocation/SoapTest.java</exclude>
                             </excludes>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>soap-invocation-run</id>
-                        <goals>
-                            <goal>test</goal>
-                        </goals>
-                        <phase>test</phase>
-                        <configuration>
-                            <includes>
-                                <include>**/invocation/SoapTest.java</include>
-                            </includes>
                         </configuration>
                     </execution>
                     <execution>

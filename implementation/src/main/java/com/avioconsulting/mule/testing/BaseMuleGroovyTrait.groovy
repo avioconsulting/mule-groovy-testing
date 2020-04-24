@@ -10,7 +10,6 @@ import com.avioconsulting.mule.testing.muleinterfaces.MockingConfiguration
 import com.avioconsulting.mule.testing.muleinterfaces.RuntimeBridgeTestSide
 import com.avioconsulting.mule.testing.muleinterfaces.containers.BaseEngineConfig
 import com.avioconsulting.mule.testing.muleinterfaces.containers.Dependency
-import com.avioconsulting.mule.testing.muleinterfaces.containers.DescriptorGenerator
 import com.avioconsulting.mule.testing.muleinterfaces.containers.MuleEngineContainer
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.EventWrapper
 import groovy.json.JsonOutput
@@ -197,11 +196,6 @@ trait BaseMuleGroovyTrait {
                  'mule-artifact.json')
     }
 
-    // if the maven generation used to create artifact descriptors needs properties
-    Properties getPropertiesForMavenGeneration() {
-        null
-    }
-
     File getMavenPomDirectory() {
         projectDirectory
     }
@@ -217,19 +211,6 @@ trait BaseMuleGroovyTrait {
     }
 
     /**
-     * If you need certain Maven profiles to be activated while calling Maven
-     * to generate the classloader model, include them here
-     * @return
-     */
-    List<String> getMavenProfiles() {
-        []
-    }
-
-    String getMavenSettingsFilePath() {
-        null
-    }
-
-    /**
      * If you want some dependencies to be filtered out of your classloader model during the test runs
      * You can override this method. Regular expressions are accepted
      * @return
@@ -238,32 +219,9 @@ trait BaseMuleGroovyTrait {
         []
     }
 
-    private DescriptorGenerator getDescriptorGenerator() {
-        new DescriptorGenerator(classLoaderModelFile,
-                                classLoaderModelTestFile,
-                                skinnyMuleArtifactDescriptorPath,
-                                classesDirectory,
-                                buildOutputDirectory,
-                                muleArtifactDirectory,
-                                mavenPomPath,
-                                propertiesForMavenGeneration,
-                                mavenProfiles,
-                                mavenSettingsFilePath)
-    }
-
     File getClassLoaderModelFile() {
         new File(muleArtifactDirectory,
                  'classloader-model.json')
-    }
-
-    File getClassLoaderModelTestFile() {
-        // putting this in buildOutputDirectory (e.g. target) rather than
-        // muleArtifactDirectory because we do not want this file in the finished product/JAR
-        // this file is also deterministic on the maven profiles that generated it so we need those in here
-        def mavenProfileString = mavenProfiles.join('-')
-        def filename = "classloader-model-test${mavenProfileString ? '-' + mavenProfileString : mavenProfileString}.json"
-        new File(buildOutputDirectory,
-                 filename)
     }
 
     /**
@@ -271,10 +229,8 @@ trait BaseMuleGroovyTrait {
      * @return
      */
     Map getClassLoaderModel() {
-        def generator = getDescriptorGenerator()
-        generator.regenerateClassLoaderModelAndArtifactDescriptor()
-        def file = classLoaderModelTestFile
-        assert file.exists(): "Could not find ${file}. Has the Mule Maven plugin built your project yet? If you are not going to create this file yourself, you might want to run DescriptorGenerator.regenerateClassLoaderModelAndArtifactDescriptor()"
+        def file = getClassLoaderModelFile()
+        assert file.exists(): "Could not find ${file}. Has the Mule Maven plugin built your project yet? Run mvn clean test-compile to ensure that and the artifact descriptor are created"
         new JsonSlurper().parse(file) as Map
     }
 
