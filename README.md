@@ -21,8 +21,8 @@ Differences from MUnit:
 
 What hasn't been done yet/TODOs:
 
+* Adding or removing a Mule XML currently requires re-running `mvn clean test-compile` to generate a new artifact descriptor
 * Daemon - Figure out how to keep engine/app running in the background to speed test execution. Probably the simplest way that could work would be to create a 'gray line' in the middle of the JUnit runner. If it's the background process, it would run the test method. If it's the front end, it would relay the command to run the test method to the backend process. Both sides would need to know about the test method but this is probably simpler than trying to serialize Mulesoft's objects. Would require some class reloading in the daemon process.
-* Figure out a cleaner way to generate up to date artifact descriptors/classloader models either by inheriting Maven settings when we call Maven OR by getting rid of Maven entirely
 * Deal with the style of patch with the infamous July 2019 security issue which involves a runtime patch containing other patches
 * Automatically detect whether a flow being invoked has an HTTP listener with non-repeatable streams turned on and use a non repeatable stream in that case
 * Automatically detect whether an HTTP requester being mocked has non-repeatable streams turned on and use a non repeatable stream in that case

@@ -1,6 +1,9 @@
 # 2.0
 (for Mule 4.1)
 
+# 2.0.45
+* Removed call to Maven to generate classloader model/artifact descriptor. Framework now assumes you're either running tests in Maven already OR if you're in an IDE, you've "bootstrapped" the IDE by running `mvn clean test-compile` first.
+
 # 2.0.44
 * BREAKING change: The `uri` property on `HttpRequesterInfo` now only returns the path, not the host and port
 * Prevent descriptor generation from failing due to Maven snapshot stubbornness
