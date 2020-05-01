@@ -1,6 +1,9 @@
 # 2.0
 (for Mule 4.1)
 
+# 2.0.46
+* Using this on lean/non apikit projects was missing a `commons-io` dependency. fixed that.
+
 # 2.0.45
 * Removed call to Maven to generate classloader model/artifact descriptor. Framework now assumes you're either running tests in Maven already OR if you're in an IDE, you've "bootstrapped" the IDE by running `mvn clean test-compile` first.
 
