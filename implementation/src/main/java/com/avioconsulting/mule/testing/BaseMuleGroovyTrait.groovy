@@ -17,6 +17,8 @@ import groovy.json.JsonSlurper
 import org.apache.commons.io.FileUtils
 import org.apache.logging.log4j.Logger
 
+import java.security.MessageDigest
+
 // basic idea here is to have a trait that could be mixed in to any type of testing framework situation
 // this trait should be stateless
 trait BaseMuleGroovyTrait {
@@ -89,6 +91,9 @@ trait BaseMuleGroovyTrait {
             if (sourceRepositoryDirectory.exists()) {
                 def targetRepositoryDirectory = join(appSourceDir,
                                                      'repository')
+                logger.info 'Copying source repository {} to {}',
+                            sourceRepositoryDirectory,
+                            targetRepositoryDirectory
                 FileUtils.copyDirectory(sourceRepositoryDirectory,
                                         targetRepositoryDirectory)
             }
@@ -177,8 +182,12 @@ trait BaseMuleGroovyTrait {
     }
 
     File getRepositoryDirectory() {
+        def digest = MessageDigest.getInstance('SHA-256')
+        digest.update(classLoaderModelFile.bytes)
+        def hashAsBase64 = Base64.encoder.encodeToString(digest.digest())
+        // matches up with where the dep resolver plugin put it
         new File(buildOutputDirectory,
-                 'repository')
+                 "repository-${hashAsBase64}")
     }
 
     File getMetaInfDirectory() {
@@ -189,11 +198,6 @@ trait BaseMuleGroovyTrait {
     File getMuleArtifactDirectory() {
         new File(metaInfDirectory,
                  'mule-artifact')
-    }
-
-    File getSkinnyMuleArtifactDescriptorPath() {
-        new File(projectDirectory,
-                 'mule-artifact.json')
     }
 
     File getMavenPomDirectory() {

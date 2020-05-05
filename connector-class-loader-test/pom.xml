@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.avioconsulting.mule.testing</groupId>
     <artifactId>connector-classloader-test</artifactId>
-    <version>2.0.46</version>
+    <version>2.0.47</version>
     <packaging>mule-extension</packaging>
 
     <parent>
@@ -23,6 +23,12 @@
                     <!-- tests do not need to be deployed -->
                     <skip>true</skip>
                 </configuration>
+            </plugin>
+            <!-- Not using the site plugin yet but this will cut down on noise from the build process -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-site-plugin</artifactId>
+                <version>3.9.0</version>
             </plugin>
         </plugins>
     </build>

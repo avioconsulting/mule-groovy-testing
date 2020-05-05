@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.avioconsulting.mule</groupId>
     <artifactId>tests-for-the-test</artifactId>
-    <version>2.0.46</version>
+    <version>2.0.47</version>
     <packaging>mule-application</packaging>
 
     <properties>
@@ -44,6 +44,12 @@
                     <!-- tests do not need to be installed or deployed -->
                     <skip>true</skip>
                 </configuration>
+            </plugin>
+            <!-- Not using the site plugin yet but this will cut down on noise from the build process -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-site-plugin</artifactId>
+                <version>3.9.0</version>
             </plugin>
             <plugin>
                 <groupId>org.mule.tools.maven</groupId>
@@ -166,12 +172,19 @@
             <plugin>
                 <groupId>com.avioconsulting.mule</groupId>
                 <artifactId>dependency-resolver-maven-plugin</artifactId>
-                <version>1.0.3</version>
+                <version>1.0.5</version>
                 <executions>
                     <execution>
                         <id>generate-dep-graph</id>
                         <goals>
                             <goal>resolve</goal>
+                        </goals>
+                        <phase>generate-test-resources</phase>
+                    </execution>
+                    <execution>
+                        <id>preserve-repo-directory</id>
+                        <goals>
+                            <goal>preserveRepository</goal>
                         </goals>
                         <phase>generate-test-resources</phase>
                     </execution>

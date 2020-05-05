@@ -1,6 +1,9 @@
 # 2.0
 (for Mule 4.1)
 
+# 2.0.47
+* Since Studio 7.4.2 wipes out the `target/repository` when you save a file, the dependency resolver Maven plugin preserves it with a hash based on `classloader-model.json`. This testing framework now uses that as the source repo directory. You'll need an additional goal in the dep resolver plugins section (see README)
+
 # 2.0.46
 * Using this on lean/non apikit projects was missing a `commons-io` dependency. fixed that.
 

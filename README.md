@@ -84,7 +84,7 @@ framework will use to load the engine. Will use ${app.runtime} from this project
 <plugin>
     <groupId>com.avioconsulting.mule</groupId>
     <artifactId>dependency-resolver-maven-plugin</artifactId>
-    <version>1.0.2</version>
+    <version>1.0.5</version>
     <executions>
         <execution>
             <id>generate-dep-graph</id>
@@ -92,6 +92,13 @@ framework will use to load the engine. Will use ${app.runtime} from this project
                 <goal>resolve</goal>
             </goals>
             <phase>generate-test-resources</phase>            
+        </execution>
+        <execution>
+            <id>preserve-repo-directory</id>
+            <goals>
+                <goal>preserveRepository</goal>
+            </goals>
+            <phase>generate-test-resources</phase>
         </execution>
     </executions>
 </plugin>
