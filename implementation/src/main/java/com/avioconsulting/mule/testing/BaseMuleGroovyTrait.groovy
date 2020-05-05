@@ -198,7 +198,9 @@ trait BaseMuleGroovyTrait {
         // we save off a copy in .mule (where it's safe from Studio) and use that
         // for repeated test runs while editing in Studio
         def digest = MessageDigest.getInstance('SHA-256')
-        digest.update(classLoaderModelFile.bytes)
+        // we don't want subtle whitespace differences, etc. (which studio will do)
+        // to mess up our hash
+        digest.update(JsonOutput.toJson(classLoaderModel).bytes)
         def hashAsHex = Hex.encodeHexString(digest.digest())
         // matches up with where the dep resolver plugin put it
         def candidate = new File(muleTestHomeDirectory,
