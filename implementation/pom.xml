@@ -183,6 +183,12 @@
             <artifactId>commons-io</artifactId>
             <version>2.6</version>
         </dependency>
+        <!-- repo/hex -->
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>1.14</version>
+        </dependency>
         <!--
         // this used to be included when the app under test had the SOAP APIKit Router in it
         // in 4.x, this is no longer the case. Since the dependency graph for wsdl4j is relatively

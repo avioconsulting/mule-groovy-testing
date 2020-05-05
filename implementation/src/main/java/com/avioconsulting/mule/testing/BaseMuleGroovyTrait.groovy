@@ -12,12 +12,11 @@ import com.avioconsulting.mule.testing.muleinterfaces.containers.BaseEngineConfi
 import com.avioconsulting.mule.testing.muleinterfaces.containers.Dependency
 import com.avioconsulting.mule.testing.muleinterfaces.containers.MuleEngineContainer
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.EventWrapper
-import com.eaio.util.lang.Hex
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
+import org.apache.commons.codec.binary.Hex
 import org.apache.commons.io.FileUtils
 import org.apache.logging.log4j.Logger
-import org.apache.xmlbeans.impl.util.HexBin
 
 import java.security.MessageDigest
 
@@ -200,7 +199,7 @@ trait BaseMuleGroovyTrait {
         // for repeated test runs while editing in Studio
         def digest = MessageDigest.getInstance('SHA-256')
         digest.update(classLoaderModelFile.bytes)
-        def hashAsHex = HexBin.bytesToString(digest.digest())
+        def hashAsHex = Hex.encodeHexString(digest.digest())
         // matches up with where the dep resolver plugin put it
         def candidate = new File(muleTestHomeDirectory,
                                  "repository-${hashAsHex}")
