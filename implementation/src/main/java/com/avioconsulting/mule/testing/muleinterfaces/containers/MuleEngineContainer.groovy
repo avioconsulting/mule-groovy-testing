@@ -39,11 +39,12 @@ class MuleEngineContainer {
         ].join(carriageReturn)
     }
 
-    MuleEngineContainer(BaseEngineConfig engineConfig) {
+    MuleEngineContainer(File muleHomeDirectory,
+                        BaseEngineConfig engineConfig) {
         log.info getHeader()
         try {
             this.engineConfig = engineConfig
-            muleHomeDirectory = new File('.mule')
+            this.muleHomeDirectory = muleHomeDirectory
             String dependencyJsonText = MuleEngineContainer.getResourceAsStream('/mule4_dependencies.json')?.text
             assert dependencyJsonText: 'Unable to find the /mule4_dependencies.json resource. Did you forget to use the dependency-resolver-maven-plugin plugin in your pom to generate it?'
             if (engineConfig.verboseExceptions) {

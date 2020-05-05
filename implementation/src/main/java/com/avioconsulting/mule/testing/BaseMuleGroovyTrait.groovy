@@ -12,10 +12,12 @@ import com.avioconsulting.mule.testing.muleinterfaces.containers.BaseEngineConfi
 import com.avioconsulting.mule.testing.muleinterfaces.containers.Dependency
 import com.avioconsulting.mule.testing.muleinterfaces.containers.MuleEngineContainer
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.EventWrapper
+import com.eaio.util.lang.Hex
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 import org.apache.commons.io.FileUtils
 import org.apache.logging.log4j.Logger
+import org.apache.xmlbeans.impl.util.HexBin
 
 import java.security.MessageDigest
 
@@ -25,7 +27,8 @@ trait BaseMuleGroovyTrait {
     abstract Logger getLogger()
 
     MuleEngineContainer createMuleEngineContainer(TestingConfiguration testingConfiguration) {
-        new MuleEngineContainer(testingConfiguration.engineConfig)
+        new MuleEngineContainer(muleTestHomeDirectory,
+                                testingConfiguration.engineConfig)
     }
 
     static File join(Object... paths) {
@@ -181,13 +184,35 @@ trait BaseMuleGroovyTrait {
         ]
     }
 
+    File getOriginalRepositoryDirectory() {
+        new File(buildOutputDirectory,
+                 'repository')
+    }
+
+    File getMuleTestHomeDirectory() {
+        new File('.mule')
+    }
+
     File getRepositoryDirectory() {
+        // Studio wipes out the repository directory (and any other temp directories)
+        // from target if you save an XML file. To avoid re-running the build cycle
+        // we save off a copy in .mule (where it's safe from Studio) and use that
+        // for repeated test runs while editing in Studio
         def digest = MessageDigest.getInstance('SHA-256')
         digest.update(classLoaderModelFile.bytes)
-        def hashAsBase64 = Base64.encoder.encodeToString(digest.digest())
+        def hashAsHex = HexBin.bytesToString(digest.digest())
         // matches up with where the dep resolver plugin put it
-        new File(buildOutputDirectory,
-                 "repository-${hashAsBase64}")
+        def candidate = new File(muleTestHomeDirectory,
+                                 "repository-${hashAsHex}")
+        if (!candidate.exists()) {
+            assert new FileNameFinder().getFileNames(originalRepositoryDirectory.absolutePath,
+                                                     '**/*').size() > 0:
+                    "Expected repository directory ${originalRepositoryDirectory} to already exist and have files! Run mvn clean generate-test-resources first!"
+            logger.info "${candidate} repository directory does not exist, copying from ${originalRepositoryDirectory}"
+            FileUtils.copyDirectory(originalRepositoryDirectory,
+                                    candidate)
+        }
+        return candidate
     }
 
     File getMetaInfDirectory() {
@@ -207,11 +232,6 @@ trait BaseMuleGroovyTrait {
     File getMavenPomPath() {
         new File(mavenPomDirectory,
                  'pom.xml')
-    }
-
-    File getClassesDirectory() {
-        new File(buildOutputDirectory,
-                 'classes')
     }
 
     /**
