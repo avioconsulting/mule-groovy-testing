@@ -198,9 +198,9 @@ trait BaseMuleGroovyTrait {
         // we save off a copy in .mule (where it's safe from Studio) and use that
         // for repeated test runs while editing in Studio
         def digest = MessageDigest.getInstance('SHA-256')
-        // we don't want subtle whitespace differences, etc. (which studio will do)
-        // to mess up our hash
-        digest.update(JsonOutput.toJson(classLoaderModel).bytes)
+        // classloader model gets touched a lot by Studio. the pom, which drives
+        // what's in the classloader model, gets touched a lot less
+        digest.update(mavenPomPath.bytes)
         def hashAsHex = Hex.encodeHexString(digest.digest())
         // matches up with where the dep resolver plugin put it
         def candidate = new File(muleTestHomeDirectory,
@@ -244,9 +244,32 @@ trait BaseMuleGroovyTrait {
         []
     }
 
-    File getClassLoaderModelFile() {
+    File getOriginalClassLoaderModelFile() {
         new File(muleArtifactDirectory,
                  'classloader-model.json')
+    }
+
+    File getClassLoaderModelFile() {
+        // Studio messes up the classloader model if you save an XML file. To avoid re-running the build cycle
+        // we save off a copy in .mule (where it's safe from Studio) and use that
+        // for repeated test runs while editing in Studio
+        // see getRepositoryDirectory
+        def digest = MessageDigest.getInstance('SHA-256')
+        // classloader model gets touched a lot by Studio. the pom, which drives
+        // what's in the classloader model, gets touched a lot less
+        digest.update(mavenPomPath.bytes)
+        def hashAsHex = Hex.encodeHexString(digest.digest())
+        // matches up with where the dep resolver plugin put it
+        def candidate = new File(muleTestHomeDirectory,
+                                 "classloader-model-${hashAsHex}.json")
+        if (!candidate.exists()) {
+            assert originalClassLoaderModelFile.exists():
+                    "Expected classloader model ${originalClassLoaderModelFile} to already exist! Run mvn clean generate-test-resources first!"
+            logger.info "${candidate} classloader model does not exist, copying from ${originalClassLoaderModelFile}"
+            FileUtils.copyFile(originalClassLoaderModelFile,
+                               candidate)
+        }
+        return candidate
     }
 
     /**
