@@ -1,6 +1,9 @@
 # 2.0
 (for Mule 4.1)
 
+# 2.0.47
+* Fixed issue with try scope and quotes in XML
+
 # 2.0.46
 * Using this on lean/non apikit projects was missing a `commons-io` dependency. fixed that.
 
