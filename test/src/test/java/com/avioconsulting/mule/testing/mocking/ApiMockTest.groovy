@@ -5,7 +5,6 @@ import com.avioconsulting.mule.testing.junit.BaseJunitTest
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.EventWrapper
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.connectors.HttpRequesterInfo
 import groovy.util.logging.Log4j2
-import org.junit.Assert
 import org.junit.Test
 
 import static groovy.test.GroovyAssert.shouldFail
@@ -304,7 +303,7 @@ class ApiMockTest extends
         // act
         runFlow('elementWithQuotedStuffInsideTry') {
             json {
-                inputPayload([foo:123])
+                inputPayload([foo: 123])
             }
             withOutputEvent { EventWrapper event ->
                 actualResult = event.getVariable('someVariable')
@@ -312,6 +311,7 @@ class ApiMockTest extends
         }
 
         // assert
-        Assert.fail("write it")
+        assertThat actualResult.value,
+                   is(equalTo('"quoted stuff"'))
     }
 }
