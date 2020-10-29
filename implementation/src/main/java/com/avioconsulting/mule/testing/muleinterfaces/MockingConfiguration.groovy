@@ -140,4 +140,8 @@ class MockingConfiguration {
     Object getErrorTypeRepository() {
         runtimeBridgeMuleSide.getErrorTypeRepository()
     }
+
+    Object getLocator() {
+        runtimeBridgeMuleSide.locator
+    }
 }

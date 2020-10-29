@@ -5,6 +5,8 @@ import org.apache.logging.log4j.Logger;
 import org.mule.runtime.api.component.Component;
 import org.mule.runtime.api.component.ComponentIdentifier;
 import org.mule.runtime.api.component.location.ComponentLocation;
+import org.mule.runtime.api.component.location.ConfigurationComponentLocator;
+import org.mule.runtime.api.component.location.Location;
 import org.mule.runtime.api.exception.ErrorTypeRepository;
 import org.mule.runtime.api.interception.InterceptionAction;
 import org.mule.runtime.api.interception.InterceptionEvent;
@@ -15,21 +17,12 @@ import org.mule.runtime.api.meta.MuleVersion;
 import org.mule.runtime.core.api.processor.Processor;
 import org.mule.runtime.core.internal.exception.MessagingException;
 import org.mule.runtime.core.internal.interception.DefaultInterceptionEvent;
-import org.mule.runtime.core.internal.message.InternalEvent;
 import org.mule.runtime.core.internal.processor.TryScope;
 import org.mule.runtime.extension.api.error.ErrorTypeDefinition;
 import org.mule.runtime.extension.api.exception.ModuleException;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import javax.xml.namespace.QName;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
@@ -44,19 +37,10 @@ public class MockingProcessorInterceptor implements ProcessorInterceptor {
     private static final String PARAMETER_CONNECTOR_NAME = "doc:name";
     private static final String PARAMETER_MODULE_NAME = "moduleName";
     private static final QName SOURCE_ELEMENT = new QName("http://www.mulesoft.org/schema/mule/documentation",
-                                                          "sourceElement");
-    private static final DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-    private static final DocumentBuilder builder;
+            "sourceElement");
+    private static final QName DOC_NAME = new QName("http://www.mulesoft.org/schema/mule/documentation",
+            "name");
     private static final Logger logger = LogManager.getLogger(MockingProcessorInterceptor.class);
-
-    static {
-        try {
-            builder = dbf.newDocumentBuilder();
-        } catch (ParserConfigurationException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     private final Method isMockEnabledMethod;
     private final Method doMockInvocationMethod;
     private final Method getErrorTypeRepositoryMethod;
@@ -67,6 +51,7 @@ public class MockingProcessorInterceptor implements ProcessorInterceptor {
     // will be on the same thread, so we can "pass" the name of the connector down to the next invocation
     // of this interceptor w/ ThreadLocal. See usages in this class for more info
     private static ThreadLocal<String> moduleConnectorName = new ThreadLocal<>();
+    private final Method locatorMethod;
 
     MockingProcessorInterceptor(Object mockingConfiguration,
                                 ClassLoader appClassLoader) {
@@ -85,13 +70,22 @@ public class MockingProcessorInterceptor implements ProcessorInterceptor {
         try {
             Class<?> mockingConfigClass = mockingConfiguration.getClass();
             this.isMockEnabledMethod = mockingConfigClass.getDeclaredMethod("isMocked",
-                                                                            String.class);
+                    String.class);
             this.doMockInvocationMethod = mockingConfigClass.getDeclaredMethod("executeMock",
-                                                                               String.class,
-                                                                               Object.class,
-                                                                               Object.class,
-                                                                               Object.class);
+                    String.class,
+                    Object.class,
+                    Object.class,
+                    Object.class);
             this.getErrorTypeRepositoryMethod = mockingConfigClass.getDeclaredMethod("getErrorTypeRepository");
+            this.locatorMethod = mockingConfigClass.getDeclaredMethod("getLocator");
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private ConfigurationComponentLocator getLocator() {
+        try {
+            return (ConfigurationComponentLocator) this.locatorMethod.invoke(mockingConfiguration);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -100,7 +94,7 @@ public class MockingProcessorInterceptor implements ProcessorInterceptor {
     private boolean isMockEnabled(String connectorName) {
         try {
             return (boolean) isMockEnabledMethod.invoke(mockingConfiguration,
-                                                        connectorName);
+                    connectorName);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -111,10 +105,10 @@ public class MockingProcessorInterceptor implements ProcessorInterceptor {
                              InterceptionEvent event,
                              Map<String, ProcessorParameterValue> parameters) throws InvocationTargetException, IllegalAccessException {
         doMockInvocationMethod.invoke(mockingConfiguration,
-                                      connectorName,
-                                      location,
-                                      event,
-                                      parameters);
+                connectorName,
+                location,
+                event,
+                parameters);
     }
 
     private ErrorTypeRepository getErrorTypeRepository() {
@@ -159,7 +153,7 @@ public class MockingProcessorInterceptor implements ProcessorInterceptor {
         // we only need to do this when we are NOT mocking and are running the real connector
         // this will run the 'real' connector inside the app's classloader
         return withContextClassLoader(this.appClassLoader,
-                                      action::proceed);
+                action::proceed);
     }
 
     @Override
@@ -168,13 +162,13 @@ public class MockingProcessorInterceptor implements ProcessorInterceptor {
                                                        InterceptionEvent event,
                                                        InterceptionAction action) {
         String connectorName = getModuleCallName(parameters,
-                                                 action);
+                action);
         // when we are mocking an HTTP call inside an API module, the first call we see here will be the module
         // (e.g. yourapi:some_operation)
         // then inside that module is a "processor chain" / operation is the actual call
         if (connectorName != null) {
             logger.info("Preserving module name of '{}' for next call (a connector that might be mocked) since it may not have a name on it",
-                        connectorName);
+                    connectorName);
             moduleConnectorName.set(connectorName);
             // we can't access anything on the module call but the next call inside should give us info
             return doProceed(action);
@@ -185,7 +179,7 @@ public class MockingProcessorInterceptor implements ProcessorInterceptor {
             // in this case, we found the actual HTTP connector name using the module we already have
             connectorName = moduleConnectorName.get();
             logger.info("Obtained the connector name of '{}' using previous module execution",
-                        connectorName);
+                    connectorName);
             // don't want this to continue past this execution
             moduleConnectorName.remove();
         } else {
@@ -199,9 +193,9 @@ public class MockingProcessorInterceptor implements ProcessorInterceptor {
 
         try {
             executeMock(connectorName,
-                        location,
-                        event,
-                        parameters);
+                    location,
+                    event,
+                    parameters);
             return action.skip();
         } catch (InvocationTargetException cause) {
             // need to unwrap our reflection based Mule exceptions
@@ -213,20 +207,20 @@ public class MockingProcessorInterceptor implements ProcessorInterceptor {
                     // details from being passed along. We have our own implementation that sets the error type
                     // and exception details properly, just like the real ModuleExceptionHandler would
                     return fail(event,
-                                action,
-                                actualException);
+                            action,
+                            actualException);
                 case "com.avioconsulting.mule.testing.muleinterfaces.wrappers.CustomErrorWrapperException":
                     // using this for same reason as above, except our mocking code already built out the
                     // error codes for us
                     return failWithCustomerErrorWrapper(event,
-                                                        action,
-                                                        actualException);
+                            action,
+                            actualException);
                 default:
                     return action.fail(actualException);
             }
         } catch (IllegalAccessException e) {
             throw new RuntimeException("Should not have had a reflection problem but did",
-                                       e);
+                    e);
         }
     }
 
@@ -247,40 +241,41 @@ public class MockingProcessorInterceptor implements ProcessorInterceptor {
             if (!(processor instanceof Component)) {
                 return null;
             }
-            String sourceElement = (String) ((Component) processor).getAnnotation(SOURCE_ELEMENT);
-            if (sourceElement == null) {
+            Object annotation = ((Component) processor).getAnnotation(DOC_NAME);
+            if (annotation == null) {
                 return null;
             }
-            Document doc = builder.parse(new ByteArrayInputStream(sourceElement.getBytes()));
-            return doc.getDocumentElement().getAttribute(PARAMETER_CONNECTOR_NAME);
+            return (String) annotation;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    private String getNameFromTryScope(TryScope processor) throws SAXException, IOException {
-        // the try scope works differently. it can interfere with the usual module process
-        String sourceElement = (String) processor.getAnnotation(SOURCE_ELEMENT);
-        Document doc = builder.parse(new ByteArrayInputStream(sourceElement.getBytes()));
-        Element tryElement = doc.getDocumentElement();
-        NodeList childNodes = tryElement.getChildNodes();
-        // <try>
-        //  <module-hello:do-stuff-get doc:name="the name of our connector" inputParam="#[payload]"></module-hello:do-stuff-get>
-        // </try>
-        List<Element> nonErrorHandlerChildElements = new ArrayList<>();
-        // get elements only (no text, etc.)
-        for (int i = 0; i < childNodes.getLength(); i++) {
-            Node node = childNodes.item(i);
-            if (node instanceof Element && !node.getNodeName().equals("error-handler")) {
-                nonErrorHandlerChildElements.add((Element) node);
+    private String getNameFromTryScope(TryScope tryScope) throws SAXException, IOException {
+        ConfigurationComponentLocator locator = getLocator();
+        ComponentLocation tryScopeLocation = tryScope.getLocation();
+        List<String> nonErrorHandlerChildElements = new ArrayList<>();
+        int processorIndex = 0;
+        while (true) {
+            Location prospectiveChildLocation = Location.builderFromStringRepresentation(String.format("%s/processors/%d", tryScopeLocation.getLocation(),
+                    processorIndex))
+                    .build();
+            Optional<Component> locatedProcessor = locator.find(prospectiveChildLocation);
+            if (!locatedProcessor.isPresent()) {
+                break;
             }
+            Object docName = locatedProcessor.get().getAnnotation(DOC_NAME);
+            // we need to "count" unnamed connectors (see reason below)
+            String connectorName = docName != null ? (String) docName : "(unnamed connector)";
+            nonErrorHandlerChildElements.add(connectorName);
+            processorIndex++;
         }
         // we should only need to do this for cases where the connector is the only item in the try scope
         // other cases work without doing this (see ApiMockTest)
         if (nonErrorHandlerChildElements.size() != 1) {
             return null;
         }
-        return nonErrorHandlerChildElements.get(0).getAttribute(PARAMETER_CONNECTOR_NAME);
+        return nonErrorHandlerChildElements.get(0);
     }
 
     private String getNamespace(Throwable moduleExceptionWrapper) {
@@ -303,10 +298,10 @@ public class MockingProcessorInterceptor implements ProcessorInterceptor {
         String namespace = getNamespace(moduleExceptionWrapper);
         String errorTypeCode = errorTypeDefinition.getType();
         return fail(event,
-                    action,
-                    moduleException,
-                    namespace,
-                    errorTypeCode);
+                action,
+                moduleException,
+                namespace,
+                errorTypeCode);
     }
 
     private CompletableFuture<InterceptionEvent> failWithCustomerErrorWrapper(InterceptionEvent event,
@@ -320,10 +315,10 @@ public class MockingProcessorInterceptor implements ProcessorInterceptor {
             Method errorTypeMethod = customErrorWrapperExceptionClass.getDeclaredMethod("getErrorCode");
             String errorTypeCode = (String) errorTypeMethod.invoke(customErrorWrapperException);
             return fail(event,
-                        action,
-                        customErrorWrapperException.getCause(),
-                        namespace,
-                        errorTypeCode);
+                    action,
+                    customErrorWrapperException.getCause(),
+                    namespace,
+                    errorTypeCode);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -359,7 +354,7 @@ public class MockingProcessorInterceptor implements ProcessorInterceptor {
         eventImpl.session(eventImpl.getSession());
         // now our original stuff will be preserved, we can add the error on top
         eventImpl.setError(errorType.get(),
-                           exception);
+                exception);
         Processor processor = getProcessor(action);
         if (!(processor instanceof Component)) {
             throw new RuntimeException("Expected processor to be an instance of Component but was: " + processor.getClass().getName());
@@ -367,8 +362,8 @@ public class MockingProcessorInterceptor implements ProcessorInterceptor {
         Component component = (Component) processor;
         CompletableFuture<InterceptionEvent> completableFuture = new CompletableFuture<>();
         completableFuture.completeExceptionally(new MessagingException(eventImpl.resolve(),
-                                                                       exception,
-                                                                       component));
+                exception,
+                component));
         return completableFuture;
     }
 }

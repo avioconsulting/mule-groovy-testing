@@ -294,4 +294,24 @@ class ApiMockTest extends
         assertThat exception.message,
                    is(equalTo('org.mule.runtime.core.internal.exception.MessagingException: HTTP GET on resource \'/stuff\' failed: not found (404).; ErrorType: MODULE-HELLO:NOT_FOUND'))
     }
+
+    @Test
+    void elementWithQuotedStuffInsideTry() {
+        // arrange
+        def actualResult = null
+
+        // act
+        runFlow('elementWithQuotedStuffInsideTry') {
+            json {
+                inputPayload([foo: 123])
+            }
+            withOutputEvent { EventWrapper event ->
+                actualResult = event.getVariable('someVariable')
+            }
+        }
+
+        // assert
+        assertThat actualResult.value,
+                   is(equalTo('"quoted stuff"'))
+    }
 }
