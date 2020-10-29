@@ -106,4 +106,10 @@ payload]]></ee:set-payload>
             </ee:message>
         </ee:transform>
     </flow>
+    <flow name="elementWithQuotedStuffInsideTry">
+        <try doc:name="The name of our try">
+            <logger/>
+            <set-variable value='"quoted stuff"' variableName="foobar" />
+        </try>
+    </flow>
 </mule>

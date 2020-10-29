@@ -5,6 +5,7 @@ import com.avioconsulting.mule.testing.junit.BaseJunitTest
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.EventWrapper
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.connectors.HttpRequesterInfo
 import groovy.util.logging.Log4j2
+import org.junit.Assert
 import org.junit.Test
 
 import static groovy.test.GroovyAssert.shouldFail
@@ -293,5 +294,24 @@ class ApiMockTest extends
         // assert
         assertThat exception.message,
                    is(equalTo('org.mule.runtime.core.internal.exception.MessagingException: HTTP GET on resource \'/stuff\' failed: not found (404).; ErrorType: MODULE-HELLO:NOT_FOUND'))
+    }
+
+    @Test
+    void elementWithQuotedStuffInsideTry() {
+        // arrange
+        def actualResult = null
+
+        // act
+        runFlow('elementWithQuotedStuffInsideTry') {
+            json {
+                inputPayload([foo:123])
+            }
+            withOutputEvent { EventWrapper event ->
+                actualResult = event.getVariable('someVariable')
+            }
+        }
+
+        // assert
+        Assert.fail("write it")
     }
 }
