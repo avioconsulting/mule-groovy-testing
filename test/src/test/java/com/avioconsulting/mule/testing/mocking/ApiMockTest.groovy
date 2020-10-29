@@ -49,6 +49,36 @@ class ApiMockTest extends
     }
 
     @Test
+    void mocksPostForeach() {
+        // arrange
+        def mockPayloads = []
+        mockRestHttpCall('the name of our connector') {
+            json {
+                whenCalledWith(String) { String ourPayload ->
+                    mockPayloads << ourPayload
+                    'new payload'
+                }
+            }
+        }
+
+        // act
+        runFlow('fooFlowForEach') {
+            java {
+                inputPayload(['hello', 'there'])
+            }
+        }
+
+        // assert
+        assertThat mockPayloads,
+                   is(equalTo(
+                           [
+                                   'hello',
+                                   'there'
+                           ]
+                   ))
+    }
+
+    @Test
     void mocks_with_http_request_info() {
         // arrange
         def mockPayload = null

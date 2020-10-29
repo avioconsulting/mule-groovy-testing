@@ -22,6 +22,12 @@ payload]]></ee:set-payload>
             </ee:message>
         </ee:transform>
     </flow>
+    <flow name="fooFlowForEach">
+        <foreach doc:name="For Each with only module call inside it">
+            <module-hello:do-stuff-post config-ref="foo" doc:name="the name of our connector"/>
+        </foreach>
+        <logger message="done calling module, transforming output to java"/>
+    </flow>
     <flow name="fooGetFlow">
         <logger message="calling module"/>
         <module-hello:do-stuff-get config-ref="foo" doc:name="the name of our connector" inputParam="#[payload]"/>
