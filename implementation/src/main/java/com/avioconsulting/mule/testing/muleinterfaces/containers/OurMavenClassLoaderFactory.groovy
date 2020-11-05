@@ -16,6 +16,10 @@ class OurMavenClassLoaderFactory {
             'api-gateway-events-collector-service'
     ]
     private final String muleVersion
+    private static final Map<String, String> collidingServices = [
+            'mule-service-http-ee' : 'mule-service-http',
+            'mule-service-oauth-ee': 'mule-service-oauth'
+    ]
 
     OurMavenClassLoaderFactory(BaseEngineConfig engineConfig,
                                File muleHomeDirectory,
@@ -48,11 +52,12 @@ class OurMavenClassLoaderFactory {
                 svcUrl.toString().contains(analyticsService)
             }
         }
-        if (services.any { svcUrl -> svcUrl.toString().contains('mule-service-http-ee') }) {
-            // these 2 services collide
-            services.removeAll { svcUrl ->
-                def svcString = svcUrl.toString()
-                svcString.contains('mule-service-http') && !svcString.contains('mule-service-http-ee')
+        collidingServices.each { eeService, nonEeService ->
+            if (services.any { svcUrl -> svcUrl.toString().contains(eeService) }) {
+                services.removeAll { svcUrl ->
+                    def svcString = svcUrl.toString()
+                    svcString.contains(nonEeService) && !svcString.contains(eeService)
+                }
             }
         }
         // our dependency plugin generates DUPEs
