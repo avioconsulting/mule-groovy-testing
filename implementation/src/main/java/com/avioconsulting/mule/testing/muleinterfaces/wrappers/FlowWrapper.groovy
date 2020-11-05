@@ -33,8 +33,7 @@ class FlowWrapper extends
     }
 
     private static Object getComponentLocation(Object nativeMuleObject) {
-        nativeMuleObject.annotations[new QName('mule',
-                                               'COMPONENT_LOCATION')]
+        nativeMuleObject.location
     }
 
     EventWrapper process(EventWrapper input) {
