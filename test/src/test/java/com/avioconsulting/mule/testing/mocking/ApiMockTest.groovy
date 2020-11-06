@@ -5,6 +5,7 @@ import com.avioconsulting.mule.testing.junit.BaseJunitTest
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.EventWrapper
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.connectors.HttpRequesterInfo
 import groovy.util.logging.Log4j2
+import org.junit.Assert
 import org.junit.Test
 
 import static groovy.test.GroovyAssert.shouldFail
@@ -18,6 +19,54 @@ class ApiMockTest extends
         ConfigTrait {
     List<String> getConfigResources() {
         ['api-mock.xml']
+    }
+
+    // TODO: Not sure about several things here. For one, we're not supplying inputParam
+    // when we call the connector. What is our mock supposed to be doing then?
+    // it's almost like we need a dedicated "mock connector" function that makes
+    // params available
+    // what is also going on is prior to 4.3.0, the workaround the interceptor code
+    // in this framework does allows us to mock HTTP requesters inside custom connectors
+    // but using the name of the customer connector invocation, not the HTTP requester
+    // they've done something in 4.3.0 that "fixes" the need for that.
+    // we'll probably have to:
+    // 1) decided whether to support < 4.3.0 with this framework going forward.
+    // 2) If not, there are other pre 4.3 and 4.2 workarounds in code that can be removed
+    // 3) regardless, we should probably make mockHttpRequesterInsideConnector a more deliberate
+    //    mocking method and deliberate code finding the http requester stuff in the
+    //    module's child processor list. this could get hairy when building ConnectorInfo
+    //    objects because we rely heavily on the parameter list, which will not be
+    //    the connector. alternatively we may have to invert the current paradigm
+    //    and mock the http requester IF the parent module connector invocation matches a name
+    // and 4) get a dedicated moc connector method going as discussed above
+    @Test
+    void mock_entire_connector() {
+        // arrange
+        def mockPayload = null
+        mockGeneric('the name of our connector') {
+            json {
+                whenCalledWith { Map ourPayload ->
+                    mockPayload = ourPayload
+                    [
+                            foo: 'the new payload'
+                    ]
+                }
+            }
+        }
+
+        // act
+        def result = runFlow('fooFlow') {
+            json {
+                inputPayload([foo: 123])
+            }
+        }
+
+        // assert
+        assertThat 'Parameter key is based on the value inside the module XML, not the call to the module',
+                   mockPayload,
+                   is(equalTo([foo: 123]))
+        assertThat result,
+                   is(equalTo('new payload'))
     }
 
     @Test
