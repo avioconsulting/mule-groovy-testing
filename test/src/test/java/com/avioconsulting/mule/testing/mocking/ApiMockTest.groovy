@@ -5,7 +5,7 @@ import com.avioconsulting.mule.testing.junit.BaseJunitTest
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.EventWrapper
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.connectors.HttpRequesterInfo
 import groovy.util.logging.Log4j2
-import org.junit.Assert
+import org.junit.Ignore
 import org.junit.Test
 
 import static groovy.test.GroovyAssert.shouldFail
@@ -14,6 +14,7 @@ import static org.hamcrest.Matchers.is
 import static org.junit.Assert.assertThat
 
 @Log4j2
+@Ignore('lots of issues here, see below')
 class ApiMockTest extends
         BaseJunitTest implements
         ConfigTrait {
