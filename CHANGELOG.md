@@ -1,6 +1,9 @@
 # 2.0
 (for Mule 4.x)
 
+# 2.0.48
+* 4.3.0 compatibility - note that mocking XML SDK (e.g. generated Exchange API connectors) has problems right now
+
 # 2.0.47
 * Fixed issue with try scope and quotes in XML
 * Fixed foreach/XML SDK issue
