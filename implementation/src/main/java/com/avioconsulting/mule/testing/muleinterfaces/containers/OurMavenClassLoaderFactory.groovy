@@ -18,7 +18,8 @@ class OurMavenClassLoaderFactory {
     private final String muleVersion
     private static final Map<String, String> collidingServices = [
             'mule-service-http-ee' : 'mule-service-http',
-            'mule-service-oauth-ee': 'mule-service-oauth'
+            'mule-service-oauth-ee': 'mule-service-oauth',
+            'mule-service-weave-ee': 'mule-service-weave'
     ]
 
     OurMavenClassLoaderFactory(BaseEngineConfig engineConfig,
