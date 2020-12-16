@@ -7,6 +7,7 @@ This testing framework is a more powerful approach than MUnit. It's opinionated:
 * Minimal engine laziness/startup tweaking during test run (just get it over with)
 * Mocks should not have to know about target variables (that's implementation)
 * Light opinion: `doc:name` is the way to say what you're mocking
+* Light opinion: Putting anything besides property loads in `global.xml` is an anti-pattern.
 
 Here is what's currently supported:
 
@@ -156,6 +157,20 @@ Map<String, String> getConfigResourceSubstitutes() {
     ['global.xml': 'global-test.xml',
      'foo.xml'   : null]
 }
+
+// this will provide a way to control which property values are set
+// for your test. non-encrypted and encrypted property elements are not
+// automatically excluded by the framework. A common pattern is
+// to put all the property loads in 1 XML file (global.xml)
+// and then sub out that file as shown above
+@Override
+Map getStartUpProperties() {
+    // you can also load a file here if you want
+    [
+            'some.username': 'foo',
+            'secure::password': 'somepassword'
+    ]
+}
 ```
 
 The philosophy here is to rely on the Mule artifact descriptor, which should have the right entries (that's what matters for the real engine) and have test code modify it rather than creating a new set of files to import.
@@ -163,6 +178,39 @@ The philosophy here is to rely on the Mule artifact descriptor, which should hav
 ## Actual tests
 
 This needs to be more clearly documented but for now, it might be easiest to look at tests for this project to get an idea of what all you can do in terms of mocks and invocations. Everything supported by the testing framework is tested itself in this project.
+
+A simple flow invocation and mock looks like this:
+
+```groovy
+class SomeTest extends BaseJunitTest {
+    @Test
+    void mockViaMap() {
+        // arrange
+        def stuff = null
+        mockRestHttpCall('SomeSystem Call') {
+            json {
+                whenCalledWith { Map incoming ->
+                    stuff = incoming
+                    [reply: 456]
+                }
+            }
+        }
+
+        // act
+        def result = runFlow('restRequest') {
+            json {
+                inputPayload([foo: 123])
+            }
+        }
+
+        // assert
+        assertThat stuff,
+                   is(equalTo([key: 123]))
+        assertThat result,
+                   is(equalTo([reply_key: 457]))
+    }
+}
+```
 
 # Apikit
 
