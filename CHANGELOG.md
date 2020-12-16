@@ -1,9 +1,9 @@
 # 2.0
-(for Mule 4.1)
+(for Mule 4.x)
 
 # 2.0.47
 * Fixed issue with try scope and quotes in XML
-* Fixed foreach/XML SDK issuw
+* Fixed foreach/XML SDK issue
 
 # 2.0.46
 * Using this on lean/non apikit projects was missing a `commons-io` dependency. fixed that.
