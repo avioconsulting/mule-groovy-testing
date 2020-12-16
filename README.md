@@ -1,6 +1,12 @@
 # Summary
 
-This testing framework is a more powerful approach than MUnit.
+This testing framework is a more powerful approach than MUnit. It's opinionated:
+* Prefers programming languages over XML for tests
+* Test runs from IDEs
+* JUnit style approach
+* Minimal engine laziness/startup tweaking during test run (just get it over with)
+* Mocks should not have to know about target variables (that's implementation)
+* Light opinion: `doc:name` is the way to say what you're mocking
 
 Here is what's currently supported:
 
@@ -14,19 +20,17 @@ Here is what's currently supported:
 * Limited HTTP connector usage validation (query params, path, verbs, URI params)
 * Automatically loads Mule config files from from the artifact descriptor (mule-artifact.json) that Mule derives, but allows substituting
 
-Differences from MUnit:
-* Full power of Groovy/Java language
+Other differences from MUnit:
 * Allow validation of HTTP query parameters, path names
-* Allow validation of DQL based queries
 
 What hasn't been done yet/TODOs:
 
-* Adding or removing a Mule XML currently requires re-running `mvn clean test-compile` to generate a new artifact descriptor
-* Daemon - Figure out how to keep engine/app running in the background to speed test execution. Probably the simplest way that could work would be to create a 'gray line' in the middle of the JUnit runner. If it's the background process, it would run the test method. If it's the front end, it would relay the command to run the test method to the backend process. Both sides would need to know about the test method but this is probably simpler than trying to serialize Mulesoft's objects. Would require some class reloading in the daemon process.
+* Adding or removing a Mule XML file currently requires re-running `mvn clean test-compile` to generate a new artifact descriptor
+* Daemon (under development) - Figure out how to keep engine/app running in the background to speed test execution. Probably the simplest way that could work would be to create a 'gray line' in the middle of the JUnit runner. If it's the background process, it would run the test method. If it's the front end, it would relay the command to run the test method to the backend process. Both sides would need to know about the test method but this is probably simpler than trying to serialize Mulesoft's objects. Would require some class reloading in the daemon process.
 * Deal with the style of patch with the infamous July 2019 security issue which involves a runtime patch containing other patches
 * Automatically detect whether a flow being invoked has an HTTP listener with non-repeatable streams turned on and use a non repeatable stream in that case
 * Automatically detect whether an HTTP requester being mocked has non-repeatable streams turned on and use a non repeatable stream in that case
-* Invoking SalesForce upsert and query (DQL not supported in Studio 7 yet)
+* Invoking SalesForce upsert and query (DQL not supported in Studio 7/Mule 4)
 * Easily mock any DQL/Devkit based connector
 * Boilerplate code from queue-error-strategies, how to test that
 * Mocking DB (you probably shouldn't do this anyways, better to spin up a DB in a Docker container if possible)
@@ -84,7 +88,7 @@ framework will use to load the engine. Will use ${app.runtime} from this project
 <plugin>
     <groupId>com.avioconsulting.mule</groupId>
     <artifactId>dependency-resolver-maven-plugin</artifactId>
-    <version>1.0.2</version>
+    <version>1.0.4</version>
     <executions>
         <execution>
             <id>generate-dep-graph</id>
@@ -99,8 +103,8 @@ framework will use to load the engine. Will use ${app.runtime} from this project
 <dependencies>
     <dependency>
         <groupId>org.codehaus.groovy</groupId>
-        <artifactId>${groovy.compiler.version}</artifactId>
-        <version>2.4.3</version>
+        <artifactId>groovy-all</artifactId>
+        <version>${groovy.compiler.version}</version>
         <!-- Doesn't need to be deployed in ZIP -->
         <scope>provided</scope>
     </dependency>
@@ -112,7 +116,7 @@ framework will use to load the engine. Will use ${app.runtime} from this project
 <dependency>
     <groupId>com.avioconsulting.mule</groupId>
     <artifactId>testing</artifactId>
-    <version>2.0.10</version>
+    <version>2.0.47</version>
     <scope>test</scope>
 </dependency>
 ```
