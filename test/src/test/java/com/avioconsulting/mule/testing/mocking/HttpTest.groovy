@@ -54,6 +54,38 @@ class HttpTest extends
     }
 
     @Test
+    void mocksProperly_access_variable() {
+        // arrange
+        def stuff = null
+        def variableContents = null
+        mockRestHttpCall('SomeSystem Call') {
+            json {
+                whenCalledWith { Map incoming,
+                                 EventWrapper event ->
+                    variableContents = event.getVariable('someVariable').value
+                    stuff = incoming
+                    [reply: 456]
+                }
+            }
+        }
+
+        // act
+        def result = runFlow('restRequest') {
+            json {
+                inputPayload([foo: 123])
+            }
+        }
+
+        // assert
+        assertThat variableContents,
+                   is(equalTo('hellotim'))
+        assertThat stuff,
+                   is(equalTo([key: 123]))
+        assertThat result,
+                   is(equalTo([reply_key: 457]))
+    }
+
+    @Test
     void mimeType_not_set() {
         // arrange
         def stuff = null

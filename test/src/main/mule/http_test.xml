@@ -14,6 +14,7 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
         <http:request-connection host="localhost" port="443" protocol="HTTP"/>
     </http:request-config>
     <flow name="restRequest">
+        <set-variable variableName="someVariable" value="hellotim"/>
         <ee:transform doc:name="Transform Message">
             <ee:message>
                 <ee:set-payload><![CDATA[%dw 2.0
