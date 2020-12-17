@@ -108,8 +108,7 @@ framework will use to load the engine. Will use ${app.runtime} from this project
         <groupId>org.codehaus.groovy</groupId>
         <artifactId>groovy-all</artifactId>
         <version>${groovy.compiler.version}</version>
-        <!-- Doesn't need to be deployed in ZIP -->
-        <scope>provided</scope>
+        <scope>test</scope>
     </dependency>
 </dependencies>
 ```
@@ -123,6 +122,44 @@ framework will use to load the engine. Will use ${app.runtime} from this project
     <scope>test</scope>
 </dependency>
 ```
+
+4. Add repositories
+
+```xml
+        <repositories>
+            <!-- some repository that includes this testing lib -->
+            <repository>
+                <id>avio-releases</id>
+                <name>AVIO Releases Repository</name>
+                <url>https://devops.avioconsulting.com/nexus/repository/avio-releases/</url>
+            </repository>
+            <repository>
+                <id>avio-mule-ee-releases</id>
+                <name>AVIO MuleEE Releases Repository</name>
+                <url>https://devops.avioconsulting.com/nexus/repository/mulesoft-ee-releases/</url>
+            </repository>
+        </repositories>
+
+        <pluginRepositories>
+            <!-- some repository that includes the dependency resolver plugin -->
+            <pluginRepository>
+                <id>avio-releases</id>
+                <name>AVIO Releases Repository</name>
+                <url>https://devops.avioconsulting.com/nexus/repository/avio-releases/</url>
+                <layout>default</layout>
+            </pluginRepository>
+            <pluginRepository>
+                <id>groovy</id>
+                <name>Groovy</name>
+                <layout>default</layout>
+                <url>https://dl.bintray.com/groovy/maven/</url>
+                <snapshots>
+                    <enabled>false</enabled>
+                </snapshots>
+            </pluginRepository>
+        </pluginRepositories>
+```
+
 4. As you go, add respective jaxb2-maven-plugin or jsonschema2pojo-maven-plugin usages to generate sources to use during tests
  
 5. Create your test classes
