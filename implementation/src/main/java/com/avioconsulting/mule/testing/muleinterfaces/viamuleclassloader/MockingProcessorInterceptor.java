@@ -6,32 +6,27 @@ import org.mule.runtime.api.component.Component;
 import org.mule.runtime.api.component.ComponentIdentifier;
 import org.mule.runtime.api.component.location.ComponentLocation;
 import org.mule.runtime.api.component.location.ConfigurationComponentLocator;
-import org.mule.runtime.api.component.location.Location;
 import org.mule.runtime.api.exception.ErrorTypeRepository;
 import org.mule.runtime.api.interception.InterceptionAction;
 import org.mule.runtime.api.interception.InterceptionEvent;
 import org.mule.runtime.api.interception.ProcessorInterceptor;
 import org.mule.runtime.api.interception.ProcessorParameterValue;
 import org.mule.runtime.api.message.ErrorType;
-import org.mule.runtime.api.meta.MuleVersion;
 import org.mule.runtime.core.api.processor.Processor;
 import org.mule.runtime.core.internal.exception.MessagingException;
 import org.mule.runtime.core.internal.interception.DefaultInterceptionEvent;
-import org.mule.runtime.core.internal.processor.TryScope;
 import org.mule.runtime.extension.api.error.ErrorTypeDefinition;
 import org.mule.runtime.extension.api.exception.ModuleException;
-import org.xml.sax.SAXException;
+import org.mule.runtime.extension.internal.processor.ModuleOperationMessageProcessor;
 
 import javax.xml.namespace.QName;
-import java.io.IOException;
-import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
-
-import static org.mule.runtime.core.api.util.ClassUtils.withContextClassLoader;
 
 public class MockingProcessorInterceptor implements ProcessorInterceptor {
     private static final String PARAMETER_CONNECTOR_NAME = "doc:name";
@@ -45,28 +40,14 @@ public class MockingProcessorInterceptor implements ProcessorInterceptor {
     private final Method doMockInvocationMethod;
     private final Method getErrorTypeRepositoryMethod;
     private final Object mockingConfiguration;
-    private final ClassLoader appClassLoader;
-    private final MuleVersion muleVersion;
+    private final Method locatorMethod;
     // The assumption here is that our call to a module/Exchange wrapped API, since it's just a chain container
     // will be on the same thread, so we can "pass" the name of the connector down to the next invocation
     // of this interceptor w/ ThreadLocal. See usages in this class for more info
     private static ThreadLocal<String> moduleConnectorName = new ThreadLocal<>();
-    private final Method locatorMethod;
 
-    MockingProcessorInterceptor(Object mockingConfiguration,
-                                ClassLoader appClassLoader) {
-        // this comes from the dependencies we've wired up so it's a way to get what version
-        // of mule we are running under
-        InputStream muleRuntimeVersion = MockingProcessorInterceptor.class.getResourceAsStream("/META-INF/maven/org.mule.runtime/mule-core/pom.properties");
-        Properties properties = new Properties();
-        try {
-            properties.load(muleRuntimeVersion);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        this.muleVersion = new MuleVersion(properties.getProperty("version"));
+    MockingProcessorInterceptor(Object mockingConfiguration) {
         this.mockingConfiguration = mockingConfiguration;
-        this.appClassLoader = appClassLoader;
         try {
             Class<?> mockingConfigClass = mockingConfiguration.getClass();
             this.isMockEnabledMethod = mockingConfigClass.getDeclaredMethod("isMocked",
@@ -131,31 +112,6 @@ public class MockingProcessorInterceptor implements ProcessorInterceptor {
         }
     }
 
-    private CompletableFuture<InterceptionEvent> doProceed(InterceptionAction action) {
-        MuleVersion muleFixedThisIn = new MuleVersion("4.2.2");
-        if (this.muleVersion.atLeast(muleFixedThisIn)) {
-            return action.proceed();
-        }
-        // for some reason, org.mule.runtime.core.internal.processor.interceptor.ReactiveAroundInterceptorAdapter
-        // in its doAround method changes the thread context classloader to the one that loaded the interceptor
-        // class. The problem with that is it causes problems with non-mocked connectors that
-        // have paged/streaming operations because they expect the app (or region, not sure about this) classloader
-        // to be current context classloader when they actually execute. the problem manifests itself one way
-        // in that loggers will 'forget' the log4j (impl and test) config of the app during this execution
-        // and instead rely on the engine's .conf directory config, which effectively prevents debug logging
-        // since that config file is not changeable by apps using this framework
-
-        // One option would be to load this interceptor/interceptor factory with the app's classloader. the problem
-        // there is it's in this framework (not in the app)
-
-        // therefore we effectively reverse what ReactiveAroundInterceptorAdapter does here during our execution
-
-        // we only need to do this when we are NOT mocking and are running the real connector
-        // this will run the 'real' connector inside the app's classloader
-        return withContextClassLoader(this.appClassLoader,
-                action::proceed);
-    }
-
     @Override
     public CompletableFuture<InterceptionEvent> around(ComponentLocation location,
                                                        Map<String, ProcessorParameterValue> parameters,
@@ -171,10 +127,10 @@ public class MockingProcessorInterceptor implements ProcessorInterceptor {
                     connectorName);
             moduleConnectorName.set(connectorName);
             // we can't access anything on the module call but the next call inside should give us info
-            return doProceed(action);
+            return action.proceed();
         }
         if (!parameters.containsKey(PARAMETER_CONNECTOR_NAME) && moduleConnectorName.get() == null) {
-            return doProceed(action);
+            return action.proceed();
         } else if (moduleConnectorName.get() != null) {
             // in this case, we found the actual HTTP connector name using the module we already have
             connectorName = moduleConnectorName.get();
@@ -188,7 +144,7 @@ public class MockingProcessorInterceptor implements ProcessorInterceptor {
         }
 
         if (!isMockEnabled(connectorName)) {
-            return doProceed(action);
+            return action.proceed();
         }
 
         try {
@@ -227,55 +183,14 @@ public class MockingProcessorInterceptor implements ProcessorInterceptor {
     private String getModuleCallName(Map<String, ProcessorParameterValue> parameters,
                                      InterceptionAction action) {
         Processor processor = getProcessor(action);
-        try {
-            // if we're calling an API using Exchange "derived" XML SDK calls, this will be a processor chain
-            // but we can't get the name of the connector when the actual mock w/ params/vars runs.
-            // so we map the connector name to the processor chain here, then when this runs again with the processor
-            // chain, we know the name of the 'mock'
-            if (processor instanceof TryScope) {
-                return getNameFromTryScope((TryScope) processor);
-            }
-            if (!parameters.containsKey(PARAMETER_MODULE_NAME)) {
-                return null;
-            }
-            if (!(processor instanceof Component)) {
-                return null;
-            }
+        if (processor instanceof ModuleOperationMessageProcessor) {
             Object annotation = ((Component) processor).getAnnotation(DOC_NAME);
             if (annotation == null) {
                 return null;
             }
             return (String) annotation;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
         }
-    }
-
-    private String getNameFromTryScope(TryScope tryScope) throws SAXException, IOException {
-        ConfigurationComponentLocator locator = getLocator();
-        ComponentLocation tryScopeLocation = tryScope.getLocation();
-        List<String> nonErrorHandlerChildElements = new ArrayList<>();
-        int processorIndex = 0;
-        while (true) {
-            Location prospectiveChildLocation = Location.builderFromStringRepresentation(String.format("%s/processors/%d", tryScopeLocation.getLocation(),
-                    processorIndex))
-                    .build();
-            Optional<Component> locatedProcessor = locator.find(prospectiveChildLocation);
-            if (!locatedProcessor.isPresent()) {
-                break;
-            }
-            Object docName = locatedProcessor.get().getAnnotation(DOC_NAME);
-            // we need to "count" unnamed connectors (see reason below)
-            String connectorName = docName != null ? (String) docName : "(unnamed connector)";
-            nonErrorHandlerChildElements.add(connectorName);
-            processorIndex++;
-        }
-        // we should only need to do this for cases where the connector is the only item in the try scope
-        // other cases work without doing this (see ApiMockTest)
-        if (nonErrorHandlerChildElements.size() != 1) {
-            return null;
-        }
-        return nonErrorHandlerChildElements.get(0);
+        return null;
     }
 
     private String getNamespace(Throwable moduleExceptionWrapper) {

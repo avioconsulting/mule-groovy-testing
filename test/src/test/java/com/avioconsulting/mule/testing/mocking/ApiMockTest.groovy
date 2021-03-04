@@ -14,7 +14,6 @@ import static org.hamcrest.Matchers.is
 import static org.junit.Assert.assertThat
 
 @Log4j2
-@Ignore('lots of issues here, see below')
 class ApiMockTest extends
         BaseJunitTest implements
         ConfigTrait {
