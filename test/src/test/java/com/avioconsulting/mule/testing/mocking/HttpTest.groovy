@@ -636,7 +636,7 @@ class HttpTest extends
                    is(equalTo("HTTP GET on resource '/some_path/there' failed: not found (404)."))
         assertThat causeOfCause.getClass().name,
                    is(equalTo('org.mule.extension.http.api.request.validator.ResponseValidatorTypedException'))
-        assertThat cause.info['Error type'],
+        assertThat cause.info['Error type'].toString(),
                    is(equalTo('HTTP:NOT_FOUND'))
     }
 
@@ -824,7 +824,7 @@ class HttpTest extends
                    is(equalTo("HTTP GET on resource '/some_path/there' failed: not found (404)."))
         assertThat causeOfCause.getClass().name,
                    is(equalTo('org.mule.extension.http.api.request.validator.ResponseValidatorTypedException'))
-        assertThat cause.info['Error type'],
+        assertThat cause.info['Error type'].toString(),
                    is(equalTo('HTTP:NOT_FOUND'))
     }
 
@@ -958,7 +958,7 @@ class HttpTest extends
                    is(equalTo('org.mule.extension.http.api.error.HttpRequestFailedException'))
         assertThat causeOfCause.cause.getClass().name,
                    is(equalTo('java.net.ConnectException'))
-        assertThat cause.info['Error type'],
+        assertThat cause.info['Error type'].toString(),
                    is(equalTo('HTTP:CONNECTIVITY'))
         assertThat cause.message,
                    is(equalTo("HTTP POST on resource '/some_path' failed: Connection refused."))
@@ -993,7 +993,7 @@ class HttpTest extends
                    is(equalTo('org.mule.extension.http.api.error.HttpRequestFailedException'))
         assertThat causeOfCause.cause.getClass().name,
                    is(equalTo('java.util.concurrent.TimeoutException'))
-        assertThat cause.info['Error type'],
+        assertThat cause.info['Error type'].toString(),
                    is(equalTo('HTTP:TIMEOUT'))
         assertThat cause.message,
                    is(equalTo("HTTP POST on resource '/some_path' failed: Some timeout error."))
