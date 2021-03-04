@@ -641,6 +641,42 @@ class HttpTest extends
     }
 
     @Test
+    void http_return_error_code_mapped() {
+        // arrange
+        mockRestHttpCall('SomeSystem Call') {
+            json {
+                whenCalledWith {
+                    setHttpStatusCode(404)
+                    [reply: 456]
+                }
+            }
+        }
+
+        // act
+        def result = shouldFail {
+            runFlow('queryParametersHttpStatusErrorMapped') {
+                json {
+                    inputPayload([foo: 123])
+                }
+            }
+        }
+
+        // assert
+        assertThat result,
+                   is(instanceOf(InvokeExceptionWrapper))
+        def cause = result.cause
+        def causeOfCause = cause.cause
+        assertThat causeOfCause.getClass().name,
+                   is(equalTo('org.mule.extension.http.api.request.validator.ResponseValidatorTypedException'))
+        assertThat cause.message,
+                   is(equalTo("HTTP GET on resource '/some_path/there' failed: not found (404)."))
+        assertThat causeOfCause.getClass().name,
+                   is(equalTo('org.mule.extension.http.api.request.validator.ResponseValidatorTypedException'))
+        assertThat cause.info['Error type'].toString(),
+                   is(equalTo('FOOBAR:NOT_FOUND'))
+    }
+
+    @Test
     void status_code_error_sets_payload_properly() {
         // arrange
         mockRestHttpCall('SomeSystem Call') {

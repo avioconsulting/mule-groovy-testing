@@ -428,7 +428,6 @@ output application/json
             </ee:message>
         </ee:transform>
     </flow>
-
     <flow name="queryParametersHttpStatus">
         <ee:transform doc:name="Transform Message">
             <ee:message>
@@ -444,6 +443,52 @@ output application/json
                       path="/some_path/{howdy}"
                       method="GET"
                       doc:name="SomeSystem Call">
+            <http:uri-params>
+                <![CDATA[#[output application/java
+                ---
+                {
+                    howdy: 'there'
+                }]]]>
+            </http:uri-params>
+            <http:query-params>
+                <![CDATA[#[output application/java
+                ---
+                {
+                    stuff: 123
+                }]]]>
+            </http:query-params>
+            <http:response-validator>
+                <http:success-status-code-validator values="200,201"/>
+            </http:response-validator>
+        </http:request>
+        <set-variable variableName="theStatus" value="#[attributes.statusCode]"/>
+        <ee:transform doc:name="Transform Message">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+    reply_key: vars.theStatus
+}]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+    </flow>
+    <flow name="queryParametersHttpStatusErrorMapped">
+        <ee:transform doc:name="Transform Message">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+    key: payload.foo
+}]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+        <http:request config-ref="SomeSystem"
+                      path="/some_path/{howdy}"
+                      method="GET"
+                      doc:name="SomeSystem Call">
+            <error-mapping sourceType="HTTP:NOT_FOUND" targetType="FOOBAR:NOT_FOUND" />
             <http:uri-params>
                 <![CDATA[#[output application/java
                 ---

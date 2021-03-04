@@ -13,11 +13,13 @@ import org.mule.runtime.api.interception.ProcessorInterceptor;
 import org.mule.runtime.api.interception.ProcessorParameterValue;
 import org.mule.runtime.api.message.ErrorType;
 import org.mule.runtime.core.api.processor.Processor;
+import org.mule.runtime.core.internal.exception.ErrorMapping;
 import org.mule.runtime.core.internal.exception.MessagingException;
 import org.mule.runtime.core.internal.interception.DefaultInterceptionEvent;
 import org.mule.runtime.extension.api.error.ErrorTypeDefinition;
 import org.mule.runtime.extension.api.exception.ModuleException;
 import org.mule.runtime.extension.internal.processor.ModuleOperationMessageProcessor;
+import org.mule.runtime.module.extension.internal.runtime.ExtensionComponent;
 
 import javax.xml.namespace.QName;
 import java.lang.reflect.Field;
@@ -254,9 +256,21 @@ public class MockingProcessorInterceptor implements ProcessorInterceptor {
                 .name(errorTypeCode)
                 .build();
         ErrorTypeRepository repository = getErrorTypeRepository();
-        Optional<ErrorType> errorType = repository.lookupErrorType(errorComponentIdentifier);
-        if (!errorType.isPresent()) {
+        Optional<ErrorType> errorTypeOptional = repository.lookupErrorType(errorComponentIdentifier);
+        if (!errorTypeOptional.isPresent()) {
             throw new RuntimeException("Unable to lookup error type! " + errorComponentIdentifier);
+        }
+        ErrorType errorType = errorTypeOptional.get();
+        Processor processor = getProcessor(action);
+        if (!(processor instanceof ExtensionComponent<?>)) {
+            throw new RuntimeException("Expected processor to be an instance of Component but was: " + processor.getClass().getName());
+        }
+        ExtensionComponent<?> component = (ExtensionComponent<?>) processor;
+        for (ErrorMapping mapping : component.getErrorMappings()) {
+            if (mapping.match(errorType)) {
+                errorType = mapping.getTarget();
+                break;
+            }
         }
         DefaultInterceptionEvent eventImpl = (DefaultInterceptionEvent) event;
         // if we're going to set an error, we need to set the non-error payload/message (meaning the request)
@@ -268,13 +282,8 @@ public class MockingProcessorInterceptor implements ProcessorInterceptor {
         eventImpl.variables(variables);
         eventImpl.session(eventImpl.getSession());
         // now our original stuff will be preserved, we can add the error on top
-        eventImpl.setError(errorType.get(),
+        eventImpl.setError(errorType,
                 exception);
-        Processor processor = getProcessor(action);
-        if (!(processor instanceof Component)) {
-            throw new RuntimeException("Expected processor to be an instance of Component but was: " + processor.getClass().getName());
-        }
-        Component component = (Component) processor;
         CompletableFuture<InterceptionEvent> completableFuture = new CompletableFuture<>();
         completableFuture.completeExceptionally(new MessagingException(eventImpl.resolve(),
                 exception,
