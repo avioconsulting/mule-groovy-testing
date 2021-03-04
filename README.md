@@ -42,6 +42,7 @@ What hasn't been done yet/TODOs:
 # Requirements
 * Mule >= 4.1.0 engine
 * `mule-apikit-modules` versions from somewhere around 1.2.x up to around 1.3.16 do not work. Framework is tested and works against 1.3.19
+* Modern HTTP connector version (>= 1.5.0) if you want to use APIKit invocation
 
 # Setting up your project
 
