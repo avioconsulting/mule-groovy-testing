@@ -63,7 +63,7 @@ class ApikitFlowInvokeTest extends
 
         // assert
         assertThat result.message,
-                   is(containsString('Missing required field'))
+                   is(containsString('required key [foo] not found'))
     }
 
     @Test
