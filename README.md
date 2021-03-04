@@ -39,8 +39,11 @@ What hasn't been done yet/TODOs:
 * Mocking DB (you probably shouldn't do this anyways, better to spin up a DB in a Docker container if possible)
 * Mocking SFTP processors (NOT listeners) or anything that uses a connection. The underlying Mule interceptor code this framework relies on doesn't prevent Mule from trying to open a connection and if that fails, the mock code is never reached.
 
-# Setting up your project
+# Requirements
+* Mule >= 4.1.0 engine
+* `mule-apikit-modules` versions from somewhere around 1.2.x up to around 1.3.16 do not work. Framework is tested and works against 1.3.19
 
+# Setting up your project
 
 1. Get this dependency in your .m2 repository
 2. Add Groovy plugins+dependencies to your pom to allow tests to be compiled:
