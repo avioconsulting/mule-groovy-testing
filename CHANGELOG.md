@@ -1,7 +1,7 @@
 # 2.0
 (for Mule 4.x)
 
-# 2.0.48 (under developmet)
+# 2.0.48
 * 4.3.0 is now the minimum supported version
 * Error mapping works
 * Modern HTTP connector version (>= 1.5.0) now required if you want to use APIKit invocation
