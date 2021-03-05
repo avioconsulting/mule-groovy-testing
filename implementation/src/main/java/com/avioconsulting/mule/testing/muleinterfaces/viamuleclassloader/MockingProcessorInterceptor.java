@@ -263,9 +263,11 @@ public class MockingProcessorInterceptor implements ProcessorInterceptor {
         ErrorType errorType = errorTypeOptional.get();
         Processor processor = getProcessor(action);
         if (!(processor instanceof ExtensionComponent<?>)) {
-            throw new RuntimeException("Expected processor to be an instance of Component but was: " + processor.getClass().getName());
+            throw new RuntimeException("Expected processor to be an instance of ExtensionComponent but was: " + processor.getClass().getName());
         }
         ExtensionComponent<?> component = (ExtensionComponent<?>) processor;
+        // if the connector usage has error types maps, this will ensure we throw the mapped one and not
+        // the underlying error
         for (ErrorMapping mapping : component.getErrorMappings()) {
             if (mapping.match(errorType)) {
                 errorType = mapping.getTarget();
