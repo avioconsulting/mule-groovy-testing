@@ -636,8 +636,44 @@ class HttpTest extends
                    is(equalTo("HTTP GET on resource '/some_path/there' failed: not found (404)."))
         assertThat causeOfCause.getClass().name,
                    is(equalTo('org.mule.extension.http.api.request.validator.ResponseValidatorTypedException'))
-        assertThat cause.info['Error type'],
+        assertThat cause.info['Error type'].toString(),
                    is(equalTo('HTTP:NOT_FOUND'))
+    }
+
+    @Test
+    void http_return_error_code_mapped() {
+        // arrange
+        mockRestHttpCall('SomeSystem Call') {
+            json {
+                whenCalledWith {
+                    setHttpStatusCode(404)
+                    [reply: 456]
+                }
+            }
+        }
+
+        // act
+        def result = shouldFail {
+            runFlow('queryParametersHttpStatusErrorMapped') {
+                json {
+                    inputPayload([foo: 123])
+                }
+            }
+        }
+
+        // assert
+        assertThat result,
+                   is(instanceOf(InvokeExceptionWrapper))
+        def cause = result.cause
+        def causeOfCause = cause.cause
+        assertThat causeOfCause.getClass().name,
+                   is(equalTo('org.mule.extension.http.api.request.validator.ResponseValidatorTypedException'))
+        assertThat cause.message,
+                   is(equalTo("HTTP GET on resource '/some_path/there' failed: not found (404)."))
+        assertThat causeOfCause.getClass().name,
+                   is(equalTo('org.mule.extension.http.api.request.validator.ResponseValidatorTypedException'))
+        assertThat cause.info['Error type'].toString(),
+                   is(equalTo('FOOBAR:NOT_FOUND'))
     }
 
     @Test
@@ -824,7 +860,7 @@ class HttpTest extends
                    is(equalTo("HTTP GET on resource '/some_path/there' failed: not found (404)."))
         assertThat causeOfCause.getClass().name,
                    is(equalTo('org.mule.extension.http.api.request.validator.ResponseValidatorTypedException'))
-        assertThat cause.info['Error type'],
+        assertThat cause.info['Error type'].toString(),
                    is(equalTo('HTTP:NOT_FOUND'))
     }
 
@@ -958,7 +994,7 @@ class HttpTest extends
                    is(equalTo('org.mule.extension.http.api.error.HttpRequestFailedException'))
         assertThat causeOfCause.cause.getClass().name,
                    is(equalTo('java.net.ConnectException'))
-        assertThat cause.info['Error type'],
+        assertThat cause.info['Error type'].toString(),
                    is(equalTo('HTTP:CONNECTIVITY'))
         assertThat cause.message,
                    is(equalTo("HTTP POST on resource '/some_path' failed: Connection refused."))
@@ -993,7 +1029,7 @@ class HttpTest extends
                    is(equalTo('org.mule.extension.http.api.error.HttpRequestFailedException'))
         assertThat causeOfCause.cause.getClass().name,
                    is(equalTo('java.util.concurrent.TimeoutException'))
-        assertThat cause.info['Error type'],
+        assertThat cause.info['Error type'].toString(),
                    is(equalTo('HTTP:TIMEOUT'))
         assertThat cause.message,
                    is(equalTo("HTTP POST on resource '/some_path' failed: Some timeout error."))
@@ -1022,6 +1058,6 @@ class HttpTest extends
         // assert
         assertThat 'We should not fail due to test framework machinery. The problem is in the code, plain and simple',
                    exception.message,
-                   is(containsString("Usually HTTP requesters have responseValidationSettings set on them. This one does not. This usually happens when the DW 2.0 logic that builds HTTP headers, query params, etc has a DW error in it. Check your DW logic in <http:headers> etc. carefully"))
+                   is(containsString("Invalid input '-'"))
     }
 }

@@ -168,9 +168,8 @@ public class RuntimeBridgeMuleSide {
         this.streamCompletionCallbacks.add(externalCompletionCallback);
         // without the completion callback, any streams in the payload will be closed when the flow under test 'completes'
         // which will make it impossible to get at the payload
-        ComponentLocation location = (ComponentLocation) flow.getAnnotation(COMPONENT_LOCATION);
         EventContext context = new DefaultEventContext(flow,
-                location,
+                flow.getLocation(),
                 null,
                 Optional.of(externalCompletionCallback));
         return CoreEvent.builder(context)

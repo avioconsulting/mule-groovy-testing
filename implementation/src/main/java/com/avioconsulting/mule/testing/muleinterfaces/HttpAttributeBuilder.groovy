@@ -39,7 +39,6 @@ trait HttpAttributeBuilder {
         def getMultiMap = { Map incoming ->
             multiMapClass.newInstance(incoming)
         }
-        def attrClass = appClassLoader.loadClass('org.mule.extension.http.api.HttpRequestAttributes')
         queryParams = (queryParams ?: [:]).collectEntries { key, value ->
             // everything needs to be a string to mimic real HTTP listener
             [key.toString(), value.toString()]
@@ -50,23 +49,20 @@ trait HttpAttributeBuilder {
                 // apikit router in mule 4 depends on this
                 'content-type': mimeType
         ] + additionalHeaders
-        // public HttpRequestAttributes(MultiMap<String, String> headers, String listenerPath, String relativePath, String version, String scheme, String method, String requestPath, String requestUri, String queryString, MultiMap<String, String> queryParams, Map<String, String> uriParams, String remoteAddress, Certificate clientCertificate) {
-        //        this(headers, listenerPath, relativePath, version, scheme, method, requestPath, requestUri, queryString, queryParams, uriParams, "", remoteAddress, clientCertificate);
-        //    }
-        attrClass.newInstance(getMultiMap(headers),
-                              httpListenerPath,
-                              url,
-                              'HTTP/1.1',
-                              'http',
-                              method,
-                              url,
-                              url,
-                              '',
-                              // query string
-                              getMultiMap(queryParams),
-                              [:],
-                              // uri params
-                              '/remoteaddress',
-                              null)
+        def attrBuilderClass = appClassLoader.loadClass('org.mule.extension.http.api.HttpRequestAttributesBuilder')
+        attrBuilderClass.newInstance()
+                .headers(getMultiMap(headers))
+                .listenerPath(httpListenerPath)
+                .relativePath(url)
+                .version('HTTP/1.1')
+                .scheme('http')
+                .method(method)
+                .requestPath(url)
+                .requestUri(url)
+                .queryParams(getMultiMap(queryParams))
+        // has to be non-null
+                .localAddress('/localAddress')
+                .remoteAddress('/remoteAddress')
+                .build()
     }
 }

@@ -27,6 +27,8 @@ class ListenersEnabledTest extends
         def url = "http://localhost:${unusedPort}/the-app/api/v1/howdy".toURL()
 
         // act
+        // wait for app to fully start
+        sleep 2000
         log.info 'Attempting to access {}',
                  url
         def result = url.text

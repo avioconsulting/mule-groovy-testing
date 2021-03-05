@@ -80,8 +80,7 @@ class MuleEngineContainer {
             createAppsDirectory()
             def classLoaderFactory = getClassLoaderFactory(engineConfig,
                                                            dependencyJsonText)
-            setupServices(classLoaderFactory.services,
-                          classLoaderFactory.muleVersion)
+            setupServices(classLoaderFactory.services)
             copyPatches(classLoaderFactory.patches)
             def containerModulesClassLoader = classLoaderFactory.classLoader
             // see FilterOutNonTestingExtensionsClassLoader for why we're doing this
@@ -112,8 +111,7 @@ class MuleEngineContainer {
         }
     }
 
-    private void setupServices(List<URL> services,
-                               String muleVersion) {
+    private void setupServices(List<URL> services) {
         def servicesDir = new File(muleHomeDirectory,
                                    'services')
         def extractServices = true
@@ -135,29 +133,9 @@ class MuleEngineContainer {
             log.info 'Using existing services'
             return
         }
-        // In mule 4.1, all you had to do was copy the service JARS to .mule/services
-        // Then mule would unzip them into .mule/.mule/services
-        // In 4.2.0, that doesn't work any more (you'll see scheduler service complaints)
-        // we have to unzip the JARs
-        if (muleVersion.startsWith('4.1')) {
-            copyServicesFor41(services,
-                              servicesDir)
-        } else {
-            unzipServicesFor420(services,
-                                servicesDir)
-        }
+        unzipServicesFor420(services,
+                            servicesDir)
         serviceJsonFile.text = desiredServiceJson
-    }
-
-    private static void copyServicesFor41(List<URL> services,
-                                          File servicesDir) {
-        log.info 'Copying services {} to {}',
-                 services,
-                 servicesDir
-        services.each { svcUrl ->
-            FileUtils.copyFileToDirectory(new File(svcUrl.toURI()),
-                                          servicesDir)
-        }
     }
 
     private static void unzipServicesFor420(List<URL> services,

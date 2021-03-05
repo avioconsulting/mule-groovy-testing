@@ -313,10 +313,10 @@ class SoapTest extends
                    is(equalTo('org.mule.runtime.soap.api.exception.DispatchingException'))
         assertThat causeOfCause.cause,
                    is(nullValue())
-        assertThat cause.info['Error type'],
+        assertThat cause.info['Error type'].toString(),
                    is(equalTo('WSC:CANNOT_DISPATCH'))
         assertThat cause.message,
-                   is(equalTo('An error occurred while sending the SOAP request.'))
+                   is(equalTo('An error occurred while sending the SOAP request'))
     }
 
     @Test
@@ -346,7 +346,7 @@ class SoapTest extends
                    is(equalTo('org.mule.extension.http.api.error.HttpRequestFailedException'))
         assertThat causeOfCause.cause.getClass().name,
                    is(equalTo('java.net.ConnectException'))
-        assertThat cause.info['Error type'],
+        assertThat cause.info['Error type'].toString(),
                    is(equalTo('HTTP:CONNECTIVITY'))
         assertThat cause.message,
                    is(equalTo("HTTP POST on resource 'http://localhost:8081' failed: Connection refused."))
@@ -379,10 +379,10 @@ class SoapTest extends
                    is(equalTo('org.mule.runtime.soap.api.exception.DispatchingException'))
         assertThat causeOfCause.cause.class.name,
                    is(equalTo('java.util.concurrent.TimeoutException'))
-        assertThat cause.info['Error type'],
+        assertThat cause.info['Error type'].toString(),
                    is(equalTo('WSC:CANNOT_DISPATCH'))
         assertThat cause.message,
-                   is(equalTo('The SOAP request timed out.'))
+                   is(equalTo('The SOAP request timed out'))
     }
 
     @Test
@@ -412,7 +412,7 @@ class SoapTest extends
                    is(equalTo('org.mule.extension.http.api.error.HttpRequestFailedException'))
         assertThat causeOfCause.cause.getClass().name,
                    is(equalTo('java.util.concurrent.TimeoutException'))
-        assertThat cause.info['Error type'],
+        assertThat cause.info['Error type'].toString(),
                    is(equalTo('HTTP:TIMEOUT'))
         assertThat cause.message,
                    is(equalTo("HTTP POST on resource 'http://localhost:8081' failed: Some timeout error."))
@@ -447,9 +447,7 @@ class SoapTest extends
         assertThat 'If a SOAP-WS Consumer is merely changed to use a custom transport, by default, it will pick up HTTP 500 errors from server and throw an exception based on that rather than the SOAP fault itself',
                    validatorException.getClass().name,
                    is(equalTo('org.mule.extension.http.api.request.validator.ResponseValidatorTypedException'))
-        assertThat validatorException.cause.getClass().name,
-                   is(equalTo('org.mule.runtime.api.exception.MuleRuntimeException'))
-        assertThat cause.info['Error type'],
+        assertThat cause.info['Error type'].toString(),
                    is(equalTo('HTTP:INTERNAL_SERVER_ERROR'))
         assertThat cause.message,
                    is(startsWith('HTTP POST on resource \'http://www.dneonline.com/calculator.asmx\' failed: internal server error (500).'))
@@ -487,7 +485,7 @@ class SoapTest extends
                    is(equalTo('org.mule.soap.api.exception.SoapFaultException'))
         assertThat soapFaultException.cause.cause.getClass().name,
                    is(equalTo('org.apache.cxf.binding.soap.SoapFault'))
-        assertThat cause.info['Error type'],
+        assertThat cause.info['Error type'].toString(),
                    is(equalTo('WSC:SOAP_FAULT'))
         assertThat cause.message,
                    is(startsWith('System.Web.Services.Protocols.SoapException: Server was unable to read request'))
@@ -534,7 +532,7 @@ class SoapTest extends
                    is(equalTo('org.mule.soap.api.exception.SoapFaultException'))
         assertThat soapFaultException.cause.cause.getClass().name,
                    is(equalTo('org.apache.cxf.binding.soap.SoapFault'))
-        assertThat cause.info['Error type'],
+        assertThat cause.info['Error type'].toString(),
                    is(equalTo('WSC:SOAP_FAULT'))
         assertThat cause.message,
                    is(startsWith('System.Web.Services.Protocols.SoapException: Server was unable to read request'))
