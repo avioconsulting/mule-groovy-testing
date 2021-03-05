@@ -20,8 +20,8 @@ jobs:
         with:
           java-version: 1.8
           server-id: avio-mule-ee-releases
-          server-username: ${{ secrets.NEXUS_USER }}
-          server-password: ${{ secrets.NEXUS_PASSWORD }}
+          server-username: NEXUS_USER
+          server-password: NEXUS_PASSWORD
 
       - name: Cache Maven packages
         uses: actions/cache@v2
