@@ -1,11 +1,13 @@
 package com.avioconsulting.mule.testing
 
 import com.avioconsulting.mule.testing.junit.BaseJunitTest
+import org.junit.Ignore
 import org.junit.Test
 
 import static org.hamcrest.Matchers.*
 import static org.junit.Assert.assertThat
 
+@Ignore("We do not currently have any patches")
 class PatchesTest extends
         BaseJunitTest implements
         ConfigTrait {
