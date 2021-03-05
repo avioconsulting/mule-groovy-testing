@@ -2,8 +2,9 @@
 (for Mule 4.x)
 
 # 2.0.48 (under developmet)
-* 4.3.0 compatibility (1 apimocktest still failing)
+* 4.3.0 is now the minimum supported version
 * Error mapping works
+* Modern HTTP connector version (>= 1.5.0) now required if you want to use APIKit invocation
 
 # 2.0.47
 * Fixed issue with try scope and quotes in XML

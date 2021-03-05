@@ -40,7 +40,7 @@ What hasn't been done yet/TODOs:
 * Mocking SFTP processors (NOT listeners) or anything that uses a connection. The underlying Mule interceptor code this framework relies on doesn't prevent Mule from trying to open a connection and if that fails, the mock code is never reached.
 
 # Requirements
-* Mule >= 4.1.0 engine
+* Mule >= 4.3.0
 * `mule-apikit-modules` versions from somewhere around 1.2.x up to around 1.3.16 do not work. Framework is tested and works against 1.3.19
 * Modern HTTP connector version (>= 1.5.0) if you want to use APIKit invocation
 
