@@ -40,9 +40,14 @@ class SoapApikitInvokerImpl extends
                                       runtimeBridgeTestSide)
     }
 
+    /**
+     * Puts together a SOAP event that mirrors what happens BEFORE the soap apikit router
+     * @return
+     */
     @Override
     EventWrapper getEvent() {
         def doc = jaxbHelper.getMarshalledDocument(this.inputObject)
+        // this has to be a complete SOAP message with envelope and everything, not just body
         def soapFactory = MessageFactory.newInstance()
         def msg = soapFactory.createMessage()
         def part = msg.getSOAPPart()
@@ -64,6 +69,7 @@ class SoapApikitInvokerImpl extends
         def additionalHeaders = [
                 'SOAPAction': soapAction
         ]
+        // will allow the router to find the right flow
         def attributes = getHttpRequestAttributes('/*',
                                                   'POST',
                                                   '/',
@@ -110,6 +116,11 @@ class SoapApikitInvokerImpl extends
         soapOperation.soapActionURI
     }
 
+    /**
+     * we generally only care about the body of the response so get that and unmarshall it
+     * @param event
+     * @return
+     */
     def transformOutput(EventWrapper event) {
         def messageAsString = event.messageAsString
         log.info 'About to unmarshal SOAP body portion of payload {}',

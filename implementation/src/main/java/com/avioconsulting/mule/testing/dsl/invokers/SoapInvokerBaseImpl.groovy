@@ -28,6 +28,11 @@ abstract class SoapInvokerBaseImpl implements
         this.jaxbHelper = new JAXBMarshalHelper(inputObject.class)
     }
 
+    /**
+     * Converts the Mulesoft SOAP output back to a JAXB object
+     * @param event
+     * @return
+     */
     @Override
     def transformOutput(EventWrapper event) {
         def payloadValue = event.message.payload.value

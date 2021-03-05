@@ -21,6 +21,10 @@ class SoapOperationFlowInvokerImpl extends
         this.flowName = flowName
     }
 
+    /**
+     * puts together a SOAP event that mirrors what you see AFTER the soap apikit router
+     * @return
+     */
     EventWrapper getEvent() {
         String xml = inputObject instanceof File ? inputObject.text : jaxbHelper.getMarshalled(inputObject)
         def newEvent = eventFactory.getMuleEventWithPayload(null,
