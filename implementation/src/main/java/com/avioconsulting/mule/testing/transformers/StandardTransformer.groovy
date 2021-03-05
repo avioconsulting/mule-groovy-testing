@@ -4,6 +4,11 @@ import com.avioconsulting.mule.testing.muleinterfaces.MuleMessageTransformer
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.ConnectorInfo
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.EventWrapper
 
+/***
+ * Combines input and output transformers with closure code and currying
+ * to complete the mocking process
+ * @param <T>
+ */
 class StandardTransformer<T extends ConnectorInfo> implements
         MuleMessageTransformer<T> {
     private final OutputTransformer outputTransformer
