@@ -28,7 +28,10 @@ jobs:
           restore-keys: ${{ runner.os }}-m2
 
       - name: Build and test
-        run: mvn -s ${{ github.workspace }}/.github/workflows/settings.xml clean install
+        # simpleLogger change hides any remaining dependency fetches so the logs are shorter
+        # b == batch mode, less noise
+        # -e shows detailed stack traces if errors happen
+        run: mvn -s ${{ github.workspace }}/.github/workflows/settings.xml -e -B -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn clean install
         env:
           NEXUS_USER: ${{ secrets.NEXUS_USER }}
           NEXUS_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
