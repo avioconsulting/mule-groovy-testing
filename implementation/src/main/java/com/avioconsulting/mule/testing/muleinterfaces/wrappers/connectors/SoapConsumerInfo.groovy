@@ -7,6 +7,8 @@ import com.avioconsulting.mule.testing.muleinterfaces.ILookupFromRegistry
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.ConnectorInfo
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.CustomErrorWrapperException
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.EventWrapper
+import com.avioconsulting.mule.testing.muleinterfaces.wrappers.MessageWrapperImpl
+import com.avioconsulting.mule.testing.muleinterfaces.wrappers.StreamUtils
 import com.avioconsulting.mule.testing.transformers.ClosureCurrier
 import com.avioconsulting.mule.testing.transformers.ClosureEvaluationResponse
 import groovy.util.logging.Log4j2
@@ -137,11 +139,21 @@ class SoapConsumerInfo extends
 
     @Override
     Object getIncomingBody() {
-        def value = parameters['message'].body
-        if (value instanceof InputStream) {
-            return value.text
+        def messageBody = parameters['message'].body
+        if (messageBody instanceof InputStream) {
+            return messageBody.text
         }
-        throw new TestingFrameworkException("Do not understand type ${value.getClass()}!")
+        // not on the Mule classloader side, cannot directly reference the class
+        else if (messageBody.getClass().name == MessageWrapperImpl.TYPED_VALUE_CLASS_NAME) {
+            def typedValueValue = messageBody.value
+            if (typedValueValue instanceof InputStream) {
+                return typedValueValue.text
+            } else {
+                throw new TestingFrameworkException("Do not understand type ${typedValueValue.getClass()}!")
+            }
+        } else {
+            throw new TestingFrameworkException("Do not understand type ${messageBody.getClass()}!")
+        }
     }
 
     String getHeaders() {
