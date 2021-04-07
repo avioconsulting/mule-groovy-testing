@@ -1,6 +1,9 @@
 # 2.0
 (for Mule 4.x)
 
+# 2.0.49
+* Newer (tested with `1.5.8`) `wsc-connector` (SOAP client) mocking fix
+
 # 2.0.48
 * 4.3.0 is now the minimum supported version
 * Error mapping works
