@@ -26,8 +26,8 @@ trait StreamUtils {
      */
     List withCursorAsList(Object payload,
                          Closure closure) {
-        if (!payload.getClass().getName().contains('ManagedCursorStreamProvider')) {
-            throw new Exception("Expected ${payload.getClass().getName()} to be of type ManagedCursorStreamProvider!")
+        if (!payload.getClass().getName().contains('ManagedCursorIteratorProvider')) {
+            throw new Exception("Expected ${payload.getClass().getName()} to be of type ManagedCursorIteratorProvider!")
         }
         def cursor = payload.openCursor() as Iterator
         try {
