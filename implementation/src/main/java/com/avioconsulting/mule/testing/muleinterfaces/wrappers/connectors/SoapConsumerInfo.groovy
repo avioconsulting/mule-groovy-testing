@@ -8,7 +8,6 @@ import com.avioconsulting.mule.testing.muleinterfaces.wrappers.ConnectorInfo
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.CustomErrorWrapperException
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.EventWrapper
 import com.avioconsulting.mule.testing.muleinterfaces.wrappers.MessageWrapperImpl
-import com.avioconsulting.mule.testing.muleinterfaces.wrappers.StreamUtils
 import com.avioconsulting.mule.testing.transformers.ClosureCurrier
 import com.avioconsulting.mule.testing.transformers.ClosureEvaluationResponse
 import groovy.util.logging.Log4j2
