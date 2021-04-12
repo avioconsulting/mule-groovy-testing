@@ -79,7 +79,7 @@
             <id>groovy</id>
             <name>Groovy</name>
             <layout>default</layout>
-            <url>https://dl.bintray.com/groovy/maven/</url>
+            <url>https://groovy.jfrog.io/artifactory/libs-release-local</url>
             <snapshots>
                 <enabled>false</enabled>
             </snapshots>

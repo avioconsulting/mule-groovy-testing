@@ -3,6 +3,7 @@
 
 # 2.0.49
 * Newer (tested with `1.5.8`) `wsc-connector` (SOAP client) mocking fix
+* Groovy 3.0.7 and Groovy compiler 3.7.0
 
 # 2.0.48
 * 4.3.0 is now the minimum supported version
