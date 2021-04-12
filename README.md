@@ -110,7 +110,7 @@ framework will use to load the engine. Will use ${app.runtime} from this project
 <dependencies>
     <dependency>
         <groupId>org.codehaus.groovy</groupId>
-        <artifactId>groovy-all</artifactId>
+        <artifactId>groovy-test</artifactId>
         <version>${groovy.compiler.version}</version>
         <scope>test</scope>
     </dependency>
@@ -122,7 +122,7 @@ framework will use to load the engine. Will use ${app.runtime} from this project
 <dependency>
     <groupId>com.avioconsulting.mule</groupId>
     <artifactId>testing</artifactId>
-    <version>2.0.47</version>
+    <version>2.0.49</version>
     <scope>test</scope>
 </dependency>
 ```
