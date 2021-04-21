@@ -5,7 +5,6 @@ import org.apache.logging.log4j.Logger;
 import org.mule.runtime.api.component.Component;
 import org.mule.runtime.api.component.ComponentIdentifier;
 import org.mule.runtime.api.component.location.ComponentLocation;
-import org.mule.runtime.api.component.location.ConfigurationComponentLocator;
 import org.mule.runtime.api.exception.ErrorTypeRepository;
 import org.mule.runtime.api.interception.InterceptionAction;
 import org.mule.runtime.api.interception.InterceptionEvent;
@@ -30,11 +29,10 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
+import static org.mule.runtime.core.api.util.ClassUtils.withContextClassLoader;
+
 public class MockingProcessorInterceptor implements ProcessorInterceptor {
     private static final String PARAMETER_CONNECTOR_NAME = "doc:name";
-    private static final String PARAMETER_MODULE_NAME = "moduleName";
-    private static final QName SOURCE_ELEMENT = new QName("http://www.mulesoft.org/schema/mule/documentation",
-            "sourceElement");
     private static final QName DOC_NAME = new QName("http://www.mulesoft.org/schema/mule/documentation",
             "name");
     private static final Logger logger = LogManager.getLogger(MockingProcessorInterceptor.class);
@@ -42,14 +40,16 @@ public class MockingProcessorInterceptor implements ProcessorInterceptor {
     private final Method doMockInvocationMethod;
     private final Method getErrorTypeRepositoryMethod;
     private final Object mockingConfiguration;
-    private final Method locatorMethod;
+    private final ClassLoader appClassLoader;
     // The assumption here is that our call to a module/Exchange wrapped API, since it's just a chain container
     // will be on the same thread, so we can "pass" the name of the connector down to the next invocation
     // of this interceptor w/ ThreadLocal. See usages in this class for more info
-    private static ThreadLocal<String> moduleConnectorName = new ThreadLocal<>();
+    private static final ThreadLocal<String> moduleConnectorName = new ThreadLocal<>();
 
-    MockingProcessorInterceptor(Object mockingConfiguration) {
+    MockingProcessorInterceptor(Object mockingConfiguration,
+                                ClassLoader appClassLoader) {
         this.mockingConfiguration = mockingConfiguration;
+        this.appClassLoader = appClassLoader;
         try {
             Class<?> mockingConfigClass = mockingConfiguration.getClass();
             this.isMockEnabledMethod = mockingConfigClass.getDeclaredMethod("isMocked",
@@ -60,15 +60,6 @@ public class MockingProcessorInterceptor implements ProcessorInterceptor {
                     Object.class,
                     Object.class);
             this.getErrorTypeRepositoryMethod = mockingConfigClass.getDeclaredMethod("getErrorTypeRepository");
-            this.locatorMethod = mockingConfigClass.getDeclaredMethod("getLocator");
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private ConfigurationComponentLocator getLocator() {
-        try {
-            return (ConfigurationComponentLocator) this.locatorMethod.invoke(mockingConfiguration);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -114,13 +105,37 @@ public class MockingProcessorInterceptor implements ProcessorInterceptor {
         }
     }
 
+    private CompletableFuture<InterceptionEvent> doProceed(InterceptionAction action) {
+        // for some reason, org.mule.runtime.core.internal.processor.interceptor.ReactiveAroundInterceptorAdapter
+        // in its doAround method changes the thread context classloader to the one that loaded the interceptor
+        // class. The problem with that is it
+        // 1) used to cause problems in <= 4.2.2 with non-mocked connectors that
+        //      have paged/streaming operations because they expect the app (or region, not sure about this) classloader
+        //      to be current context classloader when they actually execute. the problem manifests itself one way
+        //      in that loggers will 'forget' the log4j (impl and test) config of the app during this execution
+        //      and instead rely on the engine's .conf directory config, which effectively prevents debug logging
+        //      since that config file is not changeable by apps using this framework
+        // 2) Even in 4.3.0, in rare/hard to reproduce cases, Dataweave processors that use external files
+        //      e.g. <ee:set-payload resource="dwl/indirectCreateAndUpdate.dwl" /> will not be able to find the file
+        //      even though it exists in the app's classpath because ReactiveAroundInterceptorAdapter does the
+        //      same thing (uses the wrong context classloader)
+
+        // One option would be to load this interceptor/interceptor factory with the app's classloader. the problem
+        // there is it's in this framework (not in the app)
+        // therefore we effectively reverse what ReactiveAroundInterceptorAdapter does here during our execution
+
+        // we only need to do this when we are NOT mocking and are running the real connector
+        // this will run the 'real' connector inside the app's classloader
+        return withContextClassLoader(this.appClassLoader,
+                action::proceed);
+    }
+
     @Override
     public CompletableFuture<InterceptionEvent> around(ComponentLocation location,
                                                        Map<String, ProcessorParameterValue> parameters,
                                                        InterceptionEvent event,
                                                        InterceptionAction action) {
-        String connectorName = getModuleCallName(parameters,
-                action);
+        String connectorName = getModuleCallName(action);
         // when we are mocking an HTTP call inside an API module, the first call we see here will be the module
         // (e.g. yourapi:some_operation)
         // then inside that module is a "processor chain" / operation is the actual call
@@ -129,10 +144,10 @@ public class MockingProcessorInterceptor implements ProcessorInterceptor {
                     connectorName);
             moduleConnectorName.set(connectorName);
             // we can't access anything on the module call but the next call inside should give us info
-            return action.proceed();
+            return doProceed(action);
         }
         if (!parameters.containsKey(PARAMETER_CONNECTOR_NAME) && moduleConnectorName.get() == null) {
-            return action.proceed();
+            return doProceed(action);
         } else if (moduleConnectorName.get() != null) {
             // in this case, we found the actual HTTP connector name using the module we already have
             connectorName = moduleConnectorName.get();
@@ -146,7 +161,7 @@ public class MockingProcessorInterceptor implements ProcessorInterceptor {
         }
 
         if (!isMockEnabled(connectorName)) {
-            return action.proceed();
+            return doProceed(action);
         }
 
         try {
@@ -182,8 +197,7 @@ public class MockingProcessorInterceptor implements ProcessorInterceptor {
         }
     }
 
-    private String getModuleCallName(Map<String, ProcessorParameterValue> parameters,
-                                     InterceptionAction action) {
+    private String getModuleCallName(InterceptionAction action) {
         Processor processor = getProcessor(action);
         if (processor instanceof ModuleOperationMessageProcessor) {
             Object annotation = ((Component) processor).getAnnotation(DOC_NAME);
