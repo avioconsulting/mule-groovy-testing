@@ -10,7 +10,7 @@
     <properties>
         <!-- This does not mean this framework can only be used with 4.3.0. It's just what it's built/tested
          against -->
-        <app.runtime>4.3.0</app.runtime>
+        <app.runtime>4.3.0-20210322</app.runtime>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <groovy.compiler.version>3.0.7</groovy.compiler.version>
