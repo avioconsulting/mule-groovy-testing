@@ -51,7 +51,7 @@ What hasn't been done yet/TODOs:
 ```xml
 <properties>
 ...
-    <groovy.compiler.version>2.4.15</groovy.compiler.version>
+    <groovy.compiler.version>3.0.7</groovy.compiler.version>
 </properties>
 ...
 <build>
@@ -69,7 +69,7 @@ What hasn't been done yet/TODOs:
     <plugins>
         <plugin>
             <artifactId>maven-compiler-plugin</artifactId>
-            <version>3.6.1</version>
+            <version>3.8.1</version>
             <configuration>
                 <compilerId>groovy-eclipse-compiler</compilerId>
             </configuration>
@@ -77,12 +77,12 @@ What hasn't been done yet/TODOs:
                 <dependency>
                     <groupId>org.codehaus.groovy</groupId>
                     <artifactId>groovy-eclipse-compiler</artifactId>
-                    <version>3.0.0-01</version>
+                    <version>3.7.0</version>
                 </dependency>
                 <dependency>
                     <groupId>org.codehaus.groovy</groupId>
                     <artifactId>groovy-eclipse-batch</artifactId>
-                    <version>${groovy.compiler.version}-02</version>
+                    <version>${groovy.compiler.version}-03</version>
                 </dependency>
             </dependencies>
         </plugin>
@@ -110,7 +110,7 @@ framework will use to load the engine. Will use ${app.runtime} from this project
 <dependencies>
     <dependency>
         <groupId>org.codehaus.groovy</groupId>
-        <artifactId>groovy-all</artifactId>
+        <artifactId>groovy-test</artifactId>
         <version>${groovy.compiler.version}</version>
         <scope>test</scope>
     </dependency>
@@ -122,7 +122,7 @@ framework will use to load the engine. Will use ${app.runtime} from this project
 <dependency>
     <groupId>com.avioconsulting.mule</groupId>
     <artifactId>testing</artifactId>
-    <version>2.0.47</version>
+    <version>2.0.49</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -156,7 +156,7 @@ framework will use to load the engine. Will use ${app.runtime} from this project
                 <id>groovy</id>
                 <name>Groovy</name>
                 <layout>default</layout>
-                <url>https://dl.bintray.com/groovy/maven/</url>
+                <url>https://groovy.jfrog.io/artifactory/libs-release-local</url>
                 <snapshots>
                     <enabled>false</enabled>
                 </snapshots>
