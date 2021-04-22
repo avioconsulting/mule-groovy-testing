@@ -6,14 +6,17 @@ import org.mule.runtime.api.interception.ProcessorInterceptorFactory;
 
 public class MockingProcessorInterceptorFactory implements ProcessorInterceptorFactory {
     private final Object mockingConfiguration;
+    private final ClassLoader appClassLoader;
 
-    MockingProcessorInterceptorFactory(Object mockingConfiguration) {
+    MockingProcessorInterceptorFactory(Object mockingConfiguration,
+                                       ClassLoader appClassLoader) {
         this.mockingConfiguration = mockingConfiguration;
+        this.appClassLoader = appClassLoader;
     }
 
     @Override
     public ProcessorInterceptor get() {
-        return new MockingProcessorInterceptor(mockingConfiguration);
+        return new MockingProcessorInterceptor(mockingConfiguration, this.appClassLoader);
     }
 
     @Override

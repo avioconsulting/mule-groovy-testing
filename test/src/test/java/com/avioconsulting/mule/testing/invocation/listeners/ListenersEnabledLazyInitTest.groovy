@@ -34,9 +34,19 @@ class ListenersEnabledLazyInitTest extends
         def url = "http://localhost:${unusedPort}/the-app/api/v1/howdy".toURL()
 
         // act
-        log.info 'Attempting to access {}',
-                 url
-        def result = url.text
+        String result = null
+        for (int tryNumber = 0; tryNumber < 5; tryNumber++) {
+            log.info 'Try {}, attempting to access {}',
+                    tryNumber
+                     url
+            try {
+                result = url.text
+                break
+            } catch (e) {
+                log.error('error, sleeping for 1 second', e)
+                Thread.sleep(1000)
+            }
+        }
 
         // assert
         assertThat result,
