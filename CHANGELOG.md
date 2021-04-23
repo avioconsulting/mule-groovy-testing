@@ -1,6 +1,9 @@
 # 2.0
 (for Mule 4.x)
 
+# 2.0.51
+* Removed `pom` type that didn't belong on Groovy dependency
+
 # 2.0.50
 * Restored "fix" that was removed in 2.0.48 that is still needed and causes DW resources files to sometimes not be found (see `MockingProcessorInterceptor`)
 
