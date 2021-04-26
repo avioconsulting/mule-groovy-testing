@@ -126,6 +126,9 @@ public class MockingProcessorInterceptor implements ProcessorInterceptor {
 
         // we only need to do this when we are NOT mocking and are running the real connector
         // this will run the 'real' connector inside the app's classloader
+
+        // technically this was fixed in a subrelease of 4.3.0 (20210322?) but since this has regressed before and there is no
+        // harm in leaving it here
         return withContextClassLoader(this.appClassLoader,
                 action::proceed);
     }
