@@ -306,7 +306,7 @@ NOTE: "Meta-patches" like the July 2019 security issue are not supported yet. It
 <plugin>
     <groupId>com.avioconsulting.mule</groupId>
     <artifactId>dependency-resolver-maven-plugin</artifactId>
-    <version>1.0.2</version>
+    <version>1.0.7</version>
     <executions>
         <execution>
             <id>generate-dep-graph</id>
