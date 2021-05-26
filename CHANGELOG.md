@@ -1,6 +1,9 @@
 # 2.0
 (for Mule 4.x)
 
+# 2.0.52
+* Include query params properly on `requestUri` when invoking apikit flows 
+
 # 2.0.51
 * Removed `pom` type that didn't belong on Groovy dependency
 

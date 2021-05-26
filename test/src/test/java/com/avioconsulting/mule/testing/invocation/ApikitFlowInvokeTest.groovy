@@ -96,13 +96,15 @@ class ApikitFlowInvokeTest extends
                                    '/resources',
                                    queryParams) {
             json {
-                outputOnly(SampleJacksonOutput)
+                outputOnly(Map)
             }
-        } as SampleJacksonOutput
+        } as Map
 
         // assert
-        assertThat result.result,
+        assertThat result.key,
                    is(equalTo(133))
+        assertThat result.requestUri,
+                   is(equalTo('/the-APP/api/v1/resources?foo=123&bar=10'))
     }
 
     @Test
