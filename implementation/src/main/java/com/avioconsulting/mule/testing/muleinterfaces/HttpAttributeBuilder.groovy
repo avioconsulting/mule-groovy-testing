@@ -49,6 +49,10 @@ trait HttpAttributeBuilder {
                 // apikit router in mule 4 depends on this
                 'content-type': mimeType
         ] + additionalHeaders
+        def uriWithQueryParams = url + '?' + queryParams.collect { kv ->
+            kv.key + '=' + URLEncoder.encode(kv.value as String,
+                                             'utf-8')
+        }.join('&')
         def attrBuilderClass = appClassLoader.loadClass('org.mule.extension.http.api.HttpRequestAttributesBuilder')
         attrBuilderClass.newInstance()
                 .headers(getMultiMap(headers))
@@ -58,7 +62,7 @@ trait HttpAttributeBuilder {
                 .scheme('http')
                 .method(method)
                 .requestPath(url)
-                .requestUri(url)
+                .requestUri(uriWithQueryParams)
                 .queryParams(getMultiMap(queryParams))
         // has to be non-null
                 .localAddress('/localAddress')
