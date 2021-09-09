@@ -69,7 +69,8 @@ output application/json
 output application/json
 ---
 {
-    key: vars.foo + vars.bar
+    key: vars.foo + vars.bar,
+    requestUri: attributes.requestUri
 }]]></ee:set-payload>
             </ee:message>
         </ee:transform>
