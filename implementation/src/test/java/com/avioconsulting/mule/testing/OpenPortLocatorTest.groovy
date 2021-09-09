@@ -1,6 +1,6 @@
 package com.avioconsulting.mule.testing
 
-import org.apache.tools.ant.taskdefs.condition.Os
+import org.apache.commons.lang.SystemUtils
 import org.junit.Test
 
 import static org.hamcrest.Matchers.equalTo
@@ -14,7 +14,7 @@ class OpenPortLocatorTest implements OpenPortLocator {
         // where it's 8088 or 8089 for the first port is not important. What is import is
         // that the 2nd port is used if the first port is taken and that will be 8090 for Windows
         // see getHttpPort_secondPortOpen
-        Os.isFamily(Os.FAMILY_WINDOWS) ? 8089 : 8088
+        SystemUtils.IS_OS_WINDOWS ? 8089 : 8088
     }
 
     @Test
