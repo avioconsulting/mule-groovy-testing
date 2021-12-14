@@ -191,7 +191,7 @@
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
-            <version>2.6</version>
+            <version>2.7</version>
         </dependency>
         <!--
         // this used to be included when the app under test had the SOAP APIKit Router in it
